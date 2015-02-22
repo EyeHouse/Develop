@@ -1,16 +1,18 @@
 /**
- * Description of the class goes here
+ * "XMLParser"
+ * 
+ * Instantiates the 
  *
  * @company EyeHouse Ltd.
- * @version <version>, <date>
- * @authors <name> & <name>
+ * @version 1.3, 22/02/15
+ * @authors Peter
  */
 
 
 package parser;
 
 import java.io.IOException;
-//import java.util.List;
+import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -30,10 +32,10 @@ public class XMLParser extends DefaultHandler {
 	private StringBuffer elementBuffer;
     //private Image currentImage;
    
-    public XMLParser() throws IOException {
+    public XMLParser()/* throws IOException*/ {
     	
-        readXMLFile("Example PWS XML.xml");
-        writeSlides();
+        //loadSlideshow("Example PWS XML.xml");
+        //printLists();
     }
 
     /**
@@ -49,7 +51,7 @@ public class XMLParser extends DefaultHandler {
      * the data.
      * 
      */
-    public Slideshow readXMLFile(String inputFile) {
+    public Slideshow loadSlideshow(String inputFile) {
     	
         try {
             // use the default parser
@@ -102,14 +104,14 @@ public class XMLParser extends DefaultHandler {
         }
         else if (elementName.equals("defaultsettings")) {
             defaults = new DefaultSettings();
-            defaults.setBackgroundColor(attributes.getValue("backgroundcolor"));
+            /*defaults.setBackgroundColor(attributes.getValue("backgroundcolor"));
             defaults.setFont(attributes.getValue("font"));
             try {
             	defaults.setFontSize(Integer.parseInt(attributes.getValue("fontsize")));
             } catch (NumberFormatException e) {
             	
             }
-            defaults.setFontColor(attributes.getValue("fontcolor"));
+            defaults.setFontColor(attributes.getValue("fontcolor"));*/
             System.out.println("\tFound default settings...");
         }
         else if (elementName.equals("slide")) {
@@ -183,10 +185,8 @@ public class XMLParser extends DefaultHandler {
 			currentSlide = null;
 		} else if (elementName.equals("documentinfo")) {
 			slideshow.setInfo(info);
-			info = null;
 		} else if (elementName.equals("defaults")) {
 			slideshow.setDefaults(defaults);
-			defaults = null;
 		} else if (elementName.equals("author")) {
 			info.setAuthor(elementBuffer.toString().trim());
 			elementBuffer = null;
@@ -196,11 +196,14 @@ public class XMLParser extends DefaultHandler {
 		} else if (elementName.equals("comment")) {
 			info.setComment(elementBuffer.toString().trim());
 			elementBuffer = null;
+		} else if (elementName.equals("groupid")) {
+			info.setGroupID(elementBuffer.toString().trim());
+			elementBuffer = null;
 		} else if (elementName.equals("backgroundcolor")) {
 			defaults.setBackgroundColor(elementBuffer.toString().trim());
 			elementBuffer = null;
 		} else if (elementName.equals("font")) {
-			defaults.setFont(elementBuffer.toString());
+			defaults.setFont(elementBuffer.toString().trim());
 			elementBuffer = null;
 		} else if (elementName.equals("fontsize")) {
 			defaults.setFontSize(Integer.parseInt(elementBuffer.toString().trim()));
@@ -209,7 +212,7 @@ public class XMLParser extends DefaultHandler {
 			defaults.setFontColor(elementBuffer.toString().trim());
 			elementBuffer = null;
 		}
-        System.out.println(elementName);
+        //System.out.println(elementName);
     }
 
     /**
@@ -223,11 +226,21 @@ public class XMLParser extends DefaultHandler {
      * Utility method for this class, to output a quick check on the contents
      * that were read in from the XML file.
      */
-    private void writeSlides() {
-        /*System.out.println("\n\nSlideshow Title: " + slideshow.getTitle());
-        List<Slide> slides = slideshow.getSlides();
-        List<Image> images = currentSlide.getImages();
-        for (Slide slide : slides) {
+    public void printLists() {
+        System.out.println("\n\nSlideshow Title: " + slideshow.getTitle());
+        System.out.println("\tDocument Information");
+        System.out.println("\t\tAuthor: " + info.getAuthor());
+        System.out.println("\t\tVersion: " + info.getVersion());
+        System.out.println("\t\tComment: " + info.getComment());
+        System.out.println("\t\tGroup ID: " + info.getGroupID());
+        System.out.println("\tDefault Settings");
+        System.out.println("\t\tBackground Colour: " + defaults.getBackgroundColor());
+        System.out.println("\t\tFont: " + defaults.getFont());
+        System.out.println("\t\tFont Size: " + defaults.getFontSize());
+        System.out.println("\t\tFont Colour: " + defaults.getFontColor());
+        //List<Slide> slides = slideshow.getSlides();
+        //List<Image> images = currentSlide.getImages();
+        /*//for (Slide slide : slides) {
         	images = slide.getImages();
             System.out.println("\tSlide: " + slide.getID());
             for (Image image : images) {
@@ -236,12 +249,9 @@ public class XMLParser extends DefaultHandler {
         }*/
     }
 
-    public static void main(String[] args) {
-    	try {
-			new XMLParser();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-    }
+    /*public static void main(String[] args) {
+    	
+    	new XMLParser();
+    }*/
 
 }
