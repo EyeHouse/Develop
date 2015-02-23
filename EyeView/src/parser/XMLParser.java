@@ -25,12 +25,12 @@ import org.xml.sax.helpers.DefaultHandler;
 
 public class XMLParser extends DefaultHandler {
 	
-    private Slideshow slideshow;
-    private Slide currentSlide;
-	private DocumentInfo info;
-	private DefaultSettings defaults;
-	private StringBuffer elementBuffer;
-    //private Image currentImage;
+    private Slideshow slideshow = null;
+    private Slide currentSlide = null;
+	private DocumentInfo info = null;
+	private DefaultSettings defaults = null;
+	private StringBuffer elementBuffer = null;
+    private Image currentImage = null;
    
     public XMLParser()/* throws IOException*/ {
     	
@@ -104,56 +104,30 @@ public class XMLParser extends DefaultHandler {
         }
         else if (elementName.equals("defaultsettings")) {
             defaults = new DefaultSettings();
-            /*defaults.setBackgroundColor(attributes.getValue("backgroundcolor"));
-            defaults.setFont(attributes.getValue("font"));
-            try {
-            	defaults.setFontSize(Integer.parseInt(attributes.getValue("fontsize")));
-            } catch (NumberFormatException e) {
-            	
-            }
-            defaults.setFontColor(attributes.getValue("fontcolor"));*/
             System.out.println("\tFound default settings...");
         }
         else if (elementName.equals("slide")) {
-            currentSlide = new Slide(attributes.getValue("id"));
-            currentSlide.setTitle(attributes.getValue("title"));
-            try {
-            	currentSlide.setDuration(Integer.parseInt(attributes.getValue("duration")));
-            } catch (NumberFormatException e) {
-            	
-            }
-            System.out.println("\tFound a slide...");
+        	if (currentSlide == null) {
+        		currentSlide = new Slide(attributes.getValue("id"));
+	            currentSlide.setTitle(attributes.getValue("title"));
+	            try {
+	            	currentSlide.setDuration(Integer.parseInt(attributes.getValue("duration")));
+	            } catch (NumberFormatException e) {
+	            	
+	            }
+	            System.out.println("\tFound a slide...");
+        	}
         }
-        /*else if (elementName.equals("image")) {
-        	currentImage = new Image();
-            String attributeName = attributes.getLocalName(0);
-            System.out.println("\t\tFound an image...");
-            if ("".equals(attributeName)) {
-                attributeName = attributes.getQName(0);
-            }
-            
-            for (int i=0; i<attributes.getLength(); i++) {
-            	//currentImage.
-                attributeName = attributes.getLocalName(i);
-	        	if (attributeName.equals("urlname"))
-	        		currentImage.addProperty(0, attributes.getValue(i));
-	        	if (attributeName.equals("xstart"))
-	        		currentImage.addProperty(1, attributes.getValue(i));
-	        	if (attributeName.equals("ystart"))
-	        		currentImage.addProperty(2, attributes.getValue(i));
-	        	if (attributeName.equals("width"))
-	        		currentImage.addProperty(3, attributes.getValue(i));
-	        	if (attributeName.equals("height"))
-	        		currentImage.addProperty(4, attributes.getValue(i));
-	        	if (attributeName.equals("starttime"))
-	        		currentImage.addProperty(5, attributes.getValue(i));
-	        	if (attributeName.equals("endtime"))
-	        		currentImage.addProperty(6, attributes.getValue(i));
-	        	
-	        	System.out.println("\t\t\t" + attributeName + ": " + attributes.getValue(i));
-        		
-            }
-        }*/
+        else if (elementName.equals("image")) {
+	        currentImage = new Image();
+	    	currentImage.setSource(attributes.getValue("sourcefile"));
+	    	currentImage.setXstart(attributes.getValue("xstart"));
+	    	currentImage.setYstart(attributes.getValue("ystart"));
+	    	currentImage.setScale(attributes.getValue("scale"));
+	    	currentImage.setDuration(attributes.getValue("duration"));
+	    	currentImage.setStarttime(attributes.getValue("starttime"));
+	        System.out.println("\t\tFound an image...");
+        }
     }
 
     /**
@@ -211,6 +185,9 @@ public class XMLParser extends DefaultHandler {
 		} else if (elementName.equals("fontcolor")) {
 			defaults.setFontColor(elementBuffer.toString().trim());
 			elementBuffer = null;
+		} else if (elementName.equals("image")) {
+    		currentSlide.addImage(currentImage);
+    		//currentImage = null;
 		}
         //System.out.println(elementName);
     }
@@ -238,15 +215,20 @@ public class XMLParser extends DefaultHandler {
         System.out.println("\t\tFont: " + defaults.getFont());
         System.out.println("\t\tFont Size: " + defaults.getFontSize());
         System.out.println("\t\tFont Colour: " + defaults.getFontColor());
-        //List<Slide> slides = slideshow.getSlides();
-        //List<Image> images = currentSlide.getImages();
-        /*//for (Slide slide : slides) {
-        	images = slide.getImages();
-            System.out.println("\tSlide: " + slide.getID());
+        List<Slide> slides = slideshow.getSlides();
+        for (Slide slide : slides) {
+        	List<Image> images = slide.getImageList();
+            System.out.println("\tSlide: " + slide.getTitle());
             for (Image image : images) {
-            	System.out.println("\t\tImage: " + image.getProperties());
+                System.out.println("\t\tImage");
+            	System.out.println("\t\t\tSource: " + image.getSource());
+            	System.out.println("\t\t\tX: " + image.getXstart());
+            	System.out.println("\t\t\tY: " + image.getYstart());
+            	System.out.println("\t\t\tScale: " + image.getScale());
+            	System.out.println("\t\t\tDuration: " + image.getDuration());
+            	System.out.println("\t\t\tStart Time: " + image.getStarttime());
             }
-        }*/
+        }
     }
 
     /*public static void main(String[] args) {

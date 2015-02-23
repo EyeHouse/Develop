@@ -9,25 +9,55 @@
 
 package parser;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Image {
 
-    public List<Object> properties;
-    private static int maxAttributes = 7;
+	private String sourcefile, xstart, ystart, scale, duration, starttime;
 		
-	public Image() {
-        properties = new ArrayList<Object>();
-        for (int i=0; i<maxAttributes; i++)
-        	properties.add(null);
+	public String getSource() {
+		return sourcefile;
 	}
-
-	public void addProperty(int index, Object property) {
-		properties.set(index, property);
+	
+	public void setSource(String sourcefile) {
+		this.sourcefile = sourcefile;
 	}
-
-	public List<Object> getProperties() {
-		return properties;
+	
+	public String getXstart() {
+		return xstart;
+	}
+	
+	public void setXstart(String xstart) {
+		this.xstart = xstart;
+	}
+	
+	public String getYstart() {
+		return ystart;
+	}
+	
+	public void setYstart(String ystart) {
+		this.ystart = ystart;
+	}
+	
+	public String getScale() {
+		return scale;
+	}
+	
+	public void setScale(String scale) {
+		this.scale = scale;
+	}
+	
+	public String getDuration() {
+		return duration;
+	}
+	
+	public void setDuration(String duration) {
+		this.duration = duration;
+	}
+	
+	public String getStarttime() {
+		return starttime;
+	}
+	
+	public void setStarttime(String starttime) {
+		this.starttime = starttime;
 	}
 }

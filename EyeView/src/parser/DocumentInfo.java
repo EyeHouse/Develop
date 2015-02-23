@@ -1,11 +1,17 @@
+/**
+ * Description of the class goes here
+ *
+ * @company EyeHouse Ltd.
+ * @version <version>, <date>
+ * @authors <name> & <name>
+ */
+
+
 package parser;
 
 public class DocumentInfo {
 	
-	private String author;
-	private String version;
-	private String comment;
-	private String groupid;
+	private String author, version, comment, groupid;
 	
 	public String getAuthor() {
 		return author;

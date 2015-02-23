@@ -9,6 +9,7 @@
 
 package parser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Slide {
@@ -26,6 +27,11 @@ public class Slide {
 	
 	public Slide(String id) {
 		this.id = id;
+		textList = new ArrayList<Text>();
+		graphicList = new ArrayList<Graphic>();
+		imageList = new ArrayList<Image>();
+		audioList = new ArrayList<Audio>();
+		videoList = new ArrayList<Video>();
 	}
 
 	public String getID() {
@@ -84,7 +90,7 @@ public class Slide {
 
 	/* Audio get/set functions */
 	
-	public void addImage(Audio audio) {
+	public void addAudio(Audio audio) {
 		this.audioList.add(audio);
 	}
 	
@@ -94,7 +100,7 @@ public class Slide {
 
 	/* Video get/set functions */
 	
-	public void addImage(Video video) {
+	public void addVideo(Video video) {
 		this.videoList.add(video);
 	}
 	
