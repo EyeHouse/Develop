@@ -1,5 +1,4 @@
 <?xml version="1.0"?>
-
 <slideshow title="EyeView">
 	<documentinfo>
 		<author>EyeHouse</author>
@@ -13,27 +12,26 @@
 		<fontsize>12</fontsize>
 		<fontcolor>#ffcccc00</fontcolor>
 	</defaultsettings>
-	<slide title="Slide 1">
-		<text sourcefile="null" xstart="0.5" ystart="0.5" font="arial" fontsize="24" fontcolor="#00112233"  duration="1.5">
+	<slide id="1" title="First Slide">
+		<text sourcefile="null" xstart="0.5" ystart="0.5" font="arial" fontsize="24" fontcolor="#ff112233"  duration="1.5">
 			Some Text.
 		</text>
-		<image sourcefile="selfie1.jpg" xstart="0.5" ystart="0.5" scale="1.0" duration="1.5" starttime="2.0" />
+		<image sourcefile="selfie.jpg" xstart="0.5" ystart="0.5" scale="1.0" duration="1.5" starttime="2.0" />
 		<audio sourcefile="gavel.wav" starttime="2.5" />
-		<video sourcefile="avengers.mkv" xstart="0.5" ystart="0.5" />
-		<image sourcefile="selfie2.jpg" xstart="0.5" ystart="0.5" scale="1.0" duration="1.5" starttime="2.0" />
+		<video sourcefile="avengers.mp4" xstart="0.5" ystart="0.5" />
+		<image sourcefile="icon.png" xstart="0.2" ystart="0.1" scale="0.25" />
 		<graphic type="oval" xstart="0.5" ystart="0.5" xend="0.7" yend="0.7" solid="true" graphiccolor="#11223344" duration="1.5">
 			<cyclicshading shadingcolor="#88776655" />
-		</graphic>		
+		</graphic>
 	</slide>
-	<slide title="Slide 2">
-		<text sourcefile="null" xstart="0.5" ystart="0.5" font="arial" fontsize="24" fontcolor="#00112233"  duration="1.5">
-			Some Text.
+	<slide id="2" title="Second Slide">
+		<video sourcefile="prometheus.mp4" xstart="0.1" ystart="0.1" />
+		<text sourcefile="info.txt" xstart="0.5" ystart="0.5">
+			This text should be ignored.
 		</text>
-		<image sourcefile="selfie3.jpg" xstart="0.5" ystart="0.5" scale="1.0" duration="1.5" starttime="2.0" />
-		<audio sourcefile="gavel.wav" starttime="2.5" />
-		<video sourcefile="avengers.mkv" xstart="0.5" ystart="0.5" />
-		<graphic type="oval" xstart="0.5" ystart="0.5" xend="0.7" yend="0.7" solid="true" graphiccolor="#11223344" duration="1.5">
-			<cyclicshading shadingcolor="#88776655" />
-		</graphic>		
+		<image sourcefile="companylogo.jpg" xstart="0.5" ystart="0.5" scale="1.0" duration="1.5" starttime="2.0" />
+		<audio sourcefile="honk.wav" starttime="2.5" />
+		<video sourcefile="musicvideo.mp4" xstart="0.3" ystart="0.6" />
+		<graphic type="rectangle" xstart="0.5" ystart="0.5" xend="0.7" yend="0.7" solid="true" graphiccolor="#11223344" duration="1.5" />
 	</slide>
 </slideshow>

@@ -1,11 +1,10 @@
 /**
- * "XMLParser"
- * 
- * Instantiates the 
+ * This class calls the SAX parser to process the input XML file and parse
+ * the information into objects of their respective appropriate types.
  *
  * @company EyeHouse Ltd.
- * @version 1.3, 22/02/15
- * @authors Peter
+ * @version 1.4, 24/02/15
+ * @authors Peter & Teresa
  */
 
 
@@ -25,17 +24,16 @@ import org.xml.sax.helpers.DefaultHandler;
 
 public class XMLParser extends DefaultHandler {
 	
-    private Slideshow slideshow = null;
-    private Slide currentSlide = null;
-	private DocumentInfo info = null;
-	private DefaultSettings defaults = null;
-	private StringBuffer elementBuffer = null;
-    private Image currentImage = null;
+    private Slideshow slideshow;
+    private Slide currentSlide;
+	private DocumentInfo info;
+	private DefaultSettings defaults;
+	private StringBuffer elementBuffer;
+    private Image currentImage;
+	private Video currentVideo;
    
-    public XMLParser()/* throws IOException*/ {
+    public XMLParser()  {
     	
-        //loadSlideshow("Example PWS XML.xml");
-        //printLists();
     }
 
     /**
@@ -92,11 +90,9 @@ public class XMLParser extends DefaultHandler {
         }
         
         if (elementName.equals("slideshow")) {
-            if (slideshow == null) {
-                slideshow = new Slideshow();
-                slideshow.setTitle(attributes.getValue("title"));
-                System.out.println("Found slideshow...");
-            }
+             slideshow = new Slideshow();
+             slideshow.setTitle(attributes.getValue("title"));
+             System.out.println("Found slideshow...");
         }
         else if (elementName.equals("documentinfo")) {
         	info = new DocumentInfo();
@@ -107,16 +103,14 @@ public class XMLParser extends DefaultHandler {
             System.out.println("\tFound default settings...");
         }
         else if (elementName.equals("slide")) {
-        	if (currentSlide == null) {
-        		currentSlide = new Slide(attributes.getValue("id"));
-	            currentSlide.setTitle(attributes.getValue("title"));
-	            try {
-	            	currentSlide.setDuration(Integer.parseInt(attributes.getValue("duration")));
-	            } catch (NumberFormatException e) {
-	            	
-	            }
-	            System.out.println("\tFound a slide...");
-        	}
+        	currentSlide = new Slide(attributes.getValue("id"));
+	        currentSlide.setTitle(attributes.getValue("title"));
+	        try {
+	        	currentSlide.setDuration(Integer.parseInt(attributes.getValue("duration")));
+	        } catch (NumberFormatException e) {
+	        	
+	        }
+	        System.out.println("\tFound a slide...");
         }
         else if (elementName.equals("image")) {
 	        currentImage = new Image();
@@ -127,6 +121,13 @@ public class XMLParser extends DefaultHandler {
 	    	currentImage.setDuration(attributes.getValue("duration"));
 	    	currentImage.setStarttime(attributes.getValue("starttime"));
 	        System.out.println("\t\tFound an image...");
+        }
+        else if (elementName.equals("video")) {
+	        currentVideo = new Video();
+	        currentVideo.setSource(attributes.getValue("sourcefile"));
+	        currentVideo.setXstart(attributes.getValue("xstart"));
+	        currentVideo.setYstart(attributes.getValue("ystart"));
+	        System.out.println("\t\tFound a video...");
         }
     }
 
@@ -156,7 +157,6 @@ public class XMLParser extends DefaultHandler {
         
         if (elementName.equals("slide")) {
 			slideshow.addSlide(currentSlide);
-			currentSlide = null;
 		} else if (elementName.equals("documentinfo")) {
 			slideshow.setInfo(info);
 		} else if (elementName.equals("defaults")) {
@@ -187,9 +187,9 @@ public class XMLParser extends DefaultHandler {
 			elementBuffer = null;
 		} else if (elementName.equals("image")) {
     		currentSlide.addImage(currentImage);
-    		//currentImage = null;
+		} else if (elementName.equals("video")) {
+    		currentSlide.addVideo(currentVideo);
 		}
-        //System.out.println(elementName);
     }
 
     /**
@@ -218,6 +218,7 @@ public class XMLParser extends DefaultHandler {
         List<Slide> slides = slideshow.getSlides();
         for (Slide slide : slides) {
         	List<Image> images = slide.getImageList();
+        	List<Video> videos = slide.getVideoList();
             System.out.println("\tSlide: " + slide.getTitle());
             for (Image image : images) {
                 System.out.println("\t\tImage");
@@ -227,6 +228,12 @@ public class XMLParser extends DefaultHandler {
             	System.out.println("\t\t\tScale: " + image.getScale());
             	System.out.println("\t\t\tDuration: " + image.getDuration());
             	System.out.println("\t\t\tStart Time: " + image.getStarttime());
+            }
+            for (Video video : videos) {
+                System.out.println("\t\tVideo");
+            	System.out.println("\t\t\tSource: " + video.getSource());
+            	System.out.println("\t\t\tX: " + video.getXstart());
+            	System.out.println("\t\t\tY: " + video.getYstart());
             }
         }
     }

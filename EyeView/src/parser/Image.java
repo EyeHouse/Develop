@@ -2,8 +2,8 @@
  * Description of the class goes here
  *
  * @company EyeHouse Ltd.
- * @version <version>, <date>
- * @authors <name> & <name>
+ * @version 1.3, 22/02/15
+ * @authors Peter
  */
 
 

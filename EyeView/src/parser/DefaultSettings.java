@@ -1,3 +1,12 @@
+/**
+ * Description of the class goes here
+ *
+ * @company EyeHouse Ltd.
+ * @version 1.3, 22/02/15
+ * @authors Peter
+ */
+
+
 package parser;
 
 public class DefaultSettings {
