@@ -11,7 +11,8 @@ public class Database {
 
 	// Public variables
 	static Connection con = null;
-	// database row names
+	// database row names so people dont have to keep looking
+	//id autoincrements through the table so just put in 0 and it will correct
 	private final static int id = 1;
 	private final static int firstName = 2;
 	private final static int secondName = 3;
@@ -43,7 +44,7 @@ public class Database {
 		}
 
 	}
-
+	
 	// user insert
 	public static int userInsert(User userobject) {
 		// check the key details dont exist already, email,username,
@@ -88,7 +89,7 @@ public class Database {
 				//execute the query
 				insertUser.executeUpdate();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
+				//catch the error get the message
 				e.printStackTrace();
 				e.getMessage();
 			}
@@ -101,10 +102,27 @@ public class Database {
 			System.out.println("Please try again");	
 			return 0;
 		}
-		
-
 	}
 
+	public static int userDelete(String sessionKey) {
+		try {
+			//take the users 'sessionKey' and make delete the account with that key
+			PreparedStatement dropUser = con
+					.prepareStatement("DELETE FROM users WHERE password=?");
+			//parameterize 'sessionKey'
+			dropUser.setString(1, sessionKey);
+			//execute drop statement
+			dropUser.executeUpdate();
+			return 1;
+		} catch (SQLException e) {
+			//Getting really bored of these now
+			e.printStackTrace();
+			return 0;
+		}	
+		
+	}
+	
+	
 	// handle login attempt
 	public static String loginCheck(String username, String pw) {
 
@@ -131,10 +149,11 @@ public class Database {
 
 		return userKey;
 	}
-
-	// add method
-	// delete method
-	// filter input method
+	
+	// filter inputs from text fields method
+		//SQL filter
+		//email filter
+		//valid password filter
 
 	public static void main(String[] args) throws Exception {
 
@@ -170,7 +189,12 @@ public class Database {
 			System.out.println("\nUser Already Exists!");
 		}
 		if(successInsert != 0 && successInsert != 1) System.out.println("Somethings went wrong");
-
+		
+		int drop = userDelete(dummy1.password);
+		
+		if(drop == 1) System.out.println("User deleted!");
+		if(drop == 0) System.out.println("Not deleted");
+		else if(drop != 1 && drop != 0) System.out.println("Unexpected error");
 	}
 
 }
