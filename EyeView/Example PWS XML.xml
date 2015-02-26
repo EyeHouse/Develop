@@ -13,7 +13,7 @@
 		<fontcolor>#ffcccc00</fontcolor>
 	</defaultsettings>
 	<slide id="1" title="First Slide">
-		<text sourcefile="null" xstart="0.5" ystart="0.5" font="arial" fontsize="24" fontcolor="#ff112233"  duration="1.5">
+		<text sourcefile="" xstart="0.5" ystart="0.5" font="arial" fontsize="24" fontcolor="#ff112233"  duration="1.5">
 			Some Text.
 		</text>
 		<image sourcefile="selfie.jpg" xstart="0.5" ystart="0.5" scale="1.0" duration="1.5" starttime="2.0" />

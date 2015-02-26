@@ -11,30 +11,31 @@ package parser;
 
 public class Video {
 
-	private String sourcefile, xstart, ystart;
+	private String sourcefile;
+	private float xstart, ystart;
+	
+	public void setSource(String sourcefile) {
+		this.sourcefile = sourcefile;
+	}
 		
 	public String getSource() {
 		return sourcefile;
 	}
 	
-	public void setSource(String sourcefile) {
-		this.sourcefile = sourcefile;
-	}
-	
-	public String getXstart() {
-		return xstart;
-	}
-	
-	public void setXstart(String xstart) {
+	public void setXstart(float xstart) {
 		this.xstart = xstart;
 	}
 	
-	public String getYstart() {
-		return ystart;
+	public float getXstart() {
+		return xstart;
 	}
 	
-	public void setYstart(String ystart) {
+	public void setYstart(float ystart) {
 		this.ystart = ystart;
+	}
+	
+	public float getYstart() {
+		return ystart;
 	}
 
 }

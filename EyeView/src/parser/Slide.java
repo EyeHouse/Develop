@@ -15,7 +15,7 @@ import java.util.List;
 public class Slide {
 
 	private String id;
-	private int duration;
+	private float duration;
 	private String title;
 	private List<Text> textList;
 	private List<Graphic> graphicList;
@@ -40,11 +40,11 @@ public class Slide {
 
 	/* Duration get/set functions */
 	
-	public void setDuration(int duration) {
+	public void setDuration(float duration) {
 		this.duration = duration;
 	}
 
-	public int getDuration() {
+	public float getDuration() {
 		return duration;
 	}
 

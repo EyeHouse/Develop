@@ -11,53 +11,54 @@ package parser;
 
 public class Image {
 
-	private String sourcefile, xstart, ystart, scale, duration, starttime;
+	private String sourcefile;
+	private float xstart, ystart, scale, duration, starttime;
 		
-	public String getSource() {
-		return sourcefile;
-	}
-	
 	public void setSource(String sourcefile) {
 		this.sourcefile = sourcefile;
 	}
 	
-	public String getXstart() {
-		return xstart;
+	public String getSource() {
+		return sourcefile;
 	}
 	
-	public void setXstart(String xstart) {
+	public void setXstart(float xstart) {
 		this.xstart = xstart;
 	}
 	
-	public String getYstart() {
-		return ystart;
+	public float getXstart() {
+		return xstart;
 	}
 	
-	public void setYstart(String ystart) {
+	public void setYstart(float ystart) {
 		this.ystart = ystart;
 	}
 	
-	public String getScale() {
-		return scale;
+	public float getYstart() {
+		return ystart;
 	}
 	
-	public void setScale(String scale) {
+	public void setScale(float scale) {
 		this.scale = scale;
 	}
 	
-	public String getDuration() {
-		return duration;
+	public float getScale() {
+		return scale;
 	}
 	
-	public void setDuration(String duration) {
+	public void setDuration(float duration) {
 		this.duration = duration;
 	}
 	
-	public String getStarttime() {
-		return starttime;
+	public float getDuration() {
+		return duration;
 	}
 	
-	public void setStarttime(String starttime) {
+	public void setStarttime(float starttime) {
 		this.starttime = starttime;
+	}
+	
+	public float getStarttime() {
+		return starttime;
 	}
 }

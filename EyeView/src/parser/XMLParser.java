@@ -29,12 +29,10 @@ public class XMLParser extends DefaultHandler {
 	private DocumentInfo info;
 	private DefaultSettings defaults;
 	private StringBuffer elementBuffer;
+	private Text currentText;
     private Image currentImage;
+	private Audio currentAudio;
 	private Video currentVideo;
-   
-    public XMLParser()  {
-    	
-    }
 
     /**
      * This method gets the parser and then starts the parser reading
@@ -105,28 +103,73 @@ public class XMLParser extends DefaultHandler {
         else if (elementName.equals("slide")) {
         	currentSlide = new Slide(attributes.getValue("id"));
 	        currentSlide.setTitle(attributes.getValue("title"));
-	        try {
-	        	currentSlide.setDuration(Integer.parseInt(attributes.getValue("duration")));
-	        } catch (NumberFormatException e) {
-	        	
+	        if (attributes.getValue("duration") == null) {
+	        	currentSlide.setDuration(0);
+	        } else {
+		        currentSlide.setDuration(Float.parseFloat(attributes.getValue("duration")));
 	        }
 	        System.out.println("\tFound a slide...");
+        }
+        else if (elementName.equals("text")) {
+	        currentText = new Text();
+	    	currentText.setSource(attributes.getValue("sourcefile"));
+	    	currentText.setXstart(Float.parseFloat(attributes.getValue("xstart")));
+	    	currentText.setYstart(Float.parseFloat(attributes.getValue("ystart")));
+	    	if (attributes.getValue("font") == null) {
+	    		currentText.setFont(defaults.getFont());
+	    	} else {
+	    		currentText.setFont(attributes.getValue("font"));
+	    	}
+	    	if (attributes.getValue("fontsize") == null) {
+	    		currentText.setFontSize(defaults.getFontSize());
+	    	} else {
+	    		currentText.setFontSize(Integer.parseInt(attributes.getValue("fontsize")));
+	    	}
+	    	if (attributes.getValue("fontcolor") == null) {
+	    		currentText.setFontColor(defaults.getFontColor());
+	    	} else {
+	    		currentText.setFontColor(attributes.getValue("fontcolor"));
+	    	}
+	    	
+	    	System.out.println("\t\tFound some text...");
         }
         else if (elementName.equals("image")) {
 	        currentImage = new Image();
 	    	currentImage.setSource(attributes.getValue("sourcefile"));
-	    	currentImage.setXstart(attributes.getValue("xstart"));
-	    	currentImage.setYstart(attributes.getValue("ystart"));
-	    	currentImage.setScale(attributes.getValue("scale"));
-	    	currentImage.setDuration(attributes.getValue("duration"));
-	    	currentImage.setStarttime(attributes.getValue("starttime"));
+	    	currentImage.setXstart(Float.parseFloat(attributes.getValue("xstart")));
+	    	currentImage.setYstart(Float.parseFloat(attributes.getValue("ystart")));
+	    	if (attributes.getValue("scale") == null) {
+	    		currentImage.setScale(1);
+	    	} else {
+	    		currentImage.setScale(Float.parseFloat(attributes.getValue("scale")));
+	    	}
+	    	if (attributes.getValue("duration") == null) {
+	    		currentImage.setDuration(0);
+	    	} else {
+	    		currentImage.setDuration(Float.parseFloat(attributes.getValue("duration")));
+	    	}
+	    	if (attributes.getValue("starttime") == null) {
+	    		currentImage.setStarttime(0);
+	    	} else {
+	    		currentImage.setStarttime(Float.parseFloat(attributes.getValue("starttime")));
+	    	}
 	        System.out.println("\t\tFound an image...");
+        }
+        else if (elementName.equals("audio")) {
+	        currentAudio = new Audio();
+	        currentAudio.setSource(attributes.getValue("sourcefile"));
+	        if (attributes.getValue("scale") == null) {
+	        	currentAudio.setStarttime(0);
+	    	} else {
+	    		currentAudio.setStarttime(Float.parseFloat(attributes.getValue("starttime")));
+	    	}
+	    	System.out.println("\t\tFound a sound...");
         }
         else if (elementName.equals("video")) {
 	        currentVideo = new Video();
 	        currentVideo.setSource(attributes.getValue("sourcefile"));
-	        currentVideo.setXstart(attributes.getValue("xstart"));
-	        currentVideo.setYstart(attributes.getValue("ystart"));
+	        currentVideo.setXstart(Float.parseFloat(attributes.getValue("xstart")));
+	        currentVideo.setYstart(Float.parseFloat(attributes.getValue("ystart")));
 	        System.out.println("\t\tFound a video...");
         }
     }
@@ -185,8 +228,16 @@ public class XMLParser extends DefaultHandler {
 		} else if (elementName.equals("fontcolor")) {
 			defaults.setFontColor(elementBuffer.toString().trim());
 			elementBuffer = null;
+		} else if (elementName.equals("text")) {
+			if (currentText.getSource() == "") {
+				currentText.setSource(elementBuffer.toString().trim());
+				elementBuffer = null;
+			}
+    		currentSlide.addText(currentText);
 		} else if (elementName.equals("image")) {
     		currentSlide.addImage(currentImage);
+		} else if (elementName.equals("audio")) {
+    		currentSlide.addAudio(currentAudio);
 		} else if (elementName.equals("video")) {
     		currentSlide.addVideo(currentVideo);
 		}
@@ -217,9 +268,21 @@ public class XMLParser extends DefaultHandler {
         System.out.println("\t\tFont Colour: " + defaults.getFontColor());
         List<Slide> slides = slideshow.getSlides();
         for (Slide slide : slides) {
+        	List<Text> texts = slide.getTextList();
         	List<Image> images = slide.getImageList();
+        	List<Audio> audios = slide.getAudioList();
         	List<Video> videos = slide.getVideoList();
             System.out.println("\tSlide: " + slide.getTitle());
+            for (Text text : texts) {
+                System.out.println("\t\tText");
+            	System.out.println("\t\t\tSource: " + text.getSource());
+            	System.out.println("\t\t\tX: " + text.getXstart());
+            	System.out.println("\t\t\tY: " + text.getYstart());
+            	System.out.println("\t\t\tFont: " + text.getFont());
+            	System.out.println("\t\t\tFontSize: " + text.getFontSize());
+            	System.out.println("\t\t\tFontColor: " + text.getFontColor());
+            	System.out.println("\t\t\tDuration: " + text.getDuration());
+            }
             for (Image image : images) {
                 System.out.println("\t\tImage");
             	System.out.println("\t\t\tSource: " + image.getSource());
@@ -228,6 +291,11 @@ public class XMLParser extends DefaultHandler {
             	System.out.println("\t\t\tScale: " + image.getScale());
             	System.out.println("\t\t\tDuration: " + image.getDuration());
             	System.out.println("\t\t\tStart Time: " + image.getStarttime());
+            }
+            for (Audio audio : audios) {
+                System.out.println("\t\tAudio");
+            	System.out.println("\t\t\tSource: " + audio.getSource());
+            	System.out.println("\t\t\tStart Time: " + audio.getStarttime());
             }
             for (Video video : videos) {
                 System.out.println("\t\tVideo");
