@@ -1,14 +1,11 @@
+package parser;
+
 /**
  * Description of the class goes here
  *
- * @company EyeHouse Ltd.
- * @version 1.4, 24/02/15
- * @authors Teresa
+ * @version 1.4
+ * @author EyeHouse Ltd.
  */
-
-
-package parser;
-
 public class Video {
 
 	private String sourcefile;

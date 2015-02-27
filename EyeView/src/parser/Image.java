@@ -1,14 +1,11 @@
+package parser;
+
 /**
  * Description of the class goes here
  *
- * @company EyeHouse Ltd.
- * @version 1.3, 22/02/15
- * @authors Peter
+ * @version 1.3
+ * @author EyeHouse Ltd.
  */
-
-
-package parser;
-
 public class Image {
 
 	private String sourcefile;

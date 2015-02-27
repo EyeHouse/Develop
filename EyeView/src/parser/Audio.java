@@ -1,14 +1,11 @@
+package parser;
+
 /**
  * Description of the class goes here
  *
- * @company EyeHouse Ltd.
- * @version 1.5, 26/02/15
- * @authors Peter
+ * @version 1.5
+ * @author EyeHouse Ltd.
  */
-
-
-package parser;
-
 public class Audio {
 
 	private String sourcefile;

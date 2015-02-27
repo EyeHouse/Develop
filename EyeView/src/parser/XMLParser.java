@@ -1,13 +1,3 @@
-/**
- * This class calls the SAX parser to process the input XML file and parse
- * the information into objects of their respective appropriate types.
- *
- * @company EyeHouse Ltd.
- * @version 1.4, 24/02/15
- * @authors Peter & Teresa
- */
-
-
 package parser;
 
 import java.io.IOException;
@@ -21,7 +11,13 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-
+/**
+ * This class calls the SAX parser to process the input XML file and parse
+ * the information into objects of their respective appropriate types.
+ *
+ * @version 1.6
+ * @author EyeHouse Ltd.
+ */
 public class XMLParser extends DefaultHandler {
 	
     private Slideshow slideshow;
@@ -30,6 +26,7 @@ public class XMLParser extends DefaultHandler {
 	private DefaultSettings defaults;
 	private StringBuffer elementBuffer;
 	private Text currentText;
+	private Graphic currentGraphic;
     private Image currentImage;
 	private Audio currentAudio;
 	private Video currentVideo;
@@ -45,6 +42,8 @@ public class XMLParser extends DefaultHandler {
      * This method is public so that a controlling class can build an instance
      * of this class and then call this method to read the XML file and return
      * the data.
+     * 
+     * @param inputFile The file path of the XML to parse
      * 
      */
     public Slideshow loadSlideshow(String inputFile) {
@@ -101,7 +100,7 @@ public class XMLParser extends DefaultHandler {
             System.out.println("\tFound default settings...");
         }
         else if (elementName.equals("slide")) {
-        	currentSlide = new Slide(attributes.getValue("id"));
+        	currentSlide = new Slide();
 	        currentSlide.setTitle(attributes.getValue("title"));
 	        if (attributes.getValue("duration") == null) {
 	        	currentSlide.setDuration(0);
@@ -130,7 +129,11 @@ public class XMLParser extends DefaultHandler {
 	    	} else {
 	    		currentText.setFontColor(attributes.getValue("fontcolor"));
 	    	}
-	    	
+	    	if (attributes.getValue("duration") == null) {
+	    		currentText.setDuration(0);
+	    	} else {
+	    		currentText.setDuration(Float.parseFloat(attributes.getValue("duration")));
+	    	}
 	    	System.out.println("\t\tFound some text...");
         }
         else if (elementName.equals("image")) {
@@ -171,6 +174,26 @@ public class XMLParser extends DefaultHandler {
 	        currentVideo.setXstart(Float.parseFloat(attributes.getValue("xstart")));
 	        currentVideo.setYstart(Float.parseFloat(attributes.getValue("ystart")));
 	        System.out.println("\t\tFound a video...");
+        }
+        else if (elementName.equals("graphic")) {
+	        currentGraphic = new Graphic();
+	        currentGraphic.setType(attributes.getValue("type"));
+	        currentGraphic.setXstart(Float.parseFloat(attributes.getValue("xstart")));
+	        currentGraphic.setYstart(Float.parseFloat(attributes.getValue("ystart")));
+	        currentGraphic.setXend(Float.parseFloat(attributes.getValue("xend")));
+	        currentGraphic.setYend(Float.parseFloat(attributes.getValue("yend")));
+	        currentGraphic.setSolid(Boolean.parseBoolean(attributes.getValue("solid")));
+	        currentGraphic.setGraphicColor(attributes.getValue("graphiccolor"));
+	    	if (attributes.getValue("duration") == null) {
+	    		currentGraphic.setDuration(0);
+	    	} else {
+	    		currentGraphic.setDuration(Float.parseFloat(attributes.getValue("duration")));
+	    	}
+	    	System.out.println("\t\tFound a graphic...");
+        }
+        else if (elementName.equals("cyclicshading")) {
+	        currentGraphic.setShadingColor(attributes.getValue("shadingcolor"));
+	    	System.out.println("\t\t\tGraphic contains shading...");
         }
     }
 
@@ -240,6 +263,8 @@ public class XMLParser extends DefaultHandler {
     		currentSlide.addAudio(currentAudio);
 		} else if (elementName.equals("video")) {
     		currentSlide.addVideo(currentVideo);
+		} else if (elementName.equals("graphic")) {
+    		currentSlide.addGraphic(currentGraphic);
 		}
     }
 
@@ -272,6 +297,7 @@ public class XMLParser extends DefaultHandler {
         	List<Image> images = slide.getImageList();
         	List<Audio> audios = slide.getAudioList();
         	List<Video> videos = slide.getVideoList();
+        	List<Graphic> graphics = slide.getGraphicList();
             System.out.println("\tSlide: " + slide.getTitle());
             for (Text text : texts) {
                 System.out.println("\t\tText");
@@ -302,6 +328,18 @@ public class XMLParser extends DefaultHandler {
             	System.out.println("\t\t\tSource: " + video.getSource());
             	System.out.println("\t\t\tX: " + video.getXstart());
             	System.out.println("\t\t\tY: " + video.getYstart());
+            }
+            for (Graphic graphic : graphics) {
+                System.out.println("\t\tGraphic");
+            	System.out.println("\t\t\tType: " + graphic.getType());
+            	System.out.println("\t\t\tStart X: " + graphic.getXstart());
+            	System.out.println("\t\t\tStart Y: " + graphic.getYstart());
+            	System.out.println("\t\t\tEnd X: " + graphic.getXend());
+            	System.out.println("\t\t\tEnd Y: " + graphic.getYend());
+            	System.out.println("\t\t\tSolid? " + graphic.isSolid());
+            	System.out.println("\t\t\tGraphic Colour: " + graphic.getGraphicColor());
+            	System.out.println("\t\t\tDuration: " + graphic.getDuration());
+            	System.out.println("\t\t\t\tShading Colour: " + graphic.getShadingColor());
             }
         }
     }

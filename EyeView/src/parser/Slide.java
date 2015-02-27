@@ -1,20 +1,16 @@
-/**
- * Description of the class goes here
- *
- * @company EyeHouse Ltd.
- * @version 1.3, 22/02/15
- * @authors Peter
- */
-
-
 package parser;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Description of the class goes here
+ *
+ * @version 1.3
+ * @author EyeHouse Ltd.
+ */
 public class Slide {
 
-	private String id;
 	private float duration;
 	private String title;
 	private List<Text> textList;
@@ -23,23 +19,22 @@ public class Slide {
 	private List<Audio> audioList;
 	private List<Video> videoList;
 	
-	/* Slide get/set functions */
-	
-	public Slide(String id) {
-		this.id = id;
+	/**
+	 * Creates a new Slide object with new lists for containing
+	 * Text, Image, Audio, Video, & Graphic types.
+	 */
+	public Slide() {
 		textList = new ArrayList<Text>();
-		graphicList = new ArrayList<Graphic>();
 		imageList = new ArrayList<Image>();
 		audioList = new ArrayList<Audio>();
 		videoList = new ArrayList<Video>();
+		graphicList = new ArrayList<Graphic>();
 	}
-
-	public String getID() {
-		return id;
-	}
-
-	/* Duration get/set functions */
 	
+	/**
+	 * Set duration of current slide.
+	 * @param duration
+	 */
 	public void setDuration(float duration) {
 		this.duration = duration;
 	}
@@ -47,8 +42,6 @@ public class Slide {
 	public float getDuration() {
 		return duration;
 	}
-
-	/* Title get/set functions */
 	
 	public void setTitle(String title) {
 		this.title = title;
@@ -57,8 +50,6 @@ public class Slide {
 	public String getTitle() {
 		return title;
 	}
-
-	/* Text get/set functions */
 	
 	public void addText(Text text) {
 		this.textList.add(text);
@@ -67,18 +58,6 @@ public class Slide {
 	public List<Text> getTextList() {
 		return textList;
 	}
-
-	/* Graphic get/set functions */
-	
-	public void addGraphic(Graphic graphic) {
-		this.graphicList.add(graphic);
-	}
-	
-	public List<Graphic> getGraphicList() {
-		return graphicList;
-	}
-
-	/* Image get/set functions */
 	
 	public void addImage(Image image) {
 		this.imageList.add(image);
@@ -87,8 +66,6 @@ public class Slide {
 	public List<Image> getImageList() {
 		return imageList;
 	}
-
-	/* Audio get/set functions */
 	
 	public void addAudio(Audio audio) {
 		this.audioList.add(audio);
@@ -97,8 +74,6 @@ public class Slide {
 	public List<Audio> getAudioList() {
 		return audioList;
 	}
-
-	/* Video get/set functions */
 	
 	public void addVideo(Video video) {
 		this.videoList.add(video);
@@ -106,6 +81,14 @@ public class Slide {
 	
 	public List<Video> getVideoList() {
 		return videoList;
+	}
+	
+	public void addGraphic(Graphic graphic) {
+		this.graphicList.add(graphic);
+	}
+	
+	public List<Graphic> getGraphicList() {
+		return graphicList;
 	}
 
 }

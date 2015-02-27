@@ -1,18 +1,15 @@
+package parser;
+
 /**
  * Description of the class goes here
  *
- * @company EyeHouse Ltd.
- * @version 1.5, 26/02/15
- * @authors Peter
+ * @version 1.6
+ * @author EyeHouse Ltd.
  */
-
-
-package parser;
-
 public class Text {
 
-	private String sourcefile, font, fontcolor, duration;
-	float xstart, ystart;
+	private String sourcefile, font, fontcolor;
+	float xstart, ystart, duration;
 	int fontsize;
 
 	public void setSource(String sourcefile) {
@@ -63,11 +60,11 @@ public class Text {
 		return fontcolor;
 	}
 
-	public void setDuration(String duration) {
+	public void setDuration(float duration) {
 		this.duration = duration;
 	}
 
-	public String getDuration() {
+	public float getDuration() {
 		return duration;
 	}
 

@@ -1,17 +1,14 @@
-/**
- * Description of the class goes here
- *
- * @company EyeHouse Ltd.
- * @version 1.3, 22/02/15
- * @authors Peter
- */
-
-
 package parser;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Description of the class goes here
+ *
+ * @version 1.3
+ * @author EyeHouse Ltd.
+ */
 public class Slideshow {
 
     private String title;
@@ -19,13 +16,9 @@ public class Slideshow {
 	private DocumentInfo info;
 	private DefaultSettings defaults;
 	
-	/* Constructor method */
-	
     public Slideshow() {
         slides = new ArrayList<Slide>();
     }
-
-	/* Title get/set functions */
 	
 	public void setTitle(String title) {
 		this.title = title;
@@ -34,8 +27,6 @@ public class Slideshow {
     public String getTitle() {
         return title;
     }
-    
-	/* Slide get/set functions */
 	
     public void addSlide(Slide slide) {
         this.slides.add(slide);
@@ -44,8 +35,6 @@ public class Slideshow {
     public List<Slide> getSlides() {
         return slides;
     }
-
-	/* Default Settings get/set functions */
 	
 	public void setDefaults(DefaultSettings defaults) {
 		this.defaults = defaults;
@@ -54,8 +43,6 @@ public class Slideshow {
 	public DefaultSettings getDefaults() {
 		return defaults;
 	}
-
-	/* Document Info get/set functions */
 	
 	public void setInfo(DocumentInfo info) {
 		this.info = info;
