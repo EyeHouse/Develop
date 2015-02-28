@@ -7,12 +7,18 @@ import java.sql.SQLException;
 //import com.mysql.jdbc.PreparedStatement;
 import java.sql.PreparedStatement;
 
+import java.util.*;
+import javax.mail.*;
+import javax.mail.internet.*;
+import javax.activation.*;
+
 public class Database {
 
 	// Public variables
 	static Connection con = null;
-	// database row names so people dont have to keep looking
-	//id autoincrements through the table so just put in 0 and it will correct
+	// Define the column numbers of the db table as integer variables
+	// 'id' autoincrements due to the table set up, enter any integer when
+	// required
 	private final static int id = 1;
 	private final static int firstName = 2;
 	private final static int secondName = 3;
@@ -23,6 +29,9 @@ public class Database {
 	private final static int DOB = 8;
 	private final static int admin = 9;
 
+	/**
+	 * A void function used to open our database connection
+	 */
 	public static void dbConnect() {
 		// Access driver class from JAR
 		try {
@@ -44,21 +53,28 @@ public class Database {
 		}
 
 	}
-	
-	// user insert
+
+	/**
+	 * A basic function that take an instance of User.java, and enters it into
+	 * the database you're connected to.
+	 * 
+	 * @param userobject
+	 * @return 1 if user is inserted successfully
+	 * @return 0 if failure to insert
+	 */
 	public static int userInsert(User userobject) {
-		// check the key details dont exist already, email,username,
+		// Check if unique details don't exist already (email, username)
 		boolean blockInsert = false;
 		// query
 		try {
 			PreparedStatement checkUser = con
 					.prepareStatement("SELECT * FROM users WHERE username=? AND email=?");
-			// parameterize queries
+			// parameterise queries
 			checkUser.setString(1, userobject.username);
 			checkUser.setString(2, userobject.email);
 			ResultSet userExists = checkUser.executeQuery();
-			
-			//check if email or user fields already exist
+
+			// Check if email or user fields already exist
 			while (userExists.next()) {
 				if (userExists.getString(email) != null) {
 					blockInsert = true;
@@ -67,16 +83,16 @@ public class Database {
 				}
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		if(blockInsert == false) { 
-			//execute insertion of user into table users
+
+		if (blockInsert == false) {
+			// execute insertion of user into table users
 			try {
 				PreparedStatement insertUser = con
-						.prepareStatement("INSERT INTO users " + "VALUES (?,?,?,?,?,?,?,?,?)");
-				//insert all the datas
+						.prepareStatement("INSERT INTO users "
+								+ "VALUES (?,?,?,?,?,?,?,?,?)");
+				// insert the users data
 				insertUser.setInt(id, 0);
 				insertUser.setString(firstName, userobject.first_name);
 				insertUser.setString(secondName, userobject.second_name);
@@ -86,115 +102,238 @@ public class Database {
 				insertUser.setBoolean(landlord, userobject.landlord);
 				insertUser.setString(DOB, userobject.DOB);
 				insertUser.setBoolean(admin, userobject.admin);
-				//execute the query
+				// execute the query
 				insertUser.executeUpdate();
 			} catch (SQLException e) {
-				//catch the error get the message
+				// catch the error get the message
 				e.printStackTrace();
 				e.getMessage();
 			}
-			//1 = success!
+			// 1 = success!
 			return 1;
-		}
-		else {
-			//failure to insert
+		} else {
+			// failure to insert
 			System.out.println("User or email already exists.");
-			System.out.println("Please try again");	
+			System.out.println("Please try again");
 			return 0;
 		}
 	}
 
+	/**
+	 * Updates a single field for user 'user' in the database you're connected
+	 * to.
+	 * 
+	 * @param user
+	 * @param fieldSelect
+	 * @param priv
+	 * @param newField
+	 * @return
+	 */
+	public static int editUser(User user, String fieldSelect, Boolean priv,
+			String newField) {
+		// prepare a statement to update a field 'field
+		try {
+			PreparedStatement editUser = con
+					.prepareStatement("UPDATE users SET ?=? WHERE username=? AND email=?");
+			// parameterise data
+			editUser.setString(1, fieldSelect);
+			// if there's a string use string data else it must be a bool
+			if (newField != null)
+				editUser.setString(2, newField);
+			else
+				editUser.setBoolean(2, priv);
+			editUser.setString(3, user.username);
+			editUser.setString(4, user.email);
+			// execute query
+			editUser.executeUpdate();
+		} catch (SQLException e) {
+			e.getMessage();
+			e.getErrorCode();
+			e.printStackTrace();
+		}
+
+		// updated a string field
+		return 1;
+	}
+
+	/**
+	 * To be used if the user has been confirmed to exist in the login stage if
+	 * they do exist then the username and password is correct this gets all the
+	 * users details and stores them in an object
+	 */
+	public static User getUser(String userID) throws NullPointerException {
+		// Takes a unique field (username) and returns the user
+		User user = null;
+		ResultSet userDetails = null;
+		// select that user
+		try {
+			PreparedStatement getUser = con
+					.prepareStatement("SELECT * FROM users WHERE username=?");
+			// parameterise inputs
+			getUser.setString(1, userID);
+			// execute
+			userDetails = getUser.executeQuery();
+			// take all the users details and put them in an instance of user
+			while (userDetails.next()) {
+				// contruct a instance using the logged on users details
+				user = new User(userDetails);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			e.getMessage();
+		}
+		if (user == null)
+			throw new NullPointerException();
+		else
+			return user;
+
+	}
+
+	/**
+	 * Takes a unique detail from the user who is logged on and deletes their
+	 * account information.
+	 * 
+	 * @param sessionKey
+	 * @return 1 if success
+	 * @return 0 if failure
+	 */
 	public static int userDelete(String sessionKey) {
 		try {
-			//take the users 'sessionKey' and make delete the account with that key
+			// Takes a unique field (username) and deletes the corresponding
+			// account
 			PreparedStatement dropUser = con
-					.prepareStatement("DELETE FROM users WHERE password=?");
-			//parameterize 'sessionKey'
+					.prepareStatement("DELETE FROM users WHERE username=?");
+			// Parameterise inputs
 			dropUser.setString(1, sessionKey);
-			//execute drop statement
+			// Execute SQL drop statement
 			dropUser.executeUpdate();
 			return 1;
 		} catch (SQLException e) {
-			//Getting really bored of these now
 			e.printStackTrace();
+			e.getMessage();
 			return 0;
-		}	
-		
+		}
 	}
-	
-	
-	// handle login attempt
-	public static String loginCheck(String username, String pw) {
 
-		String userKey = null;
+	/**
+	 * Checks a user with username and pw exists Can be used to log users in.
+	 * 
+	 * @param username
+	 * @param pw
+	 * @return user
+	 */
+	public static User loginCheck(String username, String pw) {
+
+		User user = null;
 		ResultSet result = null;
 		// check database to see if username password exists
 		try {
 			PreparedStatement stmt = con
 					.prepareStatement("SELECT * FROM users WHERE username=? AND password=?");
-			// parameterize queries
+			// parameterise queries
 			stmt.setString(1, username);
 			stmt.setString(2, pw);
 			result = stmt.executeQuery();
 			// loop through every row until
 			while (result.next()) {
 				// get id
-				userKey = result.getString(password);
+				user = new User(result);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			e.getMessage();
 		}
+		if (user == null)
+			return null;
+		else
+			return user;
 
-		return userKey;
 	}
-	
-	// filter inputs from text fields method
-		//SQL filter
-		//email filter
-		//valid password filter
+
+	/**
+	 * Takes the information required to create a new user checks they don't
+	 * already exist and enters them into the database.
+	 * 
+	 * @param newUser
+	 * @return 1 success
+	 * @return 0 failure
+	 */
+	public static int registerUser(User newUser) {
+
+		sendMail();
+
+		return 0;
+	}
+
+	/**
+	 * Testing the mail methods
+	 */
+	public static void sendMail() {
+		// Recipient's email ID needs to be mentioned.
+		String to = "tb789@york.ac.uk";
+
+		// Sender's email ID needs to be mentioned
+		String from = "tb789@york.ac.uk";
+
+		// Assuming you are sending email from localhost
+		String host = "localhost";
+
+		// Get system properties
+		Properties properties = System.getProperties();
+
+		// Setup mail server
+		properties.setProperty("mail.smtp.host", host);
+
+		// Get the default Session object.
+		Session session = Session.getDefaultInstance(properties);
+
+		try {
+			// Create a default MimeMessage object.
+			MimeMessage message = new MimeMessage(session);
+
+			// Set From: header field of the header.
+			message.setFrom(new InternetAddress(from));
+
+			// Set To: header field of the header.
+			message.addRecipient(Message.RecipientType.TO, new InternetAddress(
+					to));
+
+			// Set Subject: header field
+			message.setSubject("Hello World");
+
+			
+			// Current date and time - for identifying test mail
+			Date date = new Date();
+			// Now set the actual message
+			message.setText("Test Message - timestamp: " +  date);
+
+			// Send message
+			Transport.send(message);
+			System.out.println("Sent message successfully....");
+		} catch (MessagingException mex) {
+			mex.printStackTrace();
+		}
+
+	}
 
 	public static void main(String[] args) throws Exception {
 
-		String userKey = null;
-		String username = "ISeeYou";
-		String password = "Default";
 		// Connect to the Database
 		dbConnect();
 
-		userKey = loginCheck(username, password);
+		User loggedOn = null;
 
-		System.out.println("User has id number: " + userKey);
+		String username = "iseeyou";
 
-		// construct a dummy user to test user insert method
-		User dummy1 = new User("JohnSmith69");
-		dummy1.first_name = "John";
-		dummy1.second_name = "Smith";
-		dummy1.email = "js@york.ac.uk";
-		// username set in contructor
-		dummy1.landlord = false;
-		dummy1.password = "password1";
-		dummy1.DOB = "2015-02-25";
-		dummy1.admin = false;
-		// print details to check the instance
-		dummy1.printUser();
-		
-		
-		int successInsert = userInsert(dummy1);
-		if(successInsert == 1) {
-		System.out.println("\nUser Inserted!");
+		try {
+			loggedOn = getUser(username);
+			loggedOn.printUser();
+		} catch (NullPointerException e) {
+			System.out.println("User Not Found");
 		}
-		if(successInsert == 0) { 
-			System.out.println("\nUser Already Exists!");
-		}
-		if(successInsert != 0 && successInsert != 1) System.out.println("Somethings went wrong");
-		
-		int drop = userDelete(dummy1.password);
-		
-		if(drop == 1) System.out.println("User deleted!");
-		if(drop == 0) System.out.println("Not deleted");
-		else if(drop != 1 && drop != 0) System.out.println("Unexpected error");
+
+		registerUser(loggedOn);
 	}
 
 }
