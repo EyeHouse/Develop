@@ -1,10 +1,11 @@
-/**
-
- * Copyright (c) 2008, 2012 Oracle and/or its affiliates.
-
- * All rights reserved. Use is subject to license terms.
-
+/*
+ * GraphicHandler.java
+*
+ * Version info: 1.4
+ *
+ * Copyright notice
  */
+
 
 import javafx.application.Application;
 
@@ -23,24 +24,9 @@ import javafx.scene.paint.Stop;
 import java.util.Timer;
 import java.util.TimerTask;
  
-
-/**
-
- * A sample showing how various settings effect two rectangles.
-
- *
-
- * @see javafx.scene.shape.Rectangle
-
- * @see javafx.scene.shape.Shape
-
- * @see javafx.scene.paint.Color
-
- */
-
-
 public class GraphicHandler extends Application {
 
+	/*XML Graphic class*/
 	class ShapeType {
 		public String type;
 		public double xstart, ystart, xend, yend, duration;
@@ -63,26 +49,39 @@ public class GraphicHandler extends Application {
 		}
 	}
 	
-	public ShapeType[] ShapeArray = new ShapeType[5];
-	
-	public ShapeType Shape1 = new ShapeType("oval",0.2, 0.2, 0.4, 0.4,1,true,"0xFF0000FF","0x000000FF",true);
-	public ShapeType Shape2 = new ShapeType("rectangle",0.45, 0.2, 0.65, 0.6,3,false,"0xFF0000FF","0xFFFF0000",true);
-	
-	public GraphicsContext gc;
-	
+	/*Graphic Static Variables*/
 	public static final double xResolution = 400;
 	public static final double yResolution = 400;
-	public static final int NumberOfShapes = 2;
+	public static final String backgroundcolor = "#E0E0E0";
+	public static final int numberOfShapes = 3;
+	
+	/*Graphic Instance Variables*/
+	public ShapeType xmlShape1 = new ShapeType("oval",0.2, 0.2, 0.4, 0.4,1,true,"#FFFF0000","#000000FF",true);
+	public ShapeType xmlShape2 = new ShapeType("rectangle",0.45, 0.2, 0.65, 0.6,3,false,"#FF00FF00","NULL",true);
+	public ShapeType xmlShape3 = new ShapeType("line",0.2, 0.6, 0.5, 0.8,2,true,"#FF0000FF","#FFFF0000",true);
 	public int shapeIndex;
+	public ShapeType[] ShapeArray = new ShapeType[numberOfShapes];
+	public Timer graphicTimerArray[] = new Timer[numberOfShapes];
+	public GraphicsContext gc;
 	
-	public static final String backgroundcolor = "0xE0E0E0";
+	/*Graphic Methods*/
+	/*Main*/
+	public static void main(String[] args) { 
+		launch(args); 
+	}
+    
+	/*Start*/
+	@Override public void start(Stage primaryStage) throws Exception {
+    	
+    	BuildGraphicsCanvas(primaryStage);
+   }
 	
-	public Timer graphicTimerArray[] = new Timer[NumberOfShapes];
-
-    private void init(Stage primaryStage) {
-
-    	ShapeArray[0] = Shape1;
-    	ShapeArray[1] = Shape2;
+	/*Populate canvas with XML graphics*/
+	public void BuildGraphicsCanvas(Stage primaryStage) {
+    	
+    	ShapeArray[0] = xmlShape1;
+    	ShapeArray[1] = xmlShape2;
+    	ShapeArray[2] = xmlShape3;
     	
     	primaryStage.setTitle("Shape Test");
     	Group screenGroup = new Group();
@@ -96,70 +95,89 @@ public class GraphicHandler extends Application {
         primaryStage.show();
     }
     
-    private void Redraw(){
+	/*Draw all XML graphics*/
+    public void Redraw(){
     	gc.setFill(Color.web(backgroundcolor, 1.0));
 		gc.fillRect(0,0,xResolution,yResolution);
     	
-    	for(shapeIndex = 0; shapeIndex < NumberOfShapes; shapeIndex++){
+    	for(shapeIndex = 0; shapeIndex < numberOfShapes; shapeIndex++){
     		if(ShapeArray[shapeIndex].visible)
     			DrawShape(ShapeArray[shapeIndex]);
     	}
     }
     
-    private void DrawShape(ShapeType shape1){
+    /*Draw XML graphic*/
+    public void DrawShape(ShapeType shape1){
     	
     	double xcoordinate = xResolution*shape1.xstart;
     	double ycoordinate = yResolution*shape1.ystart;
     	double width = (xResolution*shape1.xend) - xcoordinate;
     	double height = (yResolution*shape1.yend) - ycoordinate;
     	
-    	String GraphicColor = "0x" + shape1.graphiccolor.substring(4,10);
-    	String AlphaString = shape1.graphiccolor.substring(2,4);
-    	int graphicAlpha = Integer.valueOf(AlphaString, 16).intValue();
-    	graphicAlpha /= 255;
-    	String shadingColor = "0x" + shape1.shadingcolor.substring(4,10);
-    	AlphaString = shape1.shadingcolor.substring(2,4);
-    	int shadingAlpha = Integer.valueOf(AlphaString, 16).intValue();
-    	shadingAlpha /= 255;
-    	
-    	if(shape1.solid){
-    		
-    		if(shape1.shadingcolor!="NULL"){
-    			RadialGradient gradient = new RadialGradient(0,.1, (xcoordinate+(width/2)), (ycoordinate+(height/2)), (width/2), false, CycleMethod.NO_CYCLE, new Stop(0, Color.web(GraphicColor, graphicAlpha)), new Stop(1, Color.web(shadingColor, shadingAlpha)));
-    			gc.setFill(gradient);
-    		}
-    		else {
-    			Color fill = Color.web(GraphicColor, graphicAlpha);
-    			gc.setFill(fill);
-    		}
-    		
-    	}
-    	else{
-    		Color stroke = Color.web(GraphicColor, graphicAlpha);
-    		gc.setStroke(stroke);
-    	}
+    	SetShapeColor(shape1,xcoordinate,ycoordinate,width,height);
     	
     	switch(shape1.type){
     	case "rectangle":
-    		drawRectangle(xcoordinate,ycoordinate,width,height,shape1.duration,shape1.solid);
+    		DrawRectangle(	xcoordinate, ycoordinate, width,
+    						height, shape1.duration, shape1.solid);
     		break;
     	case "oval":
-    		drawOval(xcoordinate,ycoordinate,width,height,shape1.duration,shape1.solid);
+    		DrawOval(	xcoordinate,ycoordinate,width,
+    					height, shape1.duration, shape1.solid);
     		break;
     	case "line":
-    		drawLine(xcoordinate,ycoordinate,width,height,shape1.duration,shape1.solid);
+    		DrawLine(	xcoordinate,ycoordinate,width,
+    					height, shape1.duration, shape1.solid);
     		break;
     	}
     	
-    	if(shape1.duration>0){
-    		graphicTimerArray[shapeIndex] = new Timer();
-    		RemoveShapeTask task = new RemoveShapeTask(shapeIndex);
+    	SetupDurationTimer(shape1.duration);
+    }
+    
+    /*Set colours of XML graphic*/
+    public void SetShapeColor (	ShapeType shape1, double xcoordinate,
+    							double ycoordinate, double width, double height){
+    	
+    	String GraphicColor = "#" + shape1.graphiccolor.substring(3,9);
+    	String AlphaString = shape1.graphiccolor.substring(1,3);
+    	int graphicAlpha = Integer.valueOf(AlphaString, 16).intValue();
+    	
+    	graphicAlpha /= 255;
+    	
+    	if(shape1.shadingcolor!="NULL"){
+    		String shadingColor = "#" + shape1.shadingcolor.substring(3,9);
+    	   	AlphaString = shape1.shadingcolor.substring(1,3);
+    	   	int shadingAlpha = Integer.valueOf(AlphaString, 16).intValue();
+    	   	shadingAlpha /= 255;
     		
-    		graphicTimerArray[shapeIndex].schedule(task, (long)(shape1.duration*1000));
+    		RadialGradient gradient = new RadialGradient(0,
+    													.1,
+    													(xcoordinate+(width/2)),
+    													(ycoordinate+(height/2)),
+    													(width/2),
+    													false,
+    													CycleMethod.NO_CYCLE,
+    													new Stop(0, Color.web(GraphicColor, graphicAlpha)),
+    													new Stop(1, Color.web(shadingColor, shadingAlpha)));
+    			
+    		if(shape1.solid && shape1.type != "line")
+    			gc.setFill(gradient);
+    		else
+    			gc.setStroke(gradient);
+    	}
+    	else {
+    		Color color = Color.web(GraphicColor, graphicAlpha);
+    		
+    		if(shape1.solid && shape1.type != "line")
+    			gc.setFill(color);
+    		else
+    			gc.setStroke(color);
     	}
     }
     
-    private void drawRectangle(double xcoordinate, double ycoordinate, double width, double height, double duration, boolean solid){
+    /*Add rectangle to canvas*/
+    public void DrawRectangle(	double xcoordinate, double ycoordinate, double width,
+    							double height, double duration, boolean solid){
     
     	if(solid)
     		gc.fillRect(xcoordinate,ycoordinate,width,height);
@@ -167,7 +185,9 @@ public class GraphicHandler extends Application {
     		gc.strokeRect(xcoordinate,ycoordinate,width,height);
     }
     
-    private void drawOval(double xcoordinate, double ycoordinate, double width, double height, double duration, boolean solid){
+    /*Add oval to canvas*/
+    public void DrawOval(	double xcoordinate, double ycoordinate, double width,
+    						double height, double duration, boolean solid){
         
     	if(solid)
     		gc.fillOval(xcoordinate,ycoordinate,width,height);
@@ -175,18 +195,26 @@ public class GraphicHandler extends Application {
     		gc.strokeOval(xcoordinate,ycoordinate,width,height);
     }
     
-    private void drawLine(double xcoordinate, double ycoordinate, double width, double height, double duration, boolean solid){
-        
-    	gc.strokeLine(xcoordinate,ycoordinate,(xcoordinate+width),(ycoordinate+height));
-    } 
-
-    @Override public void start(Stage primaryStage) throws Exception {
+    /*Add line to canvas*/
+    public void DrawLine(	double xcoordinate, double ycoordinate, double width,
+    						double height, double duration, boolean solid){
     	
-    	init(primaryStage);
-   }
-
-    public static void main(String[] args) { launch(args); }
+    	gc.strokeLine(	xcoordinate,ycoordinate,
+    					(xcoordinate+width),(ycoordinate+height));
+    }
     
+    /*Add removal timer to XML graphic*/
+    public void SetupDurationTimer(double time){
+    	
+    	if(time>0){
+    		graphicTimerArray[shapeIndex] = new Timer();
+    		RemoveShapeTask task = new RemoveShapeTask(shapeIndex);
+    		
+    		graphicTimerArray[shapeIndex].schedule(task, (long)(time*1000));
+    	}
+    }
+    
+    /*Graphic removal timer handler*/
     public class RemoveShapeTask extends TimerTask {
     	
     	int shapeRemovalIndex;
