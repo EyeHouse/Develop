@@ -15,7 +15,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * This class calls the SAX parser to process the input XML file and parse
  * the information into objects of their respective appropriate types.
  *
- * @version 1.6
+ * @version 2.0
  * @author EyeHouse Ltd.
  */
 public class XMLParser extends DefaultHandler {
@@ -43,7 +43,8 @@ public class XMLParser extends DefaultHandler {
      * of this class and then call this method to read the XML file and return
      * the data.
      * 
-     * @param inputFile The file path of the XML to parse
+     * @param inputFile The file path of the input XML
+     * @return <code>Slideshow</code> object
      * 
      */
     public Slideshow loadSlideshow(String inputFile) {
@@ -221,50 +222,69 @@ public class XMLParser extends DefaultHandler {
             elementName = qName;
         }
         
-        if (elementName.equals("slide")) {
-			slideshow.addSlide(currentSlide);
-		} else if (elementName.equals("documentinfo")) {
-			slideshow.setInfo(info);
-		} else if (elementName.equals("defaults")) {
-			slideshow.setDefaults(defaults);
-		} else if (elementName.equals("author")) {
-			info.setAuthor(elementBuffer.toString().trim());
-			elementBuffer = null;
-		} else if (elementName.equals("version")) {
-			info.setVersion(elementBuffer.toString().trim());
-			elementBuffer = null;
-		} else if (elementName.equals("comment")) {
-			info.setComment(elementBuffer.toString().trim());
-			elementBuffer = null;
-		} else if (elementName.equals("groupid")) {
-			info.setGroupID(elementBuffer.toString().trim());
-			elementBuffer = null;
-		} else if (elementName.equals("backgroundcolor")) {
-			defaults.setBackgroundColor(elementBuffer.toString().trim());
-			elementBuffer = null;
-		} else if (elementName.equals("font")) {
-			defaults.setFont(elementBuffer.toString().trim());
-			elementBuffer = null;
-		} else if (elementName.equals("fontsize")) {
-			defaults.setFontSize(Integer.parseInt(elementBuffer.toString().trim()));
-			elementBuffer = null;
-		} else if (elementName.equals("fontcolor")) {
-			defaults.setFontColor(elementBuffer.toString().trim());
-			elementBuffer = null;
-		} else if (elementName.equals("text")) {
-			if (currentText.getSource() == "") {
-				currentText.setSource(elementBuffer.toString().trim());
+        switch (elementName) {
+	        case "slide":
+	        	slideshow.addSlide(currentSlide);
+	        	break;
+	        case "documentinfo":
+	        	slideshow.setInfo(info);
+	        	break;
+	    	case "defaults":
+				slideshow.setDefaults(defaults);
+				break;
+			case "author":
+				info.setAuthor(elementBuffer.toString().trim());
 				elementBuffer = null;
-			}
-    		currentSlide.addText(currentText);
-		} else if (elementName.equals("image")) {
-    		currentSlide.addImage(currentImage);
-		} else if (elementName.equals("audio")) {
-    		currentSlide.addAudio(currentAudio);
-		} else if (elementName.equals("video")) {
-    		currentSlide.addVideo(currentVideo);
-		} else if (elementName.equals("graphic")) {
-    		currentSlide.addGraphic(currentGraphic);
+				break;
+			case "version":
+				info.setVersion(elementBuffer.toString().trim());
+				elementBuffer = null;
+				break;
+			case "comment":
+				info.setComment(elementBuffer.toString().trim());
+				elementBuffer = null;
+				break;
+			case "groupid":
+				info.setGroupID(elementBuffer.toString().trim());
+				elementBuffer = null;
+				break;
+			case "backgroundcolor":
+				defaults.setBackgroundColor(elementBuffer.toString().trim());
+				elementBuffer = null;
+				break;
+			case "font":
+				defaults.setFont(elementBuffer.toString().trim());
+				elementBuffer = null;
+				break;
+			case "fontsize":
+				defaults.setFontSize(Integer.parseInt(elementBuffer.toString().trim()));
+				elementBuffer = null;
+				break;
+			case "fontcolor":
+				defaults.setFontColor(elementBuffer.toString().trim());
+				elementBuffer = null;
+				break;
+			case "text":
+				if (currentText.getSource() == "") {
+					currentText.setSource(elementBuffer.toString().trim());
+					elementBuffer = null;
+				}
+	    		currentSlide.addText(currentText);
+				break;
+			case "image":
+	    		currentSlide.addImage(currentImage);
+				break;
+			case "audio":
+	    		currentSlide.addAudio(currentAudio);
+				break;
+			case "video":
+	    		currentSlide.addVideo(currentVideo);
+				break;
+			case "graphic":
+	    		currentSlide.addGraphic(currentGraphic);
+				break;
+			default:
+				break;
 		}
     }
 
@@ -276,8 +296,8 @@ public class XMLParser extends DefaultHandler {
     }
 
     /**
-     * Utility method for this class, to output a quick check on the contents
-     * that were read in from the XML file.
+     * Provides a quick check on the contents that were read in from the XML file
+     * by printing out all the values to the console window.
      */
     public void printLists() {
         System.out.println("\n\nSlideshow Title: " + slideshow.getTitle());
@@ -343,10 +363,5 @@ public class XMLParser extends DefaultHandler {
             }
         }
     }
-
-    /*public static void main(String[] args) {
-    	
-    	new XMLParser();
-    }*/
 
 }

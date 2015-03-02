@@ -15,7 +15,7 @@ import org.xml.sax.SAXException;
  * Description of the class goes here
  *
  * @version 1.2
- * @author EyeHouse Ltd.
+ * @author  EyeHouse Ltd.
  */
 public class XMLValidation {
 
