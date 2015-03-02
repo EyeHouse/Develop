@@ -23,6 +23,7 @@ import javafx.scene.paint.Stop;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.Arrays;
  
 public class GraphicHandler extends Application {
 
@@ -33,9 +34,8 @@ public class GraphicHandler extends Application {
 		public boolean solid;
 		public String graphiccolor;
 		public String shadingcolor;
-		public boolean visible;
 		
-		public ShapeType(String type, double xstart, double ystart, double xend, double yend, double duration, boolean solid, String graphiccolor, String shadingcolor, boolean visible){
+		public ShapeType(String type, double xstart, double ystart, double xend, double yend, double duration, boolean solid, String graphiccolor, String shadingcolor){
 			this.type = type;
 			this.xstart = xstart;
 			this.ystart = ystart;
@@ -45,7 +45,6 @@ public class GraphicHandler extends Application {
 			this.solid = solid;
 			this.graphiccolor = graphiccolor;
 			this.shadingcolor = shadingcolor;
-			this.visible = visible;
 		}
 	}
 	
@@ -56,11 +55,12 @@ public class GraphicHandler extends Application {
 	public static final int numberOfShapes = 3;
 	
 	/*Graphic Instance Variables*/
-	public ShapeType xmlShape1 = new ShapeType("oval",0.2, 0.2, 0.4, 0.4,1,true,"#FFFF0000","#000000FF",true);
-	public ShapeType xmlShape2 = new ShapeType("rectangle",0.45, 0.2, 0.65, 0.6,3,false,"#FF00FF00","NULL",true);
-	public ShapeType xmlShape3 = new ShapeType("line",0.2, 0.6, 0.5, 0.8,2,true,"#FF0000FF","#FFFF0000",true);
+	public ShapeType xmlShape1 = new ShapeType("oval",0.2, 0.2, 0.4, 0.4,1,true,"#FFFF0000","#000000FF");
+	public ShapeType xmlShape2 = new ShapeType("rectangle",0.45, 0.2, 0.65, 0.6,3,false,"#FF00FF00","NULL");
+	public ShapeType xmlShape3 = new ShapeType("line",0.2, 0.6, 0.5, 0.8,2,true,"#FF0000FF","#FFFF0000");
 	public int shapeIndex;
-	public ShapeType[] ShapeArray = new ShapeType[numberOfShapes];
+	public ShapeType[] shapeArray = new ShapeType[numberOfShapes];
+	public boolean[] shapeVisibilityArray = new boolean[numberOfShapes]; 
 	public Timer graphicTimerArray[] = new Timer[numberOfShapes];
 	public GraphicsContext gc;
 	
@@ -79,9 +79,10 @@ public class GraphicHandler extends Application {
 	/*Populate canvas with XML graphics*/
 	public void BuildGraphicsCanvas(Stage primaryStage) {
     	
-    	ShapeArray[0] = xmlShape1;
-    	ShapeArray[1] = xmlShape2;
-    	ShapeArray[2] = xmlShape3;
+    	shapeArray[0] = xmlShape1;
+    	shapeArray[1] = xmlShape2;
+    	shapeArray[2] = xmlShape3;
+    	Arrays.fill(shapeVisibilityArray, true);
     	
     	primaryStage.setTitle("Shape Test");
     	Group screenGroup = new Group();
@@ -101,8 +102,8 @@ public class GraphicHandler extends Application {
 		gc.fillRect(0,0,xResolution,yResolution);
     	
     	for(shapeIndex = 0; shapeIndex < numberOfShapes; shapeIndex++){
-    		if(ShapeArray[shapeIndex].visible)
-    			DrawShape(ShapeArray[shapeIndex]);
+    		if(shapeVisibilityArray[shapeIndex])
+    			DrawShape(shapeArray[shapeIndex]);
     	}
     }
     
@@ -224,7 +225,7 @@ public class GraphicHandler extends Application {
     	}
     	
     	public void run() {
-    		ShapeArray[shapeRemovalIndex].visible = false;
+    		shapeVisibilityArray[shapeRemovalIndex] = false;
 			graphicTimerArray[shapeRemovalIndex].cancel();
     		Redraw();
     	}
