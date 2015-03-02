@@ -16,7 +16,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * the information into objects of their respective appropriate types.
  *
  * @version 2.0
- * @author EyeHouse Ltd.
+ * @author  EyeHouse Ltd.
  */
 public class XMLParser extends DefaultHandler {
 	
