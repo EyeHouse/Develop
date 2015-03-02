@@ -1,12 +1,3 @@
-/**
- * Description of the class goes here
- *
- * @company  EyeHouse Ltd.
- * @version <version>, <date>
- * @authors <name> & <name>
- */
-
-
 package parser;
 
 import java.io.File;
@@ -20,7 +11,12 @@ import javax.xml.validation.Validator;
 
 import org.xml.sax.SAXException;
 
-
+/**
+ * Description of the class goes here
+ *
+ * @version 1.2
+ * @author  EyeHouse Ltd.
+ */
 public class XMLValidation {
 
 	static String xsdFile = new String("PWS Schema.xsd");
