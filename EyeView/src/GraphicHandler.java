@@ -51,7 +51,7 @@ public class GraphicHandler extends Application {
 	/*Graphic Static Variables*/
 	public static final double xResolution = 400;
 	public static final double yResolution = 400;
-	public static final String backgroundcolor = "#E0E0E0";
+	public static final String backgroundColor = "#E0E0E0";
 	public static final int numberOfShapes = 3;
 	
 	/*Graphic Instance Variables*/
@@ -98,9 +98,13 @@ public class GraphicHandler extends Application {
     
 	/*Draw all XML graphics*/
     public void Redraw(){
-    	gc.setFill(Color.web(backgroundcolor, 1.0));
-		gc.fillRect(0,0,xResolution,yResolution);
+    	gc.clearRect(0, 0, xResolution, yResolution);
     	
+    	if(backgroundColor != "NULL"){
+    		gc.setFill(Color.web(backgroundColor, 1.0));
+    		gc.fillRect(0,0,xResolution,yResolution);
+    	}
+    		
     	for(shapeIndex = 0; shapeIndex < numberOfShapes; shapeIndex++){
     		if(shapeVisibilityArray[shapeIndex])
     			DrawShape(shapeArray[shapeIndex]);
