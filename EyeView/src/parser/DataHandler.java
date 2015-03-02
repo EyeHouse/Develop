@@ -5,7 +5,6 @@ public class DataHandler {
 	public DataHandler() {
 		
 	}
-	
 	/**
 	 * Filter out SQL injections.
 	 * 	 
