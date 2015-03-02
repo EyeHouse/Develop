@@ -24,6 +24,7 @@ import javafx.scene.paint.Stop;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Arrays;
+import java.util.ArrayList;
  
 public class GraphicHandler extends Application {
 
@@ -52,26 +53,25 @@ public class GraphicHandler extends Application {
 	public static final double xResolution = 400;
 	public static final double yResolution = 400;
 	public static final String backgroundColor = "#E0E0E0";
-	public static final int numberOfShapes = 3;
 	
 	/*Graphic Instance Variables*/
 	public ShapeType xmlShape1 = new ShapeType(	"oval",0.2, 0.2, 0.4, 0.4,4,
 												true,"#FFFF0000","#000000FF");
 	public ShapeType xmlShape2 = new ShapeType(	"rectangle",0.45, 0.2, 0.65, 0.6,3,
-												true,"#FF00FF00","NULL");
+												true,"#FF00FF00","");
 	public ShapeType xmlShape3 = new ShapeType(	"line",0.2, 0.6, 0.5, 0.8,2,
 												true,"#FF0000FF","#FFFF0000");
 	
 	public int shapeIndex;
-	public ShapeType[] shapeArray = new ShapeType[numberOfShapes];
-	public boolean[] shapeVisibilityArray = new boolean[numberOfShapes]; 
-	public Timer graphicTimerArray[] = new Timer[numberOfShapes];
+	public ArrayList<ShapeType> shapeArray = new ArrayList<ShapeType>();
+	public boolean[] shapeVisibilityArray; 
+	public Timer[] graphicTimerArray;
 	public GraphicsContext gc;
 	
 	/*Graphic Methods*/
 	/*Main*/
-	public static void main(String[] args) { 
-		launch(args); 
+	public static void main(String[] args) {
+		launch(args);
 	}
     
 	/*Start*/
@@ -84,9 +84,13 @@ public class GraphicHandler extends Application {
 	/*Populate stage with canvas of XML graphics*/
 	public void BuildGraphicsCanvas(Stage primaryStage) {
     	
-    	shapeArray[0] = xmlShape1;
-    	shapeArray[1] = xmlShape2;
-    	shapeArray[2] = xmlShape3;
+    	shapeArray.add(xmlShape1);
+    	shapeArray.add(xmlShape2);
+    	shapeArray.add(xmlShape3);
+    	
+    	// Setup visibility and timer arrays.
+    	shapeVisibilityArray = new boolean[shapeArray.size()]; 
+    	graphicTimerArray = new Timer[shapeArray.size()];
     	
     	// Initialise visibility array to all true.
     	Arrays.fill(shapeVisibilityArray, true);
@@ -118,9 +122,9 @@ public class GraphicHandler extends Application {
     	}
     	
     	// Draw all visible shapes to canvas.
-    	for(shapeIndex = 0; shapeIndex < numberOfShapes; shapeIndex++){
+    	for(shapeIndex = 0; shapeIndex < shapeArray.size(); shapeIndex++){
     		if(shapeVisibilityArray[shapeIndex])
-    			DrawShape(shapeArray[shapeIndex]);
+    			DrawShape(shapeArray.get(shapeIndex));
     	}
     }
     
@@ -172,7 +176,7 @@ public class GraphicHandler extends Application {
     	graphicAlpha /= 255;
     	
     	// Set shading to radial gradient if colour given.
-    	if(shape1.shadingcolor!="NULL"){
+    	if(shape1.shadingcolor != ""){
     		
     		// Determine shading colour and transparency from XML data.
     		String shadingColor = shape1.shadingcolor.substring(3,9);
