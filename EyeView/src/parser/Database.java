@@ -257,7 +257,6 @@ public class Database {
 		ResultSet result = null;
 		// check database to see if username password exists
 		try {
-
 			PreparedStatement checkExists = con
 					.prepareStatement("SELECT * FROM users WHERE " + Field1
 							+ "=? AND " + Field2 + "=?");
@@ -279,6 +278,7 @@ public class Database {
 		return user;
 
 	}
+
 	/**
 	 * Takes the information required to create a new user checks they don't
 	 * already exist and enters them into the database.
@@ -295,13 +295,23 @@ public class Database {
 	public static boolean userRegister(User newUser) {
 		// bool success = true / failure = false
 		int insertCheck = -1;
+		boolean password, email;
 		// Filter attacks
 
 		// Filter user input
-		// if(user == invalid) {
-		// return 1;
-		// }
-
+		// Check password matches rules.
+		password = DataHandler.passwordChecker(newUser.password,
+				newUser.password);
+		if (password == false) {
+			// include something to trigger a password specific alert
+			return false;
+		}
+		// Check email is a valid email
+		email = DataHandler.isValidEmailAddress(newUser.email);
+		if (email == false) {
+			// include an email specific error box
+			return false;
+		}
 		// Check user email && username aren't already in database
 		try {
 			userCheck(usernameField, newUser.username, emailField,
@@ -336,7 +346,7 @@ public class Database {
 		// Recipient's email ID needs to be mentioned.
 		String to = "tb789@york.ac.uk";
 		// Sender's email ID needs to be mentioned
-		String from = "tb789@york.ac.uk";
+		String from = "EyeHouse@york.ac.uk";
 		// Assuming you are sending email from localhost
 		String host = "localhost";
 		// Get system properties
@@ -365,11 +375,9 @@ public class Database {
 		} catch (MessagingException mex) {
 			mex.printStackTrace();
 		}
-
 	}
 
 	public static void main(String[] args) throws Exception {
-
 		// Connect to the Database
 		dbConnect();
 
@@ -378,11 +386,11 @@ public class Database {
 		User update = null;
 		User get = null;
 
-		String username = "uniqueusername";
-		String password = "nohash";
-		String email = "unique1@email.com";
+		String username = "passtest";
+		String password = "Invalid1";
+		String email = "nota@valide.mail";
 
-		int mode = 7;
+		int mode = 3;
 		int insertSuccess = 0;
 		int deleteSuccess = 0;
 		int updateSuccess = 0;
@@ -420,8 +428,8 @@ public class Database {
 			if (deleteSuccess == 1) {
 				// user deleted
 				System.out.println("User deleted");
-			}
-			else System.out.println("Deletion failed: check user details exist");
+			} else
+				System.out.println("Deletion failed: check user details exist");
 			break;
 		case 4: // edit details
 			updateSuccess = userUpdate(update, "password", null, password);
@@ -462,10 +470,30 @@ public class Database {
 						+ " created successfully");
 			}
 			break;
+		case 8: // login
+			User loggedIn = null;
+			loggedIn = userCheck(usernameField, username, passwordField,
+					password);
+			// do something with this
+			if (loggedIn != null) {
+				loggedIn.printUser();
+			} else {
+				System.out
+						.println("User does not exist: Check details and try again");
+			}
+
+			// then logout
+			logout(loggedIn);
+			if (loggedIn != null)
+				loggedIn.printUser();
+			else {
+				System.out.println("Logged out");
+			}
+
+			break;
 		default: // no mode selected
 			System.out.println("Select a valid switch case mode");
 			break;
-
 		}
 	}
 }

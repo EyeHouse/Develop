@@ -15,7 +15,7 @@ public class User {
 	private final static int LANDLORD = 7;
 	private final static int BIRTHDATE = 8;
 	private final static int ADMIN = 9;
-	
+
 	// id should automatically be created on insertion
 	String first_name;
 	String second_name;
@@ -33,7 +33,7 @@ public class User {
 
 	// user contructor method
 	public User(ResultSet userDetails) {
-		//fill details
+		// fill details
 		try {
 			this.username = userDetails.getString(USER);
 			this.first_name = userDetails.getString(FNAME);
@@ -73,7 +73,6 @@ public class User {
 	public void password(String pw) {
 		password = pw;
 	}
-
 	// dates in the form year/month/day xxxx-xx-xx
 	public void DOB(String dateBirth) {
 		DOB = dateBirth;
