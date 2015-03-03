@@ -25,12 +25,12 @@ public class Window extends Application {
 		primaryStage.setTitle(slideshow.getTitle());
         primaryStage.setWidth(960);
         primaryStage.setHeight(720);
+        primaryStage.setResizable(false);
         
         sc = new SlideContent();
         for (Slide currentSlide : slideList) {
-        	if (currentSlide.getTitle().equals("Second Slide")) {
+        	if (currentSlide.getTitle().equals("First Slide")) {
 	        	primaryStage.setScene(new Scene(sc.loadSlide(currentSlide.getTitle())));
-	        	
         	}
         	System.out.println(currentSlide.getTitle());
         }
