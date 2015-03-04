@@ -7,7 +7,9 @@
  */
 
 import javafx.application.Application;
-import javafx.geometry.HPos;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.HPos ;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
 import javafx.scene.Group;
@@ -17,12 +19,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.RowConstraints;
 
-public class Profile extends Application{
+public class AccountSettings extends Application{
 
 	class ProfileItem {
 		public String fName, lName, username, email, doB, gender;
@@ -47,13 +47,13 @@ public class Profile extends Application{
 	ComboBox<Integer> comboDoBDay = new ComboBox<Integer>();
     ComboBox<Integer> comboDoBMonth = new ComboBox<Integer>();
     ComboBox<Integer> comboDoBYear = new ComboBox<Integer>();
+    Button buttonApply = new Button("Apply Changes");
 	
 	ProfileItem user = new ProfileItem("John","Smith","JSmith1","j.smith@gmail.com","20/01/1993","Male");
 	
 	@Override public void start(Stage primaryStage) {
 		OpenProfile(primaryStage);
     }
-	
 	
 	
 	public void OpenProfile(Stage primaryStage){
@@ -81,8 +81,11 @@ public class Profile extends Application{
         TextField fieldEmail = new TextField(user.email);
         TextField fieldGender = new TextField(user.gender);
         
-        Button buttonApply = new Button("Apply Changes");
-        //buttonApply.addEventHandler(MouseEvent.MOUSE_CLICKED, );
+        buttonApply.setOnAction(new EventHandler<ActionEvent>(){
+        	@Override public void handle(ActionEvent event){
+                ApplyChanges();
+            }
+        });
         
         SetupDoB();
         
@@ -117,6 +120,10 @@ public class Profile extends Application{
     	comboDoBDay.getSelectionModel().select(doBDay - 1);
     	comboDoBMonth.getSelectionModel().select(doBMonth-1);
     	comboDoBYear.getSelectionModel().select(2015 - doBYear);
+	}
+	
+	private void ApplyChanges(){
+		buttonApply.setVisible(false);
 	}
 	
 	public static void main(String[] args) {
