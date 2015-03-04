@@ -13,6 +13,10 @@ public class ImageHandler {
 	Group group;
 	float xResolution;
 	float yResolution;
+	float xPosition;
+	float yPosition;
+	float width;
+	float height;
 
 	public ImageHandler(Group group, float xResolution, float yResolution) {
 		
@@ -22,12 +26,7 @@ public class ImageHandler {
 	}
 
 	public void ImageElement(String sourcefile, float xstart, float ystart,
-			float scale, float duration, float starttime) {
-
-		float xPosition;
-		float yPosition;
-		float width;
-		float height;
+			float scale, float duration, float starttime, float specifiedWidth) {
 		
 		this.sourcefile = sourcefile;
 		this.xstart = xstart;
@@ -42,10 +41,24 @@ public class ImageHandler {
 		Image house = new Image(sourcefile);
 		ImageView houseImage = new ImageView(house);
 	
+		width = (float)houseImage.getImage().getWidth();
+		height = (float)houseImage.getImage().getHeight();
+		
+		System.out.println("the original width is: " + width);
+		System.out.println("the original height is: " + height);
+		
+		houseImage.setFitWidth((specifiedWidth/width*scale)); 
+		
 		houseImage.setX(xPosition);
 		houseImage.setY(yPosition);
-				
+		
+		houseImage.setPreserveRatio(true);
+        
 		group.getChildren().add(houseImage);
 	}
-
+	
+	public float GetImageWidth(){
+		
+		return width;
+	}
 }
