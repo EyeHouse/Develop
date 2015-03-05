@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<slideshow title="EyeView">
+	<documentinfo>
+		<author>EyeHouse</author>
+		<version>1.0</version>
+		<comment>Private Student Housing Software</comment>
+		<groupid>5</groupid>
+	</documentinfo>
+	<defaultsettings>
+		<backgroundcolor>#ff00ff00</backgroundcolor>
+		<font>Calibri</font>
+		<fontsize>12</fontsize>
+		<fontcolor>#ffcccc00</fontcolor>
+	</defaultsettings>
+	<slide id="0" title="Logged Out Home">
+		<graphic type="rectangle" xstart="0.0" ystart="0.0" xend="0.19" yend="1.0" solid="true" graphiccolor="#FF7AA9DD" duration="1" />
+		<text sourcefile="" xstart="0.5" ystart="0.5" fontsize="16" fontcolor="#ff112233" duration="1.5">
+			Some Text.
+		</text>
+		<image sourcefile="file:./resources/images/icon-48x48.png" xstart="0.2" ystart="0.1" scale="0.75" />
+	</slide>
+	<slide id="1" title="Logged In Home">
+		<graphic type="oval" xstart="0.2" ystart="0.2" xend="0.4" yend="0.4" solid="true" graphiccolor="#FFFF0000" duration="4">
+			<cyclicshading shadingcolor="#000000FF" />
+		</graphic>
+		<graphic type="line" xstart="0.2" ystart="0.6" xend="0.5" yend="0.8" solid="true" graphiccolor="#FF0000FF" duration="2">
+			<cyclicshading shadingcolor="#FFFF0000" />
+		</graphic>
+		<graphic type="rectangle" xstart="0.45" ystart="0.2" xend="0.65" yend="0.6" solid="true" graphiccolor="#FF00FF00" duration="3" />
+		<text sourcefile="" xstart="0.5" ystart="0.5">
+			This text should be ignored.
+		</text>
+		<image sourcefile="file:./resources/images/buckingham-palace.jpg" xstart="0.2" ystart="0.1" scale="0.25" />
+	</slide>
+</slideshow>
