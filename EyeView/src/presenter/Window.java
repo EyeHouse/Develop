@@ -2,96 +2,86 @@ package presenter;
 
 import java.util.List;
 
-import parser.Graphic;
 import parser.Slideshow;
 import parser.XMLParser;
 import parser.Slide;
-import presenter.GraphicHandler.GraphicElement;
-//import presenter.GraphicHandler.GraphicElement;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class Window extends Application {
+
+	public static final double xResolution = 960;
+	public static final double yResolution = 720;
+	public static final int INDEX = 0;
+	public static final int HOUSES = 1;
+	public static final int LOGIN = 2;
+	public static final int REGISTER = 3;
 	
-	public enum SlideName {
-		LOGGEDOUT, HOME, LOGIN, REGISTER
-	}
-	
-	private static final double xResolution = 400;
-	private static final double yResolution = 400;
-	private static final int graphicSlide = 1;
-	
+	public static Slideshow slideshow;
+	public static List<Slide> slideList;
+	public static Slide slideData;
+	public static String groupID;
+
 	private Group root;
-	private Slideshow slideshow;
-	private List<Slide> slideList;
-	private Slide currentSlide;
-	private int slideIndex = graphicSlide;
+	private int slideID = INDEX;
+	private SlideContent sc;
 
 	public void init(Stage primaryStage) {
-		
+
 		/* Runs the XML parser */
 		XMLParser parser = new XMLParser();
 		slideshow = parser.loadSlideshow("EyeView.xml");
-		parser.printLists();
 		slideList = slideshow.getSlides();
-		
+		groupID = slideshow.getInfo().getGroupID();
+
 		/* Initialises primary stage */
 		primaryStage.setTitle(slideshow.getTitle());
 		primaryStage.getIcons().add(new Image("file:./resources/icons/xxxhdpi.png"));
-        primaryStage.setWidth(xResolution);
-        primaryStage.setHeight(yResolution);
-        primaryStage.setResizable(false);
-        
-        root = new Group();
-        loadSlide(slideIndex);
-        
-	    primaryStage.setScene(new Scene(root));
-              
-	}
-	
-	public void loadSlide(int id) {
-		
-		root.getChildren().clear();
-		currentSlide = slideList.get(id);
-		switch(id){
-		case graphicSlide:
-			LoadGraphics();
-			break;
-		default:
-			break;
-		}
-		
-		//ImageHandler ih = new ImageHandler();
-		/* something else here */
-		//slide.getChildren().add(img);
-	}
-	
-	public void LoadGraphics(){
-		GraphicHandler gh = new GraphicHandler(root, xResolution, yResolution);
-		List<Graphic> graphicList = slideList.get(graphicSlide).getGraphicList();
+		primaryStage.setWidth(xResolution);
+		primaryStage.setHeight(yResolution);
+		primaryStage.setResizable(false);
 
-		for (Graphic currentGraphic : graphicList) {
-			GraphicElement graphic = gh.new GraphicElement(currentGraphic.getType(),
-					currentGraphic.getXstart(),
-					currentGraphic.getYstart(),
-					currentGraphic.getXend(),
-					currentGraphic.getYend(),
-					currentGraphic.getDuration(),
-					currentGraphic.isSolid(),
-					currentGraphic.getGraphicColor(),
-					currentGraphic.getShadingColor());
-			gh.AddShapeToCanvas(graphic);
+		root = new Group();		
+		primaryStage.setScene(new Scene(root));
+		
+		sc = new SlideContent(root);
+		loadSlide(INDEX);
+	}
+
+	public void loadSlide(int id) {
+
+		root.getChildren().clear();
+		slideData = slideList.get(id);
+
+		sc.BuildSlide(id);
+
+		SlideDurationTimer();
+	}
+
+	private void SlideDurationTimer() {
+
+		// Add timeline if duration is greater than zero.
+		if (slideData.getDuration() > 0) {
+			// Instantiate timer and removal task then create timer schedule.
+			new Timeline(new KeyFrame(
+					Duration.millis(slideData.getDuration() * 1000), ae -> {
+						slideID++;
+						loadSlide(slideID);
+					})).play();
 		}
 	}
-	
+
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		
+
 		init(primaryStage);
-        primaryStage.show();
+		primaryStage.show();
 	}
 
 	public static void main(String[] args) {

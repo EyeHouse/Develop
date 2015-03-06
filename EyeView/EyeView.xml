@@ -12,14 +12,14 @@
 		<fontsize>12</fontsize>
 		<fontcolor>#ffcccc00</fontcolor>
 	</defaultsettings>
-	<slide id="0" title="Logged Out Home">
-		<graphic type="rectangle" xstart="0.0" ystart="0.0" xend="0.19" yend="1.0" solid="true" graphiccolor="#FF7AA9DD" duration="1" />
+	<slide id="0" title="Logged Out Home" duration="5">
+		<graphic type="rectangle" xstart="0.0" ystart="0.0" xend="0.19" yend="1.0" solid="true" graphiccolor="#FF7AA9DD" duration="3" />
 		<text sourcefile="" xstart="0.5" ystart="0.5" fontsize="16" fontcolor="#ff112233" duration="1.5">
 			Some Text.
 		</text>
 		<image sourcefile="file:./resources/images/icon-48x48.png" xstart="0.2" ystart="0.1" scale="0.75" />
 	</slide>
-	<slide id="1" title="Logged In Home">
+	<slide id="1" title="Logged In Home" duration="6">
 		<graphic type="oval" xstart="0.2" ystart="0.2" xend="0.4" yend="0.4" solid="true" graphiccolor="#FFFF0000" duration="4">
 			<cyclicshading shadingcolor="#000000FF" />
 		</graphic>
