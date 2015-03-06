@@ -7,12 +7,16 @@
  */
 
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -49,17 +53,18 @@ public class ProfileViewer extends Application{
 
 	public static final int xResolution = 960;
 	public static final int yResolution = 720;
-	public static final int gridCellWidth = 50;
+	public static final int gridCellWidth = 20;
 	public static final int gridCellHeight = 30;
 	public static final double xStart = 0.5;
 	public static final double yStart = 0.166;
 	public static final int rating = 1;
 
-    public Button buttonMessage = new Button("Message");
-    public Polygon[] star = new Polygon[5];
-    public Polyline[] starOutline = new Polyline[5];
     
-    public Label labelName, labelEmail, labelDoB;
+    public GridPane grid = new GridPane();
+    
+    
+    public Font fontTitle = new Font("Cambria", 24);
+	public Font fontMain = new Font("Cambria", 18);
 	
 	User user = new User("John","Smith","j.smith@gmail.com","JSmith1", false, "password","20/01/1993",false);
 	
@@ -72,29 +77,12 @@ public class ProfileViewer extends Application{
 	public void OpenProfile(Stage primaryStage){
 		
 		Group screenGroup = new Group();
-		GridPane grid = new GridPane();
-		VBox vBoxUserText = new VBox(10);
-		HBox hBoxStars = new HBox(5);
-		
-		SetupStars();
-		SetupLabels();
-		
-		grid.setHgap(gridCellWidth);
-        grid.setVgap(gridCellHeight);
-        grid.setPadding(new Insets(yResolution*yStart,xResolution*xStart,100,200));
-        
-        Rectangle profilePicture = new Rectangle(120,120, Color.GRAY);
-        
-        for(int i = 0 ; i < 5 ; i++){
-        	if(i<rating)hBoxStars.getChildren().add(star[i]);
-        	else hBoxStars.getChildren().add(starOutline[i]);
-        }
 
-        vBoxUserText.getChildren().addAll(labelName,labelEmail,labelDoB);
-        
-        grid.addRow(0, profilePicture, vBoxUserText);
-        grid.addRow(1, hBoxStars);
-        
+		SetupGrid();
+		SetupUserInfo();
+		SetupStars();
+		SetupProfileReview();
+		
         screenGroup.getChildren().add(grid);
         
 		primaryStage.setScene(new Scene(screenGroup, xResolution, yResolution));
@@ -105,12 +93,51 @@ public class ProfileViewer extends Application{
 		//GetCurrentUser();
 	}
 	
+	public void SetupGrid(){
+		grid.setPrefWidth(1000);
+		
+		ColumnConstraints col1 = new ColumnConstraints();
+        col1.setMinWidth(250);
+        grid.getColumnConstraints().addAll(col1,col1);
+		
+        grid.setHgap(gridCellWidth);
+        grid.setVgap(gridCellHeight);
+        grid.setPadding(new Insets(yResolution*yStart,xResolution*xStart,100,200));
+	}
+	
+	public void SetupUserInfo(){
+		Label labelName, labelEmail, labelDoB;
+		final Button buttonAccountSettings = new Button("Account Settings");
+		VBox vBoxUserText = new VBox(10);
+		Rectangle profilePicture = new Rectangle(200,200, Color.GRAY);
+		
+		labelName = new Label(user.fName + "\t(" + user.username + ")");
+		labelName.setFont(fontTitle);
+        labelEmail = new Label("Email: " + user.email);
+        labelEmail.setFont(fontMain);
+        labelDoB = new Label("Date of Birth: " + user.doB);
+        labelDoB.setFont(fontMain);
+        
+        buttonAccountSettings.setOnAction(new EventHandler<ActionEvent>(){
+        	@Override public void handle(ActionEvent event){
+                buttonAccountSettings.setVisible(false);
+            }
+        });
+        
+        vBoxUserText.getChildren().addAll(labelName,labelEmail,labelDoB, buttonAccountSettings);
+        grid.addRow(0, profilePicture, vBoxUserText);
+	}
+	
 	public void SetupStars(){
+		
 		int nbSides = 2*5;
-		int r = 10;
+		int r = 15;
         int[] xpoints = new int[nbSides];
         int[] ypoints = new int[nbSides];
         double angle = Math.PI/2;
+        Polygon[] star = new Polygon[5];
+	    Polyline[] starOutline = new Polyline[5];
+		HBox hBoxStars = new HBox(5);
 
         for (int i=0; i<nbSides; i++) {
             if (i%2==0) {
@@ -135,18 +162,37 @@ public class ProfileViewer extends Application{
 											xpoints[8], ypoints[8],xpoints[9], ypoints[9],
 											xpoints[0], ypoints[0]);
         }
+        
+        for(int i = 0 ; i < 5 ; i++){
+        	if(i<rating)hBoxStars.getChildren().add(star[i]);
+        	else hBoxStars.getChildren().add(starOutline[i]);
+        }
+        grid.addRow(1, hBoxStars);
 	}
 	
-	public void SetupLabels(){
-		Font fontTitle = new Font("Cambria", 24);
-		Font fontMain = new Font("Cambria", 18);
+	public void SetupProfileReview(){
+		VBox vBoxProfile = new VBox(10);
+		VBox vBoxReview = new VBox(10);
+		TextArea textProfile = new TextArea();
+		TextArea textReview = new TextArea();
+		Label labelProfile, labelReview;
 		
-		labelName = new Label(user.fName + "\t(" + user.username + ")");
-		labelName.setFont(fontTitle);
-        labelEmail = new Label("Email: " + user.email);
-        labelEmail.setFont(fontMain);
-        labelDoB = new Label("Date of Birth: " + user.doB);
-        labelDoB.setFont(fontMain);
+		labelProfile = new Label("Profile");
+        labelProfile.setFont(fontMain);
+        labelReview = new Label("Review");
+        labelReview.setFont(fontMain);
+		
+		textProfile.setText("Electronic Engineering Student.");
+        textProfile.setEditable(false);
+        textProfile.setWrapText(true);
+        textReview.setText("Crackin bloke!");
+        textReview.setEditable(false);
+        textReview.setWrapText(true);
+        
+        vBoxProfile.getChildren().addAll(labelProfile,textProfile);
+        vBoxReview.getChildren().addAll(labelReview,textReview);
+        
+        grid.addRow(2, vBoxProfile, vBoxReview);
 	}
 	
 	public static void main(String[] args) {
