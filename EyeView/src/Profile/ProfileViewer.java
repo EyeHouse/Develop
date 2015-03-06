@@ -1,3 +1,4 @@
+package Profile;
 /*
  * Profile.java
  * 
@@ -6,13 +7,12 @@
  * Copyright:
  */
 
-import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.VPos;
 import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -26,7 +26,7 @@ import javafx.scene.shape.Polyline;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 
-public class ProfileViewer extends Application{
+public class ProfileViewer{
 
 	class User {
 		public String fName;
@@ -37,9 +37,10 @@ public class ProfileViewer extends Application{
 		public String password;
 		public String doB;
 		public boolean admin;
+		public String profileText;
 		
 		public User(String fName, String lName , String email, String username,
-					boolean landlord, String password, String doB, boolean admin){
+					boolean landlord, String password, String doB, boolean admin, String profileText){
 			this.fName = fName;
 			this.lName = lName;
 			this.email = email;
@@ -48,57 +49,59 @@ public class ProfileViewer extends Application{
 			this.password = password;
 			this.doB = doB;
 			this.admin = admin;
+			this.profileText = profileText;
 		}
 	}
 
-	public static final int xResolution = 960;
-	public static final int yResolution = 720;
 	public static final int gridCellWidth = 20;
 	public static final int gridCellHeight = 30;
 	public static final double xStart = 0.5;
-	public static final double yStart = 0.166;
+	public static final double yStart = 0.1;
 	public static final int rating = 1;
 
     
     public GridPane grid = new GridPane();
-    
+    public Group screenGroup;
+	public double xResolution;
+	public double yResolution;
     
     public Font fontTitle = new Font("Cambria", 24);
 	public Font fontMain = new Font("Cambria", 18);
 	
-	User user = new User("John","Smith","j.smith@gmail.com","JSmith1", false, "password","20/01/1993",false);
+	User user;
 	
-	@Override public void start(Stage primaryStage) {
-		GetProfile();
-		OpenProfile(primaryStage);
-    }
+	public ProfileViewer(Group group, double xresolution, double yresolution){
+		screenGroup = group;
+		xResolution = xresolution;
+		yResolution = xresolution;
+	}
 	
-	
-	public void OpenProfile(Stage primaryStage){
+	public void OpenProfile(String username){
 		
-		Group screenGroup = new Group();
-
+		GetProfile(username);
+		
 		SetupGrid();
 		SetupUserInfo();
 		SetupStars();
 		SetupProfileReview();
 		
         screenGroup.getChildren().add(grid);
-        
-		primaryStage.setScene(new Scene(screenGroup, xResolution, yResolution));
-		primaryStage.show();
 	}
 	
-	public void GetProfile(){
-		//GetCurrentUser();
+	public void GetProfile(String username){
+		//GetCurrentUser(username);
+		user = new User("John","Smith","j.smith@gmail.com","JSmith1", true,
+						"password","20/01/1993",false, "Electronic Engineering Student.");
 	}
 	
 	public void SetupGrid(){
 		grid.setPrefWidth(1000);
 		
 		ColumnConstraints col1 = new ColumnConstraints();
+		ColumnConstraints col2 = new ColumnConstraints();
         col1.setMinWidth(250);
-        grid.getColumnConstraints().addAll(col1,col1);
+        col2.setMinWidth(100);
+        grid.getColumnConstraints().addAll(col1,col1,col2);
 		
         grid.setHgap(gridCellWidth);
         grid.setVgap(gridCellHeight);
@@ -107,7 +110,7 @@ public class ProfileViewer extends Application{
 	
 	public void SetupUserInfo(){
 		Label labelName, labelEmail, labelDoB;
-		final Button buttonAccountSettings = new Button("Account Settings");
+
 		VBox vBoxUserText = new VBox(10);
 		Rectangle profilePicture = new Rectangle(200,200, Color.GRAY);
 		
@@ -118,13 +121,7 @@ public class ProfileViewer extends Application{
         labelDoB = new Label("Date of Birth: " + user.doB);
         labelDoB.setFont(fontMain);
         
-        buttonAccountSettings.setOnAction(new EventHandler<ActionEvent>(){
-        	@Override public void handle(ActionEvent event){
-                buttonAccountSettings.setVisible(false);
-            }
-        });
-        
-        vBoxUserText.getChildren().addAll(labelName,labelEmail,labelDoB, buttonAccountSettings);
+        vBoxUserText.getChildren().addAll(labelName,labelEmail,labelDoB);
         grid.addRow(0, profilePicture, vBoxUserText);
 	}
 	
@@ -173,29 +170,52 @@ public class ProfileViewer extends Application{
 	public void SetupProfileReview(){
 		VBox vBoxProfile = new VBox(10);
 		VBox vBoxReview = new VBox(10);
+		VBox vBoxNewReview = new VBox(5);
 		TextArea textProfile = new TextArea();
-		TextArea textReview = new TextArea();
-		Label labelProfile, labelReview;
+		final TextArea textReview = new TextArea();
+		final TextArea textNewReview = new TextArea();
+		Label labelProfile, labelReview, labelNewReview;
+		Button buttonEditProfile = new Button("Edit Profile");
+		Button buttonReview = new Button("Submit");
 		
 		labelProfile = new Label("Profile");
         labelProfile.setFont(fontMain);
-        labelReview = new Label("Review");
+        labelReview = new Label("Reviews");
         labelReview.setFont(fontMain);
+        labelNewReview = new Label("Add Review");
+        labelNewReview.setFont(fontMain);
 		
-		textProfile.setText("Electronic Engineering Student.");
+		textProfile.setText(user.profileText);
         textProfile.setEditable(false);
         textProfile.setWrapText(true);
         textReview.setText("Crackin bloke!");
         textReview.setEditable(false);
         textReview.setWrapText(true);
         
+        textNewReview.setMaxHeight(50);
+        
+        buttonEditProfile.setOnAction(new EventHandler<ActionEvent>(){
+        	@Override public void handle(ActionEvent event){
+        		screenGroup.getChildren().clear();
+        		AccountSettings accountSettings = new AccountSettings(screenGroup, xResolution, yResolution);
+        		accountSettings.OpenAccountSettings(user);
+            }
+        });
+        
+        buttonReview.setOnAction(new EventHandler<ActionEvent>(){
+        	@Override public void handle(ActionEvent event){
+        		textReview.appendText("\n\n" + textNewReview.getText());
+        		textNewReview.clear();
+            }
+        });
+        
         vBoxProfile.getChildren().addAll(labelProfile,textProfile);
         vBoxReview.getChildren().addAll(labelReview,textReview);
+        vBoxNewReview.getChildren().addAll(labelNewReview, textNewReview);
         
         grid.addRow(2, vBoxProfile, vBoxReview);
-	}
-	
-	public static void main(String[] args) {
-		Application.launch(args);
+        grid.addRow(3, buttonEditProfile, vBoxNewReview, buttonReview);
+        GridPane.setConstraints(buttonEditProfile,0,3,1,1,HPos.CENTER,VPos.CENTER);
+        GridPane.setConstraints(buttonReview,2,3,1,1,HPos.CENTER,VPos.CENTER);
 	}
 }
