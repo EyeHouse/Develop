@@ -1,13 +1,4 @@
 package Images;
-/**
- * This class implements an image element function with values passed in
- * 
- * @version 2.3
- * 05.03.15
- * @author EyeHouse
- * 
- * Copyright 2015 EyeHouse
- */
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -15,21 +6,30 @@ import java.util.TimerTask;
 import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+
 import Images.ImageType;
 
+/**
+ * This class implements an image element function with values passed in
+ * 
+ * @version 2.3 05.03.15
+ * @author EyeHouse
+ * 
+ * Copyright 2015 EyeHouse
+ */
+
 public class ImageHandler {
-	
-	private float xResolution;
-	private float yResolution;
-	private float xPosition;
-	private float yPosition;
-	private float width;
-	private float height;
-	private float scaleFactor;
-	private float scaledWidth;
+
+	private float xResolution; 		// Horizontal resolution of user's screen
+	private float yResolution; 		// Vertical resolution of user's screen
+	private float xPosition; 		// Horizontal position of image to be displayed
+	private float yPosition; 		// Vertical position of image to be displayed
+	private float width; 			// Pixel width of image
+	private float scaleFactor; 		// Factor to scale image by specified width
+	private float scaledWidth; 		// Pixel width after image scaling
 	private Timer imageTimer;
 	private Group group;
-	private ImageView houseImage;
+	private ImageView houseImage; 	// ImageView in which Image is drawn
 
 	/**
 	 * Constructor for the ImageHandler class, passes in the resolution of the
@@ -43,7 +43,6 @@ public class ImageHandler {
 	 * @param yResolution
 	 *            number of pixels in the vertical dimension of the screen
 	 */
-
 	public ImageHandler(Group group, float xResolution, float yResolution) {
 
 		this.group = group;
@@ -53,70 +52,65 @@ public class ImageHandler {
 
 	/**
 	 * This method loads an image from the XML file and places it in the group
-	 * at the specified x and y position, and with specified scale
+	 * at the specified x and y position, and with specified scale, and displays
+	 * it at a specified time and for a specified duration
 	 * 
+	 * @param image
+	 *            a container containing the data values required to place an
+	 *            image on the screen at a specified x and y position, with a
+	 *            specified scale, and displays it at a specified time and for a
+	 *            specified duration
 	 * @param sourcefile
 	 *            the image source file taken from the XML file
-	 * @param xstart
-	 *            the horizontal position of the top-left pixel of the image as
-	 *            it is displayed on the screen, relative to the resolution of
-	 *            the screen
-	 * @param ystart
-	 *            the vertical position of the top-left pixel of the image as it
-	 *            is displayed on the screen, relative to the resolution of the
-	 *            screen
-	 * @param scale
-	 *            a multiplication factor which scales the image i.e. 1 is the
-	 *            original image size, 2 doubles the size of the image, 0.5
-	 *            halves the size of the image
-	 * @param duration
-	 *            the length of time that the image should be displayed on the
-	 *            screen
-	 * @param starttime
-	 *            the time the image should be first displayed on the screen
-	 * @param specifiedWidth
-	 *            the required width of the image which is used to scale the
-	 *            image, preserving the aspect ratio
 	 */
-
 	public void ImageElement(String sourcefile, ImageType image) {
 
+		/*
+		 * Convert relative screen position of image to a pixel value using the
+		 * native resolution of the user's display
+		 */
 		xPosition = xResolution * image.xstart;
 		yPosition = yResolution * image.ystart;
 
-		// Load Image
+		// Load Image from source file
 		Image house = new Image(sourcefile);
 		houseImage = new ImageView(house);
 
-		// Get the width and height of the image
+		// Get the width of the image
 		width = (float) houseImage.getImage().getWidth();
-		height = (float) houseImage.getImage().getHeight();
 
-		System.out.println("the original width is: " + width);
-		System.out.println("the original height is: " + height);
+		// Calculations for scaling the image by width if a width is specified
+		if (image.specifiedWidth != 0) {
+			scaleFactor = (image.specifiedWidth / width);
+			scaledWidth = (scaleFactor * width);
 
-		// Calculations for scaling the image when the width is specified
-		scaleFactor = (image.specifiedWidth / width);
-		scaledWidth = (scaleFactor * width);
+			houseImage.setFitWidth(scaledWidth * image.scale);
+		} else {
+			// If a width is not specified then do not scale by width
+			houseImage.setFitWidth(width * image.scale);
+		}
 
-		houseImage.setFitWidth(((scaledWidth) * image.scale));
-
+		// Set top left pixel of image as x and y position anchor
 		houseImage.setX(xPosition);
 		houseImage.setY(yPosition);
 
 		// Preserve the aspect ratio
 		houseImage.setPreserveRatio(true);
 
-		// Visual testing
-		System.out.println("the scaled width is: " + scaledWidth);
-		System.out.println("the scaled height is: " + (scaleFactor * height));
-		
-		houseImage.setVisible(false);
-		group.getChildren().add(houseImage);
-		
+		houseImage.setVisible(false); 			// Make image invisible
+		group.getChildren().add(houseImage); 	// Add image to group
+
+		// Initialise timer to add image
 		imageTimer = new Timer();
+		// Initialise timer task to display image on screen
 		AddImageTask addImage = new AddImageTask(image.duration);
-		imageTimer.schedule(addImage, (long)image.starttime * 1000);
+		/*
+		 * Schedule adding the image to the screen when timer has reached time
+		 * 'starttime'
+		 * 
+		 * Multiply 'starttime' by 1000 to convert milliseconds to seconds
+		 */
+		imageTimer.schedule(addImage, (long) image.starttime * 1000);
 	}
 
 	/**
@@ -126,34 +120,61 @@ public class ImageHandler {
 	 *         handler
 	 */
 	public float GetImageWidth() {
-
 		return width;
 	}
 
-	
+	/**
+	 * This class sets up and runs timer to add an image to screen after a
+	 * pre-defined delay
+	 */
 	private class AddImageTask extends TimerTask {
 
 		private float duration;
-		
-		private AddImageTask(float duration){
+
+		/**
+		 * Constructor allows duration to be passed into AddImageTask timer task
+		 * 
+		 * @param duration
+		 *            the length of time that the image should be displayed on
+		 *            the screen
+		 */
+		private AddImageTask(float duration) {
 			this.duration = duration;
 		}
-		
+
+		/**
+		 * Method to determine what timer does when it is run
+		 */
 		public void run() {
-			RemoveImageTask removeImage = new RemoveImageTask();
-			
-			houseImage.setVisible(true);
-			imageTimer.cancel();
+			houseImage.setVisible(true); 	// Make image visible
+			imageTimer.cancel(); 			// Cancel timer
+
+			// Initialise a new timer to remove image
 			imageTimer = new Timer();
+			// Initialise timer task to remove image from screen
+			RemoveImageTask removeImage = new RemoveImageTask();
+			/*
+			 * Schedule the removal of the image from the screen when timer has
+			 * reached time 'starttime'
+			 * 
+			 * Multiply 'starttime' by 1000 to convert milliseconds to seconds
+			 */
 			imageTimer.schedule(removeImage, (long) duration * 1000);
 		}
 	}
 
+	/**
+	 * This class sets up and runs timer to remove an image from the screen
+	 * after a pre-defined delay
+	 */
 	private class RemoveImageTask extends TimerTask {
-		
+
+		/**
+		 * Method to determine what timer does when it is run
+		 */
 		public void run() {
-			houseImage.setVisible(false);
-			imageTimer.cancel();			
+			houseImage.setVisible(false); 	// Make image invisible
+			imageTimer.cancel(); 			// Cancel timer
 		}
 	}
 }
