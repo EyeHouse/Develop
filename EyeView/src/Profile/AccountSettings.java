@@ -7,7 +7,7 @@ package Profile;
  * Copyright:
  */
 
-import Profile.ProfileViewer.User;
+import Profile.UserType;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos ;
@@ -27,7 +27,7 @@ import javafx.scene.layout.HBox;
 
 public class AccountSettings{
 
-	public static final int gridCellWidth = 100;
+	public static final int gridCellWidth = 50;
 	public static final int gridCellHeight = 30;
 	public static final double xStart = 0.5;
 	public static final double yStart = 0.05;
@@ -41,12 +41,14 @@ public class AccountSettings{
 	PasswordField fieldNewPassword = new PasswordField();
 	PasswordField fieldConfNewPassword = new PasswordField();
 	TextArea profileText = new TextArea();
-	ComboBox<Integer> comboDoBDay = new ComboBox<Integer>();
-    ComboBox<Integer> comboDoBMonth = new ComboBox<Integer>();
-    ComboBox<Integer> comboDoBYear = new ComboBox<Integer>();
+	ComboBox<String> comboDoBDay = new ComboBox<String>();
+    ComboBox<String> comboDoBMonth = new ComboBox<String>();
+    ComboBox<String> comboDoBYear = new ComboBox<String>();
     RadioButton buttonStudent = new RadioButton("Student");
     RadioButton buttonLandlord = new RadioButton("Landlord");
-	User currentUser;
+    Label labelPasswordIncorrect;
+    Label labelNewPasswordInvalid;
+	UserType currentUser;
     
 	public AccountSettings(Group group, double xresolution, double yresolution){
 		screenGroup = group;
@@ -54,7 +56,7 @@ public class AccountSettings{
 		yResolution = yresolution;
 	}
 	
-	public void OpenAccountSettings(User user){
+	public void OpenAccountSettings(UserType user){
 
 		currentUser = user;
 
@@ -70,7 +72,7 @@ public class AccountSettings{
 	public void setupGrid(){
 		grid.setHgap(gridCellWidth);
         grid.setVgap(gridCellHeight);
-        grid.setPadding(new Insets(yResolution*yStart,xResolution*xStart,100,200));
+        grid.setPadding(new Insets(yResolution*yStart,xResolution*xStart,100,100));
 	}
 	
 	public void setupInfo(){
@@ -108,13 +110,13 @@ public class AccountSettings{
 	public void SetupDoB(){
 		
 		for(int i = 1; i < 32; i++){
-        	comboDoBDay.getItems().add(i);
+        	comboDoBDay.getItems().add(String.format("%02d", i));
         }
         for(int i = 1; i < 13; i++){
-        	comboDoBMonth.getItems().add(i);
+        	comboDoBMonth.getItems().add(String.format("%02d", i));
         }
         for(int i = 2015; i > 1919; i--){
-        	comboDoBYear.getItems().add(i);
+        	comboDoBYear.getItems().add(String.format("%04d", i));
         }
         
     	int doBDay = Integer.valueOf(currentUser.doB.substring(0,2), 10).intValue();
@@ -129,9 +131,14 @@ public class AccountSettings{
 		Label labelCurrentPassword = new Label("Current Password");
         Label labelNewPassword = new Label("New Password");
         Label labelConfNewPassword = new Label("Confirm New Password");
+        labelPasswordIncorrect = new Label("Incorrect Password");
+        labelNewPasswordInvalid = new Label("New Password Invalid");
         
-        grid.addRow(6, labelCurrentPassword, fieldPassword);
-        grid.addRow(7, labelNewPassword, fieldNewPassword);
+        labelPasswordIncorrect.setVisible(false);
+        labelNewPasswordInvalid.setVisible(false);
+        
+        grid.addRow(6, labelCurrentPassword, fieldPassword, labelPasswordIncorrect);
+        grid.addRow(7, labelNewPassword, fieldNewPassword, labelNewPasswordInvalid);
         grid.addRow(8, labelConfNewPassword, fieldConfNewPassword);
 	}
 	
@@ -160,9 +167,30 @@ public class AccountSettings{
 	}
 	
 	private void ApplyChanges(){
-		//ChangeCurrentUserSettings(user.username);
-		screenGroup.getChildren().clear();
-		ProfileViewer profile = new ProfileViewer(screenGroup, xResolution, yResolution);
-		profile.OpenProfile(currentUser.username);
+		currentUser.fName = fieldFName.getText();
+		currentUser.lName = fieldLName.getText();
+		currentUser.username = fieldUsername.getText();
+		currentUser.email = fieldEmail.getText();
+		currentUser.doB = comboDoBDay.getValue() + "/" + comboDoBMonth.getValue() + "/" + comboDoBYear.getValue();
+		currentUser.landlord = buttonLandlord.isSelected();
+		currentUser.profileText = profileText.getText();
+		
+		if(fieldPassword.getText().equals("")){
+			screenGroup.getChildren().clear();
+			ProfileViewer profile = new ProfileViewer(screenGroup, xResolution, yResolution);
+			profile.OpenProfile(currentUser);
+		} else if(!fieldPassword.getText().equals(currentUser.password)){
+			labelPasswordIncorrect.setVisible(true);
+		} else if(fieldPassword.getText().equals(currentUser.password)){
+			if((!fieldNewPassword.getText().equals(""))&&(fieldNewPassword.getText().equals(fieldConfNewPassword.getText()))){
+				currentUser.password = fieldNewPassword.getText();
+				screenGroup.getChildren().clear();
+				ProfileViewer profile = new ProfileViewer(screenGroup, xResolution, yResolution);
+				profile.OpenProfile(currentUser);
+			} else{
+				labelPasswordIncorrect.setVisible(false);
+				labelNewPasswordInvalid.setVisible(true);
+			}
+		}
 	}
 }

@@ -28,31 +28,6 @@ import javafx.scene.text.Font;
 
 public class ProfileViewer{
 
-	class User {
-		public String fName;
-		public String lName;
-		public String email;
-		public String username;
-		public boolean landlord;
-		public String password;
-		public String doB;
-		public boolean admin;
-		public String profileText;
-		
-		public User(String fName, String lName , String email, String username,
-					boolean landlord, String password, String doB, boolean admin, String profileText){
-			this.fName = fName;
-			this.lName = lName;
-			this.email = email;
-			this.username = username;
-			this.landlord = landlord;
-			this.password = password;
-			this.doB = doB;
-			this.admin = admin;
-			this.profileText = profileText;
-		}
-	}
-
 	public static final int gridCellWidth = 20;
 	public static final int gridCellHeight = 30;
 	public static final double xStart = 0.5;
@@ -68,7 +43,7 @@ public class ProfileViewer{
     public Font fontTitle = new Font("Cambria", 24);
 	public Font fontMain = new Font("Cambria", 18);
 	
-	User user;
+	UserType currentUser;
 	
 	public ProfileViewer(Group group, double xresolution, double yresolution){
 		screenGroup = group;
@@ -76,22 +51,14 @@ public class ProfileViewer{
 		yResolution = xresolution;
 	}
 	
-	public void OpenProfile(String username){
-		
-		GetProfile(username);
-		
+	public void OpenProfile(UserType user){
+		this.currentUser = user;
 		SetupGrid();
 		SetupUserInfo();
 		SetupStars();
 		SetupProfileReview();
 		
         screenGroup.getChildren().add(grid);
-	}
-	
-	public void GetProfile(String username){
-		//GetCurrentUser(username);
-		user = new User("John","Smith","j.smith@gmail.com","JSmith1", true,
-						"password","20/01/1993",false, "Electronic Engineering Student.");
 	}
 	
 	public void SetupGrid(){
@@ -109,19 +76,24 @@ public class ProfileViewer{
 	}
 	
 	public void SetupUserInfo(){
-		Label labelName, labelEmail, labelDoB;
+		Label labelName, labelEmail, labelDoB, labelType;
 
-		VBox vBoxUserText = new VBox(10);
+		VBox vBoxUserText = new VBox(30);
 		Rectangle profilePicture = new Rectangle(200,200, Color.GRAY);
 		
-		labelName = new Label(user.fName + "\t(" + user.username + ")");
+		labelName = new Label(currentUser.fName + "\t(" + currentUser.username + ")");
 		labelName.setFont(fontTitle);
-        labelEmail = new Label("Email: " + user.email);
+        labelEmail = new Label("Email: " + currentUser.email);
         labelEmail.setFont(fontMain);
-        labelDoB = new Label("Date of Birth: " + user.doB);
+        labelDoB = new Label("Date of Birth: " + currentUser.doB);
         labelDoB.setFont(fontMain);
         
-        vBoxUserText.getChildren().addAll(labelName,labelEmail,labelDoB);
+        if(currentUser.landlord){
+        	labelType = new Label("Landlord");
+        }
+        else labelType = new Label("Student");
+        labelType.setFont(fontMain);
+        vBoxUserText.getChildren().addAll(labelName,labelType, labelEmail,labelDoB);
         grid.addRow(0, profilePicture, vBoxUserText);
 	}
 	
@@ -185,7 +157,7 @@ public class ProfileViewer{
         labelNewReview = new Label("Add Review");
         labelNewReview.setFont(fontMain);
 		
-		textProfile.setText(user.profileText);
+		textProfile.setText(currentUser.profileText);
         textProfile.setEditable(false);
         textProfile.setWrapText(true);
         textReview.setText("Crackin bloke!");
@@ -198,7 +170,7 @@ public class ProfileViewer{
         	@Override public void handle(ActionEvent event){
         		screenGroup.getChildren().clear();
         		AccountSettings accountSettings = new AccountSettings(screenGroup, xResolution, yResolution);
-        		accountSettings.OpenAccountSettings(user);
+        		accountSettings.OpenAccountSettings(currentUser);
             }
         });
         
