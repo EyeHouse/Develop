@@ -17,32 +17,34 @@ import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 
 public class SlideContent extends Window {
-
-	// private Group slide;
+	
 	private ImageView imageView;
 
 	public SlideContent() {
 	}
 
-	public void BuildSlide() {
+	public void createSlide() {
 
-		LoadXMLGraphics();
+		// Load all objects from XML file first
+		loadXMLGraphics();
 
+		// Checks if the XML belongs to group 5 (EyeHouse)
 		if (groupID.matches("5")) {
+			// Loads objects not within the XML for a given slide
 			switch (slideID) {
 			case INDEX:
-				LoggedOutSlide();
+				createLoggedOutSlide();
 				break;
 			case HOUSES:
-				HomeSlide();
+				createHomeSlide();
 				break;
 			default:
 				break;
 			}
 		}
 	}
-
-	public void LoadXMLGraphics() {
+	
+	public void loadXMLGraphics() {
 		GraphicHandler gh = new GraphicHandler();
 		List<Graphic> graphicList = slideData.getGraphicList();
 
@@ -53,14 +55,14 @@ public class SlideContent extends Window {
 					currentGraphic.getYend(), currentGraphic.getDuration(),
 					currentGraphic.isSolid(), currentGraphic.getGraphicColor(),
 					currentGraphic.getShadingColor());
-			gh.AddShapeToCanvas(graphic);
+			gh.addShapeToCanvas(graphic);
 		}
 	}
 
 	/* These methods hold the hard-coded information for certain slides */
 
-	private void LoggedOutSlide() {
-
+	private void createLoggedOutSlide() {
+		
 		Label label = new Label(
 				"This is a really really long amount of text. It is testing the wrappability of the Label class.");
 		label.setTextAlignment(TextAlignment.CENTER);
@@ -71,9 +73,8 @@ public class SlideContent extends Window {
 		label.setTextFill(Color.web("#162252FF"));
 		label.setContentDisplay(ContentDisplay.CENTER);
 		root.getChildren().add(label);
-
-		ImageView image = new ImageView(new Image(
-				"file:./resources/images/buckingham-palace.jpg"));
+		
+		ImageView image = new ImageView(new Image("file:./resources/images/buckingham-palace.jpg"));
 		image.relocate(220, 140);
 		image.setFitWidth(400);
 		image.setFitHeight(375);
@@ -81,18 +82,15 @@ public class SlideContent extends Window {
 
 	}
 
-	private void HomeSlide() {
+	private void createHomeSlide() {
 
-		imageView = new ImageView(new Image(
-				"file:./resources/images/icon-48x48.png"));
+		imageView = new ImageView(new Image("file:./resources/images/icon-48x48.png"));
 		Button button = new Button("Click Me!", imageView);
 		button.setContentDisplay(ContentDisplay.LEFT);
 		root.getChildren().add(button);
 
 		button.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent t) {
-				// stop timeline
-				System.out.println("CLICK!");
+			public void handle(ActionEvent ae) {
 				loadSlide(INDEX);
 			}
 		});

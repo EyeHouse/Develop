@@ -63,7 +63,7 @@ public class Window extends Application {
 			root.getChildren().clear();
 			slideData = slideList.get(slideID);
 			
-			sc.BuildSlide();
+			sc.createSlide();
 			
 			// Add timeline if duration is greater than zero.
 			if (slideData.getDuration() > 0) {

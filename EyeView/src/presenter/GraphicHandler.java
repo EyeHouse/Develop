@@ -2,7 +2,8 @@ package presenter;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.scene.Group;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -11,14 +12,13 @@ import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
 import javafx.util.Duration;
 
-//import java.util.Timer;
 import java.util.ArrayList;
 
 public class GraphicHandler extends Window {
 
 	/* Graphic Element class */
 	class GraphicElement {
-		
+
 		public String type;
 		public float xstart, ystart, xend, yend, duration;
 		public boolean solid;
@@ -40,25 +40,23 @@ public class GraphicHandler extends Window {
 		}
 	}
 
-	/* Graphic Static Variables */
-	private static final String backgroundColor = "#00E0F0FF";
-
 	/* Graphic Instance Variables */
-	//private Group group;
 	private int shapeIndex;
 	private ArrayList<GraphicElement> graphicArray = new ArrayList<GraphicElement>();
 	private ArrayList<Boolean> shapeVisibilityArray = new ArrayList<Boolean>();
 	private GraphicsContext gc;
+	private String backgroundColor;
 
 	/* Graphic Handler Constructor */
 	public GraphicHandler() {
-		BuildGraphicsCanvas();
+
+		buildGraphicsCanvas();
 	}
 
 	/* Graphic Methods */
 
 	/* Populate stage with canvas of XML graphics */
-	private void BuildGraphicsCanvas() {
+	private void buildGraphicsCanvas() {
 
 		// Instantiate group and canvas then retrieve graphics context.
 		Canvas canvas = new Canvas(xResolution, yResolution);
@@ -66,16 +64,16 @@ public class GraphicHandler extends Window {
 		root.getChildren().add(canvas);
 	}
 
-	public void AddShapeToCanvas(GraphicElement newShape) {
+	public void addShapeToCanvas(GraphicElement newShape) {
 
 		// Add shape to array lists and draw to screen.
 		graphicArray.add(newShape);
 		shapeVisibilityArray.add(true);
-		Redraw();
+		redraw();
 	}
 
 	/* Draw all XML graphics */
-	private void Redraw() {
+	private void redraw() {
 
 		// Clear canvas.
 		gc.clearRect(0, 0, xResolution, yResolution);
@@ -89,64 +87,64 @@ public class GraphicHandler extends Window {
 		// Draw all visible shapes to canvas.
 		for (shapeIndex = 0; shapeIndex < graphicArray.size(); shapeIndex++) {
 			if (shapeVisibilityArray.get(shapeIndex)) {
-				DrawShape(graphicArray.get(shapeIndex));
+				drawShape(graphicArray.get(shapeIndex));
 				// Add removal timer if required.
-				GraphicDurationTimer(graphicArray.get(shapeIndex));
+				setGraphicDurationTimer(graphicArray.get(shapeIndex));
 			}
 		}
 	}
 
 	/* Draw XML graphic */
-	private void DrawShape(GraphicElement shape1) {
+	private void drawShape(GraphicElement shape) {
 
 		// Calculate graphic coordinates and size.
-		double xcoordinate = xResolution * shape1.xstart;
-		double ycoordinate = yResolution * shape1.ystart;
-		double width = (xResolution * shape1.xend) - xcoordinate;
-		double height = (yResolution * shape1.yend) - ycoordinate;
+		double xcoordinate = xResolution * shape.xstart;
+		double ycoordinate = yResolution * shape.ystart;
+		double width = (xResolution * shape.xend) - xcoordinate;
+		double height = (yResolution * shape.yend) - ycoordinate;
 
 		// Setup fill or stroke colour of graphic.
-		SetShapeColor(shape1, xcoordinate, ycoordinate, width, height);
+		setShapeColor(shape, xcoordinate, ycoordinate, width, height);
 
-		switch (shape1.type) {
+		switch (shape.type) {
 		case "rectangle":
 
 			// Draw rectangle with calculated parameters.
-			DrawRectangle(xcoordinate, ycoordinate, width, height,
-					shape1.duration, shape1.solid);
+			drawRectangle(xcoordinate, ycoordinate, width, height,
+					shape.duration, shape.solid);
 			break;
 		case "oval":
 
 			// Draw oval with calculated parameters.
-			DrawOval(xcoordinate, ycoordinate, width, height, shape1.duration,
-					shape1.solid);
+			drawOval(xcoordinate, ycoordinate, width, height, shape.duration,
+					shape.solid);
 			break;
 		case "line":
 
 			// Draw line with calculated parameters.
-			DrawLine(xcoordinate, ycoordinate, width, height, shape1.duration,
-					shape1.solid);
+			drawLine(xcoordinate, ycoordinate, width, height, shape.duration,
+					shape.solid);
 			break;
 		}
 	}
 
 	/* Set colours of XML graphic */
-	private void SetShapeColor(GraphicElement shape1, double xcoordinate,
+	private void setShapeColor(GraphicElement shape, double xcoordinate,
 			double ycoordinate, double width, double height) {
 
 		// Determine graphic colour and transparency from XML data.
-		String graphicColor = shape1.graphiccolor.substring(3, 9);
-		String AlphaString = shape1.graphiccolor.substring(1, 3);
-		int graphicAlpha = Integer.valueOf(AlphaString, 16).intValue();
+		String graphicColor = shape.graphiccolor.substring(3, 9);
+		String alphaString = shape.graphiccolor.substring(1, 3);
+		int graphicAlpha = Integer.valueOf(alphaString, 16).intValue();
 		graphicAlpha /= 255;
 
 		// Set shading to radial gradient if colour given.
-		if (shape1.shadingcolor != null) {
+		if (shape.shadingcolor != null) {
 
 			// Determine shading colour and transparency from XML data.
-			String shadingColor = shape1.shadingcolor.substring(3, 9);
-			AlphaString = shape1.shadingcolor.substring(1, 3);
-			int shadingAlpha = Integer.valueOf(AlphaString, 16).intValue();
+			String shadingColor = shape.shadingcolor.substring(3, 9);
+			alphaString = shape.shadingcolor.substring(1, 3);
+			int shadingAlpha = Integer.valueOf(alphaString, 16).intValue();
 			shadingAlpha /= 255;
 
 			// Instantiate radial gradient colour.
@@ -158,7 +156,7 @@ public class GraphicHandler extends Window {
 
 			// Set fill colour to radial gradient if shape is solid
 			// and not a line.
-			if (shape1.solid && (!shape1.type.equals("line"))) {
+			if (shape.solid && (!shape.type.equals("line"))) {
 				gc.setFill(gradient);
 			}
 
@@ -176,7 +174,7 @@ public class GraphicHandler extends Window {
 
 			// Set fill to instantiated colour if shape is solid and
 			// not a line.
-			if (shape1.solid && (!shape1.type.equals("line"))) {
+			if (shape.solid && (!shape.type.equals("line"))) {
 				gc.setFill(color);
 			}
 			// Set stroke to instantiated colour if shape is not solid
@@ -188,7 +186,7 @@ public class GraphicHandler extends Window {
 	}
 
 	/* Add rectangle to canvas */
-	private void DrawRectangle(double xcoordinate, double ycoordinate,
+	private void drawRectangle(double xcoordinate, double ycoordinate,
 			double width, double height, double duration, boolean solid) {
 
 		if (solid)
@@ -202,7 +200,7 @@ public class GraphicHandler extends Window {
 	}
 
 	/* Add oval to canvas */
-	private void DrawOval(double xcoordinate, double ycoordinate, double width,
+	private void drawOval(double xcoordinate, double ycoordinate, double width,
 			double height, double duration, boolean solid) {
 
 		if (solid)
@@ -210,13 +208,13 @@ public class GraphicHandler extends Window {
 			// Add solid oval to canvas.
 			gc.fillOval(xcoordinate, ycoordinate, width, height);
 		else
-			
+
 			// Add oval outline to canvas.
 			gc.strokeOval(xcoordinate, ycoordinate, width, height);
 	}
 
 	/* Add line to canvas */
-	private void DrawLine(double xcoordinate, double ycoordinate, double width,
+	private void drawLine(double xcoordinate, double ycoordinate, double width,
 			double height, double duration, boolean solid) {
 
 		// Add line to canvas.
@@ -225,15 +223,17 @@ public class GraphicHandler extends Window {
 	}
 
 	/* Add removal timer to XML graphic */
-	private void GraphicDurationTimer(GraphicElement shape1) {
+	private void setGraphicDurationTimer(GraphicElement shape) {
 
 		// Add timeline if duration is greater than zero.
-		if (shape1.duration > 0) {
+		if (shape.duration > 0) {
 			// Instantiate timer and removal task then create timer schedule.
-			new Timeline(new KeyFrame(Duration.millis(shape1.duration * 1000),
-					ae -> {
-						shapeVisibilityArray.set(graphicArray.indexOf(shape1), false);
-						Redraw();
+			new Timeline(new KeyFrame(Duration.millis(shape.duration * 1000),
+					new EventHandler<ActionEvent>() {
+						public void handle(ActionEvent ae) {
+							shapeVisibilityArray.set(graphicArray.indexOf(shape), false);
+							redraw();
+						}
 					})).play();
 		}
 	}
