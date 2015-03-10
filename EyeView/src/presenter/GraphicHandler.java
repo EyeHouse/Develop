@@ -14,10 +14,11 @@ import javafx.util.Duration;
 //import java.util.Timer;
 import java.util.ArrayList;
 
-public class GraphicHandler {
+public class GraphicHandler extends Window {
 
-	/* XML Graphic class */
+	/* Graphic Element class */
 	class GraphicElement {
+		
 		public String type;
 		public float xstart, ystart, xend, yend, duration;
 		public boolean solid;
@@ -40,22 +41,17 @@ public class GraphicHandler {
 	}
 
 	/* Graphic Static Variables */
-	private static final String backgroundColor = "#00E0F0";
+	private static final String backgroundColor = "#00E0F0FF";
 
 	/* Graphic Instance Variables */
-	private double xResolution;
-	private double yResolution;
-	private Group group;
+	//private Group group;
 	private int shapeIndex;
 	private ArrayList<GraphicElement> graphicArray = new ArrayList<GraphicElement>();
 	private ArrayList<Boolean> shapeVisibilityArray = new ArrayList<Boolean>();
 	private GraphicsContext gc;
 
 	/* Graphic Handler Constructor */
-	public GraphicHandler(Group group) {
-		this.xResolution = Window.xResolution;
-		this.yResolution = Window.yResolution;
-		this.group = group;
+	public GraphicHandler() {
 		BuildGraphicsCanvas();
 	}
 
@@ -67,7 +63,7 @@ public class GraphicHandler {
 		// Instantiate group and canvas then retrieve graphics context.
 		Canvas canvas = new Canvas(xResolution, yResolution);
 		gc = canvas.getGraphicsContext2D();
-		group.getChildren().add(canvas);
+		root.getChildren().add(canvas);
 	}
 
 	public void AddShapeToCanvas(GraphicElement newShape) {
@@ -86,7 +82,7 @@ public class GraphicHandler {
 
 		// Set background colour of canvas if given.
 		if (backgroundColor != null) {
-			gc.setFill(Color.web(backgroundColor, 1.0));
+			gc.setFill(Color.web(backgroundColor));
 			gc.fillRect(0, 0, xResolution, yResolution);
 		}
 
