@@ -1,3 +1,7 @@
+/*
+ * 
+ * 
+ */
 package parser;
 
 import java.sql.Connection;
@@ -71,61 +75,32 @@ public class Database {
 	 * @return 1 if user is inserted successfully
 	 * @return 0 if failure to insert
 	 */
-	public static int userInsert(User userDetails) {
-		// Check if unique details don't exist already (email, username)
-		boolean blockInsert = false;
+	public static boolean userInsert(User userDetails) {
 		// query
 		try {
-			PreparedStatement checkUser = con
-					.prepareStatement("SELECT * FROM users WHERE username=? AND email=?");
-			// parameterise queries
-			checkUser.setString(1, userDetails.username);
-			checkUser.setString(2, userDetails.email);
-			ResultSet userExists = checkUser.executeQuery();
-
-			// Check if email or user fields already exist
-			while (userExists.next()) {
-				if (userExists.getString(email) != null) {
-					blockInsert = true;
-				} else if (userExists.getString(userName) != null) {
-					blockInsert = true;
-				}
-			}
+			PreparedStatement insertUser = con
+					.prepareStatement("INSERT INTO users "
+							+ "VALUES (?,?,?,?,?,?,?,?,?)");
+			// insert the users data
+			insertUser.setInt(id, 0);
+			insertUser.setString(firstName, userDetails.first_name);
+			insertUser.setString(secondName, userDetails.second_name);
+			insertUser.setString(userName, userDetails.username);
+			insertUser.setString(email, userDetails.email);
+			insertUser.setString(password, userDetails.password);
+			insertUser.setBoolean(landlord, userDetails.landlord);
+			insertUser.setString(DOB, userDetails.DOB);
+			insertUser.setBoolean(admin, userDetails.admin);
+			// execute the query
+			insertUser.executeUpdate();
 		} catch (SQLException e) {
+			// catch the error get the message
 			e.printStackTrace();
+			e.getMessage();
 		}
+		// 1 = success!
+		return true;
 
-		if (blockInsert == false) {
-			// execute insertion of user into table users
-			try {
-				PreparedStatement insertUser = con
-						.prepareStatement("INSERT INTO users "
-								+ "VALUES (?,?,?,?,?,?,?,?,?)");
-				// insert the users data
-				insertUser.setInt(id, 0);
-				insertUser.setString(firstName, userDetails.first_name);
-				insertUser.setString(secondName, userDetails.second_name);
-				insertUser.setString(userName, userDetails.username);
-				insertUser.setString(email, userDetails.email);
-				insertUser.setString(password, userDetails.password);
-				insertUser.setBoolean(landlord, userDetails.landlord);
-				insertUser.setString(DOB, userDetails.DOB);
-				insertUser.setBoolean(admin, userDetails.admin);
-				// execute the query
-				insertUser.executeUpdate();
-			} catch (SQLException e) {
-				// catch the error get the message
-				e.printStackTrace();
-				e.getMessage();
-			}
-			// 1 = success!
-			return 1;
-		} else {
-			// failure to insert
-			System.out.println("User or email already exists.");
-			System.out.println("Please try again");
-			return 0;
-		}
 	}
 
 	/**
@@ -236,7 +211,6 @@ public class Database {
 		}
 	}
 
-	// Temp Commit notes: changed login check to a general two field check
 	/**
 	 * Checks a user with username and pw exists Can be used to log users in.
 	 * 
@@ -248,12 +222,11 @@ public class Database {
 	 *            field from the database 'users'
 	 * @param Data
 	 *            relevant to that Field
-	 * @return user
+	 * @return true if user exists
 	 */
-	public static User userCheck(String Field1, String Data1, String Field2,
+	public static boolean userCheck(String Field1, String Data1, String Field2,
 			String Data2) {
 
-		User user = null;
 		ResultSet result = null;
 		// check database to see if username password exists
 		try {
@@ -263,84 +236,50 @@ public class Database {
 			// parameterise queries
 			checkExists.setString(1, Data1);
 			checkExists.setString(2, Data2);
-			// checkExists.setString(1, Field2);
-			// checkExists.setString(1, Data2);
+
 			result = checkExists.executeQuery();
 			// loop through every row until
-			while (result.next()) {
-				// get id
-				user = new User(result);
+			if (result.next()) {
+				// if the user exists there will only be one instance so the
+				// next result
+				// will trigger returning true
+				return true;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			e.getMessage();
+			return false;
 		}
-		return user;
-
+		// the user doesnt exist
+		return false;
 	}
 
 	/**
 	 * Takes the information required to create a new user checks they don't
 	 * already exist and enters them into the database.
 	 * 
-	 * Rules: Username is all lowercase + numbers Password contains at least 1
-	 * capital, 1 number from 0-9, and one ! No other special characters Valid
-	 * Emails only
-	 * 
-	 * 
 	 * @param newUser
 	 * @return 1 success
 	 * @return 0 failure
 	 */
 	public static boolean userRegister(User newUser) {
-		// bool success = true / failure = false
-		int insertCheck = -1;
-		boolean password, email;
-		// Filter attacks
-
-		// Filter user input
-		// Check password matches rules.
-		password = DataHandler.passwordChecker(newUser.password,
-				newUser.password);
-		if (password == false) {
-			// include something to trigger a password specific alert
-			return false;
-		}
-		// Check email is a valid email
-		email = DataHandler.isValidEmailAddress(newUser.email);
-		if (email == false) {
-			// include an email specific error box
-			return false;
-		}
+		// boolean success = true / failure = false
+		boolean insertCheck = false;
 		// Check user email && username aren't already in database
 		try {
-			userCheck(usernameField, newUser.username, emailField,
-					newUser.email);
+			insertCheck = userInsert(newUser);
 		} catch (Exception e) {
-			System.out.println("User Already Exists");
 			e.printStackTrace();
-			return false;
-		}
-		if (insertCheck != 0) {
-			try {
-				insertCheck = userInsert(newUser);
-			} catch (Exception e) {
-				e.printStackTrace();
-				if (insertCheck == 0) {
-					System.out.println("Failure to insert. Please Try Again.");
-					return false;
-				}
+			if (insertCheck == false) {
+				System.out.println("Failure to insert. Please Try Again.");
+				return false;
 			}
-		} else {
-			// it worked!
-			System.out.println("User Successfully inserted");
 		}
 		return true;
-
 	}
 
 	/**
-	 * Testing the mail methods
+	 * Send mail function
 	 */
 	public static void sendMail() {
 		// Recipient's email ID needs to be mentioned.
@@ -381,17 +320,18 @@ public class Database {
 		// Connect to the Database
 		dbConnect();
 
-		User check = null;
+		boolean check;
 		User insert = null;
 		User update = null;
 		User get = null;
+		// User checkUse = null;
 
-		String username = "passtest";
+		String username = "numberone";
 		String password = "Invalid1";
-		String email = "nota@valide.mail";
+		String email = "dummy@york.ac.uk";
 
-		int mode = 3;
-		int insertSuccess = 0;
+		int mode = 1;
+		boolean insertSuccess;
 		int deleteSuccess = 0;
 		int updateSuccess = 0;
 
@@ -400,7 +340,10 @@ public class Database {
 		case 1: // userCheck
 			try {
 				check = userCheck(usernameField, username, emailField, email);
-				check.printUser();
+				if (check == true) {
+					System.out.println("User Exists");
+				} else
+					System.out.println("User Does not exist");
 			} catch (Exception e) {
 				System.out
 						.println("User does not exist: Check details and try again");
@@ -418,7 +361,7 @@ public class Database {
 			insert.password(password);
 			// insert
 			insertSuccess = userInsert(insert);
-			if (insertSuccess == 0) {
+			if (insertSuccess == false) {
 				System.out.println("Failure to insert user");
 			} else
 				System.out.println("User inserted into database");
@@ -470,27 +413,27 @@ public class Database {
 						+ " created successfully");
 			}
 			break;
-		case 8: // login
-			User loggedIn = null;
-			loggedIn = userCheck(usernameField, username, passwordField,
-					password);
-			// do something with this
-			if (loggedIn != null) {
-				loggedIn.printUser();
-			} else {
-				System.out
-						.println("User does not exist: Check details and try again");
-			}
-
-			// then logout
-			logout(loggedIn);
-			if (loggedIn != null)
-				loggedIn.printUser();
-			else {
-				System.out.println("Logged out");
-			}
-
-			break;
+		// case 8: // login
+		// User loggedIn = null;
+		// loggedIn = userCheck(usernameField, username, passwordField,
+		// password);
+		// // do something with this
+		// if (loggedIn != null) {
+		// loggedIn.printUser();
+		// } else {
+		// System.out
+		// .println("User does not exist: Check details and try again");
+		// }
+		//
+		// // then logout
+		// logout(loggedIn);
+		// if (loggedIn != null)
+		// loggedIn.printUser();
+		// else {
+		// System.out.println("Logged out");
+		// }
+		//
+		// break;
 		default: // no mode selected
 			System.out.println("Select a valid switch case mode");
 			break;

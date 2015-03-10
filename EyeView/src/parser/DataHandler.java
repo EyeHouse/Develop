@@ -1,43 +1,19 @@
 package parser;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+
 public class DataHandler {
-
-	public DataHandler() {
-
-	}
-
-	/**
-	 * Filter out SQL injections.
-	 * 
-	 * @param userInput
-	 * @return userInput (if it passes filter)
-	 * @throws Exception
-	 */
-	public static String SQLFilter(String userInput) throws Exception {
-
-		return userInput;
-	}
-
-	/**
-	 * Filter tags off strings.
-	 * 
-	 * @param userInput
-	 * @return userInput (if it passes filter)
-	 * @throws Exception
-	 */
-	public static String normalizeString(String userInput) throws Exception {
-
-		return userInput;
-	}
 	
+	private static MessageDigest digester;
 	/**
 	 * 
 	 * @param email
-	 * @return 
+	 * @return
 	 */
 	public static boolean isValidEmailAddress(String email) {
-		boolean result; 
-		// email = "fahim@yahoo.com";
+		boolean result;
 		if (email.indexOf("@") != -1 && email.indexOf(".") != -1) {
 			result = true;
 		} else {
@@ -46,11 +22,12 @@ public class DataHandler {
 		}
 		return result;
 	}
+
 	/**
 	 * 
 	 * @param password
 	 * @param retypePassword
-	 * @return 
+	 * @return
 	 */
 	public static boolean passwordChecker(String password, String retypePassword) {
 		// Password should contain at least:
@@ -74,4 +51,42 @@ public class DataHandler {
 
 		return result;
 	}
+	
+	// Method for encrypting the password starts here
+		static {
+			try {
+				digester = MessageDigest.getInstance("MD5");
+			} catch (NoSuchAlgorithmException e) {
+				e.printStackTrace();
+			}
+		}
+
+		/**
+		 * The crypt method is used to generate the MD5 of a given string.
+		 * 
+		 * @param password
+		 *            is the string to be encrypted.
+		 * @return Returns the generated MD5 string. If the passwords do not pass
+		 *         passwordChecker method, it returns a null string.
+		 */
+		public static String crypt(String password) {
+			if (password == null || password.length() == 0) {
+				throw new IllegalArgumentException("Please enter a password!");
+			}
+
+			digester.update(password.getBytes());
+			byte[] hash = digester.digest();
+			StringBuffer hexString = new StringBuffer();
+
+			for (int i = 0; i < hash.length; i++) {
+				if ((0xff & hash[i]) < 0x10) {
+					hexString.append("0" + Integer.toHexString((0xFF & hash[i])));
+				} else {
+					hexString.append(Integer.toHexString(0xFF & hash[i]));
+				}
+			}
+			return hexString.toString();
+		}
+	
+	
 }
