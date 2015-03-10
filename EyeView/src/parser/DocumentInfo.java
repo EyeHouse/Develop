@@ -1,95 +1,90 @@
 package parser;
 
 /**
- * This class creates a new object of type <code>DefaultSettings</code>. It
- * contains various default settings for the slideshow, including the background
- * colour, font, font size and font colour to be used as default if the
- * information is not given for a specific object.
+ * This class creates a new object of type <code>DocumentInfo</code>. It
+ * contains the information about the slideshow, including the author, version,
+ * the group ID, and a brief comment about the document's content.
  * 
  * @version 2.1
  * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
  */
-public class DefaultSettings {
+public class DocumentInfo {
 
-	private String backgroundcolor;
-	private String font;
-	private int fontsize;
-	private String fontcolor;
+	private String author, version, comment, groupid;
 
 	/**
-	 * Sets the default background colour for the slideshow.
+	 * Returns the author of the slideshow.
 	 * 
-	 * @param backgroundColor
-	 *            Default background colour
+	 * @param author
+	 *            Author/Company name
 	 */
-	public void setBackgroundColor(String backgroundcolor) {
-		this.backgroundcolor = backgroundcolor;
+	public void setAuthor(String author) {
+		this.author = author;
 	}
 
 	/**
-	 * Returns the default background colour for the slideshow.
+	 * Sets the author of the slideshow.
 	 * 
-	 * @return Default background colour
+	 * @return Author/Company name
 	 */
-	public String getBackgroundColor() {
-		return backgroundcolor;
+	public String getAuthor() {
+		return author;
 	}
 
 	/**
-	 * Sets the default font for text in the slideshow.
+	 * Sets the version number of the slideshow.
 	 * 
-	 * @param font
-	 *            Default font name
+	 * @param version
+	 *            Version of slideshow document
 	 */
-	public void setFont(String font) {
-		this.font = font;
+	public void setVersion(String version) {
+		this.version = version;
 	}
 
 	/**
-	 * Returns the default font for text in the slideshow.
+	 * Sets the version number of the slideshow.
 	 * 
-	 * @return Default font name
+	 * @return Version of slideshow document
 	 */
-	public String getFont() {
-		return font;
+	public String getVersion() {
+		return version;
 	}
 
 	/**
-	 * Sets the default font size for text in the slideshow.
+	 * Sets the comment giving a brief description of the slideshow.
 	 * 
-	 * @param fontSize
-	 *            Default font size in 'pt'
+	 * @param comment
+	 *            Slideshow description
 	 */
-	public void setFontSize(int fontsize) {
-		this.fontsize = fontsize;
+	public void setComment(String comment) {
+		this.comment = comment;
 	}
 
 	/**
-	 * Returns the default font size for text in the slideshow.
+	 * Returns the comment giving a brief description of the slideshow.
 	 * 
-	 * @return Default font size in 'pt'
+	 * @return Slideshow description
 	 */
-	public int getFontSize() {
-		return fontsize;
+	public String getComment() {
+		return comment;
 	}
 
 	/**
-	 * Sets the font colour for the text.
+	 * Sets the group ID for this slideshow's group.
 	 * 
-	 * @param fontcolor
-	 *            Default font colour (8-digit hex)
+	 * @param groupid
+	 *            Slideshow's group ID
 	 */
-	public void setFontColor(String fontcolor) {
-		this.fontcolor = fontcolor;
+	public void setGroupID(String groupid) {
+		this.groupid = groupid;
 	}
 
 	/**
-	 * Returns the default font colour for the slideshow.
+	 * Returns the group ID for this slideshow's group.
 	 * 
-	 * @return Default font colour (8-digit hex)
+	 * @return Slideshow's group ID
 	 */
-	public String getFontColor() {
-		return fontcolor;
+	public String getGroupID() {
+		return groupid;
 	}
-
 }
