@@ -3,6 +3,9 @@ package parser;
 //TODO Auto-generated constructor stub
 import javax.swing.JOptionPane;
 
+import database.DataHandler;
+import database.Database;
+import database.User;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -23,6 +26,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+
 
 public class LoginInterFaceDemo extends Application {
 

@@ -1,15 +1,18 @@
 package parser;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
+//import java.security.MessageDigest;
+//import java.security.NoSuchAlgorithmException;
+//import java.text.SimpleDateFormat;
+//import java.util.Locale;
 
 import javax.swing.JOptionPane;
 
+import database.DataHandler;
+import database.Database;
+import database.User;
 import javafx.event.EventHandler;
 import javafx.application.Application;
-import javafx.beans.Observable;
+//import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;

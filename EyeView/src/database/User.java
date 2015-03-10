@@ -1,4 +1,4 @@
-package parser;
+package database;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,7 +20,7 @@ public class User {
 	String first_name;
 	String second_name;
 	String email;
-	String username;
+	public String username;
 	boolean landlord;
 	String password;
 	String DOB;
