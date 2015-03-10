@@ -3,77 +3,52 @@ package Images;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-import Images.ImageType;
+import Images.ImageElement;
 
 /**
  * This class implements an image element function with values passed in
  * 
- * @version 2.3 05.03.15
+ * @version 2.4 05.03.15
  * @author EyeHouse
  * 
- * Copyright 2015 EyeHouse
+ *         Copyright 2015 EyeHouse
  */
 
-public class ImageHandler {
+public class ImageHandler extends ImagePresenter {
 
-	private float xResolution; 		// Horizontal resolution of user's screen
-	private float yResolution; 		// Vertical resolution of user's screen
-	private float xPosition; 		// Horizontal position of image to be displayed
-	private float yPosition; 		// Vertical position of image to be displayed
-	private float width; 			// Pixel width of image
-	private float scaleFactor; 		// Factor to scale image by specified width
-	private float scaledWidth; 		// Pixel width after image scaling
+	private float xPosition; // Horizontal position of image to be displayed
+	private float yPosition; // Vertical position of image to be displayed
+	private float width; // Pixel width of image
+	private float scaleFactor; // Factor to scale image by specified width
+	private float scaledWidth; // Pixel width after image scaling
 	private Timer imageTimer;
-	private Group group;
-	private ImageView houseImage; 	// ImageView in which Image is drawn
+	private ImageView houseImage; // ImageView in which Image is drawn
 
 	/**
-	 * Constructor for the ImageHandler class, passes in the resolution of the
-	 * screen
-	 * 
-	 * @param group
-	 *            this is passed in from the higher level class to be populated
-	 *            by images within the ImageHandler class
-	 * @param xResolution
-	 *            number of pixels in the horizontal dimension of the screen
-	 * @param yResolution
-	 *            number of pixels in the vertical dimension of the screen
-	 */
-	public ImageHandler(Group group, float xResolution, float yResolution) {
-
-		this.group = group;
-		this.xResolution = xResolution;
-		this.yResolution = yResolution;
-	}
-
-	/**
-	 * This method loads an image from the XML file and places it in the group
-	 * at the specified x and y position, and with specified scale, and displays
-	 * it at a specified time and for a specified duration
+	 * This method loads an image and places it in the group at the specified x
+	 * and y position, and with specified scale, and displays it at a specified
+	 * time and for a specified duration
 	 * 
 	 * @param image
-	 *            a container containing the data values required to place an
-	 *            image on the screen at a specified x and y position, with a
-	 *            specified scale, and displays it at a specified time and for a
-	 *            specified duration
-	 * @param sourcefile
-	 *            the image source file taken from the XML file
+	 *            A container containing the sourcefile and the data required to
+	 *            place an image on the screen at a specified x and y position,
+	 *            with a specified scale, and displays it at a specified time
+	 *            and for a specified duration
 	 */
-	public void ImageElement(String sourcefile, ImageType image) {
+	public void createImage(ImageElement image) {
 
 		/*
 		 * Convert relative screen position of image to a pixel value using the
 		 * native resolution of the user's display
 		 */
-		xPosition = xResolution * image.xstart;
-		yPosition = yResolution * image.ystart;
+		xPosition = (float) xResolution * image.xstart;
+		yPosition = (float) (yResolution * image.ystart);
 
 		// Load Image from source file
-		Image house = new Image(sourcefile);
+		Image house = new Image(image.sourcefile);
 		houseImage = new ImageView(house);
 
 		// Get the width of the image
@@ -97,8 +72,8 @@ public class ImageHandler {
 		// Preserve the aspect ratio
 		houseImage.setPreserveRatio(true);
 
-		houseImage.setVisible(false); 			// Make image invisible
-		group.getChildren().add(houseImage); 	// Add image to group
+		houseImage.setVisible(false); // Make image invisible
+		root.getChildren().add(houseImage); // Add image to group
 
 		// Initialise timer to add image
 		imageTimer = new Timer();
@@ -146,8 +121,8 @@ public class ImageHandler {
 		 * Method to determine what timer does when it is run
 		 */
 		public void run() {
-			houseImage.setVisible(true); 	// Make image visible
-			imageTimer.cancel(); 			// Cancel timer
+			houseImage.setVisible(true); // Make image visible
+			imageTimer.cancel(); // Cancel timer
 
 			// Initialise a new timer to remove image
 			imageTimer = new Timer();
@@ -173,8 +148,8 @@ public class ImageHandler {
 		 * Method to determine what timer does when it is run
 		 */
 		public void run() {
-			houseImage.setVisible(false); 	// Make image invisible
-			imageTimer.cancel(); 			// Cancel timer
+			houseImage.setVisible(false); // Make image invisible
+			imageTimer.cancel(); // Cancel timer
 		}
 	}
 }
