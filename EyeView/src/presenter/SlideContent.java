@@ -17,7 +17,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 
 public class SlideContent extends Window {
-	
+
 	private ImageView imageView;
 
 	public SlideContent() {
@@ -43,7 +43,7 @@ public class SlideContent extends Window {
 			}
 		}
 	}
-	
+
 	public void loadXMLGraphics() {
 		GraphicHandler gh = new GraphicHandler();
 		List<Graphic> graphicList = slideData.getGraphicList();
@@ -62,7 +62,7 @@ public class SlideContent extends Window {
 	/* These methods hold the hard-coded information for certain slides */
 
 	private void createLoggedOutSlide() {
-		
+
 		Label label = new Label(
 				"This is a really really long amount of text. It is testing the wrappability of the Label class.");
 		label.setTextAlignment(TextAlignment.CENTER);
@@ -73,8 +73,9 @@ public class SlideContent extends Window {
 		label.setTextFill(Color.web("#162252FF"));
 		label.setContentDisplay(ContentDisplay.CENTER);
 		root.getChildren().add(label);
-		
-		ImageView image = new ImageView(new Image("file:./resources/images/buckingham-palace.jpg"));
+
+		ImageView image = new ImageView(new Image(
+				"file:./resources/images/buckingham-palace.jpg"));
 		image.relocate(220, 140);
 		image.setFitWidth(400);
 		image.setFitHeight(375);
@@ -84,7 +85,8 @@ public class SlideContent extends Window {
 
 	private void createHomeSlide() {
 
-		imageView = new ImageView(new Image("file:./resources/images/icon-48x48.png"));
+		imageView = new ImageView(new Image(
+				"file:./resources/images/icon-48x48.png"));
 		Button button = new Button("Click Me!", imageView);
 		button.setContentDisplay(ContentDisplay.LEFT);
 		root.getChildren().add(button);

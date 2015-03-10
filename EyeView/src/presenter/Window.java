@@ -71,7 +71,8 @@ public class Window extends Application {
 			// Add timeline if duration is greater than zero.
 			if (slideData.getDuration() > 0) {
 				slideID++;
-				new Timeline(new KeyFrame(Duration.millis(slideData.getDuration() * 1000),
+				new Timeline(new KeyFrame(Duration.millis(slideData
+						.getDuration() * 1000),
 						new EventHandler<ActionEvent>() {
 							public void handle(ActionEvent ae) {
 								loadSlide(slideID);

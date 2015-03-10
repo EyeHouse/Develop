@@ -8,7 +8,7 @@ import java.util.List;
  * the title and duration of a single slide, and lists containing all the
  * <code>TextData</code>, <code>ImageData</code>, <code>AudioData</code>,
  * <code>VideoData</code>, & <code>GraphicData</code> objects on this slide.
- *
+ * 
  * @version 2.1
  * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
  */

@@ -1,95 +1,42 @@
 package parser;
 
-/**
- * This class creates a new object of type <code>DefaultSettings</code>. It
- * contains various default settings for the slideshow, including the background
- * colour, font, font size and font colour to be used as default if the
- * information is not given for a specific object.
- * 
- * @version 2.1
- * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
- */
 public class DefaultSettings {
-
-	private String backgroundcolor;
+	
+	private String backgroundColor;
 	private String font;
-	private int fontsize;
-	private String fontcolor;
+	private int fontSize;
+	private String fontColor;
 
-	/**
-	 * Sets the default background colour for the slideshow.
-	 * 
-	 * @param backgroundColor
-	 *            Default background colour
-	 */
-	public void setBackgroundColor(String backgroundcolor) {
-		this.backgroundcolor = backgroundcolor;
-	}
-
-	/**
-	 * Returns the default background colour for the slideshow.
-	 * 
-	 * @return Default background colour
-	 */
 	public String getBackgroundColor() {
-		return backgroundcolor;
+		return backgroundColor;
 	}
-
-	/**
-	 * Sets the default font for text in the slideshow.
-	 * 
-	 * @param font
-	 *            Default font name
-	 */
-	public void setFont(String font) {
-		this.font = font;
+	
+	public void setBackgroundColor(String backgroundColor) {
+		this.backgroundColor = backgroundColor;
 	}
-
-	/**
-	 * Returns the default font for text in the slideshow.
-	 * 
-	 * @return Default font name
-	 */
+	
 	public String getFont() {
 		return font;
 	}
-
-	/**
-	 * Sets the default font size for text in the slideshow.
-	 * 
-	 * @param fontSize
-	 *            Default font size in 'pt'
-	 */
-	public void setFontSize(int fontsize) {
-		this.fontsize = fontsize;
+	
+	public void setFont(String font) {
+		this.font = font;
 	}
-
-	/**
-	 * Returns the default font size for text in the slideshow.
-	 * 
-	 * @return Default font size in 'pt'
-	 */
+	
 	public int getFontSize() {
-		return fontsize;
+		return fontSize;
 	}
-
-	/**
-	 * Sets the font colour for the text.
-	 * 
-	 * @param fontcolor
-	 *            Default font colour (8-digit hex)
-	 */
-	public void setFontColor(String fontcolor) {
-		this.fontcolor = fontcolor;
+	
+	public void setFontSize(int fontSize) {
+		this.fontSize = fontSize;
 	}
-
-	/**
-	 * Returns the default font colour for the slideshow.
-	 * 
-	 * @return Default font colour (8-digit hex)
-	 */
+	
 	public String getFontColor() {
-		return fontcolor;
+		return fontColor;
 	}
-
+	
+	public void setFontColor(String fontColor) {
+		this.fontColor = fontColor;
+	}
+	
 }

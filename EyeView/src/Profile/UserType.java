@@ -10,9 +10,10 @@ class UserType {
 	public String doB;
 	public boolean admin;
 	public String profileText;
-	
-	public UserType(String fName, String lName , String email, String username,
-				boolean landlord, String password, String doB, boolean admin, String profileText){
+
+	public UserType(String fName, String lName, String email, String username,
+			boolean landlord, String password, String doB, boolean admin,
+			String profileText) {
 		this.fName = fName;
 		this.lName = lName;
 		this.email = email;

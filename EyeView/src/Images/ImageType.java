@@ -8,7 +8,7 @@ package Images;
  * @version 1.0 05.03.15
  * @author EyeHouse
  * 
- * Copyright 2015 EyeHouse
+ *         Copyright 2015 EyeHouse
  */
 public class ImageType {
 

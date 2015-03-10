@@ -231,7 +231,8 @@ public class GraphicHandler extends Window {
 			new Timeline(new KeyFrame(Duration.millis(shape.duration * 1000),
 					new EventHandler<ActionEvent>() {
 						public void handle(ActionEvent ae) {
-							shapeVisibilityArray.set(graphicArray.indexOf(shape), false);
+							shapeVisibilityArray.set(
+									graphicArray.indexOf(shape), false);
 							redraw();
 						}
 					})).play();

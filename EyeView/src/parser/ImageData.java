@@ -1,11 +1,11 @@
 package parser;
 
 /**
- * This class creates a new <code>ImageData</code> object. It contains the source
- * file path of the image file, the (x,y) position of the top-left corner of the
- * image, the scale of the image, the duration it is displayed on the screen
- * for, and the start time at which the image first appears on the slide.
- *
+ * This class creates a new <code>ImageData</code> object. It contains the
+ * source file path of the image file, the (x,y) position of the top-left corner
+ * of the image, the scale of the image, the duration it is displayed on the
+ * screen for, and the start time at which the image first appears on the slide.
+ * 
  * @version 2.1
  * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
  */

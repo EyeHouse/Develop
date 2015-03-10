@@ -28,15 +28,15 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 
 public class ProfileViewer {
-	
-	/*Profile Static Variables*/
+
+	/* Profile Static Variables */
 	private static final int gridCellWidth = 20;
 	private static final int gridCellHeight = 30;
 	private static final double xStart = 0.5;
 	private static final double yStart = 0.1;
 	private static final int rating = 3;
-	
-	/*Profile Global Variables*/
+
+	/* Profile Global Variables */
 	private GridPane grid = new GridPane();
 	private Group screenGroup;
 	private double xResolution;
@@ -139,7 +139,7 @@ public class ProfileViewer {
 				xpoints[i] = (int) 0 - (int) ((double) r * Math.cos(angle));
 				ypoints[i] = (int) 0 - (int) ((double) r * Math.sin(angle));
 
-			// Maths for odd vertices
+				// Maths for odd vertices
 			} else {
 				xpoints[i] = (int) 0
 						- (int) ((double) 2 * r / 6 * Math.cos(angle));
@@ -176,25 +176,25 @@ public class ProfileViewer {
 		grid.addRow(1, hBoxStars);
 	}
 
-	/*Setup profile and appendable review text areas*/
+	/* Setup profile and appendable review text areas */
 	private void SetupProfileReview() {
-		
+
 		TextArea textProfile = new TextArea();
 		final TextArea textReview = new TextArea();
 		final TextArea textNewReview = new TextArea();
 		Label labelProfile, labelReview, labelNewReview;
 		Button buttonEditProfile = new Button("Edit Profile");
 		Button buttonReview = new Button("Submit");
-		
+
 		// VBox to contain Profile label and text area
 		VBox vBoxProfile = new VBox(10);
-		
+
 		// VBox to contain Review label and text area
 		VBox vBoxReview = new VBox(10);
-		
+
 		// VBox to contain Add Review label and text area
 		VBox vBoxNewReview = new VBox(5);
-		
+
 		// Setup labels
 		labelProfile = new Label("Profile");
 		labelProfile.setFont(fontMain);
@@ -202,7 +202,7 @@ public class ProfileViewer {
 		labelReview.setFont(fontMain);
 		labelNewReview = new Label("Add Review");
 		labelNewReview.setFont(fontMain);
-		
+
 		// Setup text areas with text wrapping
 		textProfile.setText(currentUser.profileText);
 		textProfile.setEditable(false);
@@ -210,10 +210,10 @@ public class ProfileViewer {
 		textReview.setText("Crackin bloke!");
 		textReview.setEditable(false);
 		textReview.setWrapText(true);
-		
+
 		// Limit height of new review text area
 		textNewReview.setMaxHeight(50);
-		
+
 		// Setup edit profile button event
 		buttonEditProfile.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -225,7 +225,7 @@ public class ProfileViewer {
 				accountSettings.OpenAccountSettings(currentUser);
 			}
 		});
-		
+
 		// Setup add review button event
 		buttonReview.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -235,14 +235,14 @@ public class ProfileViewer {
 				textNewReview.clear();
 			}
 		});
-		
-		// Populate grid with profile and review information 
+
+		// Populate grid with profile and review information
 		vBoxProfile.getChildren().addAll(labelProfile, textProfile);
 		vBoxReview.getChildren().addAll(labelReview, textReview);
 		vBoxNewReview.getChildren().addAll(labelNewReview, textNewReview);
 		grid.addRow(2, vBoxProfile, vBoxReview);
 		grid.addRow(3, buttonEditProfile, vBoxNewReview, buttonReview);
-		
+
 		// Centre align buttons
 		GridPane.setConstraints(buttonEditProfile, 0, 3, 1, 1, HPos.CENTER,
 				VPos.CENTER);

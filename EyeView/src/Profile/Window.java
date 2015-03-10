@@ -14,19 +14,20 @@ public class Window extends Application {
 
 	private Group root;
 	private int slideIndex = profileSlide;
-	UserType user = new UserType("John","Smith","j.smith@gmail.com","JSmith1", true,
-			"password","20/01/1993",false, "Electronic Engineering Student.");
+	UserType user = new UserType("John", "Smith", "j.smith@gmail.com",
+			"JSmith1", true, "password", "20/01/1993", false,
+			"Electronic Engineering Student.");
 
 	public void init(Stage primaryStage) {
-		
-        primaryStage.setWidth(xResolution);
-        primaryStage.setHeight(yResolution);
-        primaryStage.setResizable(false);
-        
-        root = new Group();
-        loadSlide(slideIndex);
-        
-	    primaryStage.setScene(new Scene(root));
+
+		primaryStage.setWidth(xResolution);
+		primaryStage.setHeight(yResolution);
+		primaryStage.setResizable(false);
+
+		root = new Group();
+		loadSlide(slideIndex);
+
+		primaryStage.setScene(new Scene(root));
 	}
 
 	public void loadSlide(int id) {
@@ -42,7 +43,8 @@ public class Window extends Application {
 	}
 
 	public void LoadProfile() {
-		ProfileViewer profile = new ProfileViewer(root, xResolution,yResolution);
+		ProfileViewer profile = new ProfileViewer(root, xResolution,
+				yResolution);
 		profile.OpenProfile(user);
 
 	}

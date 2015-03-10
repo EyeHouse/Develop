@@ -215,37 +215,37 @@ public class AccountSettings {
 		profileText.setText(currentUser.profileText);
 		profileText.setMaxHeight(gridCellHeight * 3);
 		profileText.setMaxWidth(250);
-		
+
 		// Add profile label and text area to grid
 		grid.addRow(9, labelProfileText, profileText);
 	}
-	
-	/* Add apply and cancel buttons to grid*/
+
+	/* Add apply and cancel buttons to grid */
 	public void SetupButtons() {
 		Button buttonApply = new Button("Apply Changes");
 		Button buttonCancel = new Button("Cancel");
 		HBox hBoxButtons = new HBox(40);
-		
+
 		// Add action listener to Apply button
 		buttonApply.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				
+
 				// Save changes and return to profile if valid
 				ApplyChanges();
 			}
 		});
-		
+
 		// Add action listener to Cancel button
 		buttonCancel.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				
+
 				// Return to profile page
 				OpenProfile();
 			}
 		});
-		
+
 		// Set button sizes
 		buttonCancel.setPrefWidth(100);
 		buttonApply.setPrefWidth(100);
@@ -267,13 +267,13 @@ public class AccountSettings {
 				+ comboDoBMonth.getValue() + "/" + comboDoBYear.getValue();
 		currentUser.landlord = buttonLandlord.isSelected();
 		currentUser.profileText = profileText.getText();
-		
+
 		// Check username availability
 		CheckUsername();
-		
+
 		// Check password validity
 		CheckPassword();
-		
+
 		// Clear password inputs if not valid
 		fieldPassword.setText("");
 		fieldNewPassword.setText("");
@@ -286,7 +286,7 @@ public class AccountSettings {
 		if (!fieldUsername.getText().equals(currentUser.username)) {
 			// CheckUsernameAvailability();
 			// If username is unavailable
-			if (!fieldUsername.getText().equals(username2)) { //TESTING ONLY
+			if (!fieldUsername.getText().equals(username2)) { // TESTING ONLY
 				// Send new username to database and remove error message
 				currentUser.username = fieldUsername.getText();
 				labelUsernameAvailability.setVisible(false);
@@ -299,39 +299,40 @@ public class AccountSettings {
 			labelUsernameAvailability.setVisible(false);
 		}
 	}
-	
-	/* Check current password is correct and new password is valid*/
+
+	/* Check current password is correct and new password is valid */
 	private void CheckPassword() {
-		
+
 		// Return to profile if password is not entered and there is
 		// no username error
 		if (fieldPassword.getText().equals("")) {
 			if (!labelUsernameAvailability.isVisible()) {
 				OpenProfile();
 			}
-			
-		// Show password incorrect error if current password does not match
-		// stored user password.
+
+			// Show password incorrect error if current password does not match
+			// stored user password.
 		} else if (!fieldPassword.getText().equals(currentUser.password)) {
 			labelPasswordIncorrect.setVisible(true);
-			
-		// Check new password validity if current password is correct
+
+			// Check new password validity if current password is correct
 		} else if (fieldPassword.getText().equals(currentUser.password)) {
 			labelPasswordIncorrect.setVisible(false);
-			
+
 			// If new password is not null and matches the confirm password
 			// field, store new password in database
 			if ((!fieldNewPassword.getText().equals(""))
 					&& (fieldNewPassword.getText().equals(fieldConfNewPassword
 							.getText()))) {
 				currentUser.password = fieldNewPassword.getText();
-				
+
 				// Return to profile if there is no username error
 				if (!labelUsernameAvailability.isVisible()) {
 					OpenProfile();
 				}
-				
-			// Show new password invalid error if new password fields do not match 
+
+				// Show new password invalid error if new password fields do not
+				// match
 			} else {
 				labelNewPasswordInvalid.setVisible(true);
 			}
@@ -340,7 +341,7 @@ public class AccountSettings {
 
 	/* Return to the profile page */
 	private void OpenProfile() {
-		
+
 		// Instantiate a new ProfileViewer object and open with current user
 		screenGroup.getChildren().clear();
 		ProfileViewer profile = new ProfileViewer(screenGroup, xResolution,
