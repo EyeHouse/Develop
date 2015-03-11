@@ -3,7 +3,10 @@ package presenter;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.GroupLayout.Alignment;
+
 import parser.GraphicData;
+import parser.ImageData;
 import presenter.GraphicElement;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -14,8 +17,14 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Pagination;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.util.Callback;
@@ -66,6 +75,21 @@ public class SlideContent extends Window {
 					currentGraphic.isSolid(), currentGraphic.getGraphicColor(),
 					currentGraphic.getShadingColor());
 			gh.addShapeToCanvas(graphic);
+		}
+	}
+	
+	public void loadXMLImages() {
+		
+		ImageHandler ih = new ImageHandler();
+		List<ImageData> imageList = slideData.getImageList();
+
+		for (ImageData currentImage : imageList) {
+			ImageElement image = new ImageElement(
+					currentImage.getSource(), currentImage.getXstart(),
+					currentImage.getYstart(), currentImage.getScale(),
+					currentImage.getDuration(), currentImage.getStarttime(),
+					200);
+			ih.createImage(image);
 		}
 	}
 
@@ -148,25 +172,9 @@ public class SlideContent extends Window {
 	}
 
 	private void createHomeSlide() {
-		
-		houseImages.clear();
-		houseImages.add(new Image("file:./resources/images/buckingham-palace.jpg", 400, 300, false, false));
-        houseImages.add(new Image("file:./resources/images/palace1.jpg", 400, 300, false, false));
-        houseImages.add(new Image("file:./resources/images/palace2.jpg", 400, 300, false, false));
-        houseImages.add(new Image("file:./resources/images/palace3.jpg", 400, 300, false, false));
-        houseImages.add(new Image("file:./resources/images/palace4.jpg", 400, 300, false, false));
-		
-        Pagination pagination = new Pagination(houseImages.size(), 0);
-        pagination.setPageFactory(new Callback<Integer, Node>() {           
-            public Node call(Integer houseIndex) {
-            	return createHousePage(houseIndex);
-            }
-        });
-        pagination.getStyleClass().add(Pagination.STYLE_CLASS_BULLET);
-        pagination.relocate(210, 140);
-        root.getChildren().add(pagination);
         
-        
+		createHousePagination();
+		
 		ImageView profileimage = new ImageView(new Image("file:./resources/images/profile.png"));
 		profileimage.relocate(15, 15);
 		profileimage.setFitWidth(60);
@@ -234,26 +242,6 @@ public class SlideContent extends Window {
 		root.getChildren().add(reviewsbutton);*/
 	}
 
-	protected Node createHousePage(Integer pageIndex) {
-	    HBox houseGroup = new HBox();
-	  //  houseGroup.setPrefSize(750, 550);
-	    ImageView iv = new ImageView(houseImages.get(pageIndex));
-        Label desc = new Label("Random Text Goes Here!!!");
-        houseGroup.setSpacing(30);
-	    houseGroup.getChildren().addAll(iv, desc);
-       
-
-      /*  AnchorPane anchorpane = new AnchorPane();
-        
-      
-        anchorpane.getChildren().addAll(desc, houseGroup); // Add grid from Example 1-5
-        AnchorPane.setBottomAnchor(houseGroup, 80.0);
-        AnchorPane.setRightAnchor(houseGroup, 500.0);
-       AnchorPane.setTopAnchor(houseGroup, 100.0);*/
-         return houseGroup;
-        
-	}
-
 	private void createLoginSlide() {
 		
 		Label label = new Label("INCLUDE LOGIN SLIDE");
@@ -296,5 +284,43 @@ public class SlideContent extends Window {
 		
 		root.getChildren().add(label);
 		root.getChildren().add(backbutton);
+	}
+	
+	private void createHousePagination() {
+		
+		houseImages.clear();
+		houseImages.add(new Image("file:./resources/images/buckingham-palace.jpg", 400, 300, false, false));
+        houseImages.add(new Image("file:./resources/images/palace1.jpg", 400, 300, false, false));
+        houseImages.add(new Image("file:./resources/images/palace2.jpg", 400, 300, false, false));
+        houseImages.add(new Image("file:./resources/images/palace3.jpg", 400, 300, false, false));
+        houseImages.add(new Image("file:./resources/images/palace4.jpg", 400, 300, false, false));
+		
+        Pagination pagination = new Pagination(houseImages.size(), 0);
+        pagination.setPageFactory(new Callback<Integer, Node>() {           
+            public Node call(Integer houseIndex) {
+            	return createHousePage(houseIndex);
+            }
+        });
+        pagination.getStyleClass().add(Pagination.STYLE_CLASS_BULLET);
+        pagination.relocate(195, 80);
+        root.getChildren().add(pagination);
+	}
+
+	protected Node createHousePage(Integer pageIndex) {
+		
+	    StackPane housePane = new StackPane();
+	    housePane.setPrefSize(750, 550);
+	    
+	    HBox box = new HBox();
+	    ImageView iv = new ImageView(houseImages.get(pageIndex));
+        Label desc = new Label("Random Text Goes Here!!!");
+        desc.setContentDisplay(ContentDisplay.CENTER);
+        box.setSpacing(10);
+        box.setTranslateX(40);
+        box.setTranslateY(80);
+	    box.getChildren().addAll(iv, desc);
+        housePane.getChildren().add(box);
+        
+        return housePane;        
 	}
 }
