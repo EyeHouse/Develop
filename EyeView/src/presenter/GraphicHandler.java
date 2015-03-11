@@ -14,31 +14,9 @@ import javafx.util.Duration;
 
 import java.util.ArrayList;
 
+import presenter.GraphicElement;
+
 public class GraphicHandler extends Window {
-
-	/* Graphic Element class */
-	class GraphicElement {
-
-		public String type;
-		public float xstart, ystart, xend, yend, duration;
-		public boolean solid;
-		public String graphiccolor;
-		public String shadingcolor;
-
-		public GraphicElement(String type, float xstart, float ystart,
-				float xend, float yend, float duration, boolean solid,
-				String graphiccolor, String shadingcolor) {
-			this.type = type;
-			this.xstart = xstart;
-			this.ystart = ystart;
-			this.xend = xend;
-			this.yend = yend;
-			this.duration = duration;
-			this.solid = solid;
-			this.graphiccolor = graphiccolor;
-			this.shadingcolor = shadingcolor;
-		}
-	}
 
 	/* Graphic Instance Variables */
 	private int shapeIndex;
@@ -223,7 +201,7 @@ public class GraphicHandler extends Window {
 	}
 
 	/* Add removal timer to XML graphic */
-	private void setGraphicDurationTimer(GraphicElement shape) {
+	private void setGraphicDurationTimer(final GraphicElement shape) {
 
 		// Add timeline if duration is greater than zero.
 		if (shape.duration > 0) {

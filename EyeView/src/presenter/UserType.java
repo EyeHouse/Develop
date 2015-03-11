@@ -1,4 +1,4 @@
-package Profile;
+package presenter;
 
 class UserType {
 	public String fName;

@@ -2,9 +2,9 @@ package presenter;
 
 import java.util.List;
 
-import parser.Slideshow;
 import parser.XMLParser;
-import parser.Slide;
+import parser.SlideshowData;
+import parser.SlideData;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -25,9 +25,9 @@ public class Window extends Application {
 	public static final int LOGIN = 2;
 	public static final int REGISTER = 3;
 
-	public static Slideshow slideshow;
-	public static List<Slide> slideList;
-	public static Slide slideData;
+	public static SlideshowData slideshow;
+	public static List<SlideData> slideList;
+	public static SlideData slideData;
 	public static String groupID;
 	public static int slideID;
 
@@ -71,8 +71,7 @@ public class Window extends Application {
 			// Add timeline if duration is greater than zero.
 			if (slideData.getDuration() > 0) {
 				slideID++;
-				new Timeline(new KeyFrame(Duration.millis(slideData
-						.getDuration() * 1000),
+				new Timeline(new KeyFrame(Duration.millis(slideData.getDuration() * 1000),
 						new EventHandler<ActionEvent>() {
 							public void handle(ActionEvent ae) {
 								loadSlide(slideID);
