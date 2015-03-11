@@ -1,4 +1,4 @@
-package parser;
+package presenter;
 
 //import java.security.MessageDigest;
 //import java.security.NoSuchAlgorithmException;
@@ -43,7 +43,7 @@ public class RegistrationInterfaceDemo extends Application {
 	final Button saveButton = new Button("Save");
 	final Button cancelButton = new Button("Cancel");
 
-
+	
 	TextField username;
 	TextField firstname;
 	TextField lastname;

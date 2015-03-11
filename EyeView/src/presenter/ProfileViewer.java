@@ -1,4 +1,4 @@
-package Profile;
+package presenter;
 
 /*
  * Profile.java

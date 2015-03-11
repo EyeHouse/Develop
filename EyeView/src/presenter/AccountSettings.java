@@ -1,4 +1,4 @@
-package Profile;
+package presenter;
 
 /*
  * AccountSettings.java
@@ -8,7 +8,7 @@ package Profile;
  * Copyright:
  */
 
-import Profile.UserType;
+import presenter.UserType;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;

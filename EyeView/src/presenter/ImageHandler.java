@@ -1,12 +1,11 @@
-package Images;
+package presenter;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
+import presenter.ImageElement;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-
-import Images.ImageElement;
 
 /**
  * This class implements an image element function with values passed in
@@ -17,7 +16,7 @@ import Images.ImageElement;
  *         Copyright 2015 EyeHouse
  */
 
-public class ImageHandler extends ImagePresenter {
+public class ImageHandler extends Window {
 
 	private float xPosition; // Horizontal position of image to be displayed
 	private float yPosition; // Vertical position of image to be displayed
@@ -44,7 +43,7 @@ public class ImageHandler extends ImagePresenter {
 		 * Convert relative screen position of image to a pixel value using the
 		 * native resolution of the user's display
 		 */
-		xPosition = (float) xResolution * image.xstart;
+		xPosition = (float) (xResolution * image.xstart);
 		yPosition = (float) (yResolution * image.ystart);
 
 		// Load Image from source file

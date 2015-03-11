@@ -1,18 +1,19 @@
-package Images;
+package presenter;
 
 /**
  * This class contains all a the data values required to place an image on the
  * screen at a specified x and y position, with a specified scale, and displays
  * it at a specified time and for a specified duration
  * 
- * @version 1.0 05.03.15
+ * @version 1.2 05.03.15
  * @author EyeHouse
  * 
- *         Copyright 2015 EyeHouse
+ * Copyright 2015 EyeHouse
  */
-public class ImageType {
+public class ImageElement {
 
-	// Values from XML
+	// Data variables for the image
+	public String sourcefile;
 	public float xstart;
 	public float ystart;
 	public float scale;
@@ -24,6 +25,9 @@ public class ImageType {
 	 * A container containing the data values required to place an image on the
 	 * screen at a specified x and y position, with a specified scale, and at a
 	 * specified time
+	 * 
+	 * @param sourcefile
+	 *            the filename of the image
 	 * 
 	 * @param xstart
 	 *            the horizontal position of the top-left pixel of the image as
@@ -46,9 +50,10 @@ public class ImageType {
 	 *            the required width of the image which is used to scale the
 	 *            image, preserving the aspect ratio
 	 */
-	public ImageType(float xstart, float ystart, float scale, float duration,
-			float starttime, float specifiedWidth) {
+	public ImageElement(String sourcefile, float xstart, float ystart,
+			float scale, float duration, float starttime, float specifiedWidth) {
 
+		this.sourcefile = sourcefile;
 		this.xstart = xstart;
 		this.ystart = ystart;
 		this.scale = scale;
