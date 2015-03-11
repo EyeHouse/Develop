@@ -10,6 +10,7 @@ import parser.ImageData;
 import presenter.GraphicElement;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
@@ -31,7 +32,9 @@ import javafx.util.Callback;
 
 public class SlideContent extends Window {
 
-	ArrayList<Image> houseImages = new ArrayList<Image>();
+	private ArrayList<ImageGallery> houseImages = new ArrayList<ImageGallery>();
+	private List<GraphicData> graphicList;
+	private List<ImageData> imageList;
 
 	public SlideContent() {
 	}
@@ -65,8 +68,9 @@ public class SlideContent extends Window {
 	}
 	
 	public void loadXMLGraphics() {
+		
 		GraphicHandler gh = new GraphicHandler();
-		List<GraphicData> graphicList = slideData.getGraphicList();
+		graphicList = slideData.getGraphicList();
 
 		for (GraphicData currentGraphic : graphicList) {
 			GraphicElement graphic = new GraphicElement(
@@ -82,8 +86,8 @@ public class SlideContent extends Window {
 	public void loadXMLImages() {
 		
 		ImageHandler ih = new ImageHandler();
-		List<ImageData> imageList = slideData.getImageList();
-
+		imageList = slideData.getImageList();
+		
 		for (ImageData currentImage : imageList) {
 			ImageElement image = new ImageElement(
 					currentImage.getSource(), currentImage.getXstart(),
@@ -277,13 +281,24 @@ public class SlideContent extends Window {
 	
 	private void createHousePagination() {
 		
-		houseImages.clear();
-		houseImages.add(new Image("file:./resources/images/buckingham-palace.jpg", 400, 300, false, false));
-        houseImages.add(new Image("file:./resources/images/palace1.jpg", 400, 300, false, false));
-        houseImages.add(new Image("file:./resources/images/palace2.jpg", 400, 300, false, false));
-        houseImages.add(new Image("file:./resources/images/palace3.jpg", 400, 300, false, false));
-        houseImages.add(new Image("file:./resources/images/palace4.jpg", 400, 300, false, false));
+		ImageElement image = new ImageElement("file:./resources/images/buckingham-palace.jpg", 0.0f, 0.0f, 1f, 0f, 0f, 400f);
 		
+		ImageGallery gallery = new ImageGallery(image);
+		
+		houseImages.add(gallery);
+		houseImages.add(gallery);
+		houseImages.add(gallery);
+		houseImages.add(gallery);
+		houseImages.add(gallery);
+		houseImages.add(gallery);
+		houseImages.add(gallery);
+		houseImages.add(gallery);
+		houseImages.add(gallery);
+		houseImages.add(gallery);
+		houseImages.add(gallery);
+		houseImages.add(gallery);
+		houseImages.add(gallery);
+
         Pagination pagination = new Pagination(houseImages.size(), 0);
         pagination.setPageFactory(new Callback<Integer, Node>() {           
             public Node call(Integer houseIndex) {
@@ -301,13 +316,14 @@ public class SlideContent extends Window {
 	    housePane.setPrefSize(750, 550);
 	    
 	    HBox box = new HBox();
-	    ImageView iv = new ImageView(houseImages.get(pageIndex));
+	    ImageGallery ig = houseImages.get(pageIndex);
         Label desc = new Label("Random Text Goes Here!!!");
         desc.setContentDisplay(ContentDisplay.CENTER);
         box.setSpacing(10);
         box.setTranslateX(40);
         box.setTranslateY(80);
-	    box.getChildren().addAll(iv, desc);
+        box.getChildren().add(ig.getGallery());
+	    box.getChildren().add(desc);
         housePane.getChildren().add(box);
         
         return housePane;        
