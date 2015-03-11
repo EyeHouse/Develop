@@ -40,6 +40,7 @@ public class SlideContent extends Window {
 
 		// Load all objects from XML file first
 		loadXMLGraphics();
+		loadXMLImages();
 
 		// Checks if the XML belongs to group 5 (EyeHouse)
 		if (groupID.matches("5")) {
@@ -97,10 +98,7 @@ public class SlideContent extends Window {
 
 	private void createLoggedOutSlide() {
 				
-		ImageView image = new ImageView(new Image("file:./resources/images/buckingham-palace.jpg"));
-		image.relocate(220, 140);
-		image.setFitWidth(400);
-		image.setFitHeight(300);
+		createHousePagination();
 				
 		Button loginbutton = new Button("Login");
 		loginbutton.relocate(20, 100);
@@ -161,7 +159,6 @@ public class SlideContent extends Window {
 		buttonRow.setSpacing(5);
 		root.getChildren().add(buttonRow);
 		
-		root.getChildren().add(image);
 		root.getChildren().add(loginbutton);
 		root.getChildren().add(registerbutton);
 		/*root.getChildren().add(videobutton);
@@ -173,13 +170,7 @@ public class SlideContent extends Window {
 
 	private void createHomeSlide() {
         
-		createHousePagination();
-		
-		ImageView profileimage = new ImageView(new Image("file:./resources/images/profile.png"));
-		profileimage.relocate(15, 15);
-		profileimage.setFitWidth(60);
-		profileimage.setFitHeight(60);
-				
+		createHousePagination();				
 
 		Label label = new Label("Jake");
 		label.setTextAlignment(TextAlignment.CENTER);
@@ -233,7 +224,6 @@ public class SlideContent extends Window {
 		buttonRow.setSpacing(5);
 		root.getChildren().add(buttonRow);
 		
-		root.getChildren().add(profileimage);
 		root.getChildren().add(label);
 		root.getChildren().add(logoutbutton);
 		/*root.getChildren().add(videobutton);
@@ -272,7 +262,6 @@ public class SlideContent extends Window {
 		
 		Label label = new Label("INCLUDE REGISTER SLIDE");
 		label.relocate(390, 300);
-		
 		
 		Button backbutton = new Button ("Back");
 		backbutton.relocate(15, 15);
