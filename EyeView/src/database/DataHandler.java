@@ -35,20 +35,25 @@ public class DataHandler {
 		// one lower case letter,
 		// one digit,
 		// be 6 - 20 character long.
+		if(password.equals(retypePassword)) {
+			if(password.equals("")) {
+				System.out.println("Password Fields Null");
+				return false;
+			}
+		}
 		String regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{6,20}$";
 		boolean result = password.matches(regexp);
 
-		if (password == retypePassword && result == false)
+		if (password.equals(retypePassword) && result == false)
 			System.out.println("Please try another password");
 
-		if (password == retypePassword && result == true)
+		if (password.equals(retypePassword) && result == true)
 			System.out.println("Strong password!");
 
-		else if (password != retypePassword) {
+		else if (!password.equals(retypePassword)) {
 			result = false;
 			System.out.println("Passwords do not match!");
 		}
-
 		return result;
 	}
 	

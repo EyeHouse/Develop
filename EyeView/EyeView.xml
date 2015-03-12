@@ -12,24 +12,15 @@
 		<fontsize>12</fontsize>
 		<fontcolor>#ffcccc00</fontcolor>
 	</defaultsettings>
-	<slide id="0" title="Logged Out Home" duration="5">
-		<graphic type="rectangle" xstart="0.0" ystart="0.0" xend="0.19" yend="1.0" solid="true" graphiccolor="#FF7AA9DD" duration="3" />
-		<text sourcefile="" xstart="0.5" ystart="0.5" fontsize="16" fontcolor="#ff112233" duration="1.5">
-			Some Text.
-		</text>
-		<image sourcefile="file:./resources/images/icon-48x48.png" xstart="0.2" ystart="0.1" scale="0.75" />
+	<slide id="0" title="Logged Out Home" duration="0">
+		<graphic type="rectangle" xstart="0.0" ystart="0.0" xend="0.19" yend="1.0" solid="true" graphiccolor="#FF7AA9DD" duration="0" />
 	</slide>
-	<slide id="1" title="Logged In Home" duration="6">
-		<graphic type="oval" xstart="0.2" ystart="0.2" xend="0.4" yend="0.4" solid="true" graphiccolor="#FFFF0000" duration="4">
-			<cyclicshading shadingcolor="#000000FF" />
-		</graphic>
-		<graphic type="line" xstart="0.2" ystart="0.6" xend="0.5" yend="0.8" solid="true" graphiccolor="#FF0000FF" duration="2">
-			<cyclicshading shadingcolor="#FFFF0000" />
-		</graphic>
-		<graphic type="rectangle" xstart="0.45" ystart="0.2" xend="0.65" yend="0.6" solid="true" graphiccolor="#FF00FF00" duration="3" />
-		<text sourcefile="" xstart="0.5" ystart="0.5">
-			This text should be ignored.
-		</text>
-		<image sourcefile="file:./resources/images/buckingham-palace.jpg" xstart="0.2" ystart="0.1" scale="0.25" />
+	<slide id="1" title="Logged In Home" duration="0">
+		<graphic type="rectangle" xstart="0.0" ystart="0.0" xend="0.19" yend="1.0" solid="true" graphiccolor="#FF7AA9DD" duration="0" />
+		<image sourcefile="file:./resources/images/profile.png" xstart="0.015" ystart="0.03" scale="0.3" duration="0" starttime="0" />
+	</slide>
+	<slide id="2" title="Login Slide" duration="0">
+	</slide>
+	<slide id="3" title="Register Slide" duration="0">
 	</slide>
 </slideshow>

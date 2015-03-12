@@ -1,4 +1,4 @@
-package presenter;
+package Profile;
 
 /*
  * Profile.java
@@ -8,12 +8,14 @@ package presenter;
  * Copyright:
  */
 
+import database.Database;
+import database.User;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.geometry.VPos;
-import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -27,7 +29,7 @@ import javafx.scene.shape.Polyline;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 
-public class ProfileViewer {
+public class ProfileViewer extends presenter.Window{
 
 	/* Profile Static Variables */
 	private static final int gridCellWidth = 20;
@@ -37,49 +39,39 @@ public class ProfileViewer {
 	private static final int rating = 3;
 
 	/* Profile Global Variables */
-	private GridPane grid = new GridPane();
-	private Group screenGroup;
-	private double xResolution;
-	private double yResolution;
+	private GridPane profileGrid = new GridPane();
 	private Font fontTitle = new Font("Cambria", 24);
 	private Font fontMain = new Font("Cambria", 18);
-	private UserType currentUser;
-
-	/* ProfileView Constructor */
-	public ProfileViewer(Group group, double xresolution, double yresolution) {
-		screenGroup = group;
-		xResolution = xresolution;
-		yResolution = xresolution;
-	}
+	private User currentUser = null;
 
 	/* Profile Methods */
 
 	/* Open profile of user input */
-	public void OpenProfile(UserType user) {
-		this.currentUser = user;
+	public void OpenProfile(String username) {
+		currentUser = Database.getUser(username);
 		SetupGrid();
 		SetupUserInfo();
 		SetupStars();
 		SetupProfileReview();
 
-		screenGroup.getChildren().add(grid);
+		root.getChildren().add(profileGrid);
 	}
 
 	/* Setup grid layout object to contain user information */
 	private void SetupGrid() {
-		grid.setPrefWidth(600);
+		profileGrid.setPrefWidth(600);
 
 		// Set column widths of grid.
 		ColumnConstraints col1 = new ColumnConstraints();
 		ColumnConstraints col2 = new ColumnConstraints();
 		col1.setMinWidth(250);
 		col2.setMinWidth(100);
-		grid.getColumnConstraints().addAll(col1, col1, col2);
+		profileGrid.getColumnConstraints().addAll(col1, col1, col2);
 
 		// Set grid size and spacing in group.
-		grid.setHgap(gridCellWidth);
-		grid.setVgap(gridCellHeight);
-		grid.setPadding(new Insets(yResolution * yStart, xResolution * xStart,
+		profileGrid.setHgap(gridCellWidth);
+		profileGrid.setVgap(gridCellHeight);
+		profileGrid.setPadding(new Insets(yResolution * yStart, xResolution * xStart,
 				100, 200));
 	}
 
@@ -94,12 +86,12 @@ public class ProfileViewer {
 		Rectangle profilePicture = new Rectangle(200, 200, Color.GRAY);
 
 		// Setup labels with information of current user
-		labelName = new Label(currentUser.fName + "\t(" + currentUser.username
+		labelName = new Label(currentUser.first_name + "\t(" + currentUser.username
 				+ ")");
 		labelName.setFont(fontTitle);
 		labelEmail = new Label("Email: " + currentUser.email);
 		labelEmail.setFont(fontMain);
-		labelDoB = new Label("Date of Birth: " + currentUser.doB);
+		labelDoB = new Label("Date of Birth: " + currentUser.DOB);
 		labelDoB.setFont(fontMain);
 
 		// Setup account type label based on boolean landlord value
@@ -112,7 +104,7 @@ public class ProfileViewer {
 				labelDoB);
 
 		// Add profile picture and user text to grid
-		grid.addRow(0, profilePicture, vBoxUserText);
+		profileGrid.addRow(0, profilePicture, vBoxUserText);
 	}
 
 	/* Create star polygons and add them to the grid */
@@ -173,7 +165,7 @@ public class ProfileViewer {
 		}
 
 		// Add star HBox to grid
-		grid.addRow(1, hBoxStars);
+		profileGrid.addRow(1, hBoxStars);
 	}
 
 	/* Setup profile and appendable review text areas */
@@ -185,6 +177,7 @@ public class ProfileViewer {
 		Label labelProfile, labelReview, labelNewReview;
 		Button buttonEditProfile = new Button("Edit Profile");
 		Button buttonReview = new Button("Submit");
+		Button buttonBack = new Button("Go Back");
 
 		// VBox to contain Profile label and text area
 		VBox vBoxProfile = new VBox(10);
@@ -194,6 +187,9 @@ public class ProfileViewer {
 
 		// VBox to contain Add Review label and text area
 		VBox vBoxNewReview = new VBox(5);
+		
+		// HBox to contain edit and back buttons
+		HBox hBoxButtons = new HBox(10);
 
 		// Setup labels
 		labelProfile = new Label("Profile");
@@ -204,7 +200,7 @@ public class ProfileViewer {
 		labelNewReview.setFont(fontMain);
 
 		// Setup text areas with text wrapping
-		textProfile.setText(currentUser.profileText);
+		textProfile.setText("");
 		textProfile.setEditable(false);
 		textProfile.setWrapText(true);
 		textReview.setText("Crackin bloke!");
@@ -219,9 +215,8 @@ public class ProfileViewer {
 			@Override
 			public void handle(ActionEvent event) {
 				// Instantiate account settings page
-				screenGroup.getChildren().clear();
-				AccountSettings accountSettings = new AccountSettings(
-						screenGroup, xResolution, yResolution);
+				root.getChildren().clear();
+				AccountSettings accountSettings = new AccountSettings();
 				accountSettings.OpenAccountSettings(currentUser);
 			}
 		});
@@ -235,18 +230,30 @@ public class ProfileViewer {
 				textNewReview.clear();
 			}
 		});
+		
+		// Setup back button event
+				buttonReview.setOnAction(new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent event) {
+						// return to logged in house viewing slide
+						loadSlide(HOUSES);
+					}
+				});
 
 		// Populate grid with profile and review information
 		vBoxProfile.getChildren().addAll(labelProfile, textProfile);
 		vBoxReview.getChildren().addAll(labelReview, textReview);
 		vBoxNewReview.getChildren().addAll(labelNewReview, textNewReview);
-		grid.addRow(2, vBoxProfile, vBoxReview);
-		grid.addRow(3, buttonEditProfile, vBoxNewReview, buttonReview);
+		hBoxButtons.getChildren().addAll(buttonEditProfile,buttonBack);
+		hBoxButtons.setAlignment(Pos.CENTER);
+		profileGrid.addRow(2, vBoxProfile, vBoxReview);
+		profileGrid.addRow(3, hBoxButtons, vBoxNewReview, buttonReview);
+		
+		
 
 		// Centre align buttons
-		GridPane.setConstraints(buttonEditProfile, 0, 3, 1, 1, HPos.CENTER,
-				VPos.CENTER);
 		GridPane.setConstraints(buttonReview, 2, 3, 1, 1, HPos.CENTER,
 				VPos.CENTER);
+		GridPane.setConstraints(hBoxButtons, 0, 3, 1, 1, HPos.CENTER, VPos.CENTER);
 	}
 }

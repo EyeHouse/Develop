@@ -1,4 +1,4 @@
-package presenter;
+package Profile;
 
 /*
  * AccountSettings.java
@@ -8,7 +8,9 @@ package presenter;
  * Copyright:
  */
 
-import presenter.UserType;
+import javax.swing.JOptionPane;
+
+import database.User;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -17,7 +19,6 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
-import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -28,8 +29,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import database.Database;
 
-public class AccountSettings {
+public class AccountSettings extends presenter.Window{
 
 	/* Account Settings Static Variables */
 	private static final int gridCellWidth = 50;
@@ -38,10 +40,7 @@ public class AccountSettings {
 	private static final double yStart = 0.05;
 
 	/* Account Settings Global Variables */
-	private Group screenGroup;
 	private GridPane grid = new GridPane();
-	private double xResolution;
-	private double yResolution;
 	private TextField fieldFName, fieldLName, fieldUsername, fieldEmail;
 	private PasswordField fieldPassword = new PasswordField();
 	private PasswordField fieldNewPassword = new PasswordField();
@@ -55,20 +54,12 @@ public class AccountSettings {
 	private Label labelPasswordIncorrect;
 	private Label labelNewPasswordInvalid;
 	private Label labelUsernameAvailability;
-	private UserType currentUser;
-	private String username2 = new String("JSmith2");
-
-	/* Account Settings constructor */
-	public AccountSettings(Group group, double xresolution, double yresolution) {
-		screenGroup = group;
-		xResolution = xresolution;
-		yResolution = yresolution;
-	}
+	private User currentUser;
 
 	/* Account Settings Methods */
 
 	/* Open account settings of user input */
-	public void OpenAccountSettings(UserType user) {
+	public void OpenAccountSettings(User user) {
 
 		currentUser = user;
 
@@ -78,7 +69,7 @@ public class AccountSettings {
 		SetupProfileText();
 		SetupButtons();
 
-		screenGroup.getChildren().add(grid);
+		root.getChildren().add(grid);
 	}
 
 	/* Setup grid layout object to contain user information */
@@ -110,8 +101,8 @@ public class AccountSettings {
 		labelUsernameAvailability.setVisible(false);
 
 		// Setup labels with current account settings
-		fieldFName = new TextField(currentUser.fName);
-		fieldLName = new TextField(currentUser.lName);
+		fieldFName = new TextField(currentUser.first_name);
+		fieldLName = new TextField(currentUser.second_name);
 		fieldUsername = new TextField(currentUser.username);
 		fieldEmail = new TextField(currentUser.email);
 
@@ -153,11 +144,11 @@ public class AccountSettings {
 
 		// Set the selected item of the combo boxes to the current account
 		// settings
-		int doBDay = Integer.valueOf(currentUser.doB.substring(0, 2), 10)
+		int doBDay = Integer.valueOf(currentUser.DOB.substring(8, 10), 10)
 				.intValue();
-		int doBMonth = Integer.valueOf(currentUser.doB.substring(3, 5), 10)
+		int doBMonth = Integer.valueOf(currentUser.DOB.substring(5, 7), 10)
 				.intValue();
-		int doBYear = Integer.valueOf(currentUser.doB.substring(6, 10), 10)
+		int doBYear = Integer.valueOf(currentUser.DOB.substring(0, 4), 10)
 				.intValue();
 		comboDoBDay.getSelectionModel().select(doBDay - 1);
 		comboDoBMonth.getSelectionModel().select(doBMonth - 1);
@@ -166,7 +157,7 @@ public class AccountSettings {
 		// Add change listener to month combobox
 		comboDoBMonth.valueProperty().addListener(new ChangeListener<String>() {
 			@Override
-			public void changed(ObservableValue ov, String previousValue,
+			public void changed(@SuppressWarnings("rawtypes") ObservableValue ov, String previousValue,
 					String newValue) {
 				// Add days 29, 30 and 31 to combobox if previous month selected
 				// was February
@@ -212,7 +203,7 @@ public class AccountSettings {
 		Label labelProfileText = new Label("Profile");
 
 		// Load profile text area with current user profile and set size
-		profileText.setText(currentUser.profileText);
+		profileText.setText("");
 		profileText.setMaxHeight(gridCellHeight * 3);
 		profileText.setMaxWidth(250);
 
@@ -224,6 +215,7 @@ public class AccountSettings {
 	public void SetupButtons() {
 		Button buttonApply = new Button("Apply Changes");
 		Button buttonCancel = new Button("Cancel");
+		Button buttonDelete = new Button("Delete Account");
 		HBox hBoxButtons = new HBox(40);
 
 		// Add action listener to Apply button
@@ -245,13 +237,29 @@ public class AccountSettings {
 				OpenProfile();
 			}
 		});
+		
+		buttonDelete.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+
+				boolean check = Database.userDelete(currentUser.username);
+				if(check){
+					root.getChildren().clear();
+					Login login = new Login();
+				}
+				else JOptionPane.showMessageDialog(null,
+						"Failed to delete user", "Account Error",
+						JOptionPane.WARNING_MESSAGE);
+			}
+		});
 
 		// Set button sizes
-		buttonCancel.setPrefWidth(100);
-		buttonApply.setPrefWidth(100);
+		buttonCancel.setPrefWidth(120);
+		buttonApply.setPrefWidth(120);
+		buttonDelete.setPrefWidth(120);
 
 		// Add buttons to grid
-		hBoxButtons.getChildren().addAll(buttonApply, buttonCancel);
+		hBoxButtons.getChildren().addAll(buttonApply, buttonCancel, buttonDelete);
 		hBoxButtons.setAlignment(Pos.CENTER);
 		grid.add(hBoxButtons, 0, 10);
 		GridPane.setConstraints(hBoxButtons, 0, 10, 2, 1, HPos.CENTER,
@@ -260,13 +268,14 @@ public class AccountSettings {
 
 	/* Send account changes to database(WHEN IMPLEMENTED FULLY) */
 	private void ApplyChanges() {
-		currentUser.fName = fieldFName.getText();
-		currentUser.lName = fieldLName.getText();
-		currentUser.email = fieldEmail.getText();
-		currentUser.doB = comboDoBDay.getValue() + "/"
-				+ comboDoBMonth.getValue() + "/" + comboDoBYear.getValue();
-		currentUser.landlord = buttonLandlord.isSelected();
-		currentUser.profileText = profileText.getText();
+		String doB = comboDoBYear.getValue() + "-" + comboDoBMonth.getValue() + "-" + comboDoBDay.getValue();
+		
+		Database.userUpdate(currentUser,"first_name",null,fieldFName.getText());
+		Database.userUpdate(currentUser,"second_name",null,fieldLName.getText());
+		Database.userUpdate(currentUser,"email",null,fieldEmail.getText());
+		Database.userUpdate(currentUser,"DOB",null,doB);
+		Database.userUpdate(currentUser,"first_name",null,fieldFName.getText());
+		Database.userUpdate(currentUser,"landlord",buttonLandlord.isSelected(),null);
 
 		// Check username availability
 		CheckUsername();
@@ -282,19 +291,23 @@ public class AccountSettings {
 
 	/* Check whether new username is available */
 	private void CheckUsername() {
+		
 		// Skip check if username unchanged
-		if (!fieldUsername.getText().equals(currentUser.username)) {
-			// CheckUsernameAvailability();
+		if (!fieldUsername.getText().equals(currentUser.username)&&(!fieldUsername.getText().equals(""))) {
+
 			// If username is unavailable
-			if (!fieldUsername.getText().equals(username2)) { // TESTING ONLY
+			if (!Database.oneFieldCheck("username", fieldUsername.getText())) {
 				// Send new username to database and remove error message
+				Database.userUpdate(currentUser,"username",null,fieldUsername.getText());
 				currentUser.username = fieldUsername.getText();
 				labelUsernameAvailability.setVisible(false);
 			} else {
+				
 				// Show error message if username is unavailable
 				labelUsernameAvailability.setVisible(true);
 			}
 		} else {
+			
 			// Remove error message if username is unchanged
 			labelUsernameAvailability.setVisible(false);
 		}
@@ -324,7 +337,7 @@ public class AccountSettings {
 			if ((!fieldNewPassword.getText().equals(""))
 					&& (fieldNewPassword.getText().equals(fieldConfNewPassword
 							.getText()))) {
-				currentUser.password = fieldNewPassword.getText();
+				Database.userUpdate(currentUser,"password",null,fieldPassword.getText());
 
 				// Return to profile if there is no username error
 				if (!labelUsernameAvailability.isVisible()) {
@@ -343,9 +356,8 @@ public class AccountSettings {
 	private void OpenProfile() {
 
 		// Instantiate a new ProfileViewer object and open with current user
-		screenGroup.getChildren().clear();
-		ProfileViewer profile = new ProfileViewer(screenGroup, xResolution,
-				yResolution);
-		profile.OpenProfile(currentUser);
+		root.getChildren().clear();
+		ProfileViewer profile = new ProfileViewer();
+		profile.OpenProfile(currentUser.username);
 	}
 }
