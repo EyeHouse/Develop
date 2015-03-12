@@ -17,14 +17,14 @@ public class User {
 	private final static int ADMIN = 9;
 
 	// id should automatically be created on insertion
-	String first_name;
-	String second_name;
-	String email;
+	public String first_name;
+	public String second_name;
+	public String email;
 	public String username;
-	boolean landlord;
-	String password;
-	String DOB;
-	boolean admin;
+	public boolean landlord;
+	public String password;
+	public String DOB;
+	public boolean admin;
 
 	// user contructor method
 	public User(String username) {

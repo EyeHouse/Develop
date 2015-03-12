@@ -2,6 +2,8 @@ package presenter;
 
 import java.util.List;
 
+import database.Database;
+
 import parser.XMLParser;
 import parser.SlideshowData;
 import parser.SlideData;
@@ -52,9 +54,12 @@ public class Window extends Application {
 
 		root = new Group();
 		primaryStage.setScene(new Scene(root));
-
+		
+		Database.dbConnect();
+		
 		sc = new SlideContent();
 		loadSlide(INDEX);
+		// Database.getRating(property.id);
 	}
 
 	public static void loadSlide(int id) {

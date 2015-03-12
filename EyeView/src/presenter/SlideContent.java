@@ -3,29 +3,22 @@ package presenter;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.GroupLayout.Alignment;
+import Profile.Login;
+import Profile.Register;
 
 import parser.GraphicData;
 import parser.ImageData;
 import presenter.GraphicElement;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.Pagination;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.util.Callback;
@@ -238,45 +231,12 @@ public class SlideContent extends Window {
 
 	private void createLoginSlide() {
 		
-		Label label = new Label("INCLUDE LOGIN SLIDE");
-		label.relocate(400, 300);
-		
-		Button loginbutton = new Button ("Log in");
-		loginbutton.relocate(480, 330);
-		loginbutton.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent ae) {
-				loadSlide(HOUSES);
-			}
-		});
-		
-		Button backbutton = new Button ("Back");
-		backbutton.relocate(15, 15);
-		backbutton.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent ae) {
-				loadSlide(INDEX);
-			}
-		});
-		
-		root.getChildren().add(label);
-		root.getChildren().add(backbutton);
-		root.getChildren().add(loginbutton);
+		Login login = new Login();
 	}
 	
 	private void createRegisterSlide() {
 		
-		Label label = new Label("INCLUDE REGISTER SLIDE");
-		label.relocate(390, 300);
-		
-		Button backbutton = new Button ("Back");
-		backbutton.relocate(15, 15);
-		backbutton.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent ae) {
-				loadSlide(INDEX);
-			}
-		});
-		
-		root.getChildren().add(label);
-		root.getChildren().add(backbutton);
+		Register register = new Register();
 	}
 	
 	private void createHousePagination() {

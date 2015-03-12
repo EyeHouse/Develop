@@ -1,4 +1,4 @@
-package presenter;
+package Profile;
 
 //TODO Auto-generated constructor stub
 import javax.swing.JOptionPane;
@@ -14,8 +14,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Cursor;
-import javafx.scene.Group;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -25,64 +23,51 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 
-
-public class LoginInterFaceDemo extends Application {
+public class Login extends presenter.Window {
 
 	TextField username;
 	TextField password;
-	User user = null;
 	Button loginButton = new Button("Login");
 	Button cancelButton = new Button("Cancel");
 
-	Group root = new Group();
-	GridPane grid = new GridPane();
+	GridPane loginGrid = new GridPane();
 
-	@Override
-	public void start(Stage stage) {
+	public Login() {
 		setupGrid();
-		setupTextFields(grid);
-		setupPasswordFields(grid);
+		setupTextFields();
+		setupPasswordFields();
 		setupButtons();
 		setupTitle();
-
-		Scene scene = new Scene(root, 800, 480);
-
-		Group root = (Group) scene.getRoot();
-		root.getChildren().add(grid);
-		stage.setTitle("Login");
-		stage.setScene(scene);
-		stage.show();
-
+		root.getChildren().add(loginGrid);
 	}
 
 	public void setupGrid() {
 
-		grid.setVgap(10);
-		grid.setHgap(10);
-		grid.setPadding(new Insets(50, 5, 5, 270));
+		loginGrid.setVgap(10);
+		loginGrid.setHgap(10);
+		loginGrid.setPadding(new Insets(50, 5, 5, 270));
 	}
 
-	public void setupTextFields(GridPane grid) {
+	public void setupTextFields() {
 
 		// username field
 		username = new TextField();
-		grid.add(new Label("Username: "), 0, 8);
+		loginGrid.add(new Label("Username: "), 0, 8);
 		username.setPromptText("Username");
 		username.setPrefColumnCount(10);
-		grid.getChildren().add(username);
+		loginGrid.getChildren().add(username);
 		GridPane.setConstraints(username, 1, 8);
 	}
 
-	public void setupPasswordFields(GridPane grid) {
+	public void setupPasswordFields() {
 
 		// Password field
 		password = new PasswordField();
-		grid.add(new Label("Password: "), 0, 10);
+		loginGrid.add(new Label("Password: "), 0, 10);
 		password.setPromptText("Your Password");
 		password.setPrefColumnCount(10);
-		grid.getChildren().add(password);
+		loginGrid.getChildren().add(password);
 		GridPane.setConstraints(password, 1, 10);
 	}
 
@@ -93,9 +78,8 @@ public class LoginInterFaceDemo extends Application {
 		// Add buttons to grid
 		hbox.getChildren().addAll(loginButton, cancelButton);
 		hbox.setAlignment(Pos.CENTER);
-		grid.add(hbox, 1, 12);
-		GridPane.setConstraints(hbox, 1, 12, 1, 1, HPos.CENTER,
-				VPos.CENTER);
+		loginGrid.add(hbox, 1, 12);
+		GridPane.setConstraints(hbox, 1, 12, 1, 1, HPos.CENTER, VPos.CENTER);
 
 		// Save button
 		loginButton.setCursor(Cursor.HAND);
@@ -108,7 +92,7 @@ public class LoginInterFaceDemo extends Application {
 		cancelButton.setCursor(Cursor.HAND);
 		cancelButton.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
-				root.getChildren().clear();
+				loadSlide(INDEX);
 			}
 		});
 	}
@@ -128,13 +112,16 @@ public class LoginInterFaceDemo extends Application {
 		// check the user exits
 		String hashpass = DataHandler.crypt((String) password.getText());
 
-		userExists = Database.userCheck("username",
+		userExists = Database.twoFieldCheck("username",
 				(String) username.getText(), "password", hashpass);
 		// if exists create user object
 		System.out.println("User:" + (String) username.getText());
 		if (userExists == true) {
-			user = Database.getUser(username.getText());
+			User user = Database.getUser(username.getText());
 			user.printUser();
+			root.getChildren().clear();
+			ProfileViewer profile = new ProfileViewer();
+			profile.OpenProfile(user.username);
 		} else {
 			JOptionPane.showMessageDialog(null,
 					"Login Failed. Please try again.", "Login Error!",

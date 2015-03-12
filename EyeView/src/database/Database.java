@@ -39,6 +39,7 @@ public class Database {
 	// required to check if you even give the user the option
 	private final static String emailField = "email";
 	private final static String usernameField = "username";
+	@SuppressWarnings("unused")
 	private final static String passwordField = "password";
 
 	/**
@@ -117,16 +118,14 @@ public class Database {
 		// prepare a statement to update a field 'field'
 		try {
 			PreparedStatement editUser = con
-					.prepareStatement("UPDATE users SET ?=? WHERE username=? AND email=?");
-			// parameterise data
-			editUser.setString(1, fieldSelect);
+					.prepareStatement("UPDATE users SET " + fieldSelect + "=? WHERE username=? AND email=?");
 			// if there's a string use string data else it must be a bool
 			if (newField != null)
-				editUser.setString(2, newField);
+				editUser.setString(1, newField);
 			else
-				editUser.setBoolean(2, priv);
-			editUser.setString(3, user.username);
-			editUser.setString(4, user.email);
+				editUser.setBoolean(1, priv);
+			editUser.setString(2, user.username);
+			editUser.setString(3, user.email);
 			// execute query
 			editUser.executeUpdate();
 		} catch (SQLException e) {
@@ -193,7 +192,7 @@ public class Database {
 	 * @return 1 if success
 	 * @return 0 if failure
 	 */
-	public static int userDelete(String username) {
+	public static boolean userDelete(String username) {
 		try {
 			// Takes a unique field (username) and deletes the users details
 			PreparedStatement dropUser = con
@@ -202,28 +201,27 @@ public class Database {
 			dropUser.setString(1, username);
 			// Execute SQL drop statement
 			dropUser.executeUpdate();
-			return 1;
+			return true;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			e.getMessage();
-			return 0;
+			return false;
 		}
 	}
 
 	/**
-	 * Checks a user with username and pw exists Can be used to log users in.
+	 * Lets you check for a user that has a X of Y AND a Z of W
+	 * where X and Z can be any field you want eg(username, password or DOB, email)
+	 * and Y and W are the specific data you are checking exists
+	 * eg for username, password you might put (Eyehouse1,Password1)
 	 * 
-	 * @param A
-	 *            field from the database 'users'
-	 * @param Data
-	 *            relevant to that Field
-	 * @param Another
-	 *            field from the database 'users'
-	 * @param Data
-	 *            relevant to that Field
-	 * @return true if user exists
+	 * @param Field1
+	 * @param Data1
+	 * @param Field2
+	 * @param Data2
+	 * @return
 	 */
-	public static boolean userCheck(String Field1, String Data1, String Field2,
+	public static boolean twoFieldCheck(String Field1, String Data1, String Field2,
 			String Data2) {
 
 		ResultSet result = null;
@@ -235,6 +233,41 @@ public class Database {
 			// parameterise queries
 			checkExists.setString(1, Data1);
 			checkExists.setString(2, Data2);
+
+			result = checkExists.executeQuery();
+			// loop through every row until
+			if (result.next()) {
+				// if the user exists there will only be one instance so the
+				// next result
+				// will trigger returning true
+				return true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			e.getMessage();
+			return false;
+		}
+		// the user doesnt exist
+		return false;
+	}
+	
+	/**
+	 * Checks the database for a single piece of data existing
+	 * 
+	 * @param Field1 eg(username)
+	 * @param Data1 eg(Eyehouse1)
+	 * @return
+	 */
+	public static boolean oneFieldCheck(String Field1, String Data1) {
+
+		ResultSet result = null;
+		// check database to see if username password exists
+		try {
+			PreparedStatement checkExists = con
+					.prepareStatement("SELECT * FROM users WHERE " + Field1
+							+ "=?");
+			// parameterise queries
+			checkExists.setString(1, Data1);
 
 			result = checkExists.executeQuery();
 			// loop through every row until
@@ -329,16 +362,16 @@ public class Database {
 		String password = "Invalid1";
 		String email = "dummy@york.ac.uk";
 
-		int mode = 1;
+		int mode = 8;
 		boolean insertSuccess;
-		int deleteSuccess = 0;
+		boolean deleteSuccess;
 		int updateSuccess = 0;
 
 		// testing switch
 		switch (mode) {
 		case 1: // userCheck
 			try {
-				check = userCheck(usernameField, username, emailField, email);
+				check = twoFieldCheck(usernameField, username, emailField, email);
 				if (check == true) {
 					System.out.println("User Exists");
 				} else
@@ -367,14 +400,24 @@ public class Database {
 			break;
 		case 3: // delete user
 			deleteSuccess = userDelete(username);
-			if (deleteSuccess == 1) {
+			if (deleteSuccess) {
 				// user deleted
 				System.out.println("User deleted");
 			} else
 				System.out.println("Deletion failed: check user details exist");
 			break;
 		case 4: // edit details
-			updateSuccess = userUpdate(update, "password", null, password);
+			
+			// user to be inserted
+			update = new User(username);
+			update.firstName("New");
+			update.secondName("User");
+			update.email(email);
+			update.admin(false);
+			update.landlord(false);
+			update.DOB("2000-02-20");
+			update.password(password);
+			updateSuccess = userUpdate(update, "username", null, username);
 			System.out.println("User update method returns: " + updateSuccess);
 			break;
 		case 5: // try to get user into an object
@@ -412,27 +455,11 @@ public class Database {
 						+ " created successfully");
 			}
 			break;
-		// case 8: // login
-		// User loggedIn = null;
-		// loggedIn = userCheck(usernameField, username, passwordField,
-		// password);
-		// // do something with this
-		// if (loggedIn != null) {
-		// loggedIn.printUser();
-		// } else {
-		// System.out
-		// .println("User does not exist: Check details and try again");
-		// }
-		//
-		// // then logout
-		// logout(loggedIn);
-		// if (loggedIn != null)
-		// loggedIn.printUser();
-		// else {
-		// System.out.println("Logged out");
-		// }
-		//
-		// break;
+		case 8:
+			boolean oneCheck;
+			oneCheck = oneFieldCheck("username", username);
+			System.out.println("User: " + username + " Exists: " + oneCheck);
+			break;
 		default: // no mode selected
 			System.out.println("Select a valid switch case mode");
 			break;
