@@ -97,13 +97,13 @@ public class ImageGallery extends Window {
 		private Group left = new Group();
 		private Group center = new Group();
 		private Group right = new Group();
-		private int centerIndex = 0;
+		private int centerIndex = 1;
 		private Timeline timeline;
 		private ScrollBar scrollBar = new ScrollBar();
 		private boolean localChange = false;
 		private float xPosition;
 		private float yPosition;
-		private int currentIndex = 0;
+		private int currentIndex = 1;
 
 		public GalleryPictures(final ArrayList<Image> galleryImages, final Image mainImage) {
 
@@ -145,10 +145,12 @@ public class ImageGallery extends Window {
 			scrollBar.setBlockIncrement(1);
 			scrollBar.valueProperty().addListener(new InvalidationListener() {
 				public void invalidated(Observable ov) {
-					if (!localChange && (currentIndex != 0))
+					if (!localChange && (currentIndex != 0)){
 						shiftToCenter(items[(int) (scrollBar.getValue() + 1.5)]);
-					if (!localChange && (currentIndex == 0))
+					}
+					if (!localChange && (currentIndex == 0)){
 						shiftToCenter(items[(int) (scrollBar.getValue() + 0.5)]);
+					}
 				}
 			});
 
@@ -196,12 +198,8 @@ public class ImageGallery extends Window {
 			}
 
 			// centered.setLayoutX(fitWidth/2);
-			centered.setLayoutY(fitHeight + yPosition + scrollbarHeight); // Change
-																			// to
-																			// main
-																			// image
-																			// +
-																			// amount
+			// Change to main image + amount
+			centered.setLayoutY(fitHeight + yPosition + scrollbarHeight); 
 
 			// position scroll bar at bottom
 			scrollBar.setLayoutX(xPosition); // change to main image start x
