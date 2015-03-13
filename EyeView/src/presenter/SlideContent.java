@@ -301,6 +301,6 @@ public class SlideContent extends Window {
         
         housePane.getChildren().add(desc);
         
-        return housePane;        
+        return housePane;
 	}
 }
