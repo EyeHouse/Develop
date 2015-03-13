@@ -5,18 +5,20 @@ import java.util.List;
 
 import Profile.Login;
 import Profile.Register;
-
 import parser.GraphicData;
 import parser.ImageData;
 import presenter.GraphicElement;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.Pagination;
+import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -25,9 +27,10 @@ import javafx.util.Callback;
 
 public class SlideContent extends Window {
 
-	private ArrayList<ImageGallery> houseImages = new ArrayList<ImageGallery>();
 	private List<GraphicData> graphicList;
 	private List<ImageData> imageList;
+	private ArrayList<Image> galleryList1, galleryList2, galleryList3;
+	private ImageGallery gallery, gallery1, gallery2, gallery3;
 
 	public SlideContent() {
 	}
@@ -231,38 +234,36 @@ public class SlideContent extends Window {
 
 	private void createLoginSlide() {
 		
-		Login login = new Login();
+		new Login();
 	}
 	
 	private void createRegisterSlide() {
 		
-		Register register = new Register();
+		new Register();
 	}
 	
 	private void createHousePagination() {
 		
-		ImageElement image = new ImageElement("file:./resources/images/buckingham-palace.jpg", 0.0f, 0.0f, 1f, 0f, 0f, 400f);
+		galleryList1 = new ArrayList<Image>();
+		galleryList2 = new ArrayList<Image>();
+		galleryList3 = new ArrayList<Image>();
 		
-		ImageGallery gallery = new ImageGallery(image);
+		for (int i = 1; i < 16; i++) {
+			galleryList1.add(new Image("file:./resources/houses/Modern-A-House-" + i + ".jpg", false));
+		}
 		
-		houseImages.add(gallery);
-		houseImages.add(gallery);
-		houseImages.add(gallery);
-		houseImages.add(gallery);
-		houseImages.add(gallery);
-		houseImages.add(gallery);
-		houseImages.add(gallery);
-		houseImages.add(gallery);
-		houseImages.add(gallery);
-		houseImages.add(gallery);
-		houseImages.add(gallery);
-		houseImages.add(gallery);
-		houseImages.add(gallery);
-
-        Pagination pagination = new Pagination(houseImages.size(), 0);
-        pagination.setPageFactory(new Callback<Integer, Node>() {           
-            public Node call(Integer houseIndex) {
-            	return createHousePage(houseIndex);
+		for (int i = 1; i < 8; i++) {
+			galleryList2.add(new Image("file:./resources/houses/Empty-Nester-" + i + ".jpg", false));
+		}
+		
+		for (int i = 1; i < 9; i++) {
+			galleryList3.add(new Image("file:./resources/houses/modern-apartment-" + i + ".jpg", false));
+		}
+		
+        Pagination pagination = new Pagination(3, 0);
+        pagination.setPageFactory(new Callback<Integer, Node>() {
+            public Node call(Integer pageIndex) {
+            	return createHousePage(pageIndex);
             }
         });
         pagination.getStyleClass().add(Pagination.STYLE_CLASS_BULLET);
@@ -270,21 +271,35 @@ public class SlideContent extends Window {
         root.getChildren().add(pagination);
 	}
 
-	protected Node createHousePage(Integer pageIndex) {
+	protected Pane createHousePage(Integer pageIndex) {
 		
-	    StackPane housePane = new StackPane();
+	    Pane housePane = new Pane();
 	    housePane.setPrefSize(750, 550);
 	    
-	    HBox box = new HBox();
-	    ImageGallery ig = houseImages.get(pageIndex);
+	    switch (pageIndex) {
+	    case 0:
+		    housePane.getChildren().clear();
+		    gallery1 = new ImageGallery(galleryList1, 40, 80);
+	    	housePane.getChildren().add(gallery1.getGallery());
+    		break;
+	    case 1:
+		    housePane.getChildren().clear();
+			gallery2 = new ImageGallery(galleryList2, 40, 80);
+	    	housePane.getChildren().add(gallery2.getGallery());
+    		break;
+	    case 2:
+		    housePane.getChildren().clear();
+			gallery3 = new ImageGallery(galleryList3, 40, 80);
+	    	housePane.getChildren().add(gallery3.getGallery());
+    		break;
+    	default:
+    		break;
+	    }
+	    
         Label desc = new Label("Random Text Goes Here!!!");
         desc.setContentDisplay(ContentDisplay.CENTER);
-        box.setSpacing(10);
-        box.setTranslateX(40);
-        box.setTranslateY(80);
-        box.getChildren().add(ig.getGallery());
-	    box.getChildren().add(desc);
-        housePane.getChildren().add(box);
+        
+        housePane.getChildren().add(desc);
         
         return housePane;        
 	}
