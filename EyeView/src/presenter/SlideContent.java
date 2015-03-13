@@ -29,8 +29,6 @@ public class SlideContent extends Window {
 
 	private List<GraphicData> graphicList;
 	private List<ImageData> imageList;
-	private ArrayList<Image> galleryList1, galleryList2, galleryList3;
-	private ImageGallery gallery, gallery1, gallery2, gallery3;
 
 	public SlideContent() {
 	}
@@ -98,8 +96,8 @@ public class SlideContent extends Window {
 
 	private void createLoggedOutSlide() {
 				
-		createHousePagination();
-				
+		new HousePages();
+		
 		Button loginbutton = new Button("Login");
 		loginbutton.relocate(20, 100);
 		loginbutton.setPrefSize(140, 30);
@@ -170,7 +168,7 @@ public class SlideContent extends Window {
 
 	private void createHomeSlide() {
         
-		createHousePagination();				
+		new HousePages();
 
 		Label label = new Label("Jake");
 		label.setTextAlignment(TextAlignment.CENTER);
@@ -242,65 +240,4 @@ public class SlideContent extends Window {
 		new Register();
 	}
 	
-	private void createHousePagination() {
-		
-		galleryList1 = new ArrayList<Image>();
-		galleryList2 = new ArrayList<Image>();
-		galleryList3 = new ArrayList<Image>();
-		
-		for (int i = 1; i < 16; i++) {
-			galleryList1.add(new Image("file:./resources/houses/Modern-A-House-" + i + ".jpg", false));
-		}
-		
-		for (int i = 1; i < 8; i++) {
-			galleryList2.add(new Image("file:./resources/houses/Empty-Nester-" + i + ".jpg", false));
-		}
-		
-		for (int i = 1; i < 9; i++) {
-			galleryList3.add(new Image("file:./resources/houses/modern-apartment-" + i + ".jpg", false));
-		}
-		
-        Pagination pagination = new Pagination(3, 0);
-        pagination.setPageFactory(new Callback<Integer, Node>() {
-            public Node call(Integer pageIndex) {
-            	return createHousePage(pageIndex);
-            }
-        });
-        pagination.getStyleClass().add(Pagination.STYLE_CLASS_BULLET);
-        pagination.relocate(195, 80);
-        root.getChildren().add(pagination);
-	}
-
-	protected Pane createHousePage(Integer pageIndex) {
-		
-	    Pane housePane = new Pane();
-	    housePane.setPrefSize(750, 550);
-	    
-	    switch (pageIndex) {
-	    case 0:
-		    housePane.getChildren().clear();
-		    gallery1 = new ImageGallery(galleryList1, 40, 80);
-	    	housePane.getChildren().add(gallery1.getGallery());
-    		break;
-	    case 1:
-		    housePane.getChildren().clear();
-			gallery2 = new ImageGallery(galleryList2, 40, 80);
-	    	housePane.getChildren().add(gallery2.getGallery());
-    		break;
-	    case 2:
-		    housePane.getChildren().clear();
-			gallery3 = new ImageGallery(galleryList3, 40, 80);
-	    	housePane.getChildren().add(gallery3.getGallery());
-    		break;
-    	default:
-    		break;
-	    }
-	    
-        Label desc = new Label("Random Text Goes Here!!!");
-        desc.setContentDisplay(ContentDisplay.CENTER);
-        
-        housePane.getChildren().add(desc);
-        
-        return housePane;
-	}
 }
