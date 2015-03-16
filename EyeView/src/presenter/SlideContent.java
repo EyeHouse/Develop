@@ -1,34 +1,22 @@
 package presenter;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import Profile.Login;
-import Profile.Register;
-import parser.GraphicData;
-import parser.ImageData;
-import presenter.GraphicElement;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
-import javafx.scene.control.Pagination;
-import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
-import javafx.util.Callback;
+import parser.GraphicData;
+import parser.ImageData;
+import Profile.Login;
+import Profile.Register;
 
 public class SlideContent extends Window {
-
-	private List<GraphicData> graphicList;
-	private List<ImageData> imageList;
 
 	public SlideContent() {
 	}
@@ -64,7 +52,7 @@ public class SlideContent extends Window {
 	public void loadXMLGraphics() {
 		
 		GraphicHandler gh = new GraphicHandler();
-		graphicList = slideData.getGraphicList();
+		List<GraphicData> graphicList = slideData.getGraphicList();
 
 		for (GraphicData currentGraphic : graphicList) {
 			GraphicElement graphic = new GraphicElement(
@@ -80,7 +68,7 @@ public class SlideContent extends Window {
 	public void loadXMLImages() {
 		
 		ImageHandler ih = new ImageHandler();
-		imageList = slideData.getImageList();
+		List<ImageData> imageList = slideData.getImageList();
 		
 		for (ImageData currentImage : imageList) {
 			ImageElement image = new ImageElement(
@@ -159,10 +147,6 @@ public class SlideContent extends Window {
 		
 		root.getChildren().add(loginbutton);
 		root.getChildren().add(registerbutton);
-		/*root.getChildren().add(videobutton);
-		root.getChildren().add(mapbutton);
-		root.getChildren().add(infobutton);
-		root.getChildren().add(reviewsbutton);*/
 		
 	}
 
@@ -191,28 +175,23 @@ public class SlideContent extends Window {
 		HBox buttonRow = new HBox();
 		
 		Button videobutton = new Button("Video Tour");
-		videobutton.relocate(386, 0);
 		videobutton.setPrefSize(140, 40);
 		videobutton.setFocusTraversable(false);
 		videobutton.setStyle("-fx-base: #90abc7");
 		buttonRow.getChildren().add(videobutton);
 		
 		Button mapbutton= new Button("Map");
-		mapbutton.relocate(528, 0);
-		mapbutton.setPrefSize(140, 40);
 		mapbutton.setFocusTraversable(false);
 		mapbutton.setStyle("-fx-base: #90abc7");
 		buttonRow.getChildren().add(mapbutton);
 	
 		Button infobutton = new Button("Information");
-		infobutton.relocate(670, 0);
 		infobutton.setPrefSize(140, 40);
 		infobutton.setFocusTraversable(false);
 		infobutton.setStyle("-fx-base: #90abc7");
 		buttonRow.getChildren().add(infobutton);
 		
 		Button reviewsbutton = new Button("Reviews");
-		reviewsbutton.relocate(812, 0);
 		reviewsbutton.setPrefSize(140, 40);
 		reviewsbutton.setFocusTraversable(false);
 		reviewsbutton.setStyle("-fx-base: #90abc7");

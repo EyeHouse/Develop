@@ -3,17 +3,20 @@ package presenter;
 import java.util.ArrayList;
 
 import javafx.scene.Node;
-import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.Pagination;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
 import javafx.util.Callback;
 
 public class HousePages extends Window {
 
 	private ArrayList<Image> galleryList1, galleryList2, galleryList3;
-	private ImageGallery gallery1, gallery2, gallery3;
+	private ImageGallery gallery;
 	
 	public HousePages() {
 		
@@ -51,33 +54,40 @@ public class HousePages extends Window {
 
 	protected Pane createHousePage(Integer pageIndex) {
 		
-	    Pane housePane = new Pane();
-	    housePane.setPrefSize(750, 550);
-	    housePane.getChildren().clear();
+	    Pane galleryPane = new Pane();
+	    galleryPane.setPrefSize(750, 550);
+	    galleryPane.getChildren().clear();
 	    
 	    switch (pageIndex) {
 	    case 0:
-		    gallery1 = new ImageGallery(galleryList1, 40, 80);
-	    	housePane.getChildren().add(gallery1.getGallery());
+		    gallery = new ImageGallery(galleryList1, 20, 80);
     		break;
 	    case 1:
-			gallery2 = new ImageGallery(galleryList2, 40, 80);
-	    	housePane.getChildren().add(gallery2.getGallery());
+			gallery = new ImageGallery(galleryList2, 20, 80);
     		break;
 	    case 2:
-			gallery3 = new ImageGallery(galleryList3, 40, 80);
-	    	housePane.getChildren().add(gallery3.getGallery());
+	    	gallery = new ImageGallery(galleryList3, 20, 80);
     		break;
     	default:
     		break;
 	    }
+		galleryPane.getChildren().add(gallery.getGallery());
 	    
-        Label desc = new Label("Random Text Goes Here!!!");
-        desc.setContentDisplay(ContentDisplay.CENTER);
+	    VBox infoColumn = new VBox();
+	    //infoColumn.setPrefWidth(200);
+	    infoColumn.setSpacing(20);
+	    infoColumn.relocate(450, 150);
+	    
+        Label price = new Label("£135 pcm");
+        price.setFont(Font.font("Calibri", FontWeight.EXTRA_BOLD, FontPosture.REGULAR, 36));
+        Label desc = new Label("What a lovely house!");
+        desc.setFont(Font.font("Calibri", 28));
         
-        housePane.getChildren().add(desc);
+		infoColumn.getChildren().addAll(price, desc);
+		
+		galleryPane.getChildren().add(infoColumn);
         
-        return housePane;
+        return galleryPane;
 	}
 
 }

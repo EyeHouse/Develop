@@ -1,9 +1,8 @@
 package presenter;
 
+
 import java.util.ArrayList;
 
-import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -12,6 +11,8 @@ import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
+import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.image.Image;
@@ -83,9 +84,9 @@ public class ImageGallery extends Window {
 	 * A UI control which displays a browsable display shelf of images
 	 */
 	public static class GalleryPictures extends Region {
-		private static final Duration DURATION = Duration.millis(500);
+		private static final Duration DURATION = Duration.millis(250);
 
-		private static final Interpolator INTERPOLATOR = Interpolator.EASE_BOTH;
+		private static final Interpolator INTERPOLATOR = Interpolator.EASE_OUT;
 		private static final double SPACING = 140;
 		private static final double scrollbarHeight = 15;
 		public static final double smallHouseHeight = 80;
