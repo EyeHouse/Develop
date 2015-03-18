@@ -1,12 +1,8 @@
 package presenter;
 
-/**
- * Copyright (c) 2008, 2012 Oracle and/or its affiliates.
- * All rights reserved. Use is subject to license terms.
- */
 
-import javafx.scene.Group;
-import javafx.scene.Node;
+import java.util.ArrayList;
+
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -15,6 +11,8 @@ import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
+import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.image.Image;
@@ -25,91 +23,70 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
-/**
- * 
- * A display shelf of images using the PerspectiveTransform effect.
- * 
- * @see javafx.scene.control.ScrollBar
- * @see javafx.scene.input.MouseEvent
- * @see javafx.scene.input.KeyEvent
- */
 public class ImageGallery extends Window {
-
+	
 	private static Group galleryGroup;
-	private float xPosition; // Horizontal position of image to be displayed
-	private float yPosition; // Vertical position of image to be displayed
 	public static ImageView mainHouseImage; // ImageView in which Image is drawn
-	public static Image[] galleryImages;
-	private static final double fitWidth = 410; // Make dependent on input
-												// image.
+	public static ArrayList<Image> galleryImages;
+	private static final double fitWidth = 410; // Make dependent on input image.
 	public static final double smallHouseHeight = 80;
 	public static final double smallHouseWidth = 130;
-	private static final double fitHeight = 300; // Make dependent on input
-													// image.
+	private static final double fitHeight = 300; // Make dependent on input image.
 	public static Image mainImage;
 
-	public ImageGallery(ImageElement image) {
-
-		galleryGroup = new Group();
+	public ImageGallery(ArrayList<Image> galleryList, float xPosition, float yPosition) {
 		
-		mainImage = new Image(image.sourcefile);
+		galleryImages = galleryList;
+		
+		mainImage = galleryImages.get(0);
 		mainHouseImage = new ImageView(mainImage);
-
-		xPosition = (float) (xResolution * image.xstart);
-		yPosition = (float) (yResolution * image.ystart);
-		mainHouseImage.setX(xPosition);
-		mainHouseImage.setY(yPosition);
-
+		
 		mainHouseImage.setFitWidth(fitWidth);
 		mainHouseImage.setFitHeight(fitHeight);
-
 		mainHouseImage.setPreserveRatio(false);
-
-		galleryImages = new Image[5];
-
-		galleryImages[0] = mainImage;
-
-		for (int i = 1; i < 5; i++) {
-			galleryImages[i] = new Image("file:./resources/images/palace" + (i)
-					+ ".jpg", false);
-		}
-
+		
 		Rectangle rect1 = new Rectangle();
-		rect1.setX(fitWidth + xPosition);
-		rect1.setY(yPosition+fitHeight+15);
+		rect1.setX(fitWidth);
+		rect1.setY(fitHeight+15);
 		rect1.setWidth(xResolution - (fitWidth + xPosition));
 		rect1.setHeight(smallHouseHeight);
 		rect1.setFill(Color.WHITE);
-
+		
 		Rectangle rect2 = new Rectangle();
-		rect2.setX(0);
-		rect2.setY(yPosition+fitHeight+15);
+		rect2.setX(-xPosition);
+		rect2.setY(fitHeight+15);
 		rect2.setWidth(xPosition);
 		rect2.setHeight(smallHouseHeight);
 		rect2.setFill(Color.WHITE);
-
-		// create display shelf
-		GalleryPictures galleryPictures = new GalleryPictures(galleryImages,
-				image);
 		
+		// create display shelf
+		GalleryPictures galleryPictures = new GalleryPictures(galleryImages, mainImage);
+		
+		galleryGroup = new Group();
+		galleryGroup.getChildren().clear();
 		galleryGroup.getChildren().add(galleryPictures);
-		//galleryGroup.getChildren().add(rect1);
-		//galleryGroup.getChildren().add(rect2);
+		galleryGroup.getChildren().add(rect1);
+		galleryGroup.getChildren().add(rect2);
 		galleryGroup.getChildren().add(mainHouseImage);
+		galleryGroup.setLayoutX(xPosition);
+		galleryGroup.setLayoutY(yPosition);
 	}
 	
 	public Node getGallery() {
 		return galleryGroup;
 	}
 
+	public static void setYPosition(float yPosition) {
+		
+	}
+
 	/**
-	 * A ui control which displays a browsable display shelf of images
+	 * A UI control which displays a browsable display shelf of images
 	 */
-
 	public static class GalleryPictures extends Region {
-		private static final Duration DURATION = Duration.millis(500);
+		private static final Duration DURATION = Duration.millis(250);
 
-		private static final Interpolator INTERPOLATOR = Interpolator.EASE_BOTH;
+		private static final Interpolator INTERPOLATOR = Interpolator.EASE_OUT;
 		private static final double SPACING = 140;
 		private static final double scrollbarHeight = 15;
 		public static final double smallHouseHeight = 80;
@@ -121,30 +98,25 @@ public class ImageGallery extends Window {
 		private Group left = new Group();
 		private Group center = new Group();
 		private Group right = new Group();
-		private int centerIndex = 0;
+		private int centerIndex = 1;
 		private Timeline timeline;
 		private ScrollBar scrollBar = new ScrollBar();
 		private boolean localChange = false;
 		private float xPosition;
 		private float yPosition;
-		private int currentIndex = 0;
-		private Image[] images;
+		private int currentIndex = 1;
 
-		public GalleryPictures(final Image[] images, final ImageElement image) {
-
-			this.images = images;
-			xPosition = (float) (image.xstart * xResolution);
-			yPosition = (float) (image.ystart * yResolution);
+		public GalleryPictures(final ArrayList<Image> galleryImages, final Image mainImage) {
 
 			// style scroll bar color
 			scrollBar.setStyle("-fx-base: #202020; -fx-background: #202020;");
 
 			// create items
-			items = new SmallHouseImages[images.length];
+			items = new SmallHouseImages[galleryImages.size()];
 
-			for (int i = 0; i < images.length; i++) {
+			for (int i = 0; i < galleryImages.size(); i++) {
 
-				items[i] = new SmallHouseImages(images[i]);
+				items[i] = new SmallHouseImages(galleryImages.get(i));
 				final int index = i;
 
 				items[i].setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -152,14 +124,14 @@ public class ImageGallery extends Window {
 						localChange = true;
 						scrollBar.setValue(index - 1);
 						localChange = false;
-						changeImage(index, image);
+						changeImage(index, mainImage);
 
-						if ((index == images.length - 1)
-								|| (index == images.length - 2)) {
-							items[images.length - 3].setVisible(true);
+						if ((index == galleryImages.size() - 1)
+								|| (index == galleryImages.size() - 2)) {
+							items[galleryImages.size() - 3].setVisible(true);
 						}
 
-						if (index != 0 && index != (images.length - 1)) {
+						if (index != 0 && index != (galleryImages.size() - 1)) {
 							shiftToCenter(items[index]);
 							currentIndex = index;
 						}
@@ -174,17 +146,14 @@ public class ImageGallery extends Window {
 			scrollBar.setBlockIncrement(1);
 			scrollBar.valueProperty().addListener(new InvalidationListener() {
 				public void invalidated(Observable ov) {
-					if (!localChange && (currentIndex != 0))
+					if (!localChange && (currentIndex != 0)){
 						shiftToCenter(items[(int) (scrollBar.getValue() + 1.5)]);
-					if (!localChange && (currentIndex == 0))
+					}
+					if (!localChange && (currentIndex == 0)){
 						shiftToCenter(items[(int) (scrollBar.getValue() + 0.5)]);
+					}
 				}
 			});
-			
-			/*scrollBar.setOnMouseReleased(new EventHandler<MouseEvent>() {
-	            @Override public void handle(ActionEvent e) {
-	                label.setText("Accepted");
-	            });*/
 
 			// create content
 			centered.getChildren().addAll(left, right, center);
@@ -194,15 +163,13 @@ public class ImageGallery extends Window {
 			update();
 		}
 
-		public void changeImage(int i, ImageElement image) {
+		public void changeImage(int i, Image mainImage) {
 
 			galleryGroup.getChildren().remove(mainHouseImage);
 
-			mainImage = galleryImages[i];
-			mainHouseImage = new ImageView(mainImage);
-
-			xPosition = (float) (xResolution * image.xstart);
-			yPosition = (float) (yResolution * image.ystart);
+			mainImage = galleryImages.get(i);
+			mainHouseImage.setImage(mainImage);
+			
 			mainHouseImage.setX(xPosition);
 			mainHouseImage.setY(yPosition);
 
@@ -220,7 +187,7 @@ public class ImageGallery extends Window {
 			if (currentIndex == 0) {
 				// keep centered centered
 				centered.setLayoutX(xPosition);
-			} else if (currentIndex == images.length - 1) {
+			} else if (currentIndex == galleryImages.size() - 1) {
 				// centered.setLayoutX((SPACING * 2.5) + (SPACING -
 				// smallHouseWidth));
 				centered.setLayoutX(xPosition + (fitWidth / 2));
@@ -232,12 +199,8 @@ public class ImageGallery extends Window {
 			}
 
 			// centered.setLayoutX(fitWidth/2);
-			centered.setLayoutY(fitHeight + yPosition + scrollbarHeight); // Change
-																			// to
-																			// main
-																			// image
-																			// +
-																			// amount
+			// Change to main image + amount
+			centered.setLayoutY(fitHeight + yPosition + scrollbarHeight); 
 
 			// position scroll bar at bottom
 			scrollBar.setLayoutX(xPosition); // change to main image start x
@@ -345,4 +308,5 @@ public class ImageGallery extends Window {
 			getChildren().addAll(imageView);
 		}
 	}
+
 }

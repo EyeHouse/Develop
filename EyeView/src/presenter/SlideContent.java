@@ -1,33 +1,22 @@
 package presenter;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import Profile.Login;
-import Profile.Register;
-
-import parser.GraphicData;
-import parser.ImageData;
-import presenter.GraphicElement;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
-import javafx.scene.control.Pagination;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
-import javafx.util.Callback;
+import parser.GraphicData;
+import parser.ImageData;
+import Profile.Login;
+import Profile.Register;
 
 public class SlideContent extends Window {
-
-	private ArrayList<ImageGallery> houseImages = new ArrayList<ImageGallery>();
-	private List<GraphicData> graphicList;
-	private List<ImageData> imageList;
 
 	public SlideContent() {
 	}
@@ -63,7 +52,7 @@ public class SlideContent extends Window {
 	public void loadXMLGraphics() {
 		
 		GraphicHandler gh = new GraphicHandler();
-		graphicList = slideData.getGraphicList();
+		List<GraphicData> graphicList = slideData.getGraphicList();
 
 		for (GraphicData currentGraphic : graphicList) {
 			GraphicElement graphic = new GraphicElement(
@@ -79,7 +68,7 @@ public class SlideContent extends Window {
 	public void loadXMLImages() {
 		
 		ImageHandler ih = new ImageHandler();
-		imageList = slideData.getImageList();
+		List<ImageData> imageList = slideData.getImageList();
 		
 		for (ImageData currentImage : imageList) {
 			ImageElement image = new ImageElement(
@@ -95,8 +84,8 @@ public class SlideContent extends Window {
 
 	private void createLoggedOutSlide() {
 				
-		createHousePagination();
-				
+		new HousePages();
+		
 		Button loginbutton = new Button("Login");
 		loginbutton.relocate(20, 100);
 		loginbutton.setPrefSize(140, 30);
@@ -158,16 +147,12 @@ public class SlideContent extends Window {
 		
 		root.getChildren().add(loginbutton);
 		root.getChildren().add(registerbutton);
-		/*root.getChildren().add(videobutton);
-		root.getChildren().add(mapbutton);
-		root.getChildren().add(infobutton);
-		root.getChildren().add(reviewsbutton);*/
 		
 	}
 
 	private void createHomeSlide() {
         
-		createHousePagination();				
+		new HousePages();
 
 		Label label = new Label("Jake");
 		label.setTextAlignment(TextAlignment.CENTER);
@@ -190,28 +175,23 @@ public class SlideContent extends Window {
 		HBox buttonRow = new HBox();
 		
 		Button videobutton = new Button("Video Tour");
-		videobutton.relocate(386, 0);
 		videobutton.setPrefSize(140, 40);
 		videobutton.setFocusTraversable(false);
 		videobutton.setStyle("-fx-base: #90abc7");
 		buttonRow.getChildren().add(videobutton);
 		
 		Button mapbutton= new Button("Map");
-		mapbutton.relocate(528, 0);
-		mapbutton.setPrefSize(140, 40);
 		mapbutton.setFocusTraversable(false);
 		mapbutton.setStyle("-fx-base: #90abc7");
 		buttonRow.getChildren().add(mapbutton);
 	
 		Button infobutton = new Button("Information");
-		infobutton.relocate(670, 0);
 		infobutton.setPrefSize(140, 40);
 		infobutton.setFocusTraversable(false);
 		infobutton.setStyle("-fx-base: #90abc7");
 		buttonRow.getChildren().add(infobutton);
 		
 		Button reviewsbutton = new Button("Reviews");
-		reviewsbutton.relocate(812, 0);
 		reviewsbutton.setPrefSize(140, 40);
 		reviewsbutton.setFocusTraversable(false);
 		reviewsbutton.setStyle("-fx-base: #90abc7");
@@ -231,61 +211,12 @@ public class SlideContent extends Window {
 
 	private void createLoginSlide() {
 		
-		Login login = new Login();
+		new Login();
 	}
 	
 	private void createRegisterSlide() {
 		
-		Register register = new Register();
+		new Register();
 	}
 	
-	private void createHousePagination() {
-		
-		ImageElement image = new ImageElement("file:./resources/images/buckingham-palace.jpg", 0.0f, 0.0f, 1f, 0f, 0f, 400f);
-		
-		ImageGallery gallery = new ImageGallery(image);
-		
-		houseImages.add(gallery);
-		houseImages.add(gallery);
-		houseImages.add(gallery);
-		houseImages.add(gallery);
-		houseImages.add(gallery);
-		houseImages.add(gallery);
-		houseImages.add(gallery);
-		houseImages.add(gallery);
-		houseImages.add(gallery);
-		houseImages.add(gallery);
-		houseImages.add(gallery);
-		houseImages.add(gallery);
-		houseImages.add(gallery);
-
-        Pagination pagination = new Pagination(houseImages.size(), 0);
-        pagination.setPageFactory(new Callback<Integer, Node>() {           
-            public Node call(Integer houseIndex) {
-            	return createHousePage(houseIndex);
-            }
-        });
-        pagination.getStyleClass().add(Pagination.STYLE_CLASS_BULLET);
-        pagination.relocate(195, 80);
-        root.getChildren().add(pagination);
-	}
-
-	protected Node createHousePage(Integer pageIndex) {
-		
-	    StackPane housePane = new StackPane();
-	    housePane.setPrefSize(750, 550);
-	    
-	    HBox box = new HBox();
-	    ImageGallery ig = houseImages.get(pageIndex);
-        Label desc = new Label("Random Text Goes Here!!!");
-        desc.setContentDisplay(ContentDisplay.CENTER);
-        box.setSpacing(10);
-        box.setTranslateX(40);
-        box.setTranslateY(80);
-        box.getChildren().add(ig.getGallery());
-	    box.getChildren().add(desc);
-        housePane.getChildren().add(box);
-        
-        return housePane;        
-	}
 }
