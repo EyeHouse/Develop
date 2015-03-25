@@ -2,14 +2,16 @@ package presenter;
 
 import java.util.ArrayList;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Pagination;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.util.Callback;
 
@@ -79,11 +81,22 @@ public class HousePages extends Window {
 	    infoColumn.relocate(450, 150);
 	    
         Label price = new Label("£135 pcm");
-        price.setFont(Font.font("Calibri", FontWeight.EXTRA_BOLD, FontPosture.REGULAR, 36));
+        price.setFont(Font.font(null, FontWeight.EXTRA_BOLD, 36));
         Label desc = new Label("What a lovely house!");
-        desc.setFont(Font.font("Calibri", 28));
+        desc.setFont(new Font(28));
+        final Button buttonSave = new Button("Save Property");
+        buttonSave.setPrefWidth(130);
+        
+        buttonSave.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent ae) {
+				// Add house save to database.
+				buttonSave.setDisable(true);
+				buttonSave.setText("Saved");
+			}
+		});
         
 		infoColumn.getChildren().addAll(price, desc);
+		if(slideID != INDEX)infoColumn.getChildren().add(buttonSave);
 		
 		galleryPane.getChildren().add(infoColumn);
         

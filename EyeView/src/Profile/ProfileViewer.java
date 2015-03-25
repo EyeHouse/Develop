@@ -8,13 +8,12 @@ package Profile;
  * Copyright:
  */
 
+import presenter.SlideContent;
 import database.Database;
 import database.User;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -29,30 +28,34 @@ import javafx.scene.shape.Polyline;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 
-public class ProfileViewer extends presenter.Window{
+public class ProfileViewer extends presenter.Window {
 
 	/* Profile Static Variables */
 	private static final int gridCellWidth = 20;
 	private static final int gridCellHeight = 30;
-	private static final double xStart = 0.5;
-	private static final double yStart = 0.1;
 	private static final int rating = 3;
 
 	/* Profile Global Variables */
 	private GridPane profileGrid = new GridPane();
-	private Font fontTitle = new Font("Cambria", 24);
-	private Font fontMain = new Font("Cambria", 18);
-	private User currentUser = null;
+	private Font fontTitle = new Font(24);
+	private Font fontMain = new Font(18);
+	private User currentUser = new User("Alxandir");
 
 	/* Profile Methods */
 
 	/* Open profile of user input */
-	public void OpenProfile(String username) {
-		currentUser = Database.getUser(username);
+	public ProfileViewer() {
+		currentUser.DOB = "1999/02/19";
+		currentUser.email = "test@gmail.com";
+		currentUser.first_name = "Alex";
+		currentUser.second_name = "Horsfield";
+		currentUser.landlord = false;
+		// currentUser = Database.getUser(currentUsername);
 		SetupGrid();
 		SetupUserInfo();
 		SetupStars();
 		SetupProfileReview();
+		SlideContent.setupBackButton();
 
 		root.getChildren().add(profileGrid);
 	}
@@ -71,13 +74,12 @@ public class ProfileViewer extends presenter.Window{
 		// Set grid size and spacing in group.
 		profileGrid.setHgap(gridCellWidth);
 		profileGrid.setVgap(gridCellHeight);
-		profileGrid.setPadding(new Insets(yResolution * yStart, xResolution * xStart,
-				100, 200));
+		profileGrid.relocate(220, 80);
 	}
 
 	/* Add basic user information to grid */
 	private void SetupUserInfo() {
-		Label labelName, labelEmail, labelDoB, labelType;
+		Label labelType;
 
 		// Instantiates a VBox to contain the user information
 		VBox vBoxUserText = new VBox(30);
@@ -86,12 +88,15 @@ public class ProfileViewer extends presenter.Window{
 		Rectangle profilePicture = new Rectangle(200, 200, Color.GRAY);
 
 		// Setup labels with information of current user
-		labelName = new Label(currentUser.first_name + "\t(" + currentUser.username
-				+ ")");
+		Label labelName = new Label(currentUser.first_name + "\t("
+				+ currentUser.username + ")");
 		labelName.setFont(fontTitle);
-		labelEmail = new Label("Email: " + currentUser.email);
+		Label labelEmail = new Label("Email: " + currentUser.email);
 		labelEmail.setFont(fontMain);
-		labelDoB = new Label("Date of Birth: " + currentUser.DOB);
+		Label labelDoB = new Label("Date of Birth: "
+				+ currentUser.DOB.substring(8, 10) + "/"
+				+ currentUser.DOB.substring(5, 8)
+				+ currentUser.DOB.substring(0, 4));
 		labelDoB.setFont(fontMain);
 
 		// Setup account type label based on boolean landlord value
@@ -177,7 +182,6 @@ public class ProfileViewer extends presenter.Window{
 		Label labelProfile, labelReview, labelNewReview;
 		Button buttonEditProfile = new Button("Edit Profile");
 		Button buttonReview = new Button("Submit");
-		Button buttonBack = new Button("Go Back");
 
 		// VBox to contain Profile label and text area
 		VBox vBoxProfile = new VBox(10);
@@ -187,9 +191,6 @@ public class ProfileViewer extends presenter.Window{
 
 		// VBox to contain Add Review label and text area
 		VBox vBoxNewReview = new VBox(5);
-		
-		// HBox to contain edit and back buttons
-		HBox hBoxButtons = new HBox(10);
 
 		// Setup labels
 		labelProfile = new Label("Profile");
@@ -230,30 +231,18 @@ public class ProfileViewer extends presenter.Window{
 				textNewReview.clear();
 			}
 		});
-		
-		// Setup back button event
-				buttonReview.setOnAction(new EventHandler<ActionEvent>() {
-					@Override
-					public void handle(ActionEvent event) {
-						// return to logged in house viewing slide
-						loadSlide(HOUSES);
-					}
-				});
 
 		// Populate grid with profile and review information
 		vBoxProfile.getChildren().addAll(labelProfile, textProfile);
 		vBoxReview.getChildren().addAll(labelReview, textReview);
 		vBoxNewReview.getChildren().addAll(labelNewReview, textNewReview);
-		hBoxButtons.getChildren().addAll(buttonEditProfile,buttonBack);
-		hBoxButtons.setAlignment(Pos.CENTER);
 		profileGrid.addRow(2, vBoxProfile, vBoxReview);
-		profileGrid.addRow(3, hBoxButtons, vBoxNewReview, buttonReview);
-		
-		
+		profileGrid.addRow(3, buttonEditProfile, vBoxNewReview, buttonReview);
 
 		// Centre align buttons
 		GridPane.setConstraints(buttonReview, 2, 3, 1, 1, HPos.CENTER,
 				VPos.CENTER);
-		GridPane.setConstraints(hBoxButtons, 0, 3, 1, 1, HPos.CENTER, VPos.CENTER);
+		GridPane.setConstraints(buttonEditProfile, 0, 3, 1, 1, HPos.CENTER,
+				VPos.CENTER);
 	}
 }

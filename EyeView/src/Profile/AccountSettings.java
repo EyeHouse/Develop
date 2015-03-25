@@ -16,7 +16,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.control.Button;
@@ -36,8 +35,6 @@ public class AccountSettings extends presenter.Window{
 	/* Account Settings Static Variables */
 	private static final int gridCellWidth = 50;
 	private static final int gridCellHeight = 30;
-	private static final double xStart = 0.5;
-	private static final double yStart = 0.05;
 
 	/* Account Settings Global Variables */
 	private GridPane grid = new GridPane();
@@ -78,8 +75,7 @@ public class AccountSettings extends presenter.Window{
 		// Set grid size and spacing in group.
 		grid.setHgap(gridCellWidth);
 		grid.setVgap(gridCellHeight);
-		grid.setPadding(new Insets(yResolution * yStart, xResolution * xStart,
-				100, 100));
+		grid.relocate(195,90);
 	}
 
 	/* Add existing account information to grid */
@@ -159,18 +155,25 @@ public class AccountSettings extends presenter.Window{
 			@Override
 			public void changed(@SuppressWarnings("rawtypes") ObservableValue ov, String previousValue,
 					String newValue) {
-				// Add days 29, 30 and 31 to combobox if previous month selected
-				// was February
-				if (previousValue.equals("02")) {
-					comboDoBDay.getItems().add(String.format("%02d", 29));
-					comboDoBDay.getItems().add(String.format("%02d", 30));
-					comboDoBDay.getItems().add(String.format("%02d", 31));
-					// Remove days 29, 30 and 31 if new month selected is
-					// February
-				} else if (newValue.equals("02")) {
-					comboDoBDay.getItems().remove(30);
-					comboDoBDay.getItems().remove(29);
-					comboDoBDay.getItems().remove(28);
+				switch (newValue) {
+					case "09":
+					case "04":
+					case "06":
+					case "11":
+						for (int j = 1; j < 31; j++) {
+							comboDoBDay.getItems().add(String.format("%02d", j));
+						}
+						break;
+					case "02":
+						for (int j = 1; j < 29; j++) {
+							comboDoBDay.getItems().add(String.format("%02d", j));
+						}
+						break;
+					default:
+						for (int j = 1; j < 32; j++) {
+							comboDoBDay.getItems().add(String.format("%04d", j));
+						}
+						break;
 				}
 			}
 		});
@@ -245,7 +248,7 @@ public class AccountSettings extends presenter.Window{
 				boolean check = Database.userDelete(currentUser.username);
 				if(check){
 					root.getChildren().clear();
-					Login login = new Login();
+					new Login();
 				}
 				else JOptionPane.showMessageDialog(null,
 						"Failed to delete user", "Account Error",
@@ -357,7 +360,6 @@ public class AccountSettings extends presenter.Window{
 
 		// Instantiate a new ProfileViewer object and open with current user
 		root.getChildren().clear();
-		ProfileViewer profile = new ProfileViewer();
-		profile.OpenProfile(currentUser.username);
+		new ProfileViewer();
 	}
 }

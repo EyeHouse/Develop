@@ -4,22 +4,23 @@ import java.util.List;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Cursor;
 import javafx.scene.control.Button;
-import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.TextAlignment;
+import javafx.scene.text.FontWeight;
 import parser.GraphicData;
 import parser.ImageData;
 import Profile.Login;
+import Profile.ProfileViewer;
 import Profile.Register;
+import Profile.SavedProperties;
 
 public class SlideContent extends Window {
-
-	public SlideContent() {
-	}
 
 	public void createSlide() {
 
@@ -42,7 +43,13 @@ public class SlideContent extends Window {
 				break;	
 			case REGISTER:
 				createRegisterSlide();
-				break;	
+				break;
+			case PROFILE:
+				createProfileSlide();
+				break;
+			case SAVEDPROPERTIES:
+				createSavedPropertySlide();
+				break;
 			default:
 				break;
 			}
@@ -85,138 +92,197 @@ public class SlideContent extends Window {
 	private void createLoggedOutSlide() {
 				
 		new HousePages();
-		
-		Button loginbutton = new Button("Login");
-		loginbutton.relocate(20, 100);
-		loginbutton.setPrefSize(140, 30);
-		loginbutton.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent ae) {
-				loadSlide(LOGIN);
-			}
-		});
-		loginbutton.setFocusTraversable(false);
-		
-				
-		Button registerbutton = new Button("Register");
-		registerbutton.relocate(20,140);
-		registerbutton.setPrefSize(140, 30);
-		registerbutton.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent ae) {
-				loadSlide(REGISTER);
-			}
-		});
-		registerbutton.setFocusTraversable(false);
-		
-		HBox buttonRow = new HBox();
-		
-		Button videobutton = new Button("Video Tour");
-		videobutton.relocate(386, 0);
-		videobutton.setPrefSize(140, 40);
-		videobutton.setFocusTraversable(false);
-		videobutton.setDisable(true);
-		videobutton.setStyle("-fx-base: #90abc7");
-		buttonRow.getChildren().add(videobutton);
-		
-		Button mapbutton= new Button("Map");
-		mapbutton.relocate(528, 0);
-		mapbutton.setPrefSize(140, 40);
-		mapbutton.setFocusTraversable(false);
-		mapbutton.setDisable(true);
-		mapbutton.setStyle("-fx-base: #90abc7");
-		buttonRow.getChildren().add(mapbutton);
-	
-		Button infobutton = new Button("Information");
-		infobutton.relocate(670, 0);
-		infobutton.setPrefSize(140, 40);
-		infobutton.setFocusTraversable(false);
-		infobutton.setDisable(true);
-		infobutton.setStyle("-fx-base: #90abc7");
-		buttonRow.getChildren().add(infobutton);
-		
-		Button reviewsbutton = new Button("Reviews");
-		reviewsbutton.relocate(812, 0);
-		reviewsbutton.setPrefSize(140, 40);
-		reviewsbutton.setFocusTraversable(false);
-		reviewsbutton.setDisable(true);
-		reviewsbutton.setStyle("-fx-base: #90abc7");
-		buttonRow.getChildren().add(reviewsbutton);
-		
-		buttonRow.relocate(350, 0);
-		buttonRow.setSpacing(5);
-		root.getChildren().add(buttonRow);
-		
-		root.getChildren().add(loginbutton);
-		root.getChildren().add(registerbutton);
+		createSidebar();
+		createMenuBar();
 		
 	}
 
 	private void createHomeSlide() {
         
 		new HousePages();
-
-		Label label = new Label("Jake");
-		label.setTextAlignment(TextAlignment.CENTER);
-		label.relocate(80, 35);
-		label.setWrapText(true);
-		label.setFont(new Font(20));
-		label.setTextFill(Color.web("#162252FF"));
-		label.setContentDisplay(ContentDisplay.CENTER);
-		
-		
-		Button logoutbutton = new Button ("Log out");
-		logoutbutton.relocate(20, 100);
-		logoutbutton.resize(140, 30);
-		logoutbutton.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent ae) {
-				loadSlide(INDEX);
-			}
-		});
-				
-		HBox buttonRow = new HBox();
-		
-		Button videobutton = new Button("Video Tour");
-		videobutton.setPrefSize(140, 40);
-		videobutton.setFocusTraversable(false);
-		videobutton.setStyle("-fx-base: #90abc7");
-		buttonRow.getChildren().add(videobutton);
-		
-		Button mapbutton= new Button("Map");
-		mapbutton.setFocusTraversable(false);
-		mapbutton.setStyle("-fx-base: #90abc7");
-		buttonRow.getChildren().add(mapbutton);
-	
-		Button infobutton = new Button("Information");
-		infobutton.setPrefSize(140, 40);
-		infobutton.setFocusTraversable(false);
-		infobutton.setStyle("-fx-base: #90abc7");
-		buttonRow.getChildren().add(infobutton);
-		
-		Button reviewsbutton = new Button("Reviews");
-		reviewsbutton.setPrefSize(140, 40);
-		reviewsbutton.setFocusTraversable(false);
-		reviewsbutton.setStyle("-fx-base: #90abc7");
-		buttonRow.getChildren().add(reviewsbutton);
-		
-		buttonRow.relocate(350, 0);
-		buttonRow.setSpacing(5);
-		root.getChildren().add(buttonRow);
-		
-		root.getChildren().add(label);
-		root.getChildren().add(logoutbutton);
-		/*root.getChildren().add(videobutton);
-		root.getChildren().add(mapbutton);
-		root.getChildren().add(infobutton);
-		root.getChildren().add(reviewsbutton);*/
+		createSidebar();
+		createMenuBar();
 	}
 
 	private void createLoginSlide() {
 		
 		new Login();
+		createSidebar();
 	}
 	
 	private void createRegisterSlide() {
 		
 		new Register();
+		createSidebar();
 	}
 	
+	private void createProfileSlide() {
+		new ProfileViewer();
+		createSidebar();
+	}
+	
+	private void createSavedPropertySlide(){
+		
+		new SavedProperties();
+		createSidebar();
+	}
+	
+	public void createSidebar(){
+		VBox sidebar = new VBox(20);
+		
+		if(slideID != INDEX&& slideID !=LOGIN && slideID != REGISTER){
+			//User currentUser = Database.getUser(currentUsername);
+			Label labelName = new Label("Jake");// = new Label(currentUser.first_name);
+			labelName.setWrapText(true);
+			labelName.setFont(new Font(20));
+			labelName.setTextFill(Color.web("#162252FF"));
+			
+			Label labelProfile = new Label("Profile");
+			labelProfile.setFont(new Font(16));
+			labelProfile.setOnMouseClicked(new EventHandler<MouseEvent>(){
+				public void handle(MouseEvent arg0) {
+					root.getChildren().clear();
+					slideID = PROFILE;
+					createSlide();
+		        }
+		    });
+			
+			Label labelSavedProperties = new Label("Saved Properties");
+			labelSavedProperties.setFont(new Font(16));
+			labelSavedProperties.setOnMouseClicked(new EventHandler<MouseEvent>(){
+				public void handle(MouseEvent arg0) {
+					root.getChildren().clear();
+					slideID = SAVEDPROPERTIES;
+					createSlide();
+		        }
+		    });
+			Label labelLogOut = new Label("Log Out");
+			labelLogOut.setFont(new Font(16));
+			labelLogOut.setOnMouseClicked(new EventHandler<MouseEvent>(){
+				public void handle(MouseEvent arg0) {
+					currentUsername = null;
+					loadSlide(INDEX);
+		        }
+		    });
+			
+			if(slideID == SAVEDPROPERTIES) labelSavedProperties.setFont(Font.font(null, FontWeight.BOLD, 16.5));
+			else if(slideID == PROFILE) labelProfile.setFont(Font.font(null, FontWeight.BOLD, 16.5));
+			
+			setupLabelHover(labelProfile);
+			setupLabelHover(labelSavedProperties);
+			setupLabelHover(labelLogOut);
+			
+			sidebar.getChildren().addAll(labelName,labelProfile,labelSavedProperties,labelLogOut);
+		}		
+		else{
+			Label labelLogin = new Label("Login");
+			labelLogin.setFont(new Font(16));
+			labelLogin.setOnMouseClicked(new EventHandler<MouseEvent>(){
+				public void handle(MouseEvent arg0) {
+					root.getChildren().clear();
+					slideID = LOGIN;
+					createSlide();
+		        }
+		    });	
+			
+			Label labelRegister = new Label("Register");
+			labelRegister.setFont(new Font(16));
+			labelRegister.setOnMouseClicked(new EventHandler<MouseEvent>(){
+				public void handle(MouseEvent arg0) {
+					root.getChildren().clear();
+					slideID = REGISTER;
+					createSlide();
+		        }
+		    });	
+			
+			if(slideID == LOGIN) labelLogin.setFont(Font.font(null, FontWeight.BOLD, 16.5));
+			else if(slideID == REGISTER) labelRegister.setFont(Font.font(null, FontWeight.BOLD, 16.5));
+			
+			setupLabelHover(labelLogin);
+			setupLabelHover(labelRegister);
+			
+			sidebar.getChildren().addAll(labelLogin,labelRegister);
+		}
+		
+		sidebar.relocate(30, 30);
+		
+		root.getChildren().add(sidebar);
+	}
+	
+	public void createMenuBar(){
+		HBox buttonRow = new HBox(5);
+		
+		Button videoButton = new Button("Video Tour");
+		videoButton.setPrefSize(140, 40);
+		videoButton.setFocusTraversable(false);
+		videoButton.setStyle("-fx-base: #90abc7");
+		
+		Button mapButton= new Button("Map");
+		mapButton.setPrefSize(140, 40);
+		mapButton.setFocusTraversable(false);
+		mapButton.setStyle("-fx-base: #90abc7");
+	
+		Button infoButton = new Button("Information");
+		infoButton.setPrefSize(140, 40);
+		infoButton.setFocusTraversable(false);
+		infoButton.setStyle("-fx-base: #90abc7");
+		
+		Button reviewsButton = new Button("Reviews");
+		reviewsButton.setPrefSize(140, 40);
+		reviewsButton.setFocusTraversable(false);
+		reviewsButton.setStyle("-fx-base: #90abc7");
+		
+		if(slideID == INDEX)
+		{
+			videoButton.setDisable(true);
+			mapButton.setDisable(true);
+			infoButton.setDisable(true);
+			reviewsButton.setDisable(true);
+		}
+		
+		buttonRow.relocate(350, 0);
+		buttonRow.getChildren().addAll(videoButton,mapButton,infoButton,reviewsButton);
+		
+		root.getChildren().add(buttonRow);
+	}
+	
+	private void setupLabelHover(final Label input){
+		
+		final boolean selected;
+		if(input.getFont().getSize() == 16.5) selected = true;
+		else selected = false;
+		
+		input.setCursor(Cursor.HAND);
+		input.setOnMouseEntered(new EventHandler<MouseEvent>(){
+			public void handle(MouseEvent arg0) {
+				if(selected) input.setFont(Font.font(null, FontWeight.BOLD, 17));
+				else input.setFont(new Font(17));
+	        }
+	    });
+		
+		input.setOnMouseExited(new EventHandler<MouseEvent>(){
+			public void handle(MouseEvent arg0) {
+				if(selected) input.setFont(Font.font(null, FontWeight.BOLD, 16.5));
+				else input.setFont(new Font(16));
+	        }
+	    });
+	}
+	
+	public static void setupBackButton(){
+		
+		Button buttonBack = new Button("Back");
+		buttonBack.relocate(195, 20);
+		
+		buttonBack.setCursor(Cursor.HAND);
+		buttonBack.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent ae) {
+				if(slideID != LOGIN && slideID != REGISTER)
+					loadSlide(HOUSES);
+				else
+					loadSlide(INDEX);
+			}
+		});
+		
+		root.getChildren().add(buttonBack);
+	}
 }
