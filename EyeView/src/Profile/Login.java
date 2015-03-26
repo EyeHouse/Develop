@@ -11,7 +11,6 @@ import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
-import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
@@ -19,7 +18,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
@@ -27,8 +25,6 @@ public class Login extends presenter.Window {
 
 	TextField username;
 	TextField password;
-	Button loginButton = new Button("Login");
-	Button cancelButton = new Button("Cancel");
 
 	GridPane loginGrid = new GridPane();
 
@@ -45,7 +41,7 @@ public class Login extends presenter.Window {
 
 		loginGrid.setVgap(30);
 		loginGrid.setHgap(30);
-		loginGrid.relocate(195,200);
+		loginGrid.relocate(250,200);
 	}
 
 	public void setupTextFields() {
@@ -71,14 +67,11 @@ public class Login extends presenter.Window {
 	}
 
 	public void setupButtons() {
-		// add buttons
-		HBox hbox = new HBox(20);
 
 		// Add buttons to grid
-		hbox.getChildren().addAll(loginButton, cancelButton);
-		hbox.setAlignment(Pos.CENTER);
-		loginGrid.add(hbox, 0, 3);
-		GridPane.setConstraints(hbox, 0, 3, 2, 1, HPos.CENTER, VPos.CENTER);
+		Button loginButton = new Button("Login");
+		loginGrid.add(loginButton, 0, 3);
+		GridPane.setConstraints(loginButton, 0, 3, 2, 1, HPos.CENTER, VPos.CENTER);
 
 		// Save button
 		loginButton.setCursor(Cursor.HAND);
@@ -87,13 +80,8 @@ public class Login extends presenter.Window {
 				login();
 			}
 		});
-		// cancel button event listener
-		cancelButton.setCursor(Cursor.HAND);
-		cancelButton.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent event) {
-				loadSlide(INDEX);
-			}
-		});
+		
+		SlideContent.setupBackButton();
 	}
 
 	public void setupTitle() {

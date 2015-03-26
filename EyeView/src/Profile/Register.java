@@ -146,6 +146,9 @@ public class Register extends presenter.Window {
 				}
 			}
 		});
+		comboDoBDay.setValue("DD");
+		comboDoBMonth.setValue("MM");
+		comboDoBYear.setValue("YYYY");
 		HBox comboBoxes = new HBox(5);
 		comboBoxes.getChildren().addAll(comboDoBDay,comboDoBMonth,comboDoBYear);
 		registerGrid.add(comboBoxes, 1, 4);

@@ -87,14 +87,11 @@ public class SlideContent extends Window {
 		}
 	}
 
-	/* These methods hold the hard-coded information for certain slides */
-
 	private void createLoggedOutSlide() {
 				
 		new HousePages();
 		createSidebar();
-		createMenuBar();
-		
+		createMenuBar();	
 	}
 
 	private void createHomeSlide() {
