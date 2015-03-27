@@ -8,6 +8,8 @@ package Profile;
  * Copyright:
  */
 
+import Button.ButtonType;
+import Button.SetupButton;
 import presenter.SlideContent;
 import database.Database;
 import database.User;
@@ -45,12 +47,7 @@ public class ProfileViewer extends presenter.Window {
 
 	/* Open profile of user input */
 	public ProfileViewer() {
-		currentUser.DOB = "1999/02/19";
-		currentUser.email = "test@gmail.com";
-		currentUser.first_name = "Alex";
-		currentUser.second_name = "Horsfield";
-		currentUser.landlord = false;
-		// currentUser = Database.getUser(currentUsername);
+		currentUser = Database.getUser(currentUsername);
 		SetupGrid();
 		SetupUserInfo();
 		SetupStars();
@@ -90,12 +87,13 @@ public class ProfileViewer extends presenter.Window {
 		// Setup labels with information of current user
 		Label labelName = new Label(currentUser.first_name + "\t("
 				+ currentUser.username + ")");
+		
 		labelName.setFont(fontTitle);
 		Label labelEmail = new Label("Email: " + currentUser.email);
 		labelEmail.setFont(fontMain);
 		Label labelDoB = new Label("Date of Birth: "
 				+ currentUser.DOB.substring(8, 10) + "/"
-				+ currentUser.DOB.substring(5, 8)
+				+ currentUser.DOB.substring(5, 7) + "/"
 				+ currentUser.DOB.substring(0, 4));
 		labelDoB.setFont(fontMain);
 
@@ -110,6 +108,8 @@ public class ProfileViewer extends presenter.Window {
 
 		// Add profile picture and user text to grid
 		profileGrid.addRow(0, profilePicture, vBoxUserText);
+		GridPane.setConstraints(vBoxUserText, 1, 0, 2, 1, HPos.LEFT,
+				VPos.CENTER);
 	}
 
 	/* Create star polygons and add them to the grid */
@@ -180,8 +180,11 @@ public class ProfileViewer extends presenter.Window {
 		final TextArea textReview = new TextArea();
 		final TextArea textNewReview = new TextArea();
 		Label labelProfile, labelReview, labelNewReview;
-		Button buttonEditProfile = new Button("Edit Profile");
-		Button buttonReview = new Button("Submit");
+		
+		ButtonType button1 = new ButtonType("150,150,150",null,"Edit Profile",100,30);
+		Button buttonEditProfile = new SetupButton().CreateButton(button1);
+		ButtonType button2 = new ButtonType("150,150,150",null,"Submit",100,30);
+		Button buttonReview = new SetupButton().CreateButton(button2);
 
 		// VBox to contain Profile label and text area
 		VBox vBoxProfile = new VBox(10);
@@ -217,8 +220,9 @@ public class ProfileViewer extends presenter.Window {
 			public void handle(ActionEvent event) {
 				// Instantiate account settings page
 				root.getChildren().clear();
-				AccountSettings accountSettings = new AccountSettings();
-				accountSettings.OpenAccountSettings(currentUser);
+				slideID = ACCOUNTSETTINGS;
+				SlideContent sc  = new SlideContent();
+				sc.createSlide();
 			}
 		});
 

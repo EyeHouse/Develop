@@ -3,6 +3,8 @@ package Profile;
 //TODO Auto-generated constructor stub
 import javax.swing.JOptionPane;
 
+import Button.ButtonType;
+import Button.SetupButton;
 import presenter.SlideContent;
 import database.DataHandler;
 import database.Database;
@@ -69,7 +71,8 @@ public class Login extends presenter.Window {
 	public void setupButtons() {
 
 		// Add buttons to grid
-		Button loginButton = new Button("Login");
+		ButtonType button1 = new ButtonType("150,150,150",null,"Login",100,30);
+		Button loginButton = new SetupButton().CreateButton(button1);
 		loginGrid.add(loginButton, 0, 3);
 		GridPane.setConstraints(loginButton, 0, 3, 2, 1, HPos.CENTER, VPos.CENTER);
 
@@ -109,7 +112,7 @@ public class Login extends presenter.Window {
 			currentUsername = username.getText();
 			user.printUser();
 			root.getChildren().clear();
-			slideID = PROFILE;
+			slideID = HOUSES;
 			SlideContent sc = new SlideContent();
 			sc.createSlide();
 		} else {

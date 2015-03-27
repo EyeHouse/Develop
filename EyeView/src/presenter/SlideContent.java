@@ -2,6 +2,8 @@ package presenter;
 
 import java.util.List;
 
+import database.Database;
+import database.User;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
@@ -15,6 +17,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import parser.GraphicData;
 import parser.ImageData;
+import Button.ButtonType;
+import Button.SetupButton;
+import Profile.AccountSettings;
 import Profile.Login;
 import Profile.ProfileViewer;
 import Profile.Register;
@@ -46,6 +51,9 @@ public class SlideContent extends Window {
 				break;
 			case PROFILE:
 				createProfileSlide();
+				break;
+			case ACCOUNTSETTINGS:
+				createAccountSettingsSlide();
 				break;
 			case SAVEDPROPERTIES:
 				createSavedPropertySlide();
@@ -118,6 +126,11 @@ public class SlideContent extends Window {
 		createSidebar();
 	}
 	
+	private void createAccountSettingsSlide() {
+		new AccountSettings();
+		createSidebar();
+	}
+	
 	private void createSavedPropertySlide(){
 		
 		new SavedProperties();
@@ -128,10 +141,10 @@ public class SlideContent extends Window {
 		VBox sidebar = new VBox(20);
 		
 		if(slideID != INDEX&& slideID !=LOGIN && slideID != REGISTER){
-			//User currentUser = Database.getUser(currentUsername);
-			Label labelName = new Label("Jake");// = new Label(currentUser.first_name);
+			User currentUser = Database.getUser(currentUsername);
+			Label labelName = new Label(currentUser.first_name);
 			labelName.setWrapText(true);
-			labelName.setFont(new Font(20));
+			labelName.setFont(Font.font(null, FontWeight.BOLD, 20));
 			labelName.setTextFill(Color.web("#162252FF"));
 			
 			Label labelProfile = new Label("Profile");
@@ -208,26 +221,21 @@ public class SlideContent extends Window {
 	
 	public void createMenuBar(){
 		HBox buttonRow = new HBox(5);
-		
-		Button videoButton = new Button("Video Tour");
-		videoButton.setPrefSize(140, 40);
+		ButtonType button1 = new ButtonType("144,171,199",null,"Video Tour",140,40);
+		Button videoButton = new SetupButton().CreateButton(button1);
 		videoButton.setFocusTraversable(false);
-		videoButton.setStyle("-fx-base: #90abc7");
 		
-		Button mapButton= new Button("Map");
-		mapButton.setPrefSize(140, 40);
+		ButtonType button2 = new ButtonType("144,171,199",null,"Map",140,40);
+		Button mapButton = new SetupButton().CreateButton(button2);
 		mapButton.setFocusTraversable(false);
-		mapButton.setStyle("-fx-base: #90abc7");
 	
-		Button infoButton = new Button("Information");
-		infoButton.setPrefSize(140, 40);
+		ButtonType button3 = new ButtonType("144,171,199",null,"Information",140,40);
+		Button infoButton = new SetupButton().CreateButton(button3);
 		infoButton.setFocusTraversable(false);
-		infoButton.setStyle("-fx-base: #90abc7");
 		
-		Button reviewsButton = new Button("Reviews");
-		reviewsButton.setPrefSize(140, 40);
+		ButtonType button4 = new ButtonType("144,171,199",null,"Reviews",140,40);
+		Button reviewsButton = new SetupButton().CreateButton(button4);
 		reviewsButton.setFocusTraversable(false);
-		reviewsButton.setStyle("-fx-base: #90abc7");
 		
 		if(slideID == INDEX)
 		{
@@ -267,7 +275,8 @@ public class SlideContent extends Window {
 	
 	public static void setupBackButton(){
 		
-		Button buttonBack = new Button("Back");
+		ButtonType button1 = new ButtonType("150,150,150",null,"Back",100,30);
+		Button buttonBack = new SetupButton().CreateButton(button1);
 		buttonBack.relocate(195, 20);
 		
 		buttonBack.setCursor(Cursor.HAND);

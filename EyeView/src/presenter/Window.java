@@ -27,7 +27,8 @@ public class Window extends Application {
 	public static final int LOGIN = 2;
 	public static final int REGISTER = 3;
 	public static final int PROFILE = 4;
-	public static final int SAVEDPROPERTIES = 5;
+	public static final int ACCOUNTSETTINGS = 5;
+	public static final int SAVEDPROPERTIES = 6;
 
 	public static SlideshowData slideshow;
 	public static List<SlideData> slideList;
@@ -61,7 +62,7 @@ public class Window extends Application {
 		Database.dbConnect();
 		
 		sc = new SlideContent();
-		loadSlide(HOUSES);
+		loadSlide(INDEX);
 		// Database.getRating(property.id);
 	}
 

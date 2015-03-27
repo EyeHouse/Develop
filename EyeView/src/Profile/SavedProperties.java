@@ -3,6 +3,8 @@ package Profile;
 import java.util.Arrays;
 import java.util.ArrayList;
 
+import Button.ButtonType;
+import Button.SetupButton;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -68,11 +70,12 @@ public class SavedProperties extends presenter.Window {
 
 	private void setupButtons() {
 		VBox buttons = new VBox(30);
-		Button buttonRemove = new Button("Remove");
-		Button buttonView = new Button("View");
-
-		buttonView.setPrefWidth(100);
-		buttonRemove.setPrefWidth(100);
+		
+		ButtonType button1 = new ButtonType("150,150,150",null,"View",100,30);
+		ButtonType button2 = new ButtonType("150,150,150",null,"Remove",100,30);
+		
+		Button buttonView = new SetupButton().CreateButton(button1);
+		Button buttonRemove = new SetupButton().CreateButton(button2);
 
 		buttonRemove.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
@@ -82,7 +85,7 @@ public class SavedProperties extends presenter.Window {
 					items.set(i, items.get(i + 1));
 				}
 				items.remove(items.size() - 1);
-
+				
 				properties.remove(index); // update database of current user
 			}
 		});

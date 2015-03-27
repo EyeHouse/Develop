@@ -5,6 +5,8 @@ package Profile;
 //import java.text.SimpleDateFormat;
 //import java.util.Locale;
 
+import Button.ButtonType;
+import Button.SetupButton;
 import presenter.SlideContent;
 import database.DataHandler;
 import database.Database;
@@ -29,7 +31,6 @@ public class Register extends presenter.Window {
 	public User user = null;
 	private String userPassword, userRepeatPassword;
 	// private static MessageDigest digester;
-	final Button registerButton = new Button("Register");
 
 	TextField username;
 	TextField firstname;
@@ -177,6 +178,8 @@ public class Register extends presenter.Window {
 	public void setupButtons() {
 		
 		// Add button to grid
+		ButtonType button1 = new ButtonType("150,150,150",null,"Register",100,30);
+		Button registerButton = new SetupButton().CreateButton(button1);
 		registerGrid.add(registerButton, 0, 8);
 		GridPane.setConstraints(registerButton, 0, 8, 2, 1, HPos.CENTER, VPos.CENTER);
 

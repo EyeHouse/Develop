@@ -10,6 +10,9 @@ package Profile;
 
 import javax.swing.JOptionPane;
 
+import Button.ButtonType;
+import Button.SetupButton;
+import presenter.SlideContent;
 import database.User;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -26,6 +29,7 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import database.Database;
@@ -56,9 +60,9 @@ public class AccountSettings extends presenter.Window{
 	/* Account Settings Methods */
 
 	/* Open account settings of user input */
-	public void OpenAccountSettings(User user) {
+	public AccountSettings() {
 
-		currentUser = user;
+		currentUser = Database.getUser(currentUsername);
 
 		setupGrid();
 		setupInfo();
@@ -75,7 +79,13 @@ public class AccountSettings extends presenter.Window{
 		// Set grid size and spacing in group.
 		grid.setHgap(gridCellWidth);
 		grid.setVgap(gridCellHeight);
-		grid.relocate(195,90);
+		grid.relocate(220, 80);
+		
+		ColumnConstraints col1 = new ColumnConstraints();
+		ColumnConstraints col2 = new ColumnConstraints();
+		col1.setMinWidth(100);
+		col2.setMinWidth(200);
+		grid.getColumnConstraints().addAll(col1, col2);
 	}
 
 	/* Add existing account information to grid */
@@ -208,7 +218,7 @@ public class AccountSettings extends presenter.Window{
 		// Load profile text area with current user profile and set size
 		profileText.setText("");
 		profileText.setMaxHeight(gridCellHeight * 3);
-		profileText.setMaxWidth(250);
+		profileText.setPrefWidth(200);
 
 		// Add profile label and text area to grid
 		grid.addRow(9, labelProfileText, profileText);
@@ -216,9 +226,16 @@ public class AccountSettings extends presenter.Window{
 
 	/* Add apply and cancel buttons to grid */
 	public void SetupButtons() {
-		Button buttonApply = new Button("Apply Changes");
-		Button buttonCancel = new Button("Cancel");
-		Button buttonDelete = new Button("Delete Account");
+		
+		ButtonType button1 = new ButtonType("150,150,150",null,"Apply Changes",150,30);
+		Button buttonApply = new SetupButton().CreateButton(button1);
+		
+		ButtonType button2 = new ButtonType("150,150,150",null,"Cancel",100,30);
+		Button buttonCancel = new SetupButton().CreateButton(button2);
+		
+		ButtonType button3 = new ButtonType("150,150,150",null,"Delete Account",150,30);
+		Button buttonDelete = new SetupButton().CreateButton(button3);
+
 		HBox hBoxButtons = new HBox(40);
 
 		// Add action listener to Apply button
@@ -247,6 +264,7 @@ public class AccountSettings extends presenter.Window{
 
 				boolean check = Database.userDelete(currentUser.username);
 				if(check){
+					currentUsername = null;
 					root.getChildren().clear();
 					new Login();
 				}
@@ -267,6 +285,7 @@ public class AccountSettings extends presenter.Window{
 		grid.add(hBoxButtons, 0, 10);
 		GridPane.setConstraints(hBoxButtons, 0, 10, 2, 1, HPos.CENTER,
 				VPos.CENTER);
+		SlideContent.setupBackButton();
 	}
 
 	/* Send account changes to database(WHEN IMPLEMENTED FULLY) */
@@ -360,6 +379,8 @@ public class AccountSettings extends presenter.Window{
 
 		// Instantiate a new ProfileViewer object and open with current user
 		root.getChildren().clear();
-		new ProfileViewer();
+		slideID = PROFILE;
+		SlideContent sc = new SlideContent();
+		sc.createSlide();
 	}
 }
