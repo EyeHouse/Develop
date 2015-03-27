@@ -15,7 +15,6 @@ import java.util.*;
 import javax.mail.*;
 import javax.mail.internet.*;
 
-
 public class Database {
 
 	// Public variables
@@ -41,7 +40,7 @@ public class Database {
 	private final static String usernameField = "username";
 	@SuppressWarnings("unused")
 	private final static String passwordField = "password";
-
+	
 	/**
 	 * A void function used to open our database connection
 	 */
@@ -56,7 +55,8 @@ public class Database {
 		// Create a connection with db:master_db user:root pw:
 		try {
 			con = DriverManager.getConnection(
-					"jdbc:mysql://127.0.0.1:3306/master_db", "root", "");
+					"jdbc:mysql://10.10.0.1:3306/eyehouse", "eyehouseuser",
+					"Toothbrush50");
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 			// handle any errors
@@ -118,7 +118,8 @@ public class Database {
 		// prepare a statement to update a field 'field'
 		try {
 			PreparedStatement editUser = con
-					.prepareStatement("UPDATE users SET " + fieldSelect + "=? WHERE username=? AND email=?");
+					.prepareStatement("UPDATE users SET " + fieldSelect
+							+ "=? WHERE username=? AND email=?");
 			// if there's a string use string data else it must be a bool
 			if (newField != null)
 				editUser.setString(1, newField);
@@ -210,10 +211,10 @@ public class Database {
 	}
 
 	/**
-	 * Lets you check for a user that has a X of Y AND a Z of W
-	 * where X and Z can be any field you want eg(username, password or DOB, email)
-	 * and Y and W are the specific data you are checking exists
-	 * eg for username, password you might put (Eyehouse1,Password1)
+	 * Lets you check for a user that has a X of Y AND a Z of W where X and Z
+	 * can be any field you want eg(username, password or DOB, email) and Y and
+	 * W are the specific data you are checking exists eg for username, password
+	 * you might put (Eyehouse1,Password1)
 	 * 
 	 * @param Field1
 	 * @param Data1
@@ -221,8 +222,8 @@ public class Database {
 	 * @param Data2
 	 * @return
 	 */
-	public static boolean twoFieldCheck(String Field1, String Data1, String Field2,
-			String Data2) {
+	public static boolean twoFieldCheck(String Field1, String Data1,
+			String Field2, String Data2) {
 
 		ResultSet result = null;
 		// check database to see if username password exists
@@ -250,12 +251,14 @@ public class Database {
 		// the user doesnt exist
 		return false;
 	}
-	
+
 	/**
 	 * Checks the database for a single piece of data existing
 	 * 
-	 * @param Field1 eg(username)
-	 * @param Data1 eg(Eyehouse1)
+	 * @param Field1
+	 *            eg(username)
+	 * @param Data1
+	 *            eg(Eyehouse1)
 	 * @return
 	 */
 	public static boolean oneFieldCheck(String Field1, String Data1) {
@@ -358,11 +361,11 @@ public class Database {
 		User get = null;
 		// User checkUse = null;
 
-		String username = "numberone";
+		String username = "newserveruser";
 		String password = "Invalid1";
 		String email = "dummy@york.ac.uk";
 
-		int mode = 8;
+		int mode = 2;
 		boolean insertSuccess;
 		boolean deleteSuccess;
 		int updateSuccess = 0;
@@ -371,10 +374,12 @@ public class Database {
 		switch (mode) {
 		case 1: // userCheck
 			try {
-				check = twoFieldCheck(usernameField, username, emailField, email);
+				check = twoFieldCheck(usernameField, username, emailField,
+						email);
 				if (check == true) {
 					System.out.println("User Exists");
 				} else
+
 					System.out.println("User Does not exist");
 			} catch (Exception e) {
 				System.out
@@ -407,7 +412,7 @@ public class Database {
 				System.out.println("Deletion failed: check user details exist");
 			break;
 		case 4: // edit details
-			
+
 			// user to be inserted
 			update = new User(username);
 			update.firstName("New");
