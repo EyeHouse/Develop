@@ -3,6 +3,9 @@ package Profile;
 //TODO Auto-generated constructor stub
 import javax.swing.JOptionPane;
 
+import Button.ButtonType;
+import Button.SetupButton;
+import presenter.SlideContent;
 import database.DataHandler;
 import database.Database;
 import database.User;
@@ -10,8 +13,6 @@ import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
@@ -19,17 +20,13 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 
 public class Login extends presenter.Window {
 
 	TextField username;
 	TextField password;
-	Button loginButton = new Button("Login");
-	Button cancelButton = new Button("Cancel");
 
 	GridPane loginGrid = new GridPane();
 
@@ -44,42 +41,40 @@ public class Login extends presenter.Window {
 
 	public void setupGrid() {
 
-		loginGrid.setVgap(10);
-		loginGrid.setHgap(10);
-		loginGrid.setPadding(new Insets(50, 5, 5, 270));
+		loginGrid.setVgap(30);
+		loginGrid.setHgap(30);
+		loginGrid.relocate(250,200);
 	}
 
 	public void setupTextFields() {
 
 		// username field
 		username = new TextField();
-		loginGrid.add(new Label("Username: "), 0, 8);
+		loginGrid.add(new Label("Username: "), 0, 1);
 		username.setPromptText("Username");
 		username.setPrefColumnCount(10);
 		loginGrid.getChildren().add(username);
-		GridPane.setConstraints(username, 1, 8);
+		GridPane.setConstraints(username, 1, 1);
 	}
 
 	public void setupPasswordFields() {
 
 		// Password field
 		password = new PasswordField();
-		loginGrid.add(new Label("Password: "), 0, 10);
+		loginGrid.add(new Label("Password: "), 0, 2);
 		password.setPromptText("Your Password");
 		password.setPrefColumnCount(10);
 		loginGrid.getChildren().add(password);
-		GridPane.setConstraints(password, 1, 10);
+		GridPane.setConstraints(password, 1, 2);
 	}
 
 	public void setupButtons() {
-		// add buttons
-		HBox hbox = new HBox(5);
 
 		// Add buttons to grid
-		hbox.getChildren().addAll(loginButton, cancelButton);
-		hbox.setAlignment(Pos.CENTER);
-		loginGrid.add(hbox, 1, 12);
-		GridPane.setConstraints(hbox, 1, 12, 1, 1, HPos.CENTER, VPos.CENTER);
+		ButtonType button1 = new ButtonType("150,150,150",null,"Login",100,30);
+		Button loginButton = new SetupButton().CreateButton(button1);
+		loginGrid.add(loginButton, 0, 3);
+		GridPane.setConstraints(loginButton, 0, 3, 2, 1, HPos.CENTER, VPos.CENTER);
 
 		// Save button
 		loginButton.setCursor(Cursor.HAND);
@@ -88,21 +83,17 @@ public class Login extends presenter.Window {
 				login();
 			}
 		});
-		// cancel button event listener
-		cancelButton.setCursor(Cursor.HAND);
-		cancelButton.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent event) {
-				loadSlide(INDEX);
-			}
-		});
+		
+		SlideContent.setupBackButton();
 	}
 
 	public void setupTitle() {
 
-		final Text topTitle = new Text(270, 40, "Login Page");
-		topTitle.setFill(Color.TEAL);
-		topTitle.setFont(Font.font(java.awt.Font.MONOSPACED, 35));
-		root.getChildren().add(topTitle);
+		final Label topTitle = new Label("Login");
+		topTitle.setTextFill(Color.web("#162252FF"));
+		topTitle.setFont(new Font(35));
+		loginGrid.add(topTitle, 0, 0);
+		GridPane.setConstraints(topTitle, 0, 0, 2, 1, HPos.CENTER, VPos.CENTER);
 
 	}
 
@@ -118,10 +109,12 @@ public class Login extends presenter.Window {
 		System.out.println("User:" + (String) username.getText());
 		if (userExists == true) {
 			User user = Database.getUser(username.getText());
+			currentUsername = username.getText();
 			user.printUser();
 			root.getChildren().clear();
-			ProfileViewer profile = new ProfileViewer();
-			profile.OpenProfile(user.username);
+			slideID = HOUSES;
+			SlideContent sc = new SlideContent();
+			sc.createSlide();
 		} else {
 			JOptionPane.showMessageDialog(null,
 					"Login Failed. Please try again.", "Login Error!",

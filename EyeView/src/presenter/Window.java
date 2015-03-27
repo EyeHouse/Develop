@@ -21,11 +21,14 @@ import javafx.util.Duration;
 public class Window extends Application {
 
 	public static final double xResolution = 960;
-	public static final double yResolution = 720;
+	public static final double yResolution = 800;
 	public static final int INDEX = 0;
 	public static final int HOUSES = 1;
 	public static final int LOGIN = 2;
 	public static final int REGISTER = 3;
+	public static final int PROFILE = 4;
+	public static final int ACCOUNTSETTINGS = 5;
+	public static final int SAVEDPROPERTIES = 6;
 
 	public static SlideshowData slideshow;
 	public static List<SlideData> slideList;
@@ -33,6 +36,7 @@ public class Window extends Application {
 	public static String groupID;
 	public static int slideID;
 
+	public static String currentUsername = null;
 	public static Group root;
 	private static SlideContent sc;
 
@@ -65,7 +69,6 @@ public class Window extends Application {
 	public static void loadSlide(int id) {
 
 		slideID = id;
-
 		if (slideID < (slideList.size())) {
 
 			root.getChildren().clear();
