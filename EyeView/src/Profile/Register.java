@@ -121,10 +121,16 @@ public class Register extends presenter.Window {
 
 		registerGrid.add(new Label("Date of Birth: "), 0, 4);
 
+		comboDoBDay.setValue("DD");
+		comboDoBMonth.setValue("MM");
+		comboDoBYear.setValue("YYYY");
+		
 		comboDoBMonth.valueProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(@SuppressWarnings("rawtypes") ObservableValue ov, String previousValue,
 					String newValue) {
+				
+				comboDoBDay.getItems().clear();
 				switch (newValue) {
 					case "09":
 					case "04":
@@ -141,15 +147,15 @@ public class Register extends presenter.Window {
 						break;
 					default:
 						for (int i = 1; i < 32; i++) {
-							comboDoBDay.getItems().add(String.format("%04d", i));
+							comboDoBDay.getItems().add(String.format("%02d", i));
 						}
 						break;
 				}
+				
+				
 			}
 		});
-		comboDoBDay.setValue("DD");
-		comboDoBMonth.setValue("MM");
-		comboDoBYear.setValue("YYYY");
+		
 		HBox comboBoxes = new HBox(5);
 		comboBoxes.getChildren().addAll(comboDoBDay,comboDoBMonth,comboDoBYear);
 		registerGrid.add(comboBoxes, 1, 4);
