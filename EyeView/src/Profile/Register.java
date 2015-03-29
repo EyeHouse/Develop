@@ -130,6 +130,7 @@ public class Register extends presenter.Window {
 			public void changed(@SuppressWarnings("rawtypes") ObservableValue ov, String previousValue,
 					String newValue) {
 				
+				comboDoBDay.setValue("DA");
 				comboDoBDay.getItems().clear();
 				switch (newValue) {
 					case "09":
@@ -150,8 +151,9 @@ public class Register extends presenter.Window {
 							comboDoBDay.getItems().add(String.format("%02d", i));
 						}
 						break;
-				}
 				
+				}
+				comboDoBDay.setValue("DD");
 				
 			}
 		});
