@@ -37,9 +37,13 @@ public class SetupButton {
 	private void setButtonRGB() {
 
 		// Set fill and border colour using CSS commands
-		button.setStyle("-fx-base: rgb(" + buttonData.colourRGB
-				+ ");-fx-border-color: rgb(" + buttonData.borderColourRGB
-				+ ");");
+		if (buttonData.borderColourRGB != null) {
+			button.setStyle("-fx-base: rgb(" + buttonData.colourRGB
+					+ ");-fx-border-color: rgb(" + buttonData.borderColourRGB
+					+ ");");
+		} else {
+			button.setStyle("-fx-base: rgb(" + buttonData.colourRGB + ");");
+		}
 
 	}
 
