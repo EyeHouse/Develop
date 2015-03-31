@@ -32,17 +32,21 @@ public class Register extends presenter.Window {
 	private String userPassword, userRepeatPassword;
 	// private static MessageDigest digester;
 
-	TextField username;
-	TextField firstname;
-	TextField lastname;
-	TextField email;
-	PasswordField password;
-	PasswordField repeatPassword;
-	GridPane registerGrid = new GridPane();
+	private TextField username;
+	private TextField firstname;
+	private TextField lastname;
+	private TextField email;
+	private PasswordField password;
+	private PasswordField repeatPassword;
+	private GridPane registerGrid = new GridPane();
+	
+	private RadioButton buttonStudent = new RadioButton("Student");
+	private RadioButton buttonLandlord = new RadioButton("Landlord");
+	private RadioButton buttonOther = new RadioButton("Other");
 
-	ComboBox<String> comboDoBYear = new ComboBox<String>();
-	ComboBox<String> comboDoBMonth = new ComboBox<String>();
-	ComboBox<String> comboDoBDay = new ComboBox<String>();
+	private ComboBox<String> comboDoBYear = new ComboBox<String>();
+	private ComboBox<String> comboDoBMonth = new ComboBox<String>();
+	private ComboBox<String> comboDoBDay = new ComboBox<String>();
 
 	public static void main(String[] args) {
 		Database.dbConnect();
@@ -80,30 +84,39 @@ public class Register extends presenter.Window {
 	}
 
 	public void setupTextFields(GridPane grid) {
-
+		HBox hBoxAccountType = new HBox(10);
+		ToggleGroup group = new ToggleGroup();
+		
 		// username field
 		username = new TextField();
 		username.setPromptText("Username");
 		username.setPrefColumnCount(10);
-		registerGrid.addRow(1,new Label("Enter your username: "),username);
+		registerGrid.addRow(1,new Label("Enter your username:"),username);
 
 		// First Name field
 		firstname = new TextField();
 		firstname.setPromptText("Joe");
 		firstname.setPrefColumnCount(10);
-		registerGrid.addRow(2,new Label("First name: "),firstname);
+		registerGrid.addRow(2,new Label("First name:"),firstname);
 
 		// Last Name field
 		lastname = new TextField();
 		lastname.setPromptText("Bloggs");
 		lastname.setPrefColumnCount(10);
-		registerGrid.addRow(3,new Label("Last name: "),lastname);
-
+		registerGrid.addRow(3,new Label("Last name:"),lastname);
+		
+		// Account Type radio buttons
+		buttonStudent.setToggleGroup(group);
+		buttonLandlord.setToggleGroup(group);
+		buttonOther.setToggleGroup(group);
+		hBoxAccountType.getChildren().addAll(buttonStudent, buttonLandlord, buttonOther);
+		registerGrid.addRow(5,new Label("Account Type:"),hBoxAccountType);
+		
 		// Email field
 		email = new TextField();
 		email.setPromptText("example@mail.com");
 		email.setPrefColumnCount(10);
-		registerGrid.addRow(5,new Label("Email: "),email);
+		registerGrid.addRow(6,new Label("Email:"),email);
 	}
 	
 	public void setupDoB() {
@@ -158,7 +171,7 @@ public class Register extends presenter.Window {
 			}
 		});
 		
-		HBox comboBoxes = new HBox(5);
+		HBox comboBoxes = new HBox(30);
 		comboBoxes.getChildren().addAll(comboDoBDay,comboDoBMonth,comboDoBYear);
 		registerGrid.add(comboBoxes, 1, 4);
 
@@ -168,17 +181,17 @@ public class Register extends presenter.Window {
 
 		// Password field
 		password = new PasswordField();
-		registerGrid.add(new Label("Password: "), 0, 6);
+		registerGrid.add(new Label("Password: "), 0, 7);
 		password.setPromptText("Your Password");
 		password.setPrefColumnCount(10);
-		registerGrid.add(password, 1, 6);
+		registerGrid.add(password, 1, 7);
 
 		// Repeat Password field
 		repeatPassword = new PasswordField();
-		registerGrid.add(new Label("Confirm Password: "), 0, 7);
+		registerGrid.add(new Label("Confirm Password: "), 0, 8);
 		repeatPassword.setPromptText("Your Password");
 		repeatPassword.setPrefColumnCount(10);
-		registerGrid.add(repeatPassword, 1, 7);
+		registerGrid.add(repeatPassword, 1, 8);
 	}
 
 	
@@ -188,8 +201,8 @@ public class Register extends presenter.Window {
 		// Add button to grid
 		ButtonType button1 = new ButtonType("150,150,150",null,"Register",100,30);
 		Button registerButton = new SetupButton().CreateButton(button1);
-		registerGrid.add(registerButton, 0, 8);
-		GridPane.setConstraints(registerButton, 0, 8, 2, 1, HPos.CENTER, VPos.CENTER);
+		registerGrid.add(registerButton, 0, 9);
+		GridPane.setConstraints(registerButton, 0, 9, 2, 1, HPos.CENTER, VPos.CENTER);
 
 		// Save button
 		registerButton.setCursor(Cursor.HAND);
