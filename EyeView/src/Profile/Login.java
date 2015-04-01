@@ -111,10 +111,11 @@ public class Login extends presenter.Window {
 			User user = Database.getUser(username.getText());
 			currentUsername = username.getText();
 			user.printUser();
-			root.getChildren().clear();
-			slideID = HOUSES;
-			SlideContent sc = new SlideContent();
-			sc.createSlide();
+			loadSlide(HOUSES);
+			//root.getChildren().clear();
+			//slideID = HOUSES;
+			//SlideContent sc = new SlideContent();
+			//sc.createSlide();
 		} else {
 			JOptionPane.showMessageDialog(null,
 					"Login Failed. Please try again.", "Login Error!",

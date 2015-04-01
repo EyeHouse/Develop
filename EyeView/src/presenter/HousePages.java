@@ -24,9 +24,9 @@ public class HousePages extends Window {
 
 	private ArrayList<Image> galleryList1, galleryList2, galleryList3;
 	private ImageGallery gallery;
-	private Timeline timer;
+	
 	private Pagination pagination;
-	private Button buttonPause;
+	private static Button buttonTimerControl;
 
 	public HousePages() {
 
@@ -58,9 +58,9 @@ public class HousePages extends Window {
 		pagination = new Pagination(3, 0);
 		pagination.setPageFactory(new Callback<Integer, Node>() {
 			public Node call(Integer pageIndex) {
-				if(buttonPause.getText().equals("Pause"))
+				if(buttonTimerControl.getText().equals("Pause"))
 				{
-					timer.playFromStart();
+					advertTimer.playFromStart();
 				}
 				return createHousePage(pageIndex);
 			}
@@ -124,37 +124,49 @@ public class HousePages extends Window {
 		return galleryPane;
 	}
 
-	void setupButtons() {
+	private void setupButtons() {
 		ButtonType button1 = new ButtonType("150,150,150", null, "Pause", 100,
 				30);
-		buttonPause = new SetupButton().CreateButton(button1);
-		buttonPause.relocate(800, 700);
+		buttonTimerControl = new SetupButton().CreateButton(button1);
+		buttonTimerControl.relocate(800, 700);
 
-		buttonPause.setOnAction(new EventHandler<ActionEvent>() {
+		buttonTimerControl.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent ae) {
-				if (buttonPause.getText().equals("Pause")) {
-					buttonPause.setText("Play");
-					timer.pause();
+				if (buttonTimerControl.getText().equals("Pause")) {
+					setTimerState("PAUSE");
 				} else {
-					buttonPause.setText("Pause");
-					timer.play();
+					setTimerState("PLAY");
 				}
 			}
 		});
 
-		root.getChildren().add(buttonPause);
+		root.getChildren().add(buttonTimerControl);
 	}
 
-	void setupAdvertTimer() {
-		timer = new Timeline(new KeyFrame(Duration.millis(5 * 1000),
+	private void setupAdvertTimer() {
+		advertTimer = new Timeline(new KeyFrame(Duration.millis(5 * 1000),
 				new EventHandler<ActionEvent>() {
 					public void handle(ActionEvent ae) {
 						int index = pagination.getCurrentPageIndex();
 						index++;
 						if (index >= pagination.getPageCount())index = 0;
 						pagination.setCurrentPageIndex(index);
+						
 					}
 				}));
-		timer.play();
+		advertTimer.play();
+	}
+	
+	public static void setTimerState(String newState){
+		switch(newState){
+			case "PLAY":
+				buttonTimerControl.setText("Pause");
+				advertTimer.play();
+				break;
+			case "PAUSE":
+				buttonTimerControl.setText("Play");
+				advertTimer.pause();
+				break;
+		}
 	}
 }
