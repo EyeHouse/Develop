@@ -295,6 +295,7 @@ public class SlideContent extends Window {
 					loadSlide(HOUSES);
 				else
 					loadSlide(INDEX);
+				HousePages.setTimerState("PAUSE");
 			}
 		});
 		
