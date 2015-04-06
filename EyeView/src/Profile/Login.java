@@ -43,7 +43,7 @@ public class Login extends presenter.Window {
 
 		loginGrid.setVgap(30);
 		loginGrid.setHgap(30);
-		loginGrid.relocate(250,200);
+		loginGrid.relocate(250, 200);
 	}
 
 	public void setupTextFields() {
@@ -71,10 +71,12 @@ public class Login extends presenter.Window {
 	public void setupButtons() {
 
 		// Add buttons to grid
-		ButtonType button1 = new ButtonType("150,150,150",null,"Login",100,30);
+		ButtonType button1 = new ButtonType("150,150,150", null, "Login", 100,
+				30);
 		Button loginButton = new SetupButton().CreateButton(button1);
 		loginGrid.add(loginButton, 0, 3);
-		GridPane.setConstraints(loginButton, 0, 3, 2, 1, HPos.CENTER, VPos.CENTER);
+		GridPane.setConstraints(loginButton, 0, 3, 2, 1, HPos.CENTER,
+				VPos.CENTER);
 
 		// Save button
 		loginButton.setCursor(Cursor.HAND);
@@ -83,7 +85,7 @@ public class Login extends presenter.Window {
 				login();
 			}
 		});
-		
+
 		SlideContent.setupBackButton();
 	}
 
@@ -103,8 +105,7 @@ public class Login extends presenter.Window {
 		// check the user exits
 		String hashpass = DataHandler.crypt((String) password.getText());
 
-		userExists = Database.twoFieldCheck("username",
-				(String) username.getText(), "password", hashpass);
+		userExists = Database.login((String) username.getText(), hashpass);
 		// if exists create user object
 		System.out.println("User:" + (String) username.getText());
 		if (userExists == true) {
