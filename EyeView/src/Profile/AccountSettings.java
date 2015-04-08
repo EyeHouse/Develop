@@ -287,7 +287,6 @@ public class AccountSettings extends presenter.Window{
 		grid.add(hBoxButtons, 0, 10);
 		GridPane.setConstraints(hBoxButtons, 0, 10, 2, 1, HPos.CENTER,
 				VPos.CENTER);
-		SlideContent.setupBackButton();
 	}
 
 	/* Send account changes to database(WHEN IMPLEMENTED FULLY) */
