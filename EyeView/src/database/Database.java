@@ -30,7 +30,8 @@ public class Database {
 	private final static int password = 6;
 	private final static int landlord = 7;
 	private final static int DOB = 8;
-	private final static int admin = 9;
+	private final static int properties = 9;
+	private final static int admin = 10;
 	// when using userCheck, don't allow the user to enter the string, display a
 	// drop
 	// down box or another selection method that calls your own string for the
@@ -80,7 +81,7 @@ public class Database {
 		try {
 			PreparedStatement insertUser = con
 					.prepareStatement("INSERT INTO users "
-							+ "VALUES (?,?,?,?,?,?,?,?,?)");
+							+ "VALUES (?,?,?,?,?,?,?,?,?,?)");
 			// insert the users data
 			insertUser.setInt(id, 0);
 			insertUser.setString(firstName, userDetails.first_name);
@@ -90,6 +91,7 @@ public class Database {
 			insertUser.setString(password, userDetails.password);
 			insertUser.setBoolean(landlord, userDetails.landlord);
 			insertUser.setString(DOB, userDetails.DOB);
+			insertUser.setString(properties, userDetails.properties);
 			insertUser.setBoolean(admin, userDetails.admin);
 			// execute the query
 			insertUser.executeUpdate();
@@ -121,7 +123,7 @@ public class Database {
 					.prepareStatement("UPDATE users SET " + fieldSelect
 							+ "=? WHERE username=? AND email=?");
 			// if there's a string use string data else it must be a bool
-			if (newField != null)
+			if (newField != null || fieldSelect.equals("properties"))
 				editUser.setString(1, newField);
 			else
 				editUser.setBoolean(1, priv);
@@ -365,7 +367,7 @@ public class Database {
 		String password = "Invalid1";
 		String email = "dummy@york.ac.uk";
 
-		int mode = 2;
+		int mode = 7;
 		boolean insertSuccess;
 		boolean deleteSuccess;
 		int updateSuccess = 0;
@@ -395,6 +397,7 @@ public class Database {
 			insert.admin(true);
 			insert.landlord(true);
 			insert.DOB("1993-10-31");
+			insert.properties("010,011");
 			insert.password(password);
 			// insert
 			insertSuccess = userInsert(insert);
@@ -421,6 +424,7 @@ public class Database {
 			update.admin(false);
 			update.landlord(false);
 			update.DOB("2000-02-20");
+			update.properties("012,011");
 			update.password(password);
 			updateSuccess = userUpdate(update, "username", null, username);
 			System.out.println("User update method returns: " + updateSuccess);
@@ -443,12 +447,13 @@ public class Database {
 			User reg = null;
 			// user to be inserted
 			reg = new User(username);
-			reg.firstName("New");
+			reg.firstName("Alex");
 			reg.secondName("User");
 			reg.email(email);
 			reg.admin(false);
 			reg.landlord(false);
 			reg.DOB("2000-02-20");
+			reg.properties(null);
 			reg.password(password);
 			// reg new user
 			regCheck = userRegister(reg);

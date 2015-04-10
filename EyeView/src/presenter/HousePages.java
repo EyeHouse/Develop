@@ -2,6 +2,7 @@ package presenter;
 
 import java.util.ArrayList;
 
+import database.User;
 import Button.ButtonType;
 import Button.SetupButton;
 import javafx.animation.KeyFrame;
@@ -24,12 +25,15 @@ public class HousePages extends Window {
 
 	private ArrayList<Image> galleryList1, galleryList2, galleryList3;
 	private ImageGallery gallery;
-	
+
 	private Pagination pagination;
 	private static Button buttonTimerControl;
+	private int currentPropertyID;
+	private ArrayList<String> savedProperties = new ArrayList<String>();
 
 	public HousePages() {
-
+		
+		savedProperties = User.getSavedProperties(currentUsername);
 		createHousePagination();
 		setupButtons();
 	}
@@ -54,14 +58,14 @@ public class HousePages extends Window {
 			galleryList3.add(new Image(
 					"file:./resources/houses/modern-apartment-" + i + ".jpg"));
 		}
-		
+
 		pagination = new Pagination(3, 0);
 		pagination.setPageFactory(new Callback<Integer, Node>() {
 			public Node call(Integer pageIndex) {
-				if(buttonTimerControl.getText().equals("Pause"))
-				{
+				if (buttonTimerControl.getText().equals("Pause")) {
 					advertTimer.playFromStart();
 				}
+				currentPropertyID = pageIndex;
 				return createHousePage(pageIndex);
 			}
 		});
@@ -106,18 +110,26 @@ public class HousePages extends Window {
 		ButtonType button1 = new ButtonType("150,150,150", null, "Save", 130,
 				30);
 		final Button buttonSave = new SetupButton().CreateButton(button1);
-
+		if(savedProperties.contains(String.format("%03d", currentPropertyID))){
+			buttonSave.setDisable(true);
+			buttonSave.setText("Saved");
+		}
+		
+		
 		buttonSave.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent ae) {
 				// Add house save to database.
 				buttonSave.setDisable(true);
 				buttonSave.setText("Saved");
+				savedProperties.add(String.format("%03d", currentPropertyID));
+				User.updateSavedProperties(currentUsername, savedProperties);
 			}
 		});
 
 		infoColumn.getChildren().addAll(price, desc);
-		if (slideID != INDEX)
+		if (slideID != INDEX){
 			infoColumn.getChildren().add(buttonSave);
+		}
 
 		galleryPane.getChildren().add(infoColumn);
 
@@ -149,24 +161,25 @@ public class HousePages extends Window {
 					public void handle(ActionEvent ae) {
 						int index = pagination.getCurrentPageIndex();
 						index++;
-						if (index >= pagination.getPageCount())index = 0;
+						if (index >= pagination.getPageCount())
+							index = 0;
 						pagination.setCurrentPageIndex(index);
-						
+
 					}
 				}));
 		advertTimer.play();
 	}
-	
-	public static void setTimerState(String newState){
-		switch(newState){
-			case "PLAY":
-				buttonTimerControl.setText("Pause");
-				advertTimer.play();
-				break;
-			case "PAUSE":
-				buttonTimerControl.setText("Play");
-				advertTimer.pause();
-				break;
+
+	public static void setTimerState(String newState) {
+		switch (newState) {
+		case "PLAY":
+			buttonTimerControl.setText("Pause");
+			advertTimer.play();
+			break;
+		case "PAUSE":
+			buttonTimerControl.setText("Play");
+			advertTimer.pause();
+			break;
 		}
 	}
 }

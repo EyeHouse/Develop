@@ -1,8 +1,8 @@
 package Profile;
 
-import java.util.Arrays;
 import java.util.ArrayList;
 
+import database.User;
 import Button.ButtonType;
 import Button.SetupButton;
 import javafx.collections.FXCollections;
@@ -28,8 +28,7 @@ import presenter.SlideContent;
 public class SavedProperties extends presenter.Window {
 
 	GridPane grid = new GridPane();
-	ArrayList<String> properties = new ArrayList<String>(Arrays.asList(
-			"5 The Link", "4 Burnholme Grove"));
+	ArrayList<String> properties = new ArrayList<String>();
 	ListView<HBox> propertyList = new ListView<HBox>();
 	ObservableList<HBox> items = FXCollections.observableArrayList();
 
@@ -84,16 +83,19 @@ public class SavedProperties extends presenter.Window {
 				for (int i = index; i < items.size() - 1; i++) {
 					items.set(i, items.get(i + 1));
 				}
+				
 				items.remove(items.size() - 1);
 				
 				properties.remove(index); // update database of current user
+				User.updateSavedProperties(currentUsername, properties);
 			}
 		});
 
 		buttonView.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
-				// int index =
-				// propertyList.getSelectionModel().getSelectedIndex();
+				int index = propertyList.getSelectionModel().getSelectedIndex();
+				int propertyID = Integer.parseInt(properties.get(index));
+				// Open single property advert of selection
 			}
 		});
 
@@ -105,7 +107,9 @@ public class SavedProperties extends presenter.Window {
 	private void setupPropertyList() {
 
 		propertyList.setPrefHeight(550);
-
+		
+		properties = User.getSavedProperties(currentUsername);
+		
 		// Loop based on number of houses saved in profile.
 		for (int i = 0; i < properties.size(); i++) {
 
