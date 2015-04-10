@@ -121,6 +121,8 @@ public class ImageGallery extends Window {
 
 				items[i].setOnMouseClicked(new EventHandler<MouseEvent>() {
 					public void handle(MouseEvent me) {
+						HousePages.setTimerState("PAUSE");
+						
 						localChange = true;
 						scrollBar.setValue(index - 1);
 						localChange = false;
@@ -146,6 +148,7 @@ public class ImageGallery extends Window {
 			scrollBar.setBlockIncrement(1);
 			scrollBar.valueProperty().addListener(new InvalidationListener() {
 				public void invalidated(Observable ov) {
+					HousePages.setTimerState("PAUSE");
 					if (!localChange && (currentIndex != 0)){
 						shiftToCenter(items[(int) (scrollBar.getValue() + 1.5)]);
 					}

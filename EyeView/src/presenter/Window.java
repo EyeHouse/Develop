@@ -39,6 +39,7 @@ public class Window extends Application {
 	public static String currentUsername = null;
 	public static Group root;
 	private static SlideContent sc;
+	public static Timeline advertTimer;
 
 	private void init(Stage primaryStage) {
 

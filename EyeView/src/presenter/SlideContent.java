@@ -2,6 +2,8 @@ package presenter;
 
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 import database.Database;
 import database.User;
 import javafx.event.ActionEvent;
@@ -239,7 +241,14 @@ public class SlideContent extends Window {
 		
 		if(slideID == INDEX)
 		{
-			videoButton.setDisable(true);
+			buttonRow.setOnMouseClicked(new EventHandler<MouseEvent>(){
+	            public void handle(MouseEvent t) {
+	            	JOptionPane.showMessageDialog(null,
+	    					"Login for full features.", "",
+	    					JOptionPane.PLAIN_MESSAGE);
+	            }
+	        });
+			videoButton.setDisable(true);			
 			mapButton.setDisable(true);
 			infoButton.setDisable(true);
 			reviewsButton.setDisable(true);
@@ -282,10 +291,11 @@ public class SlideContent extends Window {
 		buttonBack.setCursor(Cursor.HAND);
 		buttonBack.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent ae) {
-				if(slideID != LOGIN && slideID != REGISTER)
+				if(currentUsername != null)
 					loadSlide(HOUSES);
 				else
 					loadSlide(INDEX);
+				HousePages.setTimerState("PAUSE");
 			}
 		});
 		
