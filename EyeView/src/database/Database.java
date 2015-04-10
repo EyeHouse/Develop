@@ -38,6 +38,7 @@ public class Database {
 	// required to check if you even give the user the option
 	private final static String emailField = "email";
 	private final static String usernameField = "username";
+	@SuppressWarnings("unused")
 	private final static String passwordField = "password";
 	
 	/**
@@ -225,11 +226,11 @@ public class Database {
 			String Field2, String Data2) {
 
 		ResultSet result = null;
-		// check database to see if EITHER of the fields exist
+		// check database to see if username password exists
 		try {
 			PreparedStatement checkExists = con
 					.prepareStatement("SELECT * FROM users WHERE " + Field1
-							+ "=? OR " + Field2 + "=?");
+							+ "=? AND " + Field2 + "=?");
 			// parameterise queries
 			checkExists.setString(1, Data1);
 			checkExists.setString(2, Data2);
@@ -249,37 +250,6 @@ public class Database {
 		}
 		// the user doesnt exist
 		return false;
-	}
-	
-	public static boolean login(String username, String password){
-		ResultSet result = null;
-		// check  to see if Username and password exist in db
-		
-		try {
-			PreparedStatement checkExists = con
-					.prepareStatement("SELECT * FROM users WHERE " + usernameField
-							+ "=? AND " + passwordField + "=?");
-			// parameterise queries
-			checkExists.setString(1, username);
-			checkExists.setString(2, password);
-
-			result = checkExists.executeQuery();
-			// loop through every row until
-			if (result.next()) {
-				// if the user exists there will only be one instance so the
-				// next result
-				// will trigger returning true
-				return true;
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			e.getMessage();
-			return false;
-		}
-		// the user doesnt exist
-		return false;
-		
-		
 	}
 
 	/**
@@ -391,11 +361,11 @@ public class Database {
 		User get = null;
 		// User checkUse = null;
 
-		String username = "cock";
+		String username = "newserveruser";
 		String password = "Invalid1";
 		String email = "dummy@york.ac.uk";
 
-		int mode = 9;
+		int mode = 2;
 		boolean insertSuccess;
 		boolean deleteSuccess;
 		int updateSuccess = 0;
@@ -494,23 +464,6 @@ public class Database {
 			boolean oneCheck;
 			oneCheck = oneFieldCheck("username", username);
 			System.out.println("User: " + username + " Exists: " + oneCheck);
-			break;
-		case 9:
-			boolean loginCheck;
-			
-			try {
-				loginCheck = login(username, password);
-				
-				if(loginCheck == true) {
-					System.out.println("User Exists, log them in");
-				}
-				else {
-					System.out.println("Login Failed, user does not exist");
-				}
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 			break;
 		default: // no mode selected
 			System.out.println("Select a valid switch case mode");
