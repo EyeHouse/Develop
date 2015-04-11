@@ -31,6 +31,9 @@ public class SlideContent extends Window {
 
 	public void createSlide() {
 
+		//Cancel Advert timer if it is running
+		if(advertTimer != null)advertTimer.stop();
+		
 		// Load all objects from XML file first
 		loadXMLGraphics();
 		loadXMLImages();
@@ -59,6 +62,9 @@ public class SlideContent extends Window {
 				break;
 			case SAVEDPROPERTIES:
 				createSavedPropertySlide();
+				break;
+			case HOUSE:
+				createPropertySlide();
 				break;
 			default:
 				break;
@@ -99,14 +105,14 @@ public class SlideContent extends Window {
 
 	private void createLoggedOutSlide() {
 				
-		new HousePages();
+		new HousePages(false);
 		createSidebar();
 		createMenuBar();	
 	}
 
 	private void createHomeSlide() {
         
-		new HousePages();
+		new HousePages(false);
 		createSidebar();
 		createMenuBar();
 	}
@@ -124,11 +130,13 @@ public class SlideContent extends Window {
 	}
 	
 	private void createProfileSlide() {
+		
 		new ProfileViewer();
 		createSidebar();
 	}
 	
 	private void createAccountSettingsSlide() {
+		
 		new AccountSettings();
 		createSidebar();
 	}
@@ -137,6 +145,13 @@ public class SlideContent extends Window {
 		
 		new SavedProperties();
 		createSidebar();
+	}
+	
+	private void createPropertySlide(){
+		
+		new HousePages(true);
+		createSidebar();
+		createMenuBar();
 	}
 	
 	public void createSidebar(){
@@ -177,8 +192,8 @@ public class SlideContent extends Window {
 		        }
 		    });
 			
-			if(slideID == SAVEDPROPERTIES) labelSavedProperties.setFont(Font.font(null, FontWeight.BOLD, 16.5));
-			else if(slideID == PROFILE) labelProfile.setFont(Font.font(null, FontWeight.BOLD, 16.5));
+			if(slideID == SAVEDPROPERTIES || slideID == HOUSE) labelSavedProperties.setFont(Font.font(null, FontWeight.BOLD, 16.5));
+			else if(slideID == PROFILE || slideID == ACCOUNTSETTINGS) labelProfile.setFont(Font.font(null, FontWeight.BOLD, 16.5));
 			
 			setupLabelHover(labelProfile);
 			setupLabelHover(labelSavedProperties);

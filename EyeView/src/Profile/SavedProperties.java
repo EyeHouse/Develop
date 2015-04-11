@@ -12,6 +12,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
+import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -76,6 +77,8 @@ public class SavedProperties extends presenter.Window {
 		Button buttonView = new SetupButton().CreateButton(button1);
 		Button buttonRemove = new SetupButton().CreateButton(button2);
 
+		buttonView.setCursor(Cursor.HAND);
+		buttonRemove.setCursor(Cursor.HAND);
 		buttonRemove.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				int index = propertyList.getSelectionModel().getSelectedIndex();
@@ -94,7 +97,11 @@ public class SavedProperties extends presenter.Window {
 		buttonView.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				int index = propertyList.getSelectionModel().getSelectedIndex();
-				int propertyID = Integer.parseInt(properties.get(index));
+				currentPropertyID = Integer.parseInt(properties.get(index));
+				root.getChildren().clear();
+				slideID = HOUSE;
+				SlideContent sc  = new SlideContent();
+				sc.createSlide();
 				// Open single property advert of selection
 			}
 		});
@@ -130,5 +137,23 @@ public class SavedProperties extends presenter.Window {
 		propertyList.setItems(items);
 
 		grid.add(propertyList, 0, 1);
+	}
+	
+	public static void setupPropertyBackButton(){
+		ButtonType button1 = new ButtonType("150,150,150",null,"Back",100,30);
+		Button buttonBack = new SetupButton().CreateButton(button1);
+		buttonBack.relocate(195, 20);
+		
+		buttonBack.setCursor(Cursor.HAND);
+		buttonBack.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent ae) {
+				root.getChildren().clear();
+				slideID = SAVEDPROPERTIES;
+				SlideContent sc  = new SlideContent();
+				sc.createSlide();
+			}
+		});
+		
+		root.getChildren().add(buttonBack);
 	}
 }

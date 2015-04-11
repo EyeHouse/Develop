@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import database.User;
 import Button.ButtonType;
 import Button.SetupButton;
+import Profile.SavedProperties;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
@@ -26,20 +27,29 @@ public class HousePages extends Window {
 	private ArrayList<Image> galleryList1, galleryList2, galleryList3;
 	private ImageGallery gallery;
 
+	private VBox infoColumn = new VBox(20);
 	private Pagination pagination;
 	private static Button buttonTimerControl;
-	private int currentPropertyID;
 	private ArrayList<String> savedProperties = new ArrayList<String>();
 
-	public HousePages() {
+	public HousePages(boolean singlePropertyView) {
 		
-		savedProperties = User.getSavedProperties(currentUsername);
-		createHousePagination();
-		setupButtons();
+		createGalleryLists();
+		if(singlePropertyView){
+			Pane houseAdvert = createHousePage(currentPropertyID);
+			houseAdvert.relocate(195,80);
+			root.getChildren().add(houseAdvert);
+		}
+		else{
+			savedProperties = User.getSavedProperties(currentUsername);
+			
+			setupPagination();
+			setupAdvertTimer();
+			setupTimerControl();	
+		}
 	}
-
-	private void createHousePagination() {
-
+	
+	private void createGalleryLists(){
 		galleryList1 = new ArrayList<Image>();
 		galleryList2 = new ArrayList<Image>();
 		galleryList3 = new ArrayList<Image>();
@@ -58,26 +68,11 @@ public class HousePages extends Window {
 			galleryList3.add(new Image(
 					"file:./resources/houses/modern-apartment-" + i + ".jpg"));
 		}
-
-		pagination = new Pagination(3, 0);
-		pagination.setPageFactory(new Callback<Integer, Node>() {
-			public Node call(Integer pageIndex) {
-				if (buttonTimerControl.getText().equals("Pause")) {
-					advertTimer.playFromStart();
-				}
-				currentPropertyID = pageIndex;
-				return createHousePage(pageIndex);
-			}
-		});
-		pagination.getStyleClass().add(Pagination.STYLE_CLASS_BULLET);
-		pagination.relocate(195, 80);
-
-		root.getChildren().addAll(pagination);
-		setupAdvertTimer();
 	}
-
+	
 	protected Pane createHousePage(Integer pageIndex) {
 
+		infoColumn.getChildren().clear();
 		Pane galleryPane = new Pane();
 		galleryPane.setPrefSize(750, 550);
 		galleryPane.getChildren().clear();
@@ -97,9 +92,6 @@ public class HousePages extends Window {
 		}
 		galleryPane.getChildren().add(gallery.getGallery());
 
-		VBox infoColumn = new VBox();
-		// infoColumn.setPrefWidth(200);
-		infoColumn.setSpacing(20);
 		infoColumn.relocate(450, 150);
 
 		Label price = new Label("£135 pcm");
@@ -107,15 +99,30 @@ public class HousePages extends Window {
 		Label desc = new Label("What a lovely house!");
 		desc.setFont(new Font(28));
 
+		
+
+		infoColumn.getChildren().addAll(price, desc);
+		
+		setupSaveButton();
+		
+		if(slideID == HOUSE){
+			SavedProperties.setupPropertyBackButton();
+		}
+		
+		galleryPane.getChildren().add(infoColumn);
+
+		return galleryPane;
+	}
+	
+	private void setupSaveButton(){
 		ButtonType button1 = new ButtonType("150,150,150", null, "Save", 130,
 				30);
 		final Button buttonSave = new SetupButton().CreateButton(button1);
-		if(savedProperties.contains(String.format("%03d", currentPropertyID))){
+		if (savedProperties.contains(String.format("%03d", currentPropertyID))) {
 			buttonSave.setDisable(true);
 			buttonSave.setText("Saved");
 		}
-		
-		
+
 		buttonSave.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent ae) {
 				// Add house save to database.
@@ -125,18 +132,31 @@ public class HousePages extends Window {
 				User.updateSavedProperties(currentUsername, savedProperties);
 			}
 		});
-
-		infoColumn.getChildren().addAll(price, desc);
-		if (slideID != INDEX){
+		
+		if (slideID != INDEX && slideID != HOUSE) {
 			infoColumn.getChildren().add(buttonSave);
 		}
-
-		galleryPane.getChildren().add(infoColumn);
-
-		return galleryPane;
 	}
 
-	private void setupButtons() {
+	private void setupPagination() {
+		pagination = new Pagination(3, 0);
+
+		pagination.setPageFactory(new Callback<Integer, Node>() {
+			public Node call(Integer pageIndex) {
+				if (buttonTimerControl.getText().equals("Pause")) {
+					advertTimer.playFromStart();
+				}
+				currentPropertyID = pageIndex;
+				return createHousePage(pageIndex);
+			}
+		});
+		pagination.getStyleClass().add(Pagination.STYLE_CLASS_BULLET);
+		pagination.relocate(195, 80);
+
+		root.getChildren().addAll(pagination);
+	}
+
+	private void setupTimerControl() {
 		ButtonType button1 = new ButtonType("150,150,150", null, "Pause", 100,
 				30);
 		buttonTimerControl = new SetupButton().CreateButton(button1);
