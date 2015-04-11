@@ -4,6 +4,8 @@
  */
 package database;
 
+
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -31,6 +33,9 @@ public class Database {
 	private final static int landlord = 7;
 	private final static int DOB = 8;
 	private final static int admin = 9;
+
+	public static String url = "10.10.0.1";
+
 	// when using userCheck, don't allow the user to enter the string, display a
 	// drop
 	// down box or another selection method that calls your own string for the
@@ -39,7 +44,7 @@ public class Database {
 	private final static String emailField = "email";
 	private final static String usernameField = "username";
 	private final static String passwordField = "password";
-	
+
 	/**
 	 * A void function used to open our database connection
 	 */
@@ -250,15 +255,15 @@ public class Database {
 		// the user doesnt exist
 		return false;
 	}
-	
-	public static boolean login(String username, String password){
+
+	public static boolean login(String username, String password) {
 		ResultSet result = null;
-		// check  to see if Username and password exist in db
-		
+		// check to see if Username and password exist in db
+
 		try {
 			PreparedStatement checkExists = con
-					.prepareStatement("SELECT * FROM users WHERE " + usernameField
-							+ "=? AND " + passwordField + "=?");
+					.prepareStatement("SELECT * FROM users WHERE "
+							+ usernameField + "=? AND " + passwordField + "=?");
 			// parameterise queries
 			checkExists.setString(1, username);
 			checkExists.setString(2, password);
@@ -278,8 +283,7 @@ public class Database {
 		}
 		// the user doesnt exist
 		return false;
-		
-		
+
 	}
 
 	/**
@@ -395,7 +399,7 @@ public class Database {
 		String password = "Invalid1";
 		String email = "dummy@york.ac.uk";
 
-		int mode = 9;
+		int mode = 200;
 		boolean insertSuccess;
 		boolean deleteSuccess;
 		int updateSuccess = 0;
@@ -497,14 +501,13 @@ public class Database {
 			break;
 		case 9:
 			boolean loginCheck;
-			
+
 			try {
 				loginCheck = login(username, password);
-				
-				if(loginCheck == true) {
+
+				if (loginCheck == true) {
 					System.out.println("User Exists, log them in");
-				}
-				else {
+				} else {
 					System.out.println("Login Failed, user does not exist");
 				}
 			} catch (Exception e) {
