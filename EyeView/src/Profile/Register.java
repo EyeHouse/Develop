@@ -266,7 +266,9 @@ public class Register extends presenter.Window {
 
 				// go to users new profile
 				root.getChildren().clear();
-				slideID = LOGIN;
+				slideID = PROFILE;
+				firstLogin = true;
+				currentUsername = user.username;
 				SlideContent sc = new SlideContent();
 				sc.createSlide();
 

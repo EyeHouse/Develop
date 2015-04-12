@@ -39,6 +39,8 @@ public class Window extends Application {
 
 	public static String currentUsername = null;
 	public static int currentPropertyID = 0;
+	public static boolean firstLogin = false;
+	
 	public static Group root;
 	private static SlideContent sc;
 	public static Timeline advertTimer;

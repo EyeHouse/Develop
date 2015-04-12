@@ -52,8 +52,12 @@ public class ProfileViewer extends presenter.Window {
 		SetupUserInfo();
 		SetupStars();
 		SetupProfileReview();
-		SlideContent.setupBackButton();
 
+		if (!firstLogin) {
+			SlideContent.setupBackButton();
+		} else {
+			firstLogin = false;
+		}
 		root.getChildren().add(profileGrid);
 	}
 
@@ -87,7 +91,7 @@ public class ProfileViewer extends presenter.Window {
 		// Setup labels with information of current user
 		Label labelName = new Label(currentUser.first_name + "\t("
 				+ currentUser.username + ")");
-		
+
 		labelName.setFont(fontTitle);
 		Label labelEmail = new Label("Email: " + currentUser.email);
 		labelEmail.setFont(fontMain);
@@ -180,10 +184,12 @@ public class ProfileViewer extends presenter.Window {
 		final TextArea textReview = new TextArea();
 		final TextArea textNewReview = new TextArea();
 		Label labelProfile, labelReview, labelNewReview;
-		
-		ButtonType button1 = new ButtonType("150,150,150",null,"Edit Profile",100,30);
+
+		ButtonType button1 = new ButtonType("150,150,150", null,
+				"Edit Profile", 100, 30);
 		Button buttonEditProfile = new SetupButton().CreateButton(button1);
-		ButtonType button2 = new ButtonType("150,150,150",null,"Submit",100,30);
+		ButtonType button2 = new ButtonType("150,150,150", null, "Submit", 100,
+				30);
 		Button buttonReview = new SetupButton().CreateButton(button2);
 
 		// VBox to contain Profile label and text area
@@ -221,7 +227,7 @@ public class ProfileViewer extends presenter.Window {
 				// Instantiate account settings page
 				root.getChildren().clear();
 				slideID = ACCOUNTSETTINGS;
-				SlideContent sc  = new SlideContent();
+				SlideContent sc = new SlideContent();
 				sc.createSlide();
 			}
 		});

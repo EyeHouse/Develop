@@ -23,7 +23,9 @@ import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
@@ -32,6 +34,7 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import database.Database;
 
 public class AccountSettings extends presenter.Window{
@@ -215,15 +218,27 @@ public class AccountSettings extends presenter.Window{
 
 	/* Add profile label and text area to grid */
 	public void SetupProfileText() {
+		VBox vBoxProfileText = new VBox(5);
 		Label labelProfileText = new Label("Profile");
+		final Label labelProfileChars = new Label("Characters Remaining: " + (256 - profileText.getText().length()));
 
 		// Load profile text area with current user profile and set size
 		profileText.setText("");
 		profileText.setMaxHeight(gridCellHeight * 3);
 		profileText.setPrefWidth(150);
+		profileText.setWrapText(true);
+		
+		profileText.textProperty().addListener(new ChangeListener<String>() {
+		    @Override
+		    public void changed(final ObservableValue<? extends String> observable, final String oldValue, final String newValue) {
+		        if(newValue.length()>256)profileText.setText(oldValue);
+		    	labelProfileChars.setText("Characters Remaining: " + (256 - profileText.getText().length()));
+		    }
+		});
+		vBoxProfileText.getChildren().addAll(profileText,labelProfileChars);
 
 		// Add profile label and text area to grid
-		grid.addRow(9, labelProfileText, profileText);
+		grid.addRow(9, labelProfileText, vBoxProfileText);
 	}
 
 	/* Add apply and cancel buttons to grid */
