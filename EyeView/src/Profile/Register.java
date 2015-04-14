@@ -5,6 +5,8 @@ package Profile;
 //import java.text.SimpleDateFormat;
 //import java.util.Locale;
 
+import java.io.IOException;
+
 import javax.swing.JOptionPane;
 
 import Button.ButtonType;
@@ -271,7 +273,12 @@ public class Register extends presenter.Window {
 				//log the new user in
 				User user = Database.getUser(username.getText());
 				currentUsername = username.getText();
-				user.printUser();
+				try {
+					user.printUser();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				root.getChildren().clear();
 				slideID = ACCOUNTSETTINGS;
 				SlideContent sc = new SlideContent();

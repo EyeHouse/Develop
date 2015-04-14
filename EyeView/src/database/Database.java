@@ -5,6 +5,9 @@
 package database;
 
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -33,6 +36,9 @@ public class Database {
 	private final static int landlord = 7;
 	private final static int DOB = 8;
 	private final static int admin = 9;
+	private final static int profileIMG = 10;
+	private final static int properties = 11;
+	
 
 	public static String url = "10.10.0.1";
 
@@ -82,9 +88,17 @@ public class Database {
 	public static boolean userInsert(User userDetails) {
 		// query
 		try {
+			FileInputStream fis = null;
 			PreparedStatement insertUser = con
 					.prepareStatement("INSERT INTO users "
-							+ "VALUES (?,?,?,?,?,?,?,?,?)");
+							+ "VALUES (?,?,?,?,?,?,?,?,?,?,?)");
+			File file = new File("D:/EE course/SWEng/Java/Disco1.jpg");
+		    try {
+				fis = new FileInputStream(file);
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			// insert the users data
 			insertUser.setInt(id, 0);
 			insertUser.setString(firstName, userDetails.first_name);
@@ -95,6 +109,13 @@ public class Database {
 			insertUser.setBoolean(landlord, userDetails.landlord);
 			insertUser.setString(DOB, userDetails.DOB);
 			insertUser.setBoolean(admin, userDetails.admin);
+			try {
+				insertUser.setBinaryStream(profileIMG,fis,fis.available());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			insertUser.setString(properties,null);
 			// execute the query
 			insertUser.executeUpdate();
 		} catch (SQLException e) {
@@ -354,9 +375,9 @@ public class Database {
 		// Recipient's email ID needs to be mentioned.
 		String to = "tb789@york.ac.uk";
 		// Sender's email ID needs to be mentioned
-		String from = "EyeHouse@york.ac.uk";
+		String from = "eyehouse@server.com";
 		// Assuming you are sending email from localhost
-		String host = "localhost";
+		String host = "10.10.0.1";
 		// Get system properties
 		Properties properties = System.getProperties();
 		// Setup mail server
@@ -385,6 +406,29 @@ public class Database {
 		}
 	}
 
+	public static boolean updateImage(String tablename, String filepath, String fieldSelect, int id) throws FileNotFoundException {
+		
+		try {
+			
+			FileInputStream fis = null;
+			PreparedStatement updateImage = con
+					.prepareStatement("UPDATE " + tablename + " SET " + fieldSelect
+							+ "=? WHERE id=?");
+			File file = new File(filepath);
+		    fis = new FileInputStream(file);
+		    
+		    updateImage.setBinaryStream(1, fis, (int) file.length());
+			updateImage.setInt(2, id);
+			updateImage.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		System.out.println("\nImage update executed");
+		return true;
+	}
+	
 	public static void main(String[] args) throws Exception {
 		// Connect to the Database
 		dbConnect();
@@ -395,11 +439,11 @@ public class Database {
 		User get = null;
 		// User checkUse = null;
 
-		String username = "cock";
-		String password = "Invalid1";
-		String email = "dummy@york.ac.uk";
+		String username = "MVPTom";
+		String password = "Eyehouse1";
+		String email = "tb789@york.ac.uk";
 
-		int mode = 200;
+		int mode = 5;
 		boolean insertSuccess;
 		boolean deleteSuccess;
 		int updateSuccess = 0;
@@ -424,7 +468,7 @@ public class Database {
 			// user to be inserted
 			insert = new User(username);
 			insert.firstName("Tom");
-			insert.secondName("Time");
+			insert.secondName("Butts");
 			insert.email(email);
 			insert.admin(true);
 			insert.landlord(true);
@@ -514,6 +558,14 @@ public class Database {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			break;
+		case 10:
+			//String tablename, String filepath, String fieldSelect, String id
+			String tablename = "users";
+			String filepath = "D:/EE course/SWEng/Java/Disco1.jpg";
+			String fieldSelect = "profileIMG";
+			int id = 3104;
+			updateImage(tablename,filepath,fieldSelect,id);
 			break;
 		default: // no mode selected
 			System.out.println("Select a valid switch case mode");

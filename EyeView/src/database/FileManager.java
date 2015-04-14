@@ -1,8 +1,20 @@
 package database;
 
+import java.awt.BorderLayout;
+import java.awt.Image;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.Properties;
+
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemOptions;
@@ -10,7 +22,7 @@ import org.apache.commons.vfs2.Selectors;
 import org.apache.commons.vfs2.impl.StandardFileSystemManager;
 import org.apache.commons.vfs2.provider.sftp.SftpFileSystemConfigBuilder;
 
-public class FileTransfer {
+public class FileManager {
 
 	static Properties props;
 
@@ -172,26 +184,27 @@ public class FileTransfer {
 		return true;
 	}
 
+
 	public static void main(String[] args) throws Exception {
 
-		int mode = 3;
+		int mode = 4;
 		String propertiesFile = "D://EE course/SWEng/Java/Server Tool/properties.txt";
-
+		
 		switch (mode) {
 		case 1:
-			FileTransfer update = new FileTransfer();
+			FileManager update = new FileManager();
 			String uploadFile = "Disco1.jpg";
 			update.uploadFTP(propertiesFile, uploadFile);
 			break;
 		case 2:
 
-			FileTransfer download = new FileTransfer();
+			FileManager download = new FileManager();
 			String downloadFile = "Disco1.jpg";
 			download.downloadFTP(propertiesFile, downloadFile);
 			break;
 		// delete
 		case 3:
-			FileTransfer delete = new FileTransfer();
+			FileManager delete = new FileManager();
 			String deleteFile = "Disco1.jpg";
 			delete.deleteFTP(propertiesFile, deleteFile);
 			break;
