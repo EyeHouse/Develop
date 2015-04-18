@@ -1,13 +1,24 @@
 package database;
 
+import java.awt.BorderLayout;
+import java.awt.Image;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+
+import com.mysql.jdbc.Blob;
+
 public class User {
 
-	@SuppressWarnings("unused")
-	private final static int ID = 1;
+	
+	
 	private final static int FNAME = 2;
 	private final static int SNAME = 3;
 	private final static int USER = 4;
@@ -15,8 +26,9 @@ public class User {
 	private final static int PW = 6;
 	private final static int LANDLORD = 7;
 	private final static int BIRTHDATE = 8;
-	private final static int PROPERTIES = 9;
-	private final static int ADMIN = 10;
+	private final static int ADMIN = 9;
+	private final static int PROFIMG = 10;
+	private final static int PROP = 11;
 
 	// id should automatically be created on insertion
 	public String first_name;
@@ -26,8 +38,9 @@ public class User {
 	public boolean landlord;
 	public String password;
 	public String DOB;
-	public String properties;
 	public boolean admin;
+	public Blob profimg;
+	public String properties;
 
 	// user contructor method
 	public User(String username) {
@@ -45,8 +58,9 @@ public class User {
 			this.landlord = userDetails.getBoolean(LANDLORD);
 			this.password = userDetails.getString(PW);
 			this.DOB = userDetails.getString(BIRTHDATE);
-			this.properties = userDetails.getString(PROPERTIES);
 			this.admin = userDetails.getBoolean(ADMIN);
+			this.profimg = (Blob) userDetails.getBlob(PROFIMG);
+			this.properties = userDetails.getString(PROP);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			e.getMessage();
@@ -77,22 +91,24 @@ public class User {
 	public void password(String pw) {
 		password = pw;
 	}
-
 	// dates in the form year/month/day xxxx-xx-xx
 	public void DOB(String dateBirth) {
 		DOB = dateBirth;
-	}
-
-	// properties in the form xxx,xxx,xxx
-	public void properties(String propertyID) {
-		properties = propertyID;
 	}
 
 	// true if user is to be granted admin privileges
 	public void admin(boolean isAdmin) {
 		admin = isAdmin;
 	}
-
+	
+	public void profimg(Blob imageblob) {
+		profimg = imageblob;
+	}
+	
+	public void properties(String userHouses) {
+		properties = userHouses;
+	}
+	
 	public static ArrayList<String> getSavedProperties(String username) {
 
 		ArrayList<String> properties = new ArrayList<String>();
@@ -127,12 +143,29 @@ public class User {
 					savedProperties);
 		}
 	}
-
+	
 	// option to print details for developer tests
-	public void printUser() {
+	public void printUser() throws IOException {
 		System.out.println("\nUsername: " + username);
 		System.out.println("Email: " + email);
 		System.out.println("Password: " + password);
+		
+		try {
+			InputStream binaryStream = profimg.getBinaryStream(1, profimg.length());
+			
+			Image image = ImageIO.read(binaryStream);
+			
+			JFrame frame = new JFrame();
+		    JLabel label = new JLabel(new ImageIcon(image));
+		    frame.getContentPane().add(label, BorderLayout.CENTER);
+		    frame.pack();
+		    frame.setVisible(true);
+			
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

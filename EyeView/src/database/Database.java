@@ -4,6 +4,11 @@
  */
 package database;
 
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -30,8 +35,13 @@ public class Database {
 	private final static int password = 6;
 	private final static int landlord = 7;
 	private final static int DOB = 8;
-	private final static int properties = 9;
-	private final static int admin = 10;
+	private final static int admin = 9;
+	private final static int profileIMG = 10;
+	private final static int properties = 11;
+	
+
+	public static String url = "127.0.0.1";
+
 	// when using userCheck, don't allow the user to enter the string, display a
 	// drop
 	// down box or another selection method that calls your own string for the
@@ -39,9 +49,8 @@ public class Database {
 	// required to check if you even give the user the option
 	private final static String emailField = "email";
 	private final static String usernameField = "username";
-	@SuppressWarnings("unused")
 	private final static String passwordField = "password";
-	
+
 	/**
 	 * A void function used to open our database connection
 	 */
@@ -56,7 +65,7 @@ public class Database {
 		// Create a connection with db:master_db user:root pw:
 		try {
 			con = DriverManager.getConnection(
-					"jdbc:mysql://10.10.0.1:3306/eyehouse", "eyehouseuser",
+					"jdbc:mysql://" + url + ":3306/eyehouse", "eyehouseuser",
 					"Toothbrush50");
 		} catch (SQLException ex) {
 			ex.printStackTrace();
@@ -79,9 +88,17 @@ public class Database {
 	public static boolean userInsert(User userDetails) {
 		// query
 		try {
+			FileInputStream fis = null;
 			PreparedStatement insertUser = con
 					.prepareStatement("INSERT INTO users "
-							+ "VALUES (?,?,?,?,?,?,?,?,?,?)");
+							+ "VALUES (?,?,?,?,?,?,?,?,?,?,?)");
+			File file = new File("D:/EE course/SWEng/Java/Disco1.jpg");
+		    try {
+				fis = new FileInputStream(file);
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			// insert the users data
 			insertUser.setInt(id, 0);
 			insertUser.setString(firstName, userDetails.first_name);
@@ -91,8 +108,14 @@ public class Database {
 			insertUser.setString(password, userDetails.password);
 			insertUser.setBoolean(landlord, userDetails.landlord);
 			insertUser.setString(DOB, userDetails.DOB);
-			insertUser.setString(properties, userDetails.properties);
 			insertUser.setBoolean(admin, userDetails.admin);
+			try {
+				insertUser.setBinaryStream(profileIMG,fis,fis.available());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			insertUser.setString(properties,null);
 			// execute the query
 			insertUser.executeUpdate();
 		} catch (SQLException e) {
@@ -123,7 +146,7 @@ public class Database {
 					.prepareStatement("UPDATE users SET " + fieldSelect
 							+ "=? WHERE username=? AND email=?");
 			// if there's a string use string data else it must be a bool
-			if (newField != null || fieldSelect.equals("properties"))
+			if (newField != null)
 				editUser.setString(1, newField);
 			else
 				editUser.setBoolean(1, priv);
@@ -228,11 +251,11 @@ public class Database {
 			String Field2, String Data2) {
 
 		ResultSet result = null;
-		// check database to see if username password exists
+		// check database to see if EITHER of the fields exist
 		try {
 			PreparedStatement checkExists = con
 					.prepareStatement("SELECT * FROM users WHERE " + Field1
-							+ "=? AND " + Field2 + "=?");
+							+ "=? OR " + Field2 + "=?");
 			// parameterise queries
 			checkExists.setString(1, Data1);
 			checkExists.setString(2, Data2);
@@ -252,6 +275,36 @@ public class Database {
 		}
 		// the user doesnt exist
 		return false;
+	}
+
+	public static boolean login(String username, String password) {
+		ResultSet result = null;
+		// check to see if Username and password exist in db
+
+		try {
+			PreparedStatement checkExists = con
+					.prepareStatement("SELECT * FROM users WHERE "
+							+ usernameField + "=? AND " + passwordField + "=?");
+			// parameterise queries
+			checkExists.setString(1, username);
+			checkExists.setString(2, password);
+
+			result = checkExists.executeQuery();
+			// loop through every row until
+			if (result.next()) {
+				// if the user exists there will only be one instance so the
+				// next result
+				// will trigger returning true
+				return true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			e.getMessage();
+			return false;
+		}
+		// the user doesnt exist
+		return false;
+
 	}
 
 	/**
@@ -322,9 +375,9 @@ public class Database {
 		// Recipient's email ID needs to be mentioned.
 		String to = "tb789@york.ac.uk";
 		// Sender's email ID needs to be mentioned
-		String from = "EyeHouse@york.ac.uk";
+		String from = "eyehouse@server.com";
 		// Assuming you are sending email from localhost
-		String host = "localhost";
+		String host = "10.10.0.1";
 		// Get system properties
 		Properties properties = System.getProperties();
 		// Setup mail server
@@ -353,6 +406,29 @@ public class Database {
 		}
 	}
 
+	public static boolean updateImage(String tablename, String filepath, String fieldSelect, int id) throws FileNotFoundException {
+		
+		try {
+			
+			FileInputStream fis = null;
+			PreparedStatement updateImage = con
+					.prepareStatement("UPDATE " + tablename + " SET " + fieldSelect
+							+ "=? WHERE id=?");
+			File file = new File(filepath);
+		    fis = new FileInputStream(file);
+		    
+		    updateImage.setBinaryStream(1, fis, (int) file.length());
+			updateImage.setInt(2, id);
+			updateImage.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		System.out.println("\nImage update executed");
+		return true;
+	}
+	
 	public static void main(String[] args) throws Exception {
 		// Connect to the Database
 		dbConnect();
@@ -363,11 +439,11 @@ public class Database {
 		User get = null;
 		// User checkUse = null;
 
-		String username = "newserveruser";
-		String password = "Invalid1";
-		String email = "dummy@york.ac.uk";
+		String username = "MVPTom";
+		String password = "Eyehouse1";
+		String email = "tb789@york.ac.uk";
 
-		int mode = 7;
+		int mode = 5;
 		boolean insertSuccess;
 		boolean deleteSuccess;
 		int updateSuccess = 0;
@@ -392,12 +468,11 @@ public class Database {
 			// user to be inserted
 			insert = new User(username);
 			insert.firstName("Tom");
-			insert.secondName("Time");
+			insert.secondName("Butts");
 			insert.email(email);
 			insert.admin(true);
 			insert.landlord(true);
 			insert.DOB("1993-10-31");
-			insert.properties("010,011");
 			insert.password(password);
 			// insert
 			insertSuccess = userInsert(insert);
@@ -424,7 +499,6 @@ public class Database {
 			update.admin(false);
 			update.landlord(false);
 			update.DOB("2000-02-20");
-			update.properties("012,011");
 			update.password(password);
 			updateSuccess = userUpdate(update, "username", null, username);
 			System.out.println("User update method returns: " + updateSuccess);
@@ -447,13 +521,12 @@ public class Database {
 			User reg = null;
 			// user to be inserted
 			reg = new User(username);
-			reg.firstName("Alex");
+			reg.firstName("New");
 			reg.secondName("User");
 			reg.email(email);
 			reg.admin(false);
 			reg.landlord(false);
 			reg.DOB("2000-02-20");
-			reg.properties(null);
 			reg.password(password);
 			// reg new user
 			regCheck = userRegister(reg);
@@ -469,6 +542,30 @@ public class Database {
 			boolean oneCheck;
 			oneCheck = oneFieldCheck("username", username);
 			System.out.println("User: " + username + " Exists: " + oneCheck);
+			break;
+		case 9:
+			boolean loginCheck;
+
+			try {
+				loginCheck = login(username, password);
+
+				if (loginCheck == true) {
+					System.out.println("User Exists, log them in");
+				} else {
+					System.out.println("Login Failed, user does not exist");
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			break;
+		case 10:
+			//String tablename, String filepath, String fieldSelect, String id
+			String tablename = "users";
+			String filepath = "D:/EE course/SWEng/Java/Disco1.jpg";
+			String fieldSelect = "profileIMG";
+			int id = 3104;
+			updateImage(tablename,filepath,fieldSelect,id);
 			break;
 		default: // no mode selected
 			System.out.println("Select a valid switch case mode");
