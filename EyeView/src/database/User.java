@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -107,28 +108,64 @@ public class User {
 	public void properties(String userHouses) {
 		properties = userHouses;
 	}
+	
+	public static ArrayList<String> getSavedProperties(String username) {
+
+		ArrayList<String> properties = new ArrayList<String>();
+
+		if (username != null) {
+			User currentUser = Database.getUser(username);
+			if (currentUser.properties != null) {
+				int length = currentUser.properties.length();
+				for (int i = 0; i < length; i += 4) {
+					properties.add(currentUser.properties.substring(i, i + 3));
+				}
+			}
+		}
+		return properties;
+	}
+
+	public static void updateSavedProperties(String username,
+			ArrayList<String> properties) {
+		User currentUser = Database.getUser(username);
+		String savedProperties = null;
+
+		if (properties.size() == 0) {
+			Database.userUpdate(currentUser, "properties", null, null);
+		} else {
+			for (int i = 0; i < properties.size(); i++) {
+				if (i == 0)
+					savedProperties = properties.get(0);
+				else
+					savedProperties = properties.get(i) + "," + savedProperties;
+			}
+			Database.userUpdate(currentUser, "properties", null,
+					savedProperties);
+		}
+	}
 	// option to print details for developer tests
 	public void printUser() throws IOException {
 		System.out.println("\nUsername: " + username);
 		System.out.println("Email: " + email);
 		System.out.println("Password: " + password);
+		System.out.println("Properties: " + properties);
 		
-//		try {
-//			InputStream binaryStream = profimg.getBinaryStream(1, profimg.length());
-//			
-//			Image image = ImageIO.read(binaryStream);
-//			
-//			JFrame frame = new JFrame();
-//		    JLabel label = new JLabel(new ImageIcon(image));
-//		    frame.getContentPane().add(label, BorderLayout.CENTER);
-//		    frame.pack();
-//		    frame.setVisible(true);
-//			
-//			
-//		} catch (SQLException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		try {
+			InputStream binaryStream = profimg.getBinaryStream(1, profimg.length());
+			
+			Image image = ImageIO.read(binaryStream);
+			
+			JFrame frame = new JFrame();
+		    JLabel label = new JLabel(new ImageIcon(image));
+		    frame.getContentPane().add(label, BorderLayout.CENTER);
+		    frame.pack();
+		    frame.setVisible(true);
+			
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

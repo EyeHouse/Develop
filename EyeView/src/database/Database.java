@@ -304,7 +304,6 @@ public class Database {
 		}
 		// the user doesnt exist
 		return false;
-
 	}
 
 	/**
@@ -368,43 +367,6 @@ public class Database {
 		return true;
 	}
 
-	/**
-	 * Send mail function
-	 */
-	public static void sendMail() {
-		// Recipient's email ID needs to be mentioned.
-		String to = "tb789@york.ac.uk";
-		// Sender's email ID needs to be mentioned
-		String from = "eyehouse@server.com";
-		// Assuming you are sending email from localhost
-		String host = "10.10.0.1";
-		// Get system properties
-		Properties properties = System.getProperties();
-		// Setup mail server
-		properties.setProperty("mail.smtp.host", host);
-		// Get the default Session object.
-		Session session = Session.getDefaultInstance(properties);
-		try {
-			// Create a default MimeMessage object.
-			MimeMessage message = new MimeMessage(session);
-			// Set From: header field of the header.
-			message.setFrom(new InternetAddress(from));
-			// Set To: header field of the header.
-			message.addRecipient(Message.RecipientType.TO, new InternetAddress(
-					to));
-			// Set Subject: header field
-			message.setSubject("Hello World");
-			// Current date and time - for identifying test mail
-			Date date = new Date();
-			// Now set the actual message
-			message.setText("Test Message - timestamp: " + date);
-			// Send message
-			Transport.send(message);
-			System.out.println("Sent message successfully....");
-		} catch (MessagingException mex) {
-			mex.printStackTrace();
-		}
-	}
 
 	public static boolean updateImage(String tablename, String filepath, String fieldSelect, int id) throws FileNotFoundException {
 		
@@ -442,12 +404,12 @@ public class Database {
 		String username = "MVPTom";
 		String password = "Eyehouse1";
 		String email = "tb789@york.ac.uk";
-
+		
 		int mode = 5;
 		boolean insertSuccess;
 		boolean deleteSuccess;
 		int updateSuccess = 0;
-
+		
 		// testing switch
 		switch (mode) {
 		case 1: // userCheck
@@ -514,7 +476,7 @@ public class Database {
 			}
 			break;
 		case 6: // send an email
-			sendMail();
+			
 			break;
 		case 7: // register
 			boolean regCheck;
@@ -562,7 +524,7 @@ public class Database {
 		case 10:
 			//String tablename, String filepath, String fieldSelect, String id
 			String tablename = "users";
-			String filepath = "D:/EE course/SWEng/Java/Disco1.jpg";
+			String filepath = "D:/EE course/SWEng/Java/Compilation1.jpg";
 			String fieldSelect = "profileIMG";
 			int id = 3104;
 			updateImage(tablename,filepath,fieldSelect,id);
