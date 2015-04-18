@@ -4,11 +4,13 @@
  */
 package database;
 
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -16,9 +18,7 @@ import java.sql.SQLException;
 //import com.mysql.jdbc.PreparedStatement;
 import java.sql.PreparedStatement;
 import java.util.*;
-
-import javax.mail.*;
-import javax.mail.internet.*;
+import com.mysql.jdbc.Blob;
 
 public class Database {
 
@@ -38,7 +38,20 @@ public class Database {
 	private final static int admin = 9;
 	private final static int profileIMG = 10;
 	private final static int properties = 11;
-	
+
+	private final static int UID = 1;
+	private final static int TITLE = 3;
+	private final static int POSTCODE = 4;
+	private final static int ADDRESS = 5;
+	private final static int PRICE = 6;
+	private final static int DEPOSIT = 7;
+	private final static int ROOMS = 8;
+	private final static int BATHROOMS = 9;
+	private final static int DATEAVAILABLE = 10;
+	private final static int FURNISHED = 11;
+	private final static int BROCHURE = 12;
+	private final static int DESCRIPTION = 13;
+	private final static int ENERGYRATING = 14;
 
 	public static String url = "10.10.0.1";
 
@@ -93,7 +106,18 @@ public class Database {
 					.prepareStatement("INSERT INTO users "
 							+ "VALUES (?,?,?,?,?,?,?,?,?,?,?)");
 			File file = new File("D:/EE course/SWEng/Java/Disco1.jpg");
-		    try {
+			// InputStream is = null;
+			// try {
+			// is = new
+			// URL("ftp://10.10.0.1/eyehouse/defaults/default_profpic.jpg").openConnection().getInputStream();
+			// } catch (MalformedURLException e1) {
+			// // TODO Auto-generated catch block
+			// e1.printStackTrace();
+			// } catch (IOException e1) {
+			// // TODO Auto-generated catch block
+			// e1.printStackTrace();
+			// }
+			try {
 				fis = new FileInputStream(file);
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
@@ -110,12 +134,13 @@ public class Database {
 			insertUser.setString(DOB, userDetails.DOB);
 			insertUser.setBoolean(admin, userDetails.admin);
 			try {
-				insertUser.setBinaryStream(profileIMG,fis,fis.available());
+				insertUser.setBinaryStream(profileIMG, fis, fis.available());
+				// insertUser.setBinaryStream(profileIMG,is,is.available());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			insertUser.setString(properties,null);
+			insertUser.setString(properties, null);
 			// execute the query
 			insertUser.executeUpdate();
 		} catch (SQLException e) {
@@ -123,9 +148,88 @@ public class Database {
 			e.printStackTrace();
 			e.getMessage();
 		}
-		// 1 = success!
-		return true;
 
+		return true;
+	}
+
+	public static int getUserID(String username) {
+		ResultSet id = null;
+		// select that user
+		int idnumber = 0;
+		try {
+			PreparedStatement userID = con
+					.prepareStatement("SELECT id FROM users WHERE username=?");
+			// parameterise inputs
+			userID.setString(1, username);
+			// execute
+			id = userID.executeQuery();
+			// take all the users details and put them in an instance of user
+			while (id.next()) {
+				idnumber = id.getInt("id");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			e.getMessage();
+		}
+		return idnumber;
+	}
+
+	public static boolean houseInsert(House houseDetails, String brochurefp,
+			String energyratingfp, User userDetails) throws IOException {
+		int hid = 2;
+		FileInputStream bis = null, eis = null;
+		try {
+			PreparedStatement insertHouse = con
+					.prepareStatement("INSERT INTO houses "
+							+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+			if (brochurefp != null) {
+				File brochure = new File(brochurefp);
+				try {
+					bis = new FileInputStream(brochure);
+					insertHouse.setBinaryStream(BROCHURE, bis, bis.available());
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} else
+				insertHouse.setBinaryStream(BROCHURE, null);
+
+			if (energyratingfp != null) {
+				File energyRatings = new File(energyratingfp);
+				try {
+					eis = new FileInputStream(energyRatings);
+					insertHouse.setBinaryStream(ENERGYRATING, eis,
+							eis.available());
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+			else
+				insertHouse.setBinaryStream(ENERGYRATING, null);
+			// insert the house data
+			insertHouse.setInt(hid, 0);
+			int id = getUserID(userDetails.username);
+			insertHouse.setInt(UID, id);
+			insertHouse.setString(TITLE, houseDetails.title);
+			insertHouse.setString(POSTCODE, houseDetails.postcode);
+			insertHouse.setString(ADDRESS, houseDetails.address);
+			insertHouse.setInt(PRICE, houseDetails.price);
+			insertHouse.setInt(DEPOSIT, houseDetails.deposit);
+			insertHouse.setInt(ROOMS, houseDetails.rooms);
+			insertHouse.setInt(BATHROOMS, houseDetails.bathrooms);
+			insertHouse.setString(DATEAVAILABLE, houseDetails.dateAvailable);
+			insertHouse.setBoolean(FURNISHED, houseDetails.furnished);
+			insertHouse.setString(DESCRIPTION, houseDetails.description);
+			// execute the query
+			insertHouse.executeUpdate();
+		} catch (SQLException e) {
+			// catch the error get the message
+			e.printStackTrace();
+			e.getMessage();
+		}
+		return true;
 	}
 
 	/**
@@ -367,30 +471,29 @@ public class Database {
 		return true;
 	}
 
+	public static boolean updateImage(String tablename, String filepath,
+			String fieldSelect, int id) throws FileNotFoundException {
 
-	public static boolean updateImage(String tablename, String filepath, String fieldSelect, int id) throws FileNotFoundException {
-		
 		try {
-			
+
 			FileInputStream fis = null;
-			PreparedStatement updateImage = con
-					.prepareStatement("UPDATE " + tablename + " SET " + fieldSelect
-							+ "=? WHERE id=?");
+			PreparedStatement updateImage = con.prepareStatement("UPDATE "
+					+ tablename + " SET " + fieldSelect + "=? WHERE id=?");
 			File file = new File(filepath);
-		    fis = new FileInputStream(file);
-		    
-		    updateImage.setBinaryStream(1, fis, (int) file.length());
+			fis = new FileInputStream(file);
+
+			updateImage.setBinaryStream(1, fis, (int) file.length());
 			updateImage.setInt(2, id);
 			updateImage.executeUpdate();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		System.out.println("\nImage update executed");
 		return true;
 	}
-	
+
 	public static void main(String[] args) throws Exception {
 		// Connect to the Database
 		dbConnect();
@@ -401,11 +504,11 @@ public class Database {
 		User get = null;
 		// User checkUse = null;
 
-		String username = "MVPTom";
+		String username = "test";
 		String password = "Eyehouse1";
-		String email = "tb789@york.ac.uk";
+		String email = "profpic@york.ac.uk";
 		
-		int mode = 5;
+		int mode = 11;
 		boolean insertSuccess;
 		boolean deleteSuccess;
 		int updateSuccess = 0;
@@ -429,8 +532,8 @@ public class Database {
 		case 2: // insert User
 			// user to be inserted
 			insert = new User(username);
-			insert.firstName("Tom");
-			insert.secondName("Butts");
+			insert.firstName("Check");
+			insert.secondName("DefaultImage");
 			insert.email(email);
 			insert.admin(true);
 			insert.landlord(true);
@@ -452,7 +555,6 @@ public class Database {
 				System.out.println("Deletion failed: check user details exist");
 			break;
 		case 4: // edit details
-
 			// user to be inserted
 			update = new User(username);
 			update.firstName("New");
@@ -529,9 +631,36 @@ public class Database {
 			int id = 3104;
 			updateImage(tablename,filepath,fieldSelect,id);
 			break;
+		case 11: 
+			// insert the houses basic info
+			House eyehouseHQ = null;
+			int pricepermonth = 1000;
+			boolean house;
+			String brc = "D:/EE course/SWEng/Java/testbrochure.pdf";
+			String enrg = "D:/EE course/SWEng/Java/energy-rating-card.jpg";
+			eyehouseHQ = new House("Spatious Living accomodation with a Bath and eveything");
+			eyehouseHQ.postcode("YO10 5DD");
+			eyehouseHQ.address("Exhibition center");
+			eyehouseHQ.price(pricepermonth);
+			eyehouseHQ.deposit(pricepermonth);
+			eyehouseHQ.rooms(pricepermonth);  
+			eyehouseHQ.bathrooms(pricepermonth); 
+			eyehouseHQ.dateAvailable("2015-04-18"); 
+			eyehouseHQ.furnished(true); 
+			eyehouseHQ.description("A fine fine building made of dreams and aspirations. As the spring rains fall, soaking in them, on the roof, is a child's rag ball."); 
+			
+			User temp = getUser("MVPTom"); 
+			
+			house = houseInsert(eyehouseHQ,brc,enrg,temp);
+			eyehouseHQ.printHouse();
+			System.out.println(house);
+			break;
 		default: // no mode selected
 			System.out.println("Select a valid switch case mode");
 			break;
 		}
+		
+		int id = getUserID("MVPTom");
+		System.out.println(id);
 	}
 }
