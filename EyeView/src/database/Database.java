@@ -18,6 +18,7 @@ import java.sql.SQLException;
 //import com.mysql.jdbc.PreparedStatement;
 import java.sql.PreparedStatement;
 import java.util.*;
+
 import com.mysql.jdbc.Blob;
 
 public class Database {
@@ -68,26 +69,28 @@ public class Database {
 	 * A void function used to open our database connection
 	 */
 	public static void dbConnect() {
-		// Access driver class from JAR
-		try {
-			Class.forName("com.mysql.jdbc.Driver").newInstance();
-		} catch (InstantiationException | IllegalAccessException
-				| ClassNotFoundException e) {
-			e.printStackTrace();
-		}
 		// Create a connection with db:master_db user:root pw:
+		String url = "127.0.0.1";
 		try {
-			con = DriverManager.getConnection(
-					"jdbc:mysql://10.10.0.1:3306/eyehouse", "eyehouseuser",
-					"Toothbrush50");
-		} catch (SQLException ex) {
-			ex.printStackTrace();
-			// handle any errors
-			System.out.println("SQLException: " + ex.getMessage());
-			System.out.println("SQLState: " + ex.getSQLState());
-			System.out.println("VendorError: " + ex.getErrorCode());
+			System.out.print("Establishing connection via PuTTY... ");
+			con = DriverManager.getConnection("jdbc:mysql://" + url
+					+ ":3306/eyehouse", "eyehouseuser", "Toothbrush50");
+			System.out.print("Success");
+		} catch (SQLException ex1) {
+			System.out.print("Fail\nEstablishing connection via OpenVPN... ");
+			url = "10.10.0.1";
+			try {
+				con = DriverManager.getConnection("jdbc:mysql://" + url
+						+ ":3306/eyehouse", "eyehouseuser", "Toothbrush50");
+				System.out.print("Success");
+			} catch (SQLException ex) {
+				ex.printStackTrace();
+				// handle any errors
+				System.out.println("SQLException: " + ex.getMessage());
+				System.out.println("SQLState: " + ex.getSQLState());
+				System.out.println("VendorError: " + ex.getErrorCode());
+			}
 		}
-
 	}
 
 	/**
@@ -108,8 +111,9 @@ public class Database {
 			File file = new File("D:/EE course/SWEng/Java/Disco1.jpg");
 			// InputStream is = null;
 			// try {
-			// is = new
-			// URL("ftp://10.10.0.1/eyehouse/defaults/default_profpic.jpg").openConnection().getInputStream();
+			// is = new URL("sftp://eyehouseuser:Toothbrush50@" + url
+			// + ":8080/eyehouse/defaults/default_profpic.jpg")
+			// .openConnection().getInputStream();
 			// } catch (MalformedURLException e1) {
 			// // TODO Auto-generated catch block
 			// e1.printStackTrace();
@@ -135,7 +139,7 @@ public class Database {
 			insertUser.setBoolean(admin, userDetails.admin);
 			try {
 				insertUser.setBinaryStream(profileIMG, fis, fis.available());
-				// insertUser.setBinaryStream(profileIMG,is,is.available());
+				// insertUser.setBinaryStream(profileIMG, is, is.available());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -148,25 +152,41 @@ public class Database {
 			e.printStackTrace();
 			e.getMessage();
 		}
-
 		return true;
 	}
 
-	public static int getUserID(String username) {
+	public static int getID(User userDetails, House houseDetails, int idType) {
+		// IMPORTANT: idType key:
+		// 1 = User id from table users - found by username
+		// 2 = hid from table houses - found by the user logged in and the
+		// postcode
 		ResultSet id = null;
 		// select that user
 		int idnumber = 0;
 		try {
-			PreparedStatement userID = con
-					.prepareStatement("SELECT id FROM users WHERE username=?");
-			// parameterise inputs
-			userID.setString(1, username);
-			// execute
-			id = userID.executeQuery();
-			// take all the users details and put them in an instance of user
-			while (id.next()) {
-				idnumber = id.getInt("id");
+			if (idType == 1 && userDetails != null) {
+				PreparedStatement userID = con
+						.prepareStatement("SELECT id FROM users WHERE username=?");
+				userID.setString(1, userDetails.username);
+				id = userID.executeQuery();
+				while (id.next()) {
+					idnumber = id.getInt("id");
+				}
 			}
+			if (idType == 2 && userDetails != null) {
+				PreparedStatement houseID = con
+						.prepareStatement("SELECT hid FROM houses WHERE uid=? AND postcode=?");
+				int uid = getID(userDetails, null, 1);
+				houseID.setInt(1, uid);
+				houseID.setString(2, houseDetails.postcode);
+				id = houseID.executeQuery();
+				while (id.next()) {
+					idnumber = id.getInt("hid");
+				}
+			}
+
+			// take all the users details and put them in an instance of user
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 			e.getMessage();
@@ -174,11 +194,37 @@ public class Database {
 		return idnumber;
 	}
 
+	public static boolean checkHouseExists(User userDetails, House houseDetails) {
+		int id = getID(userDetails, null, 1);
+		ResultSet title;
+		try {
+			PreparedStatement checkTitle = con
+					.prepareStatement("SELECT title FROM houses WHERE uid=?");
+			checkTitle.setInt(1, id);
+			title = checkTitle.executeQuery();
+			if (!title.next()) {
+				System.out.println("\nHouse doesn't Exist for this user");
+				return false;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+		System.out
+				.println("\nHouse with same title already exists for this user");
+		return true;
+	}
+
 	public static boolean houseInsert(House houseDetails, String brochurefp,
 			String energyratingfp, User userDetails) throws IOException {
 		int hid = 2;
+		int id;
 		FileInputStream bis = null, eis = null;
+		// get user ID
+		id = getID(userDetails, null, 1);
 		try {
+			// if the user doesn't have a house under the same name already
 			PreparedStatement insertHouse = con
 					.prepareStatement("INSERT INTO houses "
 							+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
@@ -204,13 +250,10 @@ public class Database {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-			}
-
-			else
+			} else
 				insertHouse.setBinaryStream(ENERGYRATING, null);
 			// insert the house data
 			insertHouse.setInt(hid, 0);
-			int id = getUserID(userDetails.username);
 			insertHouse.setInt(UID, id);
 			insertHouse.setString(TITLE, houseDetails.title);
 			insertHouse.setString(POSTCODE, houseDetails.postcode);
@@ -230,6 +273,29 @@ public class Database {
 			e.getMessage();
 		}
 		return true;
+	}
+
+	public static boolean houseDelete(House houseDetails, User userDetails) {
+		int uid;
+		int hid;
+		try {
+			// Takes a unique field (username) and deletes the users details
+			PreparedStatement dropHouse = con
+					.prepareStatement("DELETE FROM houses WHERE uid=? AND hid=?");
+			// get user ID
+			uid = getID(userDetails, null, 1);
+			// get hid
+			hid = getID(userDetails, houseDetails, 2);
+			dropHouse.setInt(1, uid);
+			dropHouse.setInt(2, hid);
+			// Execute SQL drop statement
+			dropHouse.executeUpdate();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			e.getMessage();
+			return false;
+		}
 	}
 
 	/**
@@ -264,7 +330,6 @@ public class Database {
 			e.printStackTrace();
 			return 0;
 		}
-
 		// updated a string field
 		return 1;
 	}
@@ -302,7 +367,41 @@ public class Database {
 			throw new NullPointerException();
 		else
 			return user;
+	}
 
+	public static House getHouse(User userDetails, String title) {
+		House house = null;
+		ResultSet houseDetails = null;
+		// select that user
+		int uid;
+		try {
+			// get uid
+			uid = getID(userDetails, null, 1);
+			// select all the columns of house
+			PreparedStatement getHouse = con
+					.prepareStatement("SELECT * FROM houses WHERE uid=? AND title=?");
+			// parameterise inputs
+			getHouse.setInt(1, uid);
+			getHouse.setString(2, title);
+			// execute
+			houseDetails = getHouse.executeQuery();
+			// take all the users details and put them in an instance of user
+			if(houseDetails.next()) {
+				// construct an instance using the logged on users details
+				house = new House(houseDetails);
+			}
+			else {
+				System.out.println("\nUser has no houses with this title");
+				house = null;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			e.getMessage();
+		}
+		if (house == null)
+			throw new NullPointerException();
+		else
+			return house;
 	}
 
 	/**
@@ -502,17 +601,19 @@ public class Database {
 		User insert = null;
 		User update = null;
 		User get = null;
-		// User checkUse = null;
+		// User checkUse = null
+		String username = "Henry";
+		String password = "PumpkinBoy";
+		String email = "hcw515@york.ac.uk";
 
-		String username = "test";
-		String password = "Eyehouse1";
-		String email = "profpic@york.ac.uk";
+		String title = "Spatious Living accomodation with a Bath and eveything"; 
 		
-		int mode = 11;
+		int mode = 13;
 		boolean insertSuccess;
 		boolean deleteSuccess;
+		boolean houseDeleted;
 		int updateSuccess = 0;
-		
+
 		// testing switch
 		switch (mode) {
 		case 1: // userCheck
@@ -532,13 +633,14 @@ public class Database {
 		case 2: // insert User
 			// user to be inserted
 			insert = new User(username);
-			insert.firstName("Check");
-			insert.secondName("DefaultImage");
+			insert.firstName("Henry");
+			insert.secondName("Waddlesworth");
 			insert.email(email);
 			insert.admin(true);
 			insert.landlord(true);
-			insert.DOB("1993-10-31");
-			insert.password(password);
+			insert.DOB("0000-01-01");
+			String encryptedPassword = DataHandler.crypt(password);
+			insert.password(encryptedPassword);
 			// insert
 			insertSuccess = userInsert(insert);
 			if (insertSuccess == false) {
@@ -578,7 +680,7 @@ public class Database {
 			}
 			break;
 		case 6: // send an email
-			
+
 			break;
 		case 7: // register
 			boolean regCheck;
@@ -609,7 +711,6 @@ public class Database {
 			break;
 		case 9:
 			boolean loginCheck;
-
 			try {
 				loginCheck = login(username, password);
 
@@ -624,43 +725,65 @@ public class Database {
 			}
 			break;
 		case 10:
-			//String tablename, String filepath, String fieldSelect, String id
+			// String tablename, String filepath, String fieldSelect, String id
 			String tablename = "users";
 			String filepath = "D:/EE course/SWEng/Java/Compilation1.jpg";
 			String fieldSelect = "profileIMG";
 			int id = 3104;
-			updateImage(tablename,filepath,fieldSelect,id);
+			updateImage(tablename, filepath, fieldSelect, id);
 			break;
-		case 11: 
+		case 11:
 			// insert the houses basic info
 			House eyehouseHQ = null;
 			int pricepermonth = 1000;
 			boolean house;
 			String brc = "D:/EE course/SWEng/Java/testbrochure.pdf";
 			String enrg = "D:/EE course/SWEng/Java/energy-rating-card.jpg";
-			eyehouseHQ = new House("Spatious Living accomodation with a Bath and eveything");
+			eyehouseHQ = new House(title);
 			eyehouseHQ.postcode("YO10 5DD");
 			eyehouseHQ.address("Exhibition center");
 			eyehouseHQ.price(pricepermonth);
 			eyehouseHQ.deposit(pricepermonth);
-			eyehouseHQ.rooms(pricepermonth);  
-			eyehouseHQ.bathrooms(pricepermonth); 
-			eyehouseHQ.dateAvailable("2015-04-18"); 
-			eyehouseHQ.furnished(true); 
-			eyehouseHQ.description("A fine fine building made of dreams and aspirations. As the spring rains fall, soaking in them, on the roof, is a child's rag ball."); 
-			
-			User temp = getUser("MVPTom"); 
-			
-			house = houseInsert(eyehouseHQ,brc,enrg,temp);
-			eyehouseHQ.printHouse();
-			System.out.println(house);
+			eyehouseHQ.rooms(pricepermonth);
+			eyehouseHQ.bathrooms(pricepermonth);
+			eyehouseHQ.dateAvailable("2015-04-18");
+			eyehouseHQ.furnished(true);
+			eyehouseHQ
+					.description("A fine fine building made of dreams and aspirations. As the spring rains fall, soaking in them, on the roof, is a child's rag ball.");
+			User temp = getUser("MVPTom");
+			if (!checkHouseExists(temp, eyehouseHQ)) {
+				house = houseInsert(eyehouseHQ, brc, enrg, temp);
+				eyehouseHQ.printHouse();
+				System.out.println(house);
+			}
+			break;
+		case 12: 
+			// a lot of cases!
+			// get House id method and get house as well
+			User tempu = getUser("MVPTom");
+			// gets house and puts it into memory
+			House temph = getHouse(tempu,title);
+			int uid = getID(tempu, null, 1);
+			int hid = getID(tempu, temph, 2);
+			System.out.println("User ID: " + uid + "\nHouse ID: " + hid);
+			break;
+		case 13:
+			User tempu2 = getUser("MVPTom");
+			House temph2 = getHouse(tempu2,title);
+			try {
+				houseDeleted = houseDelete(temph2,tempu2);
+				if(!houseDeleted) System.out.println("House not Deleted");
+				else System.out.println("\nHouse succesfully deleted");
+			} catch (NullPointerException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				System.out.println("House not Deleted");
+			}
 			break;
 		default: // no mode selected
 			System.out.println("Select a valid switch case mode");
 			break;
 		}
 		
-		int id = getUserID("MVPTom");
-		System.out.println(id);
 	}
 }

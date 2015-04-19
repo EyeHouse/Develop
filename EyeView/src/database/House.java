@@ -113,6 +113,5 @@ public class House {
 	
 	public void printHouse() {
 		System.out.println("\ntitle " + title);
-		System.out.println("Id of owner: " + uid);
 	}
 }

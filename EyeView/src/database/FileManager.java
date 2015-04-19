@@ -1,10 +1,23 @@
 package database;
 
+import java.awt.BorderLayout;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.vfs2.FileContent;
 import org.apache.commons.vfs2.FileObject;
+import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileSystemOptions;
 import org.apache.commons.vfs2.Selectors;
 import org.apache.commons.vfs2.impl.StandardFileSystemManager;
@@ -12,7 +25,9 @@ import org.apache.commons.vfs2.provider.sftp.SftpFileSystemConfigBuilder;
 
 public class FileManager {
 
-	static Properties props;
+	public static Properties props;
+	public static final String PREFIX = "stream2file";
+	public static final String SUFFIX = ".tmp";
 
 	public boolean downloadFTP(String propertiesFilename, String fileToDownload) {
 
@@ -65,6 +80,48 @@ public class FileManager {
 		}
 
 		return true;
+	}
+
+	public static File readFTP(String filepath) throws IOException {
+		StandardFileSystemManager manager = new StandardFileSystemManager();
+		// Create remote file object
+		FileObject remoteFile;
+		File media = null;
+		try {
+			// Initializes the file manager
+			manager.init();
+			// Setup our SFTP configuration
+			FileSystemOptions opts = new FileSystemOptions();
+			SftpFileSystemConfigBuilder.getInstance().setStrictHostKeyChecking(
+					opts, "no");
+			SftpFileSystemConfigBuilder.getInstance().setUserDirIsRoot(opts,
+					true);
+			SftpFileSystemConfigBuilder.getInstance().setTimeout(opts, 10000);
+
+			// Create the SFTP URI using the host name, userid, password, remote
+			// path and file name
+			String sftpUri = "sftp://tb77931004:72dw42WRq!2345@" + Database.url
+					+ ":8080/" + filepath;
+			remoteFile = manager.resolveFile(sftpUri, opts);
+			FileContent temp = remoteFile.getContent();
+			InputStream is = temp.getInputStream();
+			media = stream2file(is);
+		} catch (FileSystemException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			remoteFile = null;
+			System.out.println("File Read: Failed\n remoteFile is null");
+		}
+		return media;
+	}
+
+	public static File stream2file(InputStream in) throws IOException {
+		final File tempFile = File.createTempFile(PREFIX, SUFFIX);
+		tempFile.deleteOnExit();
+		try (FileOutputStream out = new FileOutputStream(tempFile)) {
+			IOUtils.copy(in, out);
+		}
+		return tempFile;
 	}
 
 	public boolean uploadFTP(String propertiesFilename, String fileToFTP) {
@@ -172,20 +229,18 @@ public class FileManager {
 		return true;
 	}
 
-
 	public static void main(String[] args) throws Exception {
 
 		int mode = 4;
 		String propertiesFile = "D://EE course/SWEng/Java/Server Tool/properties.txt";
-		
+
 		switch (mode) {
 		case 1:
 			FileManager update = new FileManager();
-			String uploadFile = "Disco1.jpg";
+			String uploadFile = "default_profpic.jpg";
 			update.uploadFTP(propertiesFile, uploadFile);
 			break;
 		case 2:
-
 			FileManager download = new FileManager();
 			String downloadFile = "Disco1.jpg";
 			download.downloadFTP(propertiesFile, downloadFile);
@@ -196,9 +251,30 @@ public class FileManager {
 			String deleteFile = "Disco1.jpg";
 			delete.deleteFTP(propertiesFile, deleteFile);
 			break;
+		case 4:
+			File picture = null;
+			picture = readFTP("eyehouse/defaults/default_profpic.jpg");
+			BufferedImage image = null;
+	        try
+	        {
+	          image = ImageIO.read(picture);
+	        }
+	        catch (Exception e)
+	        {
+	          e.printStackTrace();
+	          System.exit(1);
+	        }
+	        JFrame frame = new JFrame();
+		    JLabel label = new JLabel(new ImageIcon(image));
+		    frame.getContentPane().add(label, BorderLayout.CENTER);
+		    frame.pack();
+		    frame.setVisible(true);
+	        
+			
+			break;
 		default:
 			break;
-		}
 
+		}
 	}
 }
