@@ -275,6 +275,47 @@ public class Database {
 		return true;
 	}
 
+	public static boolean updateHouse(User userDetails, House houseDetails,
+			String field, String value1, Boolean value2, Blob value3,
+			int value4, int varType) {
+		int hid;
+		int uid;
+		try {
+			hid = getID(userDetails, houseDetails, 2);
+			uid = getID(userDetails, null, 1);
+			PreparedStatement updateHouse = con
+					.prepareStatement("UPDATE houses SET " + field
+							+ "=? WHERE uid=? AND hid=?");
+			// IMPORTANT: filetype int specifies which variable to use 
+			// 1 = string, 2 = bool, 3 = blob, 4 = int
+			switch (varType) {
+			case 1:
+				updateHouse.setString(1,value1);
+				break;
+			case 2:
+				updateHouse.setBoolean(1,value2);
+				break;
+			case 3:
+				updateHouse.setBlob(1,value3);
+				break;
+			case 4:
+				updateHouse.setInt(1,value4);
+				break;
+			default:
+				break;
+			}
+			updateHouse.setInt(2,uid);
+			updateHouse.setInt(3,hid);
+			updateHouse.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("Someone done messed up");
+			return false;
+		}
+		return true;
+	}
+
 	public static boolean houseDelete(House houseDetails, User userDetails) {
 		int uid;
 		int hid;
@@ -308,7 +349,7 @@ public class Database {
 	 * @param newField
 	 * @return
 	 */
-	public static int userUpdate(User user, String fieldSelect, Boolean priv,
+	public static boolean userUpdate(User user, String fieldSelect, Boolean priv,
 			String newField) {
 		// prepare a statement to update a field 'field'
 		try {
@@ -328,10 +369,10 @@ public class Database {
 			e.getMessage();
 			e.getErrorCode();
 			e.printStackTrace();
-			return 0;
+			return false;
 		}
 		// updated a string field
-		return 1;
+		return true;
 	}
 
 	/**
@@ -386,11 +427,10 @@ public class Database {
 			// execute
 			houseDetails = getHouse.executeQuery();
 			// take all the users details and put them in an instance of user
-			if(houseDetails.next()) {
+			if (houseDetails.next()) {
 				// construct an instance using the logged on users details
 				house = new House(houseDetails);
-			}
-			else {
+			} else {
 				System.out.println("\nUser has no houses with this title");
 				house = null;
 			}
@@ -606,13 +646,14 @@ public class Database {
 		String password = "PumpkinBoy";
 		String email = "hcw515@york.ac.uk";
 
-		String title = "Spatious Living accomodation with a Bath and eveything"; 
-		
-		int mode = 13;
+		String title = "Spatious Living accomodation with a Bath and eveything";
+
+		int mode = 14;
 		boolean insertSuccess;
 		boolean deleteSuccess;
 		boolean houseDeleted;
-		int updateSuccess = 0;
+		boolean updateSuccess;
+		
 
 		// testing switch
 		switch (mode) {
@@ -680,7 +721,7 @@ public class Database {
 			}
 			break;
 		case 6: // send an email
-
+			// use a runtime to send one via a ssh session
 			break;
 		case 7: // register
 			boolean regCheck;
@@ -757,33 +798,45 @@ public class Database {
 				System.out.println(house);
 			}
 			break;
-		case 12: 
+		case 12:
 			// a lot of cases!
 			// get House id method and get house as well
 			User tempu = getUser("MVPTom");
 			// gets house and puts it into memory
-			House temph = getHouse(tempu,title);
+			House temph = getHouse(tempu, title);
 			int uid = getID(tempu, null, 1);
 			int hid = getID(tempu, temph, 2);
 			System.out.println("User ID: " + uid + "\nHouse ID: " + hid);
 			break;
 		case 13:
 			User tempu2 = getUser("MVPTom");
-			House temph2 = getHouse(tempu2,title);
+			House temph2 = getHouse(tempu2, title);
 			try {
-				houseDeleted = houseDelete(temph2,tempu2);
-				if(!houseDeleted) System.out.println("House not Deleted");
-				else System.out.println("\nHouse succesfully deleted");
+				houseDeleted = houseDelete(temph2, tempu2);
+				if (!houseDeleted)
+					System.out.println("House not Deleted");
+				else
+					System.out.println("\nHouse succesfully deleted");
 			} catch (NullPointerException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 				System.out.println("House not Deleted");
 			}
 			break;
+		case 14: 
+			int tempPrc = 9001;
+			int varType = 4;
+			User tempu3 = getUser("MVPTom");
+			House temph3 = getHouse(tempu3, title);
+			check = updateHouse(tempu3, temph3,"price",null, null, null,
+					tempPrc, varType);
+			if(check == true) System.out.println("\nUpdate Successful");
+			else System.out.println("\nFailure");
+			break;
 		default: // no mode selected
 			System.out.println("Select a valid switch case mode");
 			break;
 		}
-		
+
 	}
 }
