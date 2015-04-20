@@ -4,6 +4,8 @@
  */
 package database;
 
+import java.awt.BorderLayout;
+import java.awt.Image;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -18,6 +20,11 @@ import java.sql.SQLException;
 //import com.mysql.jdbc.PreparedStatement;
 import java.sql.PreparedStatement;
 import java.util.*;
+
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 
 import com.mysql.jdbc.Blob;
 
@@ -345,7 +352,7 @@ public class Database {
 			// if there's a string use string data else it must be a bool
 			if (newField != null)
 				editUser.setString(1, newField);
-			 else
+			else
 				editUser.setBoolean(1, priv);
 			editUser.setString(2, user.username);
 			editUser.setString(3, user.email);
@@ -616,6 +623,7 @@ public class Database {
 		System.out.println("\nImage update executed");
 		return true;
 	}
+
 	/**
 	 * Inserts an image into the house_images table
 	 * 
@@ -626,23 +634,26 @@ public class Database {
 	 * @return false on failure
 	 * @throws SQLException
 	 */
-	public static boolean insertHouseImage(String localFilepath, House houseDetails, User userDetails) throws SQLException {
+	public static boolean insertHouseImage(String localFilepath,
+			House houseDetails, User userDetails) throws SQLException {
 		int hid;
 		PreparedStatement insertImage;
 		try {
 			insertImage = con
-						.prepareStatement("INSERT INTO house_images VALUES (?,?)");
+					.prepareStatement("INSERT INTO house_images VALUES (?,?,?)");
 			hid = getID(userDetails, houseDetails, 2);
-			// enter the relevant house in parameters so we can use its unqiue id
-			insertImage.setInt(1, hid);
+			// enter the relevant house in parameters so we can use its unqiue
+			// id
+			insertImage.setInt(1, 0);
+			insertImage.setInt(2, hid);
 			// check on the image they want to insert
 			File picture = new File(localFilepath);
 			if (!picture.exists())
 				throw new RuntimeException("Error. Local file not found");
 			else {
-					FileInputStream fis = new FileInputStream(picture);
-					System.out.println(picture);
-					insertImage.setBinaryStream(2, fis, fis.available());
+				FileInputStream fis = new FileInputStream(picture);
+				System.out.println(picture);
+				insertImage.setBinaryStream(3, fis, fis.available());
 			}
 			insertImage.executeUpdate();
 		} catch (Exception e) {
@@ -652,6 +663,27 @@ public class Database {
 			return false;
 		}
 		return true;
+	}
+
+	public static ArrayList<HouseImage> getHouseImageSet(int hid) {
+		ResultSet images;
+		ArrayList<HouseImage> list = new ArrayList<HouseImage>();
+		try {
+			PreparedStatement getImages = con
+					.prepareStatement("SELECT * FROM house_images WHERE hid=?");
+			getImages.setInt(1, hid);
+			images = getImages.executeQuery();
+
+			while (images.next()) {
+				list.add(new HouseImage(images));
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		return list;
 	}
 
 	public static void main(String[] args) throws Exception {
@@ -669,7 +701,7 @@ public class Database {
 
 		String title = "Spatious Living accomodation with a Bath and eveything";
 
-		int mode = 15;
+		int mode = 16;
 		boolean insertSuccess;
 		boolean deleteSuccess;
 		boolean houseDeleted;
@@ -857,13 +889,39 @@ public class Database {
 		case 15:
 			User tempu4 = getUser("MVPTom");
 			House temph4 = getHouse(tempu4, title);
-			// perhaps enter your own local file to test here, unless you're on my laptop
+			// perhaps enter your own local file to test here, unless you're on
+			// my laptop
 			String localFilePath = "D:/EE course/SWEng/Java/eyehouseHQ1.jpg";
-			check = insertHouseImage(localFilePath, temph4 ,tempu4);
+			check = insertHouseImage(localFilePath, temph4, tempu4);
 			if (check == true)
 				System.out.println("\nInsert Successful");
 			else
 				System.out.println("\nFailure");
+			break;
+		case 16:
+			User tempu5 = getUser("MVPTom");
+			// gets house and puts it into memory
+			House temph5 = getHouse(tempu5, title);
+			int hid5 = getID(tempu5, temph5, 2);
+			ArrayList<HouseImage> list = new ArrayList<HouseImage>();
+			list = getHouseImageSet(hid5);
+
+			int i;
+			for (i = 0; i < list.size(); i++) {
+				HouseImage image = list.get(i);
+				System.out.println(image.imageIS);
+				
+				//InputStream binaryStream = image.imageBlob.getBinaryStream(1, image.imageBlob.length());
+				Image picture = ImageIO.read(image.imageIS);
+				
+				JFrame frame = new JFrame();
+			    JLabel label = new JLabel(new ImageIcon(picture));
+			    frame.getContentPane().add(label, BorderLayout.CENTER);
+			    frame.pack();
+			    frame.setVisible(true);
+			}
+			
+
 			break;
 		default: // no mode selected
 			System.out.println("Select a valid switch case mode");
