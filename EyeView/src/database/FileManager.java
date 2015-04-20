@@ -114,6 +114,38 @@ public class FileManager {
 		}
 		return media;
 	}
+	
+	public static InputStream readImageSFTP(String filepath) throws IOException {
+		StandardFileSystemManager manager = new StandardFileSystemManager();
+		// Create remote file object
+		FileObject remoteFile;
+		InputStream is;
+		try {
+			// Initializes the file manager
+			manager.init();
+			// Setup our SFTP configuration
+			FileSystemOptions opts = new FileSystemOptions();
+			SftpFileSystemConfigBuilder.getInstance().setStrictHostKeyChecking(
+					opts, "no");
+			SftpFileSystemConfigBuilder.getInstance().setUserDirIsRoot(opts,
+					true);
+			SftpFileSystemConfigBuilder.getInstance().setTimeout(opts, 10000);
+
+			// Create the SFTP URI using the host name, userid, password, remote
+			// path and file name
+			String sftpUri = "sftp://tb77931004:72dw42WRq!2345@" + Database.url
+					+ ":8080/" + filepath;
+			remoteFile = manager.resolveFile(sftpUri, opts);
+			FileContent temp = remoteFile.getContent();
+			is = temp.getInputStream();
+		} catch (FileSystemException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			is = null;
+			System.out.println("File Read: Failed\nFileSystem Exception");
+		}
+		return is;
+	}
 
 	public static File stream2file(InputStream in) throws IOException {
 		final File tempFile = File.createTempFile(PREFIX, SUFFIX);
@@ -179,7 +211,7 @@ public class FileManager {
 		}
 		return true;
 	}
-
+	
 	public boolean deleteFTP(String propertiesFilename, String fileToDelete) {
 
 		props = new Properties();
@@ -255,6 +287,7 @@ public class FileManager {
 			File picture = null;
 			picture = readFTP("eyehouse/defaults/default_profpic.jpg");
 			BufferedImage image = null;
+			System.out.println(picture);
 	        try
 	        {
 	          image = ImageIO.read(picture);
@@ -269,8 +302,6 @@ public class FileManager {
 		    frame.getContentPane().add(label, BorderLayout.CENTER);
 		    frame.pack();
 		    frame.setVisible(true);
-	        
-			
 			break;
 		default:
 			break;

@@ -82,7 +82,7 @@ public class Database {
 			try {
 				con = DriverManager.getConnection("jdbc:mysql://" + url
 						+ ":3306/eyehouse", "eyehouseuser", "Toothbrush50");
-				System.out.print("Success");
+				System.out.print("Success\n");
 			} catch (SQLException ex) {
 				ex.printStackTrace();
 				// handle any errors
@@ -104,29 +104,10 @@ public class Database {
 	public static boolean userInsert(User userDetails) {
 		// query
 		try {
-			FileInputStream fis = null;
+			File picture = null;
 			PreparedStatement insertUser = con
 					.prepareStatement("INSERT INTO users "
 							+ "VALUES (?,?,?,?,?,?,?,?,?,?,?)");
-			File file = new File("D:/EE course/SWEng/Java/Disco1.jpg");
-			// InputStream is = null;
-			// try {
-			// is = new URL("sftp://eyehouseuser:Toothbrush50@" + url
-			// + ":8080/eyehouse/defaults/default_profpic.jpg")
-			// .openConnection().getInputStream();
-			// } catch (MalformedURLException e1) {
-			// // TODO Auto-generated catch block
-			// e1.printStackTrace();
-			// } catch (IOException e1) {
-			// // TODO Auto-generated catch block
-			// e1.printStackTrace();
-			// }
-			try {
-				fis = new FileInputStream(file);
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 			// insert the users data
 			insertUser.setInt(id, 0);
 			insertUser.setString(firstName, userDetails.first_name);
@@ -138,11 +119,16 @@ public class Database {
 			insertUser.setString(DOB, userDetails.DOB);
 			insertUser.setBoolean(admin, userDetails.admin);
 			try {
+				picture = FileManager
+						.readFTP("eyehouse/defaults/default_profpic.jpg");
+				FileInputStream fis = new FileInputStream(picture);
+				System.out.println(picture);
 				insertUser.setBinaryStream(profileIMG, fis, fis.available());
 				// insertUser.setBinaryStream(profileIMG, is, is.available());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				System.out.println("\nunsurpisingly theres been an sftp error");
 			}
 			insertUser.setString(properties, null);
 			// execute the query
@@ -286,26 +272,26 @@ public class Database {
 			PreparedStatement updateHouse = con
 					.prepareStatement("UPDATE houses SET " + field
 							+ "=? WHERE uid=? AND hid=?");
-			// IMPORTANT: filetype int specifies which variable to use 
+			// IMPORTANT: filetype int specifies which variable to use
 			// 1 = string, 2 = bool, 3 = blob, 4 = int
 			switch (varType) {
 			case 1:
-				updateHouse.setString(1,value1);
+				updateHouse.setString(1, value1);
 				break;
 			case 2:
-				updateHouse.setBoolean(1,value2);
+				updateHouse.setBoolean(1, value2);
 				break;
 			case 3:
-				updateHouse.setBlob(1,value3);
+				updateHouse.setBlob(1, value3);
 				break;
 			case 4:
-				updateHouse.setInt(1,value4);
+				updateHouse.setInt(1, value4);
 				break;
 			default:
 				break;
 			}
-			updateHouse.setInt(2,uid);
-			updateHouse.setInt(3,hid);
+			updateHouse.setInt(2, uid);
+			updateHouse.setInt(3, hid);
 			updateHouse.executeUpdate();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -349,8 +335,8 @@ public class Database {
 	 * @param newField
 	 * @return
 	 */
-	public static boolean userUpdate(User user, String fieldSelect, Boolean priv,
-			String newField) {
+	public static boolean userUpdate(User user, String fieldSelect,
+			Boolean priv, String newField) {
 		// prepare a statement to update a field 'field'
 		try {
 			PreparedStatement editUser = con
@@ -359,7 +345,7 @@ public class Database {
 			// if there's a string use string data else it must be a bool
 			if (newField != null)
 				editUser.setString(1, newField);
-			else
+			 else
 				editUser.setBoolean(1, priv);
 			editUser.setString(2, user.username);
 			editUser.setString(3, user.email);
@@ -612,9 +598,7 @@ public class Database {
 
 	public static boolean updateImage(String tablename, String filepath,
 			String fieldSelect, int id) throws FileNotFoundException {
-
 		try {
-
 			FileInputStream fis = null;
 			PreparedStatement updateImage = con.prepareStatement("UPDATE "
 					+ tablename + " SET " + fieldSelect + "=? WHERE id=?");
@@ -632,6 +616,43 @@ public class Database {
 		System.out.println("\nImage update executed");
 		return true;
 	}
+	/**
+	 * Inserts an image into the house_images table
+	 * 
+	 * @param localFilepath
+	 * @param houseDetails
+	 * @param userDetails
+	 * @return true on success
+	 * @return false on failure
+	 * @throws SQLException
+	 */
+	public static boolean insertHouseImage(String localFilepath, House houseDetails, User userDetails) throws SQLException {
+		int hid;
+		PreparedStatement insertImage;
+		try {
+			insertImage = con
+						.prepareStatement("INSERT INTO house_images VALUES (?,?)");
+			hid = getID(userDetails, houseDetails, 2);
+			// enter the relevant house in parameters so we can use its unqiue id
+			insertImage.setInt(1, hid);
+			// check on the image they want to insert
+			File picture = new File(localFilepath);
+			if (!picture.exists())
+				throw new RuntimeException("Error. Local file not found");
+			else {
+					FileInputStream fis = new FileInputStream(picture);
+					System.out.println(picture);
+					insertImage.setBinaryStream(2, fis, fis.available());
+			}
+			insertImage.executeUpdate();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("\nThe Insert Query Failed");
+			return false;
+		}
+		return true;
+	}
 
 	public static void main(String[] args) throws Exception {
 		// Connect to the Database
@@ -642,19 +663,17 @@ public class Database {
 		User update = null;
 		User get = null;
 		// User checkUse = null
-		String username = "Henry";
-		String password = "PumpkinBoy";
-		String email = "hcw515@york.ac.uk";
+		String username = "DefProfTest1";
+		String password = "Eyehouse1";
+		String email = "DefProfTest1@york.ac.uk";
 
 		String title = "Spatious Living accomodation with a Bath and eveything";
 
-		int mode = 14;
+		int mode = 15;
 		boolean insertSuccess;
 		boolean deleteSuccess;
 		boolean houseDeleted;
 		boolean updateSuccess;
-		
-
 		// testing switch
 		switch (mode) {
 		case 1: // userCheck
@@ -674,7 +693,7 @@ public class Database {
 		case 2: // insert User
 			// user to be inserted
 			insert = new User(username);
-			insert.firstName("Henry");
+			insert.firstName("Lol");
 			insert.secondName("Waddlesworth");
 			insert.email(email);
 			insert.admin(true);
@@ -823,15 +842,28 @@ public class Database {
 				System.out.println("House not Deleted");
 			}
 			break;
-		case 14: 
+		case 14:
 			int tempPrc = 9001;
 			int varType = 4;
 			User tempu3 = getUser("MVPTom");
 			House temph3 = getHouse(tempu3, title);
-			check = updateHouse(tempu3, temph3,"price",null, null, null,
+			check = updateHouse(tempu3, temph3, "price", null, null, null,
 					tempPrc, varType);
-			if(check == true) System.out.println("\nUpdate Successful");
-			else System.out.println("\nFailure");
+			if (check == true)
+				System.out.println("\nUpdate Successful");
+			else
+				System.out.println("\nFailure");
+			break;
+		case 15:
+			User tempu4 = getUser("MVPTom");
+			House temph4 = getHouse(tempu4, title);
+			// perhaps enter your own local file to test here, unless you're on my laptop
+			String localFilePath = "D:/EE course/SWEng/Java/eyehouseHQ1.jpg";
+			check = insertHouseImage(localFilePath, temph4 ,tempu4);
+			if (check == true)
+				System.out.println("\nInsert Successful");
+			else
+				System.out.println("\nFailure");
 			break;
 		default: // no mode selected
 			System.out.println("Select a valid switch case mode");

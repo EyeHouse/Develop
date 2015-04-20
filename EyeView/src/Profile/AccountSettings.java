@@ -360,7 +360,6 @@ public class AccountSettings extends presenter.Window{
 					&& (fieldNewPassword.getText().equals(fieldConfNewPassword
 							.getText()))) {
 				Database.userUpdate(currentUser,"password",null,fieldPassword.getText());
-
 				// Return to profile if there is no username error
 				if (!labelUsernameAvailability.isVisible()) {
 					OpenProfile();
