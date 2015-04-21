@@ -685,6 +685,28 @@ public class Database {
 		}
 		return list;
 	}
+	/** 
+	 * Deletes the database entry of an image when passed its HouseImage type
+	 
+	 * @param image
+	 * @return true on success
+	 * @return false on failure
+	 */
+	public static boolean deleteHouseImage(HouseImage image) {
+		try {
+			PreparedStatement dropUser = con
+					.prepareStatement("DELETE FROM house_images WHERE iid=?");
+			// Parameterise inputs
+			dropUser.setInt(1, image.iid);
+			// Execute SQL drop statement
+			dropUser.executeUpdate();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			e.getMessage();
+			return false;
+		}
+	}
 
 	public static void main(String[] args) throws Exception {
 		// Connect to the Database
@@ -701,7 +723,7 @@ public class Database {
 
 		String title = "Spatious Living accomodation with a Bath and eveything";
 
-		int mode = 16;
+		int mode = 15;
 		boolean insertSuccess;
 		boolean deleteSuccess;
 		boolean houseDeleted;
@@ -919,9 +941,12 @@ public class Database {
 			    frame.getContentPane().add(label, BorderLayout.CENTER);
 			    frame.pack();
 			    frame.setVisible(true);
+			    // Deletes all the images for this house
+			    //deleteHouseImage(image);
 			}
 			
-
+			
+			
 			break;
 		default: // no mode selected
 			System.out.println("Select a valid switch case mode");
