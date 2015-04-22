@@ -99,7 +99,7 @@ public class Database {
 			}
 		}
 	}
-
+	// different
 	/**
 	 * A basic function that take an instance of User.java, and enters it into
 	 * the database you're connected to.
