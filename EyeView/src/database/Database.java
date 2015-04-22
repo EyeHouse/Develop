@@ -127,7 +127,7 @@ public class Database {
 			insertUser.setBoolean(admin, userDetails.admin);
 			try {
 				picture = FileManager
-						.readFTP("eyehouse/defaults/default_profpic.jpg");
+						.readFile("eyehouse/defaults/default_profpic.jpg");
 				FileInputStream fis = new FileInputStream(picture);
 				System.out.println(picture);
 				insertUser.setBinaryStream(profileIMG, fis, fis.available());
@@ -708,6 +708,16 @@ public class Database {
 		}
 	}
 
+	public static boolean insertHouseVideo(User userDetails, House houseDetails, String filename, String localDirectory) {
+		
+		
+		
+		FileManager update = new FileManager();
+		update.uploadFile(userDetails, filename, localDirectory);
+		
+		return true;
+	}
+	
 	public static void main(String[] args) throws Exception {
 		// Connect to the Database
 		dbConnect();
@@ -790,7 +800,7 @@ public class Database {
 			} catch (NullPointerException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				System.out.println("User not found");
+				System.out.println("\nUser not found");
 			}
 			break;
 		case 6: // send an email
@@ -954,4 +964,6 @@ public class Database {
 		}
 
 	}
+
+	
 }

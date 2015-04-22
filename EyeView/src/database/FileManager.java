@@ -82,7 +82,7 @@ public class FileManager {
 		return true;
 	}
 
-	public static File readFTP(String filepath) throws IOException {
+	public static File readFile(String filepath) throws IOException {
 		StandardFileSystemManager manager = new StandardFileSystemManager();
 		// Create remote file object
 		FileObject remoteFile;
@@ -115,7 +115,7 @@ public class FileManager {
 		return media;
 	}
 	
-	public static InputStream readImageSFTP(String filepath) throws IOException {
+	public static InputStream readInputStream(String filepath) throws IOException {
 		StandardFileSystemManager manager = new StandardFileSystemManager();
 		// Create remote file object
 		FileObject remoteFile;
@@ -156,23 +156,24 @@ public class FileManager {
 		return tempFile;
 	}
 
-	public boolean uploadFTP(String propertiesFilename, String fileToFTP) {
-
-		props = new Properties();
+	public boolean uploadFile(User userDetails, String filename, String localDirectory) {
+		
+		//props = new Properties();
 		StandardFileSystemManager manager = new StandardFileSystemManager();
 
 		try {
 
-			props.load(new FileInputStream(propertiesFilename));
-			String serverAddress = props.getProperty("serverAddress").trim();
-			String userId = props.getProperty("userId").trim();
-			String password = props.getProperty("password").trim();
-			String remoteDirectory = props.getProperty("remoteDirectory")
-					.trim();
-			String localDirectory = props.getProperty("localDirectory").trim();
+//			props.load(new FileInputStream(propertiesFilename));
+//			String serverAddress = props.getProperty("serverAddress").trim();
+//			String userId = props.getProperty("userId").trim();
+//			String password = props.getProperty("password").trim();
+//			String remoteDirectory = props.getProperty("remoteDirectory")
+//					.trim();
+//			String localDirectory = props.getProperty("localDirectory").trim();
 
 			// check if the file exists
-			String filepath = localDirectory + fileToFTP;
+			String filepath = localDirectory + "/" + filename;
+			System.out.println("\nLocalfilepath is: " + filepath);
 			File file = new File(filepath);
 			if (!file.exists())
 				throw new RuntimeException("Error. Local file not found");
@@ -190,15 +191,15 @@ public class FileManager {
 
 			// Create the SFTP URI using the host name, userid, password, remote
 			// path and file name
-			String sftpUri = "sftp://" + userId + ":" + password + "@"
-					+ serverAddress + "/" + remoteDirectory + fileToFTP;
-
+			String sftpUri = "sftp://tb77931004:72dw42WRq!2345@"
+					+ Database.url + "/eyehouse/" + userDetails.username + "/" + filename;
+			
 			// Create local file object
 			FileObject localFile = manager.resolveFile(file.getAbsolutePath());
-
+			
 			// Create remote file object
 			FileObject remoteFile = manager.resolveFile(sftpUri, opts);
-
+			
 			// Copy local file to sftp server
 			remoteFile.copyFrom(localFile, Selectors.SELECT_SELF);
 			System.out.println("File upload successful");
@@ -263,14 +264,18 @@ public class FileManager {
 
 	public static void main(String[] args) throws Exception {
 
-		int mode = 4;
+		int mode = 1;
 		String propertiesFile = "D://EE course/SWEng/Java/Server Tool/properties.txt";
-
+		String filename = "example_clip.mp4";
+		String localDirectory = "D:/EE course/SWEng/Java";
+		
+		Database.dbConnect();
+		User tempu68 = Database.getUser("MVPTom");
+		
 		switch (mode) {
 		case 1:
 			FileManager update = new FileManager();
-			String uploadFile = "default_profpic.jpg";
-			update.uploadFTP(propertiesFile, uploadFile);
+			update.uploadFile(tempu68, filename, localDirectory);
 			break;
 		case 2:
 			FileManager download = new FileManager();
@@ -285,7 +290,7 @@ public class FileManager {
 			break;
 		case 4:
 			File picture = null;
-			picture = readFTP("eyehouse/defaults/default_profpic.jpg");
+			picture = readFile("eyehouse/defaults/default_profpic.jpg");
 			BufferedImage image = null;
 			System.out.println(picture);
 	        try
