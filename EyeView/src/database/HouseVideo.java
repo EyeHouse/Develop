@@ -39,4 +39,11 @@ public class HouseVideo {
 	public void videoLocation(String vidLoc) {
 		this.videoLocation = vidLoc;
 	}
+	
+	public void printHouseInfo() {
+		System.out.println("\nVideo id: " + this.vid);
+		System.out.println("\nHouse id: " + this.hid);
+		System.out.println("\nVideo Location: " + this.videoLocation);
+		
+	}
 }

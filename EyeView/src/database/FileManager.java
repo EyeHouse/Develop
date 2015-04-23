@@ -28,6 +28,8 @@ public class FileManager {
 	public static Properties props;
 	public static final String PREFIX = "stream2file";
 	public static final String SUFFIX = ".tmp";
+	private static String USERNAME = "ehfile1004";
+	private static String PASSWORD = "Jigsaw12!";
 
 	public boolean downloadFTP(String propertiesFilename, String fileToDownload) {
 
@@ -38,8 +40,6 @@ public class FileManager {
 
 			props.load(new FileInputStream(propertiesFilename));
 			String serverAddress = props.getProperty("serverAddress").trim();
-			String userId = props.getProperty("userId").trim();
-			String password = props.getProperty("password").trim();
 			String remoteDirectory = props.getProperty("remoteDirectory")
 					.trim();
 			String localDirectory = props.getProperty("localDirectory").trim();
@@ -57,7 +57,7 @@ public class FileManager {
 
 			// Create the SFTP URI using the host name, userid, password, remote
 			// path and file name
-			String sftpUri = "sftp://" + userId + ":" + password + "@"
+			String sftpUri = "sftp://" + USERNAME + ":" + PASSWORD + "@"
 					+ serverAddress + "/" + remoteDirectory + fileToDownload;
 
 			// Create local file object
@@ -100,8 +100,8 @@ public class FileManager {
 
 			// Create the SFTP URI using the host name, userid, password, remote
 			// path and file name
-			String sftpUri = "sftp://tb77931004:72dw42WRq!2345@" + Database.url
-					+ ":8080/" + filepath;
+			String sftpUri = "sftp://" + USERNAME + ":" + PASSWORD + "@"
+					+ Database.url + ":8080/" + filepath;
 			remoteFile = manager.resolveFile(sftpUri, opts);
 			FileContent temp = remoteFile.getContent();
 			InputStream is = temp.getInputStream();
@@ -114,12 +114,15 @@ public class FileManager {
 		}
 		return media;
 	}
-	
-	public static InputStream readInputStream(String filepath) throws IOException {
+
+	public static InputStream readInputStream(String filepath)
+			throws IOException {
+
 		StandardFileSystemManager manager = new StandardFileSystemManager();
 		// Create remote file object
 		FileObject remoteFile;
 		InputStream is;
+
 		try {
 			// Initializes the file manager
 			manager.init();
@@ -133,8 +136,12 @@ public class FileManager {
 
 			// Create the SFTP URI using the host name, userid, password, remote
 			// path and file name
-			String sftpUri = "sftp://tb77931004:72dw42WRq!2345@" + Database.url
-					+ ":8080/" + filepath;
+			// String sftpUri = "sftp://" + USERNAME + ":" + PASSWORD + "@"
+			// + Database.url + ":8080/" + filepath;
+
+			String sftpUri = "sftp://tb77931004:72dw42WRq!2345@"
+					+ Database.url + ":8080/" + filepath;
+
 			remoteFile = manager.resolveFile(sftpUri, opts);
 			FileContent temp = remoteFile.getContent();
 			is = temp.getInputStream();
@@ -156,25 +163,57 @@ public class FileManager {
 		return tempFile;
 	}
 
-	public boolean uploadFile(User userDetails, String filename, String localDirectory) {
-		
-		//props = new Properties();
+	public static File readVideo(User userDetails, HouseVideo videoDetails) {
+
+		// String filepath = "sftp://" + USERNAME + ":" + PASSWORD + "@"
+		// + Database.url + ":8080/" + videoDetails.videoLocation;
+
+		String filepath = videoDetails.videoLocation;
+
+		InputStream is;
+		File file = null;
+
+		try {
+			is = readInputStream(filepath);
+		} catch (IOException e) {
+			System.out.println("\nInput Stream Failure");
+			is = null;
+			e.printStackTrace();
+		}
+
+		if (is != null) {
+			try {
+				file = stream2file(is);
+			} catch (IOException e) {
+				System.out.println("\nFile Failure");
+				e.printStackTrace();
+				file = null;
+			}
+		}
+		return file;
+	}
+
+	public boolean uploadFile(User userDetails, House houseDetails,
+			String filename, String localDirectory) {
+
+		// Get house ID number for use in location setting
+		int hid = Database.getID(userDetails, houseDetails, 2);
+		String filepath;
+
 		StandardFileSystemManager manager = new StandardFileSystemManager();
 
 		try {
-
-//			props.load(new FileInputStream(propertiesFilename));
-//			String serverAddress = props.getProperty("serverAddress").trim();
-//			String userId = props.getProperty("userId").trim();
-//			String password = props.getProperty("password").trim();
-//			String remoteDirectory = props.getProperty("remoteDirectory")
-//					.trim();
-//			String localDirectory = props.getProperty("localDirectory").trim();
-
 			// check if the file exists
-			String filepath = localDirectory + "/" + filename;
+			if (localDirectory.endsWith("/") || localDirectory.endsWith("\\")) {
+				filepath = localDirectory + filename;
+			} else {
+				filepath = localDirectory + "/" + filename;
+			}
+
 			System.out.println("\nLocalfilepath is: " + filepath);
+
 			File file = new File(filepath);
+
 			if (!file.exists())
 				throw new RuntimeException("Error. Local file not found");
 
@@ -191,15 +230,21 @@ public class FileManager {
 
 			// Create the SFTP URI using the host name, userid, password, remote
 			// path and file name
-			String sftpUri = "sftp://tb77931004:72dw42WRq!2345@"
-					+ Database.url + "/eyehouse/" + userDetails.username + "/" + filename;
-			
+
+			// String sftpUri = "sftp://" + USERNAME + ":" + PASSWORD + "@"
+			// + Database.url + "/eyehouse/" + userDetails.username + "/"
+			// + hid + "/" + filename;
+
+			String sftpUri = "sftp://tb77931004:72dw42WRq!2345@" + Database.url
+					+ "/eyehouse/" + userDetails.username + "/" + hid + "/"
+					+ filename;
+
 			// Create local file object
 			FileObject localFile = manager.resolveFile(file.getAbsolutePath());
-			
+
 			// Create remote file object
 			FileObject remoteFile = manager.resolveFile(sftpUri, opts);
-			
+
 			// Copy local file to sftp server
 			remoteFile.copyFrom(localFile, Selectors.SELECT_SELF);
 			System.out.println("File upload successful");
@@ -212,7 +257,7 @@ public class FileManager {
 		}
 		return true;
 	}
-	
+
 	public boolean deleteFTP(String propertiesFilename, String fileToDelete) {
 
 		props = new Properties();
@@ -240,7 +285,7 @@ public class FileManager {
 
 			// Create the SFTP URI using the host name, userid, password, remote
 			// path and file name
-			String sftpUri = "sftp://" + userId + ":" + password + "@"
+			String sftpUri = "sftp://" + USERNAME + ":" + PASSWORD + "@"
 					+ serverAddress + "/" + remoteDirectory + fileToDelete;
 
 			// Create remote file object
@@ -267,15 +312,19 @@ public class FileManager {
 		int mode = 1;
 		String propertiesFile = "D://EE course/SWEng/Java/Server Tool/properties.txt";
 		String filename = "example_clip.mp4";
-		String localDirectory = "D:/EE course/SWEng/Java";
-		
+		String localDirectory = "D:/EE course/SWEng/Java/";
+
 		Database.dbConnect();
+
+		String title = "Spatious Living accomodation with a Bath and eveything";
+
 		User tempu68 = Database.getUser("MVPTom");
-		
+		House temph68 = Database.getHouse(tempu68, title);
+
 		switch (mode) {
 		case 1:
 			FileManager update = new FileManager();
-			update.uploadFile(tempu68, filename, localDirectory);
+			update.uploadFile(tempu68, temph68, filename, localDirectory);
 			break;
 		case 2:
 			FileManager download = new FileManager();
@@ -293,20 +342,17 @@ public class FileManager {
 			picture = readFile("eyehouse/defaults/default_profpic.jpg");
 			BufferedImage image = null;
 			System.out.println(picture);
-	        try
-	        {
-	          image = ImageIO.read(picture);
-	        }
-	        catch (Exception e)
-	        {
-	          e.printStackTrace();
-	          System.exit(1);
-	        }
-	        JFrame frame = new JFrame();
-		    JLabel label = new JLabel(new ImageIcon(image));
-		    frame.getContentPane().add(label, BorderLayout.CENTER);
-		    frame.pack();
-		    frame.setVisible(true);
+			try {
+				image = ImageIO.read(picture);
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.exit(1);
+			}
+			JFrame frame = new JFrame();
+			JLabel label = new JLabel(new ImageIcon(image));
+			frame.getContentPane().add(label, BorderLayout.CENTER);
+			frame.pack();
+			frame.setVisible(true);
 			break;
 		default:
 			break;

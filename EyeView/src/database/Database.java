@@ -4,6 +4,16 @@
  */
 package database;
 
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.DoubleProperty;
+import javafx.stage.Stage;
+import javafx.scene.Scene;
+import javafx.scene.text.Text;
+import javafx.scene.text.Font;
+import javafx.scene.layout.StackPane;
+import javafx.scene.media.*;
+import javafx.scene.paint.Color;
+
 import java.awt.BorderLayout;
 import java.awt.Image;
 import java.io.File;
@@ -75,7 +85,7 @@ public class Database {
 	/**
 	 * A void function used to open our database connection
 	 */
-	public static void dbConnect() {
+	public static String dbConnect() {
 		// Create a connection with db:master_db user:root pw:
 		String url = "127.0.0.1";
 		try {
@@ -98,7 +108,12 @@ public class Database {
 				System.out.println("VendorError: " + ex.getErrorCode());
 			}
 		}
+		// Print url
+		System.out.println("\n" + url);
+
+		return url;
 	}
+
 	// different
 	/**
 	 * A basic function that take an instance of User.java, and enters it into
@@ -685,9 +700,10 @@ public class Database {
 		}
 		return list;
 	}
-	/** 
+
+	/**
 	 * Deletes the database entry of an image when passed its HouseImage type
-	 
+	 * 
 	 * @param image
 	 * @return true on success
 	 * @return false on failure
@@ -708,16 +724,115 @@ public class Database {
 		}
 	}
 
-	public static boolean insertHouseVideo(User userDetails, House houseDetails, String filename, String localDirectory) {
-		
-		
-		
+	/**
+	 * Checks the database for the automatic filepath based on logon details,
+	 * house and filename. If auto generated location doesn't exist inserts
+	 * location pointer into video_locs table and uploads the file to the
+	 * server.
+	 * 
+	 * @param userDetails
+	 * @param houseDetails
+	 * @param filename
+	 * @param localDirectory
+	 * @return true on success
+	 * @return false on failure
+	 * 
+	 */
+	public static boolean insertHouseVideo(User userDetails,
+			House houseDetails, String filename, String localDirectory) {
+
+		ResultSet check = null;
+		int hid = getID(userDetails, houseDetails, 2);
+		String vidLocation = "/eyehouse/" + userDetails.username + "/" + hid
+				+ "/" + filename;
+
+		try {
+			// Check if video path already exists in the database
+			PreparedStatement checkExists = con
+					.prepareStatement("SELECT * FROM house_videos WHERE video_loc=?");
+
+			// Enter field data
+			checkExists.setString(1, vidLocation);
+
+			// Execute query
+			check = checkExists.executeQuery();
+
+			// Check ResultSet
+			if (check.next()) {
+				// if the video location exists
+				System.out
+						.println("\nVideo path already exists.\nCheck if video has already been uploaded or change file name");
+				return false;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("\nSQL error. Check Syntax");
+			return false;
+		}
+
+		try {
+			// Insert video location into database
+			PreparedStatement insertVideo = con
+					.prepareStatement("INSERT INTO house_videos VALUES (?,?,?)");
+
+			// Enter data fields
+			insertVideo.setInt(1, 0);
+			insertVideo.setInt(2, hid);
+			insertVideo.setString(3, vidLocation);
+
+			// Execute query
+			insertVideo.executeUpdate();
+
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+			System.out.println("\nSQL error. Check Syntax");
+
+			return false;
+		}
+		// Initialise file manager and upload the file to the vidLocation
+		// NOTE: the location also includes a U-PW-SRVR element that needs
+		// to be constant.
 		FileManager update = new FileManager();
-		update.uploadFile(userDetails, filename, localDirectory);
-		
+		update.uploadFile(userDetails, houseDetails, filename, localDirectory);
+
 		return true;
 	}
-	
+
+	public static HouseVideo getVideoInfo(User userDetails, House houseDetails,
+			String filename) {
+
+		// Find video_loc field with the same filename + path
+		int hid = getID(userDetails, houseDetails, 2);
+		String vidLocation = "/eyehouse/" + userDetails.username + "/" + hid
+				+ "/" + filename;
+		ResultSet videoRS;
+		HouseVideo video = null;
+
+		try {
+			// Check if video path already exists in the database
+			PreparedStatement checkExists = con
+					.prepareStatement("SELECT * FROM house_videos WHERE video_loc=?");
+
+			// Enter field data
+			checkExists.setString(1, vidLocation);
+
+			// Execute query
+			videoRS = checkExists.executeQuery();
+
+			if (videoRS.next()) {
+				video = new HouseVideo(videoRS);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("\nQuery Failed");
+			return null;
+		}
+		return video;
+	}
+
+
 	public static void main(String[] args) throws Exception {
 		// Connect to the Database
 		dbConnect();
@@ -733,7 +848,7 @@ public class Database {
 
 		String title = "Spatious Living accomodation with a Bath and eveything";
 
-		int mode = 15;
+		int mode = 18;
 		boolean insertSuccess;
 		boolean deleteSuccess;
 		boolean houseDeleted;
@@ -755,6 +870,7 @@ public class Database {
 			}
 			break;
 		case 2: // insert User
+
 			// user to be inserted
 			insert = new User(username);
 			insert.firstName("Lol");
@@ -765,20 +881,25 @@ public class Database {
 			insert.DOB("0000-01-01");
 			String encryptedPassword = DataHandler.crypt(password);
 			insert.password(encryptedPassword);
+
 			// insert
 			insertSuccess = userInsert(insert);
 			if (insertSuccess == false) {
 				System.out.println("Failure to insert user");
 			} else
 				System.out.println("User inserted into database");
+
 			break;
 		case 3: // delete user
+
 			deleteSuccess = userDelete(username);
+
 			if (deleteSuccess) {
 				// user deleted
 				System.out.println("User deleted");
 			} else
 				System.out.println("Deletion failed: check user details exist");
+
 			break;
 		case 4: // edit details
 			// user to be inserted
@@ -790,10 +911,15 @@ public class Database {
 			update.landlord(false);
 			update.DOB("2000-02-20");
 			update.password(password);
+
+			// Update user
 			updateSuccess = userUpdate(update, "username", null, username);
+
 			System.out.println("User update method returns: " + updateSuccess);
+
 			break;
 		case 5: // try to get user into an object
+
 			try {
 				get = getUser(username);
 				get.printUser();
@@ -802,13 +928,17 @@ public class Database {
 				e.printStackTrace();
 				System.out.println("\nUser not found");
 			}
+
 			break;
 		case 6: // send an email
 			// use a runtime to send one via a ssh session
 			break;
 		case 7: // register
+
 			boolean regCheck;
+
 			User reg = null;
+
 			// user to be inserted
 			reg = new User(username);
 			reg.firstName("New");
@@ -818,8 +948,10 @@ public class Database {
 			reg.landlord(false);
 			reg.DOB("2000-02-20");
 			reg.password(password);
+
 			// reg new user
 			regCheck = userRegister(reg);
+
 			if (regCheck == false) {
 				// open a error box and make user retry registration
 			} else {
@@ -827,14 +959,21 @@ public class Database {
 				System.out.println("User: " + reg.username
 						+ " created successfully");
 			}
+
 			break;
 		case 8:
+
 			boolean oneCheck;
+
 			oneCheck = oneFieldCheck("username", username);
+
 			System.out.println("User: " + username + " Exists: " + oneCheck);
+
 			break;
 		case 9:
+
 			boolean loginCheck;
+
 			try {
 				loginCheck = login(username, password);
 
@@ -847,14 +986,19 @@ public class Database {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+
 			break;
 		case 10:
 			// String tablename, String filepath, String fieldSelect, String id
 			String tablename = "users";
 			String filepath = "D:/EE course/SWEng/Java/Compilation1.jpg";
 			String fieldSelect = "profileIMG";
+
 			int id = 3104;
+
+			// Update image
 			updateImage(tablename, filepath, fieldSelect, id);
+
 			break;
 		case 11:
 			// insert the houses basic info
@@ -919,16 +1063,22 @@ public class Database {
 				System.out.println("\nFailure");
 			break;
 		case 15:
+
 			User tempu4 = getUser("MVPTom");
 			House temph4 = getHouse(tempu4, title);
+
 			// perhaps enter your own local file to test here, unless you're on
 			// my laptop
 			String localFilePath = "D:/EE course/SWEng/Java/eyehouseHQ1.jpg";
+
+			// Insert image
 			check = insertHouseImage(localFilePath, temph4, tempu4);
+
 			if (check == true)
 				System.out.println("\nInsert Successful");
 			else
 				System.out.println("\nFailure");
+
 			break;
 		case 16:
 			User tempu5 = getUser("MVPTom");
@@ -942,28 +1092,59 @@ public class Database {
 			for (i = 0; i < list.size(); i++) {
 				HouseImage image = list.get(i);
 				System.out.println(image.imageIS);
-				
-				//InputStream binaryStream = image.imageBlob.getBinaryStream(1, image.imageBlob.length());
+
+				// InputStream binaryStream = image.imageBlob.getBinaryStream(1,
+				// image.imageBlob.length());
 				Image picture = ImageIO.read(image.imageIS);
-				
+
 				JFrame frame = new JFrame();
-			    JLabel label = new JLabel(new ImageIcon(picture));
-			    frame.getContentPane().add(label, BorderLayout.CENTER);
-			    frame.pack();
-			    frame.setVisible(true);
-			    // Deletes all the images for this house
-			    //deleteHouseImage(image);
+				JLabel label = new JLabel(new ImageIcon(picture));
+				frame.getContentPane().add(label, BorderLayout.CENTER);
+				frame.pack();
+				frame.setVisible(true);
+				// Deletes all the images for this house
+				// deleteHouseImage(image);
 			}
+
+			break;
+		case 17:
+
+			User tempu6 = getUser("MVPTom");
+			House temph6 = getHouse(tempu6, title);
+
+			String localDir = "D:/EE course/SWEng/Java/";
+			String filename = "example_clip.mp4";
+
+			check = insertHouseVideo(tempu6, temph6, filename, localDir);
+
+			if (check == true)
+				System.out.println("\nInsert Successful");
+			else
+				System.out.println("\nFailure");
+
+			break;
+		case 18:
+
+			Stage stage = null;
+			User tempu7 = getUser("MVPTom");
+			House temph7 = getHouse(tempu7, title);
+			File file = null;
+
+			String filename1 = "example_clip.mp4";
+			HouseVideo house1;
+
+			house1 = getVideoInfo(tempu7, temph7, filename1);
+
+			house1.printHouseInfo();
 			
-			
+			file = FileManager.readVideo(tempu7,house1);
 			
 			break;
 		default: // no mode selected
-			System.out.println("Select a valid switch case mode");
+			System.out.println("\nSelect a valid switch case mode");
 			break;
 		}
 
 	}
 
-	
 }
