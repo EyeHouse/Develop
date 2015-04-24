@@ -66,7 +66,6 @@ public class Database {
 	// down box or another selection method that calls your own string for the
 	// field
 	// required to check if you even give the user the option
-	private final static String emailField = "email";
 	private final static String usernameField = "username";
 	private final static String passwordField = "password";
 
@@ -997,12 +996,35 @@ public class Database {
 			return null;
 		}
 	}
-	
-	public static boolean deleteUserReview() {
-		
-		
-		
-		return true;
+
+	public static boolean deleteUserReview(UserReview reviewDetails) {
+
+		Boolean exists;
+
+		exists = checkReviewExists(reviewDetails);
+
+		if (!exists) {
+			System.out.println("\nReview does not exist.");
+			return false;
+		} else {
+			try {
+				// if the video location exists
+				PreparedStatement dropReview = con
+						.prepareStatement("DELETE FROM user_reviews WHERE urid=?");
+
+				// Enter field data
+				dropReview.setInt(1, reviewDetails.urid);
+
+				// Delete record of filepath
+				dropReview.executeUpdate();
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+				System.out.println("\nSQL Error: deleteUserReview");
+				return false;
+			}
+			return true;
+		}
 	}
 
 	public static void main(String[] args) throws Exception {
@@ -1221,7 +1243,7 @@ public class Database {
 			User tempu12 = getUser("MVPTom");
 			// get user id
 			int uid12 = getID(tempu12, null, 1);
-			
+
 			// Henries ID
 			int targetID = 3106;
 
@@ -1233,19 +1255,21 @@ public class Database {
 			reviewDetails.like(false);
 			reviewDetails.dislike(true);
 
-//			check = insertUserReview(reviewDetails);
-//
-//			if (check == true)
-//				System.out.println("\nInsert Successful");
-//			else
-//				System.out.println("\nFailure");
+			// check = insertUserReview(reviewDetails);
 
 			checkReviewExists(reviewDetails);
-			
+
 			UserReview latestReview = null;
-			latestReview = getUserReview(1);
-			
+			latestReview = getUserReview(2);
+
 			System.out.println("\nReview: " + latestReview.review);
+
+			// check = deleteUserReview(latestReview);
+
+			// if (check == true)
+			// System.out.println("\nSuccessful");
+			// else
+			// System.out.println("\nFailure");
 
 			break;
 		default: // no mode selected
