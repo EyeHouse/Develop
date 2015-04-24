@@ -1218,7 +1218,7 @@ public class Database {
 
 			break;
 		case 18:
-
+			
 			User tempu7 = getUser("MVPTom");
 			House temph7 = getHouse(tempu7, 8);
 
@@ -1276,7 +1276,5 @@ public class Database {
 			System.out.println("\nSelect a valid switch case mode");
 			break;
 		}
-
 	}
-
 }
