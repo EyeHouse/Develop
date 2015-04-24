@@ -1027,6 +1027,40 @@ public class Database {
 		}
 	}
 
+	public static boolean insertHouseReview(HouseReview reviewDetails) {
+
+		try {
+			PreparedStatement insertUserReview = con
+					.prepareStatement("INSERT INTO house_reviews "
+							+ "VALUES (?,?,?,?,?,?,?)");
+
+			if (reviewDetails.rating > 5) {
+				System.out.println("\nRating is out of 5");
+				return false;
+			}
+
+			// Values to insert
+			insertUserReview.setInt(id, 0);
+			insertUserReview.setInt(2, reviewDetails.hid);
+			insertUserReview.setInt(3, reviewDetails.uid);
+			insertUserReview.setString(4, reviewDetails.review);
+			insertUserReview.setInt(5, reviewDetails.rating);
+			insertUserReview.setBoolean(6, reviewDetails.like);
+			insertUserReview.setBoolean(7, reviewDetails.dislike);
+
+			// execute the query
+			insertUserReview.executeUpdate();
+
+		} catch (SQLException e) {
+			System.out.println("\nSQL Error: in insertHouseReview");
+			e.printStackTrace();
+			e.getMessage();
+			return false;
+		}
+		System.out.println("\nSuccess! Inserted House Review");
+		return true;
+	}
+
 	public static void main(String[] args) throws Exception {
 		// Connect to the Database
 		dbConnect();
@@ -1042,7 +1076,7 @@ public class Database {
 
 		String title = "York Minster";
 
-		int mode = 19;
+		int mode = 20;
 		boolean insertSuccess;
 		boolean houseDeleted;
 		boolean updateSuccess;
@@ -1218,7 +1252,7 @@ public class Database {
 
 			break;
 		case 18:
-			
+
 			User tempu7 = getUser("MVPTom");
 			House temph7 = getHouse(tempu7, 8);
 
@@ -1270,6 +1304,31 @@ public class Database {
 			// System.out.println("\nSuccessful");
 			// else
 			// System.out.println("\nFailure");
+
+			break;
+		case 20:
+			// logged in user
+			User tempu13 = getUser("MVPTom");
+			House temph13 = getHouse(tempu13, 8);
+			// get user id
+			int uid13 = getID(tempu13, null, 1);
+			// get hid
+			int hid13 = getID(tempu13, temph13, 2);
+
+			// fill in target ID
+			HouseReview hreviewDetails = new HouseReview(hid13);
+			hreviewDetails.uid = uid13;
+			hreviewDetails.review = "A kind house. Slightly too fond of children";
+			hreviewDetails.rating(0);
+			hreviewDetails.like(false);
+			hreviewDetails.dislike(true);
+
+			check = insertHouseReview(hreviewDetails);
+
+			if (check == true)
+				System.out.println("\nSuccessful");
+			else
+				System.out.println("\nFailure");
 
 			break;
 		default: // no mode selected
