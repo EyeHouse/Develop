@@ -4,7 +4,6 @@
  */
 package database;
 
-
 import java.awt.BorderLayout;
 import java.awt.Image;
 import java.io.File;
@@ -881,7 +880,7 @@ public class Database {
 			System.out.println("\nVideo does not exist");
 			return false;
 		} else {
-			
+
 			// Delete the video
 			try {
 				// if the video location exists
@@ -890,21 +889,119 @@ public class Database {
 
 				// Enter field data
 				dropVideo.setInt(1, videoDetails.hid);
-				
+
 				System.out.println("\n\n" + videoDetails.hid);
-				
+
 				// Delete record of filepath
 				dropVideo.executeUpdate();
-				
+
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-		
+
 		// Delete file on server
 		FileManager.deleteVideo(videoDetails);
 
+		return true;
+	}
+
+	public static boolean checkReviewExists(UserReview reviewDetails) {
+		ResultSet userReviewSet;
+		int review;
+		try {
+			PreparedStatement checkUserReview = con
+					.prepareStatement("SELECT * FROM user_reviews WHERE urid=?");
+
+			checkUserReview.setInt(1, reviewDetails.urid);
+
+			userReviewSet = checkUserReview.executeQuery();
+
+			while (userReviewSet.next()) {
+				review = userReviewSet.getInt(id);
+				if (review == reviewDetails.urid) {
+					System.out.println("\nUser review exists");
+					return true;
+				} else {
+					System.out.println("\nUser review does not exist");
+					return false;
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			e.getMessage();
+			System.out.println("\nSQL error in user review check");
+			return false;
+		}
+		return true;
+	}
+
+	public static boolean insertUserReview(UserReview reviewDetails) {
+
+		try {
+			PreparedStatement insertUserReview = con
+					.prepareStatement("INSERT INTO user_reviews "
+							+ "VALUES (?,?,?,?,?,?,?)");
+
+			if (reviewDetails.rating > 5) {
+				System.out.println("\nRating is out of 5");
+				return false;
+			}
+
+			// Values to insert
+			insertUserReview.setInt(id, 0);
+			insertUserReview.setInt(2, reviewDetails.uid_target);
+			insertUserReview.setInt(3, reviewDetails.uid_reviewer);
+			insertUserReview.setString(4, reviewDetails.review);
+			insertUserReview.setInt(5, reviewDetails.rating);
+			insertUserReview.setBoolean(6, reviewDetails.like);
+			insertUserReview.setBoolean(7, reviewDetails.dislike);
+
+			// execute the query
+			insertUserReview.executeUpdate();
+
+		} catch (SQLException e) {
+			System.out.println("\nSQL Error: in insertUserReview");
+			e.printStackTrace();
+			e.getMessage();
+			return false;
+		}
+		System.out.println("\nSucces! Inserted User Review");
+		return true;
+	}
+
+	public static UserReview getUserReview(int urid) {
+
+		ResultSet userReview;
+		UserReview newReview;
+		try {
+			PreparedStatement getUserReview = con
+					.prepareStatement("SELECT * FROM user_reviews WHERE urid=?");
+
+			getUserReview.setInt(1, urid);
+
+			userReview = getUserReview.executeQuery();
+			if (userReview.next()) {
+				newReview = new UserReview(userReview);
+				System.out.println("\nReview id: " + newReview.urid);
+				return newReview;
+			} else {
+				System.out.println("\nNo user review with that ID exists");
+				return null;
+			}
+
+		} catch (SQLException e) {
+			System.out.println("\nNo user review with that ID exists");
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public static boolean deleteUserReview() {
+		
+		
+		
 		return true;
 	}
 
@@ -914,7 +1011,6 @@ public class Database {
 
 		boolean check;
 		User insert = null;
-		User get = null;
 		// User checkUse = null
 		String username = "DefTest2";
 		String password = "Eyehouse1";
@@ -924,27 +1020,12 @@ public class Database {
 
 		String title = "York Minster";
 
-		int mode = 2;
+		int mode = 19;
 		boolean insertSuccess;
-		boolean deleteSuccess;
 		boolean houseDeleted;
 		boolean updateSuccess;
 		// testing switch
 		switch (mode) {
-		case 1: // userCheck
-			try {
-				check = twoFieldCheck(usernameField, username, emailField,
-						email);
-				if (check == true) {
-					System.out.println("User Exists");
-				} else
-
-					System.out.println("User Does not exist");
-			} catch (Exception e) {
-				System.out
-						.println("User does not exist: Check details and try again");
-			}
-			break;
 		case 2: // insert User
 
 			// user to be inserted
@@ -966,17 +1047,6 @@ public class Database {
 				System.out.println("User inserted into database");
 
 			break;
-		case 3: // delete user
-
-			deleteSuccess = userDelete(username);
-
-			if (deleteSuccess) {
-				// user deleted
-				System.out.println("User deleted");
-			} else
-				System.out.println("Deletion failed: check user details exist");
-
-			break;
 		case 4: // edit details
 
 			User tempu9 = getUser("MVPTom");
@@ -987,76 +1057,6 @@ public class Database {
 			System.out.println("User update method returns: " + updateSuccess);
 
 			tempu9.printUser();
-
-			break;
-		case 5: // try to get user into an object
-
-			try {
-				get = getUser(username);
-				get.printUser();
-			} catch (NullPointerException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				System.out.println("\nUser not found");
-			}
-
-			break;
-		case 6: // send an email
-			// use a runtime to send one via a ssh session
-			break;
-		case 7: // register
-
-			boolean regCheck;
-
-			User reg = null;
-
-			// user to be inserted
-			reg = new User(username);
-			reg.firstName("New");
-			reg.secondName("User");
-			reg.email(email);
-			reg.admin(false);
-			reg.landlord(false);
-			reg.DOB("2000-02-20");
-			reg.password(password);
-
-			// reg new user
-			regCheck = userRegister(reg);
-
-			if (regCheck == false) {
-				// open a error box and make user retry registration
-			} else {
-				// carry on to whatever interface you want, maybe login
-				System.out.println("User: " + reg.username
-						+ " created successfully");
-			}
-
-			break;
-		case 8:
-
-			boolean oneCheck;
-
-			oneCheck = oneFieldCheck("username", username);
-
-			System.out.println("User: " + username + " Exists: " + oneCheck);
-
-			break;
-		case 9:
-
-			boolean loginCheck;
-
-			try {
-				loginCheck = login(username, password);
-
-				if (loginCheck == true) {
-					System.out.println("User Exists, log them in");
-				} else {
-					System.out.println("Login Failed, user does not exist");
-				}
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 
 			break;
 		case 10:
@@ -1207,13 +1207,45 @@ public class Database {
 			house1 = getVideoInfo(tempu7, temph7, filename1);
 
 			house1.printHouseInfo();
-			
 
-			check = deleteVideo(tempu7, house1); 
+			check = deleteVideo(tempu7, house1);
 			if (check == true)
 				System.out.println("\nDelete Successful");
 			else
 				System.out.println("\nFailure");
+
+			break;
+
+		case 19:
+			// logged in user
+			User tempu12 = getUser("MVPTom");
+			// get user id
+			int uid12 = getID(tempu12, null, 1);
+			
+			// Henries ID
+			int targetID = 3106;
+
+			// fill in target ID
+			UserReview reviewDetails = new UserReview(targetID);
+			reviewDetails.uid_reviewer = uid12;
+			reviewDetails.review = "A kind man. Slightly too fond of children";
+			reviewDetails.rating(0);
+			reviewDetails.like(false);
+			reviewDetails.dislike(true);
+
+//			check = insertUserReview(reviewDetails);
+//
+//			if (check == true)
+//				System.out.println("\nInsert Successful");
+//			else
+//				System.out.println("\nFailure");
+
+			checkReviewExists(reviewDetails);
+			
+			UserReview latestReview = null;
+			latestReview = getUserReview(1);
+			
+			System.out.println("\nReview: " + latestReview.review);
 
 			break;
 		default: // no mode selected
