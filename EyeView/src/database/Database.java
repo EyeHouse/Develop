@@ -4,15 +4,6 @@
  */
 package database;
 
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.DoubleProperty;
-import javafx.stage.Stage;
-import javafx.scene.Scene;
-import javafx.scene.text.Text;
-import javafx.scene.text.Font;
-import javafx.scene.layout.StackPane;
-import javafx.scene.media.*;
-import javafx.scene.paint.Color;
 
 import java.awt.BorderLayout;
 import java.awt.Image;
@@ -20,9 +11,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -205,22 +194,70 @@ public class Database {
 	public static boolean checkHouseExists(User userDetails, House houseDetails) {
 		int id = getID(userDetails, null, 1);
 		ResultSet title;
+		String titleStr;
 		try {
 			PreparedStatement checkTitle = con
 					.prepareStatement("SELECT title FROM houses WHERE uid=?");
 			checkTitle.setInt(1, id);
 			title = checkTitle.executeQuery();
-			if (!title.next()) {
-				System.out.println("\nHouse doesn't Exist for this user");
-				return false;
+			while (title.next()) {
+				titleStr = title.getString("title");
+				if (!houseDetails.title.equals(titleStr)) {
+					System.out.println("\nHouse doesn't Exist for this user");
+					return false;
+				} else {
+					System.out
+							.println("\nHouse with same title already exists for this user");
+					return true;
+				}
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			System.out.println("\nSQL error in house check");
 			return false;
 		}
 		System.out
 				.println("\nHouse with same title already exists for this user");
+		return true;
+	}
+
+	/**
+	 * 
+	 * @param userDetails
+	 * @param videoDetails
+	 * @return true if exists
+	 * @return false if does not exist
+	 */
+	public static boolean checkHouseVideoExists(User userDetails,
+			HouseVideo videoDetails) {
+		int id = getID(userDetails, null, 1);
+		ResultSet title;
+		String videoStr;
+		try {
+			PreparedStatement checkTitle = con
+					.prepareStatement("SELECT video_loc FROM house_videos WHERE vid=?");
+			checkTitle.setInt(1, id);
+			title = checkTitle.executeQuery();
+			while (title.next()) {
+				videoStr = title.getString("video_loc");
+				if (!videoDetails.videoLocation.equals(videoStr)) {
+					System.out.println("\nVideo doesn't Exist for this user");
+					return false;
+				} else {
+					System.out
+							.println("\nVideo with same title already exists for this user");
+					return true;
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("\nSQL error in house check");
+			return false;
+		}
+		System.out
+				.println("\nVideo with same location already exists for this user");
 		return true;
 	}
 
@@ -418,7 +455,7 @@ public class Database {
 			return user;
 	}
 
-	public static House getHouse(User userDetails, String title) {
+	public static House getHouse(User userDetails, int hid) {
 		House house = null;
 		ResultSet houseDetails = null;
 		// select that user
@@ -428,10 +465,10 @@ public class Database {
 			uid = getID(userDetails, null, 1);
 			// select all the columns of house
 			PreparedStatement getHouse = con
-					.prepareStatement("SELECT * FROM houses WHERE uid=? AND title=?");
+					.prepareStatement("SELECT * FROM houses WHERE uid=? AND hid=?");
 			// parameterise inputs
 			getHouse.setInt(1, uid);
-			getHouse.setString(2, title);
+			getHouse.setInt(2, hid);
 			// execute
 			houseDetails = getHouse.executeQuery();
 			// take all the users details and put them in an instance of user
@@ -742,7 +779,9 @@ public class Database {
 			House houseDetails, String filename, String localDirectory) {
 
 		ResultSet check = null;
+
 		int hid = getID(userDetails, houseDetails, 2);
+
 		String vidLocation = "/eyehouse/" + userDetails.username + "/" + hid
 				+ "/" + filename;
 
@@ -794,7 +833,7 @@ public class Database {
 		// NOTE: the location also includes a U-PW-SRVR element that needs
 		// to be constant.
 		FileManager update = new FileManager();
-		update.uploadFile(userDetails, houseDetails, filename, localDirectory);
+		update.uploadVideo(userDetails, houseDetails, filename, localDirectory);
 
 		return true;
 	}
@@ -832,6 +871,42 @@ public class Database {
 		return video;
 	}
 
+	public static boolean deleteVideo(User userDetails, HouseVideo videoDetails) {
+
+		Boolean exists;
+
+		exists = checkHouseVideoExists(userDetails, videoDetails);
+
+		if (!exists) {
+			System.out.println("\nVideo does not exist");
+			return false;
+		} else {
+			
+			// Delete the video
+			try {
+				// if the video location exists
+				PreparedStatement dropVideo = con
+						.prepareStatement("DELETE FROM house_videos WHERE hid=?");
+
+				// Enter field data
+				dropVideo.setInt(1, videoDetails.hid);
+				
+				System.out.println("\n\n" + videoDetails.hid);
+				
+				// Delete record of filepath
+				dropVideo.executeUpdate();
+				
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		// Delete file on server
+		FileManager.deleteVideo(videoDetails);
+
+		return true;
+	}
 
 	public static void main(String[] args) throws Exception {
 		// Connect to the Database
@@ -839,16 +914,17 @@ public class Database {
 
 		boolean check;
 		User insert = null;
-		User update = null;
 		User get = null;
 		// User checkUse = null
-		String username = "DefProfTest1";
+		String username = "DefTest2";
 		String password = "Eyehouse1";
-		String email = "DefProfTest1@york.ac.uk";
+		String hashPassword = DataHandler.crypt(password);
 
-		String title = "Spatious Living accomodation with a Bath and eveything";
+		String email = "DefProfTest2@york.ac.uk";
 
-		int mode = 18;
+		String title = "York Minster";
+
+		int mode = 2;
 		boolean insertSuccess;
 		boolean deleteSuccess;
 		boolean houseDeleted;
@@ -902,20 +978,15 @@ public class Database {
 
 			break;
 		case 4: // edit details
-			// user to be inserted
-			update = new User(username);
-			update.firstName("New");
-			update.secondName("User");
-			update.email(email);
-			update.admin(false);
-			update.landlord(false);
-			update.DOB("2000-02-20");
-			update.password(password);
+
+			User tempu9 = getUser("MVPTom");
 
 			// Update user
-			updateSuccess = userUpdate(update, "username", null, username);
+			updateSuccess = userUpdate(tempu9, "password", null, hashPassword);
 
 			System.out.println("User update method returns: " + updateSuccess);
+
+			tempu9.printUser();
 
 			break;
 		case 5: // try to get user into an object
@@ -1003,21 +1074,21 @@ public class Database {
 		case 11:
 			// insert the houses basic info
 			House eyehouseHQ = null;
-			int pricepermonth = 1000;
+			int pricepermonth = 20;
 			boolean house;
 			String brc = "D:/EE course/SWEng/Java/testbrochure.pdf";
 			String enrg = "D:/EE course/SWEng/Java/energy-rating-card.jpg";
 			eyehouseHQ = new House(title);
-			eyehouseHQ.postcode("YO10 5DD");
-			eyehouseHQ.address("Exhibition center");
+			eyehouseHQ.postcode("YO1 7HH");
+			eyehouseHQ.address("Religious center");
 			eyehouseHQ.price(pricepermonth);
 			eyehouseHQ.deposit(pricepermonth);
 			eyehouseHQ.rooms(pricepermonth);
 			eyehouseHQ.bathrooms(pricepermonth);
-			eyehouseHQ.dateAvailable("2015-04-18");
+			eyehouseHQ.dateAvailable("2015-04-24");
 			eyehouseHQ.furnished(true);
 			eyehouseHQ
-					.description("A fine fine building made of dreams and aspirations. As the spring rains fall, soaking in them, on the roof, is a child's rag ball.");
+					.description("A fine fine building made of shattered dreams and peadophilia");
 			User temp = getUser("MVPTom");
 			if (!checkHouseExists(temp, eyehouseHQ)) {
 				house = houseInsert(eyehouseHQ, brc, enrg, temp);
@@ -1030,14 +1101,14 @@ public class Database {
 			// get House id method and get house as well
 			User tempu = getUser("MVPTom");
 			// gets house and puts it into memory
-			House temph = getHouse(tempu, title);
+			House temph = getHouse(tempu, 8);
 			int uid = getID(tempu, null, 1);
 			int hid = getID(tempu, temph, 2);
 			System.out.println("User ID: " + uid + "\nHouse ID: " + hid);
 			break;
 		case 13:
 			User tempu2 = getUser("MVPTom");
-			House temph2 = getHouse(tempu2, title);
+			House temph2 = getHouse(tempu2, 8);
 			try {
 				houseDeleted = houseDelete(temph2, tempu2);
 				if (!houseDeleted)
@@ -1054,7 +1125,7 @@ public class Database {
 			int tempPrc = 9001;
 			int varType = 4;
 			User tempu3 = getUser("MVPTom");
-			House temph3 = getHouse(tempu3, title);
+			House temph3 = getHouse(tempu3, 8);
 			check = updateHouse(tempu3, temph3, "price", null, null, null,
 					tempPrc, varType);
 			if (check == true)
@@ -1065,7 +1136,7 @@ public class Database {
 		case 15:
 
 			User tempu4 = getUser("MVPTom");
-			House temph4 = getHouse(tempu4, title);
+			House temph4 = getHouse(tempu4, 8);
 
 			// perhaps enter your own local file to test here, unless you're on
 			// my laptop
@@ -1083,7 +1154,7 @@ public class Database {
 		case 16:
 			User tempu5 = getUser("MVPTom");
 			// gets house and puts it into memory
-			House temph5 = getHouse(tempu5, title);
+			House temph5 = getHouse(tempu5, 8);
 			int hid5 = getID(tempu5, temph5, 2);
 			ArrayList<HouseImage> list = new ArrayList<HouseImage>();
 			list = getHouseImageSet(hid5);
@@ -1110,7 +1181,8 @@ public class Database {
 		case 17:
 
 			User tempu6 = getUser("MVPTom");
-			House temph6 = getHouse(tempu6, title);
+
+			House temph6 = getHouse(tempu6, 8);
 
 			String localDir = "D:/EE course/SWEng/Java/";
 			String filename = "example_clip.mp4";
@@ -1125,20 +1197,24 @@ public class Database {
 			break;
 		case 18:
 
-			Stage stage = null;
 			User tempu7 = getUser("MVPTom");
-			House temph7 = getHouse(tempu7, title);
-			File file = null;
+			House temph7 = getHouse(tempu7, 8);
 
 			String filename1 = "example_clip.mp4";
+
 			HouseVideo house1;
 
 			house1 = getVideoInfo(tempu7, temph7, filename1);
 
 			house1.printHouseInfo();
 			
-			file = FileManager.readVideo(tempu7,house1);
-			
+
+			check = deleteVideo(tempu7, house1); 
+			if (check == true)
+				System.out.println("\nDelete Successful");
+			else
+				System.out.println("\nFailure");
+
 			break;
 		default: // no mode selected
 			System.out.println("\nSelect a valid switch case mode");

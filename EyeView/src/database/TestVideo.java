@@ -13,7 +13,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class TestVideo extends Application {
-	private String Dir = System.getProperty("user.dir");
+	// private String Dir = System.getProperty("user.dir");
 
 	public static void main(String[] args) throws Exception {
 		launch(args);
@@ -24,12 +24,11 @@ public class TestVideo extends Application {
 
 		Database.dbConnect();
 		String filename1 = "example_clip.mp4";
-		String title = "Spatious Living accomodation with a Bath and eveything";
 		
 		// goes to user Directory
 		HouseVideo house1;
-		User tempu7 = Database.getUser("MVPTom");
-		House temph7 = Database.getHouse(tempu7, title);
+		User tempu7 = Database.getUser("Henry");
+		House temph7 = Database.getHouse(tempu7, 9);
 		File file = null;
 
 		// Get video info into HouseVideo
