@@ -1061,6 +1061,93 @@ public class Database {
 		return true;
 	}
 
+	public static HouseReview getHouseReview(int hrid) {
+
+		ResultSet houseReview;
+		HouseReview newReview;
+		try {
+			PreparedStatement getUserReview = con
+					.prepareStatement("SELECT * FROM house_reviews WHERE hrid=?");
+
+			getUserReview.setInt(1, hrid);
+
+			houseReview = getUserReview.executeQuery();
+			if (houseReview.next()) {
+				newReview = new HouseReview(houseReview);
+				System.out.println("\nReview id: " + newReview.hrid);
+				return newReview;
+			} else {
+				System.out.println("\nNo house review with that ID exists");
+				return null;
+			}
+
+		} catch (SQLException e) {
+			System.out.println("\nNo house review with that ID exists");
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public static boolean checkHouseReviewExists(HouseReview reviewDetails) {
+		ResultSet houseReviewSet;
+		int review;
+		try {
+			PreparedStatement checkHouseReview = con
+					.prepareStatement("SELECT * FROM house_reviews WHERE hrid=?");
+
+			checkHouseReview.setInt(1, reviewDetails.hrid);
+
+			houseReviewSet = checkHouseReview.executeQuery();
+
+			while (houseReviewSet.next()) {
+				review = houseReviewSet.getInt(id);
+				if (review == reviewDetails.hrid) {
+					System.out.println("\nHouse review exists");
+					return true;
+				} else {
+					System.out.println("\nHouse review does not exist");
+					return false;
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			e.getMessage();
+			System.out.println("\nSQL error in house review check");
+			return false;
+		}
+		return true;
+	}
+
+	public static boolean deleteHouseReview(HouseReview reviewDetails) {
+
+		Boolean exists;
+
+		exists = checkHouseReviewExists(reviewDetails);
+
+		if (!exists) {
+			System.out.println("\nReview does not exist.");
+			return false;
+		} else {
+			try {
+				// if the video location exists
+				PreparedStatement dropReview = con
+						.prepareStatement("DELETE FROM house_reviews WHERE hrid=?");
+
+				// Enter field data
+				dropReview.setInt(1, reviewDetails.hrid);
+
+				// Delete record of filepath
+				dropReview.executeUpdate();
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+				System.out.println("\nSQL Error: deleteHouseReview");
+				return false;
+			}
+			return true;
+		}
+	}
+
 	public static void main(String[] args) throws Exception {
 		// Connect to the Database
 		dbConnect();
@@ -1323,12 +1410,22 @@ public class Database {
 			hreviewDetails.like(false);
 			hreviewDetails.dislike(true);
 
-			check = insertHouseReview(hreviewDetails);
+			// check = insertHouseReview(hreviewDetails);
 
-			if (check == true)
-				System.out.println("\nSuccessful");
-			else
-				System.out.println("\nFailure");
+			HouseReview newHouseReview = getHouseReview(2);
+
+			// checkHouseReviewExists(newHouseReview);
+
+			System.out.println("\nNew review: " + newHouseReview.review);
+
+			// check = deleteHouseReview(newHouseReview);
+
+			checkHouseReviewExists(newHouseReview);
+
+			// if (check == true)
+			// System.out.println("\nSuccessful");
+			// else
+			// System.out.println("\nFailure");
 
 			break;
 		default: // no mode selected
