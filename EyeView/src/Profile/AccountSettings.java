@@ -221,7 +221,6 @@ public class AccountSettings extends presenter.Window{
 		// Load profile text area with current user profile and set size
 		profileText.setText("");
 		profileText.setMaxHeight(gridCellHeight * 3);
-<<<<<<< HEAD
 		profileText.setPrefWidth(150);
 		profileText.setWrapText(true);
 		
@@ -233,9 +232,7 @@ public class AccountSettings extends presenter.Window{
 		    }
 		});
 		vBoxProfileText.getChildren().addAll(profileText,labelProfileChars);
-=======
 		profileText.setPrefWidth(200);
->>>>>>> branch 'Database' of https://github.com/EyeHouse5/Develop.git
 
 		// Add profile label and text area to grid
 		grid.addRow(9, labelProfileText, vBoxProfileText);
