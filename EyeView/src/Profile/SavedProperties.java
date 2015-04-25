@@ -1,8 +1,8 @@
 package Profile;
 
-import java.util.Arrays;
 import java.util.ArrayList;
 
+import database.User;
 import Button.ButtonType;
 import Button.SetupButton;
 import javafx.collections.FXCollections;
@@ -12,6 +12,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
+import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -28,8 +29,7 @@ import presenter.SlideContent;
 public class SavedProperties extends presenter.Window {
 
 	GridPane grid = new GridPane();
-	ArrayList<String> properties = new ArrayList<String>(Arrays.asList(
-			"5 The Link", "4 Burnholme Grove"));
+	ArrayList<String> properties = new ArrayList<String>();
 	ListView<HBox> propertyList = new ListView<HBox>();
 	ObservableList<HBox> items = FXCollections.observableArrayList();
 
@@ -77,6 +77,8 @@ public class SavedProperties extends presenter.Window {
 		Button buttonView = new SetupButton().CreateButton(button1);
 		Button buttonRemove = new SetupButton().CreateButton(button2);
 
+		buttonView.setCursor(Cursor.HAND);
+		buttonRemove.setCursor(Cursor.HAND);
 		buttonRemove.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				int index = propertyList.getSelectionModel().getSelectedIndex();
@@ -84,16 +86,23 @@ public class SavedProperties extends presenter.Window {
 				for (int i = index; i < items.size() - 1; i++) {
 					items.set(i, items.get(i + 1));
 				}
+				
 				items.remove(items.size() - 1);
 				
 				properties.remove(index); // update database of current user
+				User.updateSavedProperties(currentUsername, properties);
 			}
 		});
 
 		buttonView.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
-				// int index =
-				// propertyList.getSelectionModel().getSelectedIndex();
+				int index = propertyList.getSelectionModel().getSelectedIndex();
+				currentPropertyID = Integer.parseInt(properties.get(index));
+				root.getChildren().clear();
+				slideID = HOUSE;
+				SlideContent sc  = new SlideContent();
+				sc.createSlide();
+				// Open single property advert of selection
 			}
 		});
 
@@ -105,7 +114,9 @@ public class SavedProperties extends presenter.Window {
 	private void setupPropertyList() {
 
 		propertyList.setPrefHeight(550);
-
+		
+		properties = User.getSavedProperties(currentUsername);
+		
 		// Loop based on number of houses saved in profile.
 		for (int i = 0; i < properties.size(); i++) {
 
@@ -126,5 +137,23 @@ public class SavedProperties extends presenter.Window {
 		propertyList.setItems(items);
 
 		grid.add(propertyList, 0, 1);
+	}
+	
+	public static void setupPropertyBackButton(){
+		ButtonType button1 = new ButtonType("150,150,150",null,"Back",100,30);
+		Button buttonBack = new SetupButton().CreateButton(button1);
+		buttonBack.relocate(195, 20);
+		
+		buttonBack.setCursor(Cursor.HAND);
+		buttonBack.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent ae) {
+				root.getChildren().clear();
+				slideID = SAVEDPROPERTIES;
+				SlideContent sc  = new SlideContent();
+				sc.createSlide();
+			}
+		});
+		
+		root.getChildren().add(buttonBack);
 	}
 }

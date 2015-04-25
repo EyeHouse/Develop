@@ -143,12 +143,12 @@ public class User {
 					savedProperties);
 		}
 	}
+	
 	// option to print details for developer tests
 	public void printUser() throws IOException {
 		System.out.println("\nUsername: " + username);
 		System.out.println("Email: " + email);
 		System.out.println("Password: " + password);
-		System.out.println("Properties: " + properties);
 		
 		try {
 			InputStream binaryStream = profimg.getBinaryStream(1, profimg.length());

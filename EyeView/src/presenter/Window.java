@@ -29,6 +29,9 @@ public class Window extends Application {
 	public static final int PROFILE = 4;
 	public static final int ACCOUNTSETTINGS = 5;
 	public static final int SAVEDPROPERTIES = 6;
+	public static final int HOUSE = 7;
+	public static final int MOREINFO = 8;
+	public static final int REVIEWS = 9;
 
 	public static SlideshowData slideshow;
 	public static List<SlideData> slideList;
@@ -37,8 +40,12 @@ public class Window extends Application {
 	public static int slideID;
 
 	public static String currentUsername = null;
+	public static int currentPropertyID = 0;
+	public static boolean firstLogin = false;
+	
 	public static Group root;
 	private static SlideContent sc;
+	public static Timeline advertTimer;
 
 	private void init(Stage primaryStage) {
 
