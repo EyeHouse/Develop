@@ -66,6 +66,8 @@ public class SlideContent extends Window {
 			case HOUSE:
 				createPropertySlide();
 				break;
+			case MOREINFO:
+				createMoreInfoSlide();
 			default:
 				break;
 			}
@@ -152,6 +154,12 @@ public class SlideContent extends Window {
 		new HousePages(true);
 		createSidebar();
 		createMenuBar();
+	}
+	
+	public void createMoreInfoSlide(){
+		
+		new MoreInfo();
+		createSidebar();
 	}
 	
 	public void createSidebar(){
@@ -249,6 +257,13 @@ public class SlideContent extends Window {
 		ButtonType button3 = new ButtonType("144,171,199",null,"Information",140,40);
 		Button infoButton = new SetupButton().CreateButton(button3);
 		infoButton.setFocusTraversable(false);
+		infoButton.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent ae) {
+				root.getChildren().clear();
+				slideID = MOREINFO;
+				createSlide();
+			}
+		});
 		
 		ButtonType button4 = new ButtonType("144,171,199",null,"Reviews",140,40);
 		Button reviewsButton = new SetupButton().CreateButton(button4);
