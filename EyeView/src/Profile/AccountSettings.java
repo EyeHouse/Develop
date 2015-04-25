@@ -52,7 +52,6 @@ public class AccountSettings extends presenter.Window{
 	private ComboBox<String> comboDoBYear = new ComboBox<String>();
 	private RadioButton buttonStudent = new RadioButton("Student");
 	private RadioButton buttonLandlord = new RadioButton("Landlord");
-	private RadioButton buttonOther = new RadioButton("Other");
 	private Label labelPasswordIncorrect;
 	private Label labelNewPasswordInvalid;
 	private Label labelUsernameAvailability;
@@ -85,13 +84,13 @@ public class AccountSettings extends presenter.Window{
 		ColumnConstraints col1 = new ColumnConstraints();
 		ColumnConstraints col2 = new ColumnConstraints();
 		col1.setMinWidth(100);
-		col2.setMinWidth(150);
+		col2.setMinWidth(200);
 		grid.getColumnConstraints().addAll(col1, col2);
 	}
 
 	/* Add existing account information to grid */
 	public void setupInfo() {
-		HBox hBoxDoB = new HBox(30);
+		HBox hBoxDoB = new HBox(5);
 		HBox hBoxAccountType = new HBox(30);
 		ToggleGroup group = new ToggleGroup();
 
@@ -116,7 +115,6 @@ public class AccountSettings extends presenter.Window{
 		// Group radio buttons
 		buttonStudent.setToggleGroup(group);
 		buttonLandlord.setToggleGroup(group);
-		buttonOther.setToggleGroup(group);
 
 		// Setup radio buttons with current account type
 		if (currentUser.landlord)
@@ -127,7 +125,7 @@ public class AccountSettings extends presenter.Window{
 		SetupDoB();
 
 		hBoxDoB.getChildren().addAll(comboDoBDay, comboDoBMonth, comboDoBYear);
-		hBoxAccountType.getChildren().addAll(buttonStudent, buttonLandlord, buttonOther);
+		hBoxAccountType.getChildren().addAll(buttonStudent, buttonLandlord);
 
 		grid.addColumn(0, labelFName, labelLName, labelUsername, labelEmail,
 				labelDoB, labelAccountType);
@@ -220,7 +218,7 @@ public class AccountSettings extends presenter.Window{
 		// Load profile text area with current user profile and set size
 		profileText.setText("");
 		profileText.setMaxHeight(gridCellHeight * 3);
-		profileText.setPrefWidth(150);
+		profileText.setPrefWidth(200);
 
 		// Add profile label and text area to grid
 		grid.addRow(9, labelProfileText, profileText);
@@ -287,6 +285,7 @@ public class AccountSettings extends presenter.Window{
 		grid.add(hBoxButtons, 0, 10);
 		GridPane.setConstraints(hBoxButtons, 0, 10, 2, 1, HPos.CENTER,
 				VPos.CENTER);
+		SlideContent.setupBackButton();
 	}
 
 	/* Send account changes to database(WHEN IMPLEMENTED FULLY) */
