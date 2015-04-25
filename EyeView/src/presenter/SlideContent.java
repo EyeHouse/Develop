@@ -68,6 +68,8 @@ public class SlideContent extends Window {
 				break;
 			case MOREINFO:
 				createMoreInfoSlide();
+			case REVIEWS:
+				createReviewsSlide();
 			default:
 				break;
 			}
@@ -160,6 +162,14 @@ public class SlideContent extends Window {
 		
 		new MoreInfo();
 		createSidebar();
+		createMenuBar();
+	}
+	
+	public void createReviewsSlide(){
+		
+		new HouseReviews();
+		createSidebar();
+		createMenuBar();
 	}
 	
 	public void createSidebar(){
@@ -268,6 +278,13 @@ public class SlideContent extends Window {
 		ButtonType button4 = new ButtonType("144,171,199",null,"Reviews",140,40);
 		Button reviewsButton = new SetupButton().CreateButton(button4);
 		reviewsButton.setFocusTraversable(false);
+		reviewsButton.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent ae) {
+				root.getChildren().clear();
+				slideID = REVIEWS;
+				createSlide();
+			}
+		});
 		
 		if(slideID == INDEX)
 		{
