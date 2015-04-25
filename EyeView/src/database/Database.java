@@ -4,11 +4,13 @@
  */
 package database;
 
-
+import java.awt.BorderLayout;
+import java.awt.Image;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -17,8 +19,12 @@ import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import java.util.*;
 
-import javax.mail.*;
-import javax.mail.internet.*;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+
+import com.mysql.jdbc.Blob;
 
 public class Database {
 
@@ -38,45 +44,64 @@ public class Database {
 	private final static int admin = 9;
 	private final static int profileIMG = 10;
 	private final static int properties = 11;
-	
 
-	public static String url = "127.0.0.1";
+	private final static int UID = 1;
+	private final static int TITLE = 3;
+	private final static int POSTCODE = 4;
+	private final static int ADDRESS = 5;
+	private final static int PRICE = 6;
+	private final static int DEPOSIT = 7;
+	private final static int ROOMS = 8;
+	private final static int BATHROOMS = 9;
+	private final static int DATEAVAILABLE = 10;
+	private final static int FURNISHED = 11;
+	private final static int BROCHURE = 12;
+	private final static int DESCRIPTION = 13;
+	private final static int ENERGYRATING = 14;
+
+	public static String url = "10.10.0.1";
 
 	// when using userCheck, don't allow the user to enter the string, display a
 	// drop
 	// down box or another selection method that calls your own string for the
 	// field
 	// required to check if you even give the user the option
-	private final static String emailField = "email";
 	private final static String usernameField = "username";
 	private final static String passwordField = "password";
 
 	/**
 	 * A void function used to open our database connection
 	 */
-	public static void dbConnect() {
-		// Access driver class from JAR
-		try {
-			Class.forName("com.mysql.jdbc.Driver").newInstance();
-		} catch (InstantiationException | IllegalAccessException
-				| ClassNotFoundException e) {
-			e.printStackTrace();
-		}
+	public static String dbConnect() {
 		// Create a connection with db:master_db user:root pw:
+		String url = "127.0.0.1";
 		try {
-			con = DriverManager.getConnection(
-					"jdbc:mysql://" + url + ":3306/eyehouse", "eyehouseuser",
-					"Toothbrush50");
-		} catch (SQLException ex) {
-			ex.printStackTrace();
-			// handle any errors
-			System.out.println("SQLException: " + ex.getMessage());
-			System.out.println("SQLState: " + ex.getSQLState());
-			System.out.println("VendorError: " + ex.getErrorCode());
+			System.out.print("Establishing connection via PuTTY... ");
+			con = DriverManager.getConnection("jdbc:mysql://" + url
+					+ ":3306/eyehouse", "eyehouseuser", "Toothbrush50");
+			System.out.print("Success");
+		} catch (SQLException ex1) {
+			System.out.print("Fail\nEstablishing connection via OpenVPN... ");
+			url = "10.10.0.1";
+			try {
+				con = DriverManager.getConnection("jdbc:mysql://" + url
+						+ ":3306/eyehouse", "eyehouseuser", "Toothbrush50");
+				System.out.print("Success\n");
+			} catch (SQLException ex) {
+				ex.printStackTrace();
+				// handle any errors
+				System.out.println("SQLException: " + ex.getMessage());
+				System.out.println("SQLState: " + ex.getSQLState());
+				System.out.println("VendorError: " + ex.getErrorCode());
+			}
 		}
+		// Print url
+		System.out.println("\n" + url);
 
+		return url;
 	}
 
+	// different
 	/**
 	 * A basic function that take an instance of User.java, and enters it into
 	 * the database you're connected to.
@@ -88,17 +113,10 @@ public class Database {
 	public static boolean userInsert(User userDetails) {
 		// query
 		try {
-			FileInputStream fis = null;
+			File picture = null;
 			PreparedStatement insertUser = con
 					.prepareStatement("INSERT INTO users "
 							+ "VALUES (?,?,?,?,?,?,?,?,?,?,?)");
-			File file = new File("D:/EE course/SWEng/Java/Disco1.jpg");
-		    try {
-				fis = new FileInputStream(file);
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 			// insert the users data
 			insertUser.setInt(id, 0);
 			insertUser.setString(firstName, userDetails.first_name);
@@ -110,12 +128,18 @@ public class Database {
 			insertUser.setString(DOB, userDetails.DOB);
 			insertUser.setBoolean(admin, userDetails.admin);
 			try {
-				insertUser.setBinaryStream(profileIMG,fis,fis.available());
+				picture = FileManager
+						.readFile("eyehouse/defaults/default_profpic.jpg");
+				FileInputStream fis = new FileInputStream(picture);
+				System.out.println(picture);
+				insertUser.setBinaryStream(profileIMG, fis, fis.available());
+				// insertUser.setBinaryStream(profileIMG, is, is.available());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				System.out.println("\nunsurpisingly theres been an sftp error");
 			}
-			insertUser.setString(properties,null);
+			insertUser.setString(properties, null);
 			// execute the query
 			insertUser.executeUpdate();
 		} catch (SQLException e) {
@@ -123,9 +147,239 @@ public class Database {
 			e.printStackTrace();
 			e.getMessage();
 		}
-		// 1 = success!
 		return true;
+	}
 
+	public static int getID(User userDetails, House houseDetails, int idType) {
+		// IMPORTANT: idType key:
+		// 1 = User id from table users - found by username
+		// 2 = hid from table houses - found by the user logged in and the
+		// postcode
+		ResultSet id = null;
+		// select that user
+		int idnumber = 0;
+		try {
+			if (idType == 1 && userDetails != null) {
+				PreparedStatement userID = con
+						.prepareStatement("SELECT id FROM users WHERE username=?");
+				userID.setString(1, userDetails.username);
+				id = userID.executeQuery();
+				while (id.next()) {
+					idnumber = id.getInt("id");
+				}
+			}
+			if (idType == 2 && userDetails != null) {
+				PreparedStatement houseID = con
+						.prepareStatement("SELECT hid FROM houses WHERE uid=? AND postcode=?");
+				int uid = getID(userDetails, null, 1);
+				houseID.setInt(1, uid);
+				houseID.setString(2, houseDetails.postcode);
+				id = houseID.executeQuery();
+				while (id.next()) {
+					idnumber = id.getInt("hid");
+				}
+			}
+
+			// take all the users details and put them in an instance of user
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			e.getMessage();
+		}
+		return idnumber;
+	}
+
+	public static boolean checkHouseExists(User userDetails, House houseDetails) {
+		int id = getID(userDetails, null, 1);
+		ResultSet title;
+		String titleStr;
+		try {
+			PreparedStatement checkTitle = con
+					.prepareStatement("SELECT title FROM houses WHERE uid=?");
+			checkTitle.setInt(1, id);
+			title = checkTitle.executeQuery();
+			while (title.next()) {
+				titleStr = title.getString("title");
+				if (!houseDetails.title.equals(titleStr)) {
+					System.out.println("\nHouse doesn't Exist for this user");
+					return false;
+				} else {
+					System.out
+							.println("\nHouse with same title already exists for this user");
+					return true;
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("\nSQL error in house check");
+			return false;
+		}
+		System.out
+				.println("\nHouse with same title already exists for this user");
+		return true;
+	}
+
+	/**
+	 * 
+	 * @param userDetails
+	 * @param videoDetails
+	 * @return true if exists
+	 * @return false if does not exist
+	 */
+	public static boolean checkHouseVideoExists(User userDetails,
+			HouseVideo videoDetails) {
+		int id = getID(userDetails, null, 1);
+		ResultSet title;
+		String videoStr;
+		try {
+			PreparedStatement checkTitle = con
+					.prepareStatement("SELECT video_loc FROM house_videos WHERE vid=?");
+			checkTitle.setInt(1, id);
+			title = checkTitle.executeQuery();
+			while (title.next()) {
+				videoStr = title.getString("video_loc");
+				if (!videoDetails.videoLocation.equals(videoStr)) {
+					System.out.println("\nVideo doesn't Exist for this user");
+					return false;
+				} else {
+					System.out
+							.println("\nVideo with same title already exists for this user");
+					return true;
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("\nSQL error in house check");
+			return false;
+		}
+		System.out
+				.println("\nVideo with same location already exists for this user");
+		return true;
+	}
+
+	public static boolean houseInsert(House houseDetails, String brochurefp,
+			String energyratingfp, User userDetails) throws IOException {
+		int hid = 2;
+		int id;
+		FileInputStream bis = null, eis = null;
+		// get user ID
+		id = getID(userDetails, null, 1);
+		try {
+			// if the user doesn't have a house under the same name already
+			PreparedStatement insertHouse = con
+					.prepareStatement("INSERT INTO houses "
+							+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+			if (brochurefp != null) {
+				File brochure = new File(brochurefp);
+				try {
+					bis = new FileInputStream(brochure);
+					insertHouse.setBinaryStream(BROCHURE, bis, bis.available());
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} else
+				insertHouse.setBinaryStream(BROCHURE, null);
+
+			if (energyratingfp != null) {
+				File energyRatings = new File(energyratingfp);
+				try {
+					eis = new FileInputStream(energyRatings);
+					insertHouse.setBinaryStream(ENERGYRATING, eis,
+							eis.available());
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} else
+				insertHouse.setBinaryStream(ENERGYRATING, null);
+			// insert the house data
+			insertHouse.setInt(hid, 0);
+			insertHouse.setInt(UID, id);
+			insertHouse.setString(TITLE, houseDetails.title);
+			insertHouse.setString(POSTCODE, houseDetails.postcode);
+			insertHouse.setString(ADDRESS, houseDetails.address);
+			insertHouse.setInt(PRICE, houseDetails.price);
+			insertHouse.setInt(DEPOSIT, houseDetails.deposit);
+			insertHouse.setInt(ROOMS, houseDetails.rooms);
+			insertHouse.setInt(BATHROOMS, houseDetails.bathrooms);
+			insertHouse.setString(DATEAVAILABLE, houseDetails.dateAvailable);
+			insertHouse.setBoolean(FURNISHED, houseDetails.furnished);
+			insertHouse.setString(DESCRIPTION, houseDetails.description);
+			// execute the query
+			insertHouse.executeUpdate();
+		} catch (SQLException e) {
+			// catch the error get the message
+			e.printStackTrace();
+			e.getMessage();
+		}
+		return true;
+	}
+
+	public static boolean updateHouse(User userDetails, House houseDetails,
+			String field, String value1, Boolean value2, Blob value3,
+			int value4, int varType) {
+		int hid;
+		int uid;
+		try {
+			hid = getID(userDetails, houseDetails, 2);
+			uid = getID(userDetails, null, 1);
+			PreparedStatement updateHouse = con
+					.prepareStatement("UPDATE houses SET " + field
+							+ "=? WHERE uid=? AND hid=?");
+			// IMPORTANT: filetype int specifies which variable to use
+			// 1 = string, 2 = bool, 3 = blob, 4 = int
+			switch (varType) {
+			case 1:
+				updateHouse.setString(1, value1);
+				break;
+			case 2:
+				updateHouse.setBoolean(1, value2);
+				break;
+			case 3:
+				updateHouse.setBlob(1, value3);
+				break;
+			case 4:
+				updateHouse.setInt(1, value4);
+				break;
+			default:
+				break;
+			}
+			updateHouse.setInt(2, uid);
+			updateHouse.setInt(3, hid);
+			updateHouse.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("Someone done messed up");
+			return false;
+		}
+		return true;
+	}
+
+	public static boolean houseDelete(House houseDetails, User userDetails) {
+		int uid;
+		int hid;
+		try {
+			// Takes a unique field (username) and deletes the users details
+			PreparedStatement dropHouse = con
+					.prepareStatement("DELETE FROM houses WHERE uid=? AND hid=?");
+			// get user ID
+			uid = getID(userDetails, null, 1);
+			// get hid
+			hid = getID(userDetails, houseDetails, 2);
+			dropHouse.setInt(1, uid);
+			dropHouse.setInt(2, hid);
+			// Execute SQL drop statement
+			dropHouse.executeUpdate();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			e.getMessage();
+			return false;
+		}
 	}
 
 	/**
@@ -138,8 +392,8 @@ public class Database {
 	 * @param newField
 	 * @return
 	 */
-	public static int userUpdate(User user, String fieldSelect, Boolean priv,
-			String newField) {
+	public static boolean userUpdate(User user, String fieldSelect,
+			Boolean priv, String newField) {
 		// prepare a statement to update a field 'field'
 		try {
 			PreparedStatement editUser = con
@@ -158,11 +412,10 @@ public class Database {
 			e.getMessage();
 			e.getErrorCode();
 			e.printStackTrace();
-			return 0;
+			return false;
 		}
-
 		// updated a string field
-		return 1;
+		return true;
 	}
 
 	/**
@@ -198,7 +451,40 @@ public class Database {
 			throw new NullPointerException();
 		else
 			return user;
+	}
 
+	public static House getHouse(User userDetails, int hid) {
+		House house = null;
+		ResultSet houseDetails = null;
+		// select that user
+		int uid;
+		try {
+			// get uid
+			uid = getID(userDetails, null, 1);
+			// select all the columns of house
+			PreparedStatement getHouse = con
+					.prepareStatement("SELECT * FROM houses WHERE uid=? AND hid=?");
+			// parameterise inputs
+			getHouse.setInt(1, uid);
+			getHouse.setInt(2, hid);
+			// execute
+			houseDetails = getHouse.executeQuery();
+			// take all the users details and put them in an instance of user
+			if (houseDetails.next()) {
+				// construct an instance using the logged on users details
+				house = new House(houseDetails);
+			} else {
+				System.out.println("\nUser has no houses with this title");
+				house = null;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			e.getMessage();
+		}
+		if (house == null)
+			throw new NullPointerException();
+		else
+			return house;
 	}
 
 	/**
@@ -304,7 +590,6 @@ public class Database {
 		}
 		// the user doesnt exist
 		return false;
-
 	}
 
 	/**
@@ -368,207 +653,783 @@ public class Database {
 		return true;
 	}
 
-	/**
-	 * Send mail function
-	 */
-	public static void sendMail() {
-		// Recipient's email ID needs to be mentioned.
-		String to = "tb789@york.ac.uk";
-		// Sender's email ID needs to be mentioned
-		String from = "eyehouse@server.com";
-		// Assuming you are sending email from localhost
-		String host = "10.10.0.1";
-		// Get system properties
-		Properties properties = System.getProperties();
-		// Setup mail server
-		properties.setProperty("mail.smtp.host", host);
-		// Get the default Session object.
-		Session session = Session.getDefaultInstance(properties);
+	public static boolean updateImage(String tablename, String filepath,
+			String fieldSelect, int id) throws FileNotFoundException {
 		try {
-			// Create a default MimeMessage object.
-			MimeMessage message = new MimeMessage(session);
-			// Set From: header field of the header.
-			message.setFrom(new InternetAddress(from));
-			// Set To: header field of the header.
-			message.addRecipient(Message.RecipientType.TO, new InternetAddress(
-					to));
-			// Set Subject: header field
-			message.setSubject("Hello World");
-			// Current date and time - for identifying test mail
-			Date date = new Date();
-			// Now set the actual message
-			message.setText("Test Message - timestamp: " + date);
-			// Send message
-			Transport.send(message);
-			System.out.println("Sent message successfully....");
-		} catch (MessagingException mex) {
-			mex.printStackTrace();
-		}
-	}
-
-	public static boolean updateImage(String tablename, String filepath, String fieldSelect, int id) throws FileNotFoundException {
-		
-		try {
-			
 			FileInputStream fis = null;
-			PreparedStatement updateImage = con
-					.prepareStatement("UPDATE " + tablename + " SET " + fieldSelect
-							+ "=? WHERE id=?");
+			PreparedStatement updateImage = con.prepareStatement("UPDATE "
+					+ tablename + " SET " + fieldSelect + "=? WHERE id=?");
 			File file = new File(filepath);
-		    fis = new FileInputStream(file);
-		    
-		    updateImage.setBinaryStream(1, fis, (int) file.length());
+			fis = new FileInputStream(file);
+
+			updateImage.setBinaryStream(1, fis, (int) file.length());
 			updateImage.setInt(2, id);
 			updateImage.executeUpdate();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		System.out.println("\nImage update executed");
 		return true;
 	}
-	
+
+	/**
+	 * Inserts an image into the house_images table
+	 * 
+	 * @param localFilepath
+	 * @param houseDetails
+	 * @param userDetails
+	 * @return true on success
+	 * @return false on failure
+	 * @throws SQLException
+	 */
+	public static boolean insertHouseImage(String localFilepath,
+			House houseDetails, User userDetails) throws SQLException {
+		int hid;
+		PreparedStatement insertImage;
+		try {
+			insertImage = con
+					.prepareStatement("INSERT INTO house_images VALUES (?,?,?)");
+			hid = getID(userDetails, houseDetails, 2);
+			// enter the relevant house in parameters so we can use its unqiue
+			// id
+			insertImage.setInt(1, 0);
+			insertImage.setInt(2, hid);
+			// check on the image they want to insert
+			File picture = new File(localFilepath);
+			if (!picture.exists())
+				throw new RuntimeException("Error. Local file not found");
+			else {
+				FileInputStream fis = new FileInputStream(picture);
+				System.out.println(picture);
+				insertImage.setBinaryStream(3, fis, fis.available());
+			}
+			insertImage.executeUpdate();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("\nThe Insert Query Failed");
+			return false;
+		}
+		return true;
+	}
+
+	public static ArrayList<HouseImage> getHouseImageSet(int hid) {
+		ResultSet images;
+		ArrayList<HouseImage> list = new ArrayList<HouseImage>();
+		try {
+			PreparedStatement getImages = con
+					.prepareStatement("SELECT * FROM house_images WHERE hid=?");
+			getImages.setInt(1, hid);
+			images = getImages.executeQuery();
+
+			while (images.next()) {
+				list.add(new HouseImage(images));
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		return list;
+	}
+
+	/**
+	 * Deletes the database entry of an image when passed its HouseImage type
+	 * 
+	 * @param image
+	 * @return true on success
+	 * @return false on failure
+	 */
+	public static boolean deleteHouseImage(HouseImage image) {
+		try {
+			PreparedStatement dropUser = con
+					.prepareStatement("DELETE FROM house_images WHERE iid=?");
+			// Parameterise inputs
+			dropUser.setInt(1, image.iid);
+			// Execute SQL drop statement
+			dropUser.executeUpdate();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			e.getMessage();
+			return false;
+		}
+	}
+
+	/**
+	 * Checks the database for the automatic filepath based on logon details,
+	 * house and filename. If auto generated location doesn't exist inserts
+	 * location pointer into video_locs table and uploads the file to the
+	 * server.
+	 * 
+	 * @param userDetails
+	 * @param houseDetails
+	 * @param filename
+	 * @param localDirectory
+	 * @return true on success
+	 * @return false on failure
+	 * 
+	 */
+	public static boolean insertHouseVideo(User userDetails,
+			House houseDetails, String filename, String localDirectory) {
+
+		ResultSet check = null;
+
+		int hid = getID(userDetails, houseDetails, 2);
+
+		String vidLocation = "/eyehouse/" + userDetails.username + "/" + hid
+				+ "/" + filename;
+
+		try {
+			// Check if video path already exists in the database
+			PreparedStatement checkExists = con
+					.prepareStatement("SELECT * FROM house_videos WHERE video_loc=?");
+
+			// Enter field data
+			checkExists.setString(1, vidLocation);
+
+			// Execute query
+			check = checkExists.executeQuery();
+
+			// Check ResultSet
+			if (check.next()) {
+				// if the video location exists
+				System.out
+						.println("\nVideo path already exists.\nCheck if video has already been uploaded or change file name");
+				return false;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("\nSQL error. Check Syntax");
+			return false;
+		}
+
+		try {
+			// Insert video location into database
+			PreparedStatement insertVideo = con
+					.prepareStatement("INSERT INTO house_videos VALUES (?,?,?)");
+
+			// Enter data fields
+			insertVideo.setInt(1, 0);
+			insertVideo.setInt(2, hid);
+			insertVideo.setString(3, vidLocation);
+
+			// Execute query
+			insertVideo.executeUpdate();
+
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+			System.out.println("\nSQL error. Check Syntax");
+
+			return false;
+		}
+		// Initialise file manager and upload the file to the vidLocation
+		// NOTE: the location also includes a U-PW-SRVR element that needs
+		// to be constant.
+		FileManager update = new FileManager();
+		update.uploadVideo(userDetails, houseDetails, filename, localDirectory);
+
+		return true;
+	}
+
+	public static HouseVideo getVideoInfo(User userDetails, House houseDetails,
+			String filename) {
+
+		// Find video_loc field with the same filename + path
+		int hid = getID(userDetails, houseDetails, 2);
+		String vidLocation = "/eyehouse/" + userDetails.username + "/" + hid
+				+ "/" + filename;
+		ResultSet videoRS;
+		HouseVideo video = null;
+
+		try {
+			// Check if video path already exists in the database
+			PreparedStatement checkExists = con
+					.prepareStatement("SELECT * FROM house_videos WHERE video_loc=?");
+
+			// Enter field data
+			checkExists.setString(1, vidLocation);
+
+			// Execute query
+			videoRS = checkExists.executeQuery();
+
+			if (videoRS.next()) {
+				video = new HouseVideo(videoRS);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("\nQuery Failed");
+			return null;
+		}
+		return video;
+	}
+
+	public static boolean deleteVideo(User userDetails, HouseVideo videoDetails) {
+
+		Boolean exists;
+
+		exists = checkHouseVideoExists(userDetails, videoDetails);
+
+		if (!exists) {
+			System.out.println("\nVideo does not exist");
+			return false;
+		} else {
+
+			// Delete the video
+			try {
+				// if the video location exists
+				PreparedStatement dropVideo = con
+						.prepareStatement("DELETE FROM house_videos WHERE hid=?");
+
+				// Enter field data
+				dropVideo.setInt(1, videoDetails.hid);
+
+				System.out.println("\n\n" + videoDetails.hid);
+
+				// Delete record of filepath
+				dropVideo.executeUpdate();
+
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		// Delete file on server
+		FileManager.deleteVideo(videoDetails);
+
+		return true;
+	}
+
+	public static boolean checkReviewExists(UserReview reviewDetails) {
+		ResultSet userReviewSet;
+		int review;
+		try {
+			PreparedStatement checkUserReview = con
+					.prepareStatement("SELECT * FROM user_reviews WHERE urid=?");
+
+			checkUserReview.setInt(1, reviewDetails.urid);
+
+			userReviewSet = checkUserReview.executeQuery();
+
+			while (userReviewSet.next()) {
+				review = userReviewSet.getInt(id);
+				if (review == reviewDetails.urid) {
+					System.out.println("\nUser review exists");
+					return true;
+				} else {
+					System.out.println("\nUser review does not exist");
+					return false;
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			e.getMessage();
+			System.out.println("\nSQL error in user review check");
+			return false;
+		}
+		return true;
+	}
+
+	public static boolean insertUserReview(UserReview reviewDetails) {
+
+		try {
+			PreparedStatement insertUserReview = con
+					.prepareStatement("INSERT INTO user_reviews "
+							+ "VALUES (?,?,?,?,?,?,?)");
+
+			if (reviewDetails.rating > 5) {
+				System.out.println("\nRating is out of 5");
+				return false;
+			}
+
+			// Values to insert
+			insertUserReview.setInt(id, 0);
+			insertUserReview.setInt(2, reviewDetails.uid_target);
+			insertUserReview.setInt(3, reviewDetails.uid_reviewer);
+			insertUserReview.setString(4, reviewDetails.review);
+			insertUserReview.setInt(5, reviewDetails.rating);
+			insertUserReview.setBoolean(6, reviewDetails.like);
+			insertUserReview.setBoolean(7, reviewDetails.dislike);
+
+			// execute the query
+			insertUserReview.executeUpdate();
+
+		} catch (SQLException e) {
+			System.out.println("\nSQL Error: in insertUserReview");
+			e.printStackTrace();
+			e.getMessage();
+			return false;
+		}
+		System.out.println("\nSucces! Inserted User Review");
+		return true;
+	}
+
+	public static UserReview getUserReview(int urid) {
+
+		ResultSet userReview;
+		UserReview newReview;
+		try {
+			PreparedStatement getUserReview = con
+					.prepareStatement("SELECT * FROM user_reviews WHERE urid=?");
+
+			getUserReview.setInt(1, urid);
+
+			userReview = getUserReview.executeQuery();
+			if (userReview.next()) {
+				newReview = new UserReview(userReview);
+				System.out.println("\nReview id: " + newReview.urid);
+				return newReview;
+			} else {
+				System.out.println("\nNo user review with that ID exists");
+				return null;
+			}
+
+		} catch (SQLException e) {
+			System.out.println("\nNo user review with that ID exists");
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public static boolean deleteUserReview(UserReview reviewDetails) {
+
+		Boolean exists;
+
+		exists = checkReviewExists(reviewDetails);
+
+		if (!exists) {
+			System.out.println("\nReview does not exist.");
+			return false;
+		} else {
+			try {
+				// if the video location exists
+				PreparedStatement dropReview = con
+						.prepareStatement("DELETE FROM user_reviews WHERE urid=?");
+
+				// Enter field data
+				dropReview.setInt(1, reviewDetails.urid);
+
+				// Delete record of filepath
+				dropReview.executeUpdate();
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+				System.out.println("\nSQL Error: deleteUserReview");
+				return false;
+			}
+			return true;
+		}
+	}
+
+	public static boolean insertHouseReview(HouseReview reviewDetails) {
+
+		try {
+			PreparedStatement insertUserReview = con
+					.prepareStatement("INSERT INTO house_reviews "
+							+ "VALUES (?,?,?,?,?,?,?)");
+
+			if (reviewDetails.rating > 5) {
+				System.out.println("\nRating is out of 5");
+				return false;
+			}
+
+			// Values to insert
+			insertUserReview.setInt(id, 0);
+			insertUserReview.setInt(2, reviewDetails.hid);
+			insertUserReview.setInt(3, reviewDetails.uid);
+			insertUserReview.setString(4, reviewDetails.review);
+			insertUserReview.setInt(5, reviewDetails.rating);
+			insertUserReview.setBoolean(6, reviewDetails.like);
+			insertUserReview.setBoolean(7, reviewDetails.dislike);
+
+			// execute the query
+			insertUserReview.executeUpdate();
+
+		} catch (SQLException e) {
+			System.out.println("\nSQL Error: in insertHouseReview");
+			e.printStackTrace();
+			e.getMessage();
+			return false;
+		}
+		System.out.println("\nSuccess! Inserted House Review");
+		return true;
+	}
+
+	public static HouseReview getHouseReview(int hrid) {
+
+		ResultSet houseReview;
+		HouseReview newReview;
+		try {
+			PreparedStatement getUserReview = con
+					.prepareStatement("SELECT * FROM house_reviews WHERE hrid=?");
+
+			getUserReview.setInt(1, hrid);
+
+			houseReview = getUserReview.executeQuery();
+			if (houseReview.next()) {
+				newReview = new HouseReview(houseReview);
+				System.out.println("\nReview id: " + newReview.hrid);
+				return newReview;
+			} else {
+				System.out.println("\nNo house review with that ID exists");
+				return null;
+			}
+
+		} catch (SQLException e) {
+			System.out.println("\nNo house review with that ID exists");
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public static boolean checkHouseReviewExists(HouseReview reviewDetails) {
+		ResultSet houseReviewSet;
+		int review;
+		try {
+			PreparedStatement checkHouseReview = con
+					.prepareStatement("SELECT * FROM house_reviews WHERE hrid=?");
+
+			checkHouseReview.setInt(1, reviewDetails.hrid);
+
+			houseReviewSet = checkHouseReview.executeQuery();
+
+			while (houseReviewSet.next()) {
+				review = houseReviewSet.getInt(id);
+				if (review == reviewDetails.hrid) {
+					System.out.println("\nHouse review exists");
+					return true;
+				} else {
+					System.out.println("\nHouse review does not exist");
+					return false;
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			e.getMessage();
+			System.out.println("\nSQL error in house review check");
+			return false;
+		}
+		return true;
+	}
+
+	public static boolean deleteHouseReview(HouseReview reviewDetails) {
+
+		Boolean exists;
+
+		exists = checkHouseReviewExists(reviewDetails);
+
+		if (!exists) {
+			System.out.println("\nReview does not exist.");
+			return false;
+		} else {
+			try {
+				// if the video location exists
+				PreparedStatement dropReview = con
+						.prepareStatement("DELETE FROM house_reviews WHERE hrid=?");
+
+				// Enter field data
+				dropReview.setInt(1, reviewDetails.hrid);
+
+				// Delete record of filepath
+				dropReview.executeUpdate();
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+				System.out.println("\nSQL Error: deleteHouseReview");
+				return false;
+			}
+			return true;
+		}
+	}
+
 	public static void main(String[] args) throws Exception {
 		// Connect to the Database
 		dbConnect();
 
 		boolean check;
 		User insert = null;
-		User update = null;
-		User get = null;
-		// User checkUse = null;
-
-		String username = "MVPTom";
+		// User checkUse = null
+		String username = "DefTest2";
 		String password = "Eyehouse1";
-		String email = "tb789@york.ac.uk";
+		String hashPassword = DataHandler.crypt(password);
 
-		int mode = 5;
+		String email = "DefProfTest2@york.ac.uk";
+
+		String title = "York Minster";
+
+		int mode = 20;
 		boolean insertSuccess;
-		boolean deleteSuccess;
-		int updateSuccess = 0;
-
+		boolean houseDeleted;
+		boolean updateSuccess;
 		// testing switch
 		switch (mode) {
-		case 1: // userCheck
-			try {
-				check = twoFieldCheck(usernameField, username, emailField,
-						email);
-				if (check == true) {
-					System.out.println("User Exists");
-				} else
-
-					System.out.println("User Does not exist");
-			} catch (Exception e) {
-				System.out
-						.println("User does not exist: Check details and try again");
-			}
-			break;
 		case 2: // insert User
+
 			// user to be inserted
 			insert = new User(username);
-			insert.firstName("Tom");
-			insert.secondName("Butts");
+			insert.firstName("Lol");
+			insert.secondName("Waddlesworth");
 			insert.email(email);
 			insert.admin(true);
 			insert.landlord(true);
-			insert.DOB("1993-10-31");
-			insert.password(password);
+			insert.DOB("0000-01-01");
+			String encryptedPassword = DataHandler.crypt(password);
+			insert.password(encryptedPassword);
+
 			// insert
 			insertSuccess = userInsert(insert);
 			if (insertSuccess == false) {
 				System.out.println("Failure to insert user");
 			} else
 				System.out.println("User inserted into database");
-			break;
-		case 3: // delete user
-			deleteSuccess = userDelete(username);
-			if (deleteSuccess) {
-				// user deleted
-				System.out.println("User deleted");
-			} else
-				System.out.println("Deletion failed: check user details exist");
+
 			break;
 		case 4: // edit details
 
-			// user to be inserted
-			update = new User(username);
-			update.firstName("New");
-			update.secondName("User");
-			update.email(email);
-			update.admin(false);
-			update.landlord(false);
-			update.DOB("2000-02-20");
-			update.password(password);
-			updateSuccess = userUpdate(update, "username", null, username);
+			User tempu9 = getUser("MVPTom");
+
+			// Update user
+			updateSuccess = userUpdate(tempu9, "password", null, hashPassword);
+
 			System.out.println("User update method returns: " + updateSuccess);
+
+			tempu9.printUser();
+
 			break;
-		case 5: // try to get user into an object
+		case 10:
+			// String tablename, String filepath, String fieldSelect, String id
+			String tablename = "users";
+			String filepath = "D:/EE course/SWEng/Java/Compilation1.jpg";
+			String fieldSelect = "profileIMG";
+
+			int id = 3104;
+
+			// Update image
+			updateImage(tablename, filepath, fieldSelect, id);
+
+			break;
+		case 11:
+			// insert the houses basic info
+			House eyehouseHQ = null;
+			int pricepermonth = 20;
+			boolean house;
+			String brc = "D:/EE course/SWEng/Java/testbrochure.pdf";
+			String enrg = "D:/EE course/SWEng/Java/energy-rating-card.jpg";
+			eyehouseHQ = new House(title);
+			eyehouseHQ.postcode("YO1 7HH");
+			eyehouseHQ.address("Religious center");
+			eyehouseHQ.price(pricepermonth);
+			eyehouseHQ.deposit(pricepermonth);
+			eyehouseHQ.rooms(pricepermonth);
+			eyehouseHQ.bathrooms(pricepermonth);
+			eyehouseHQ.dateAvailable("2015-04-24");
+			eyehouseHQ.furnished(true);
+			eyehouseHQ
+					.description("A fine fine building made of shattered dreams and peadophilia");
+			User temp = getUser("MVPTom");
+			if (!checkHouseExists(temp, eyehouseHQ)) {
+				house = houseInsert(eyehouseHQ, brc, enrg, temp);
+				eyehouseHQ.printHouse();
+				System.out.println(house);
+			}
+			break;
+		case 12:
+			// a lot of cases!
+			// get House id method and get house as well
+			User tempu = getUser("MVPTom");
+			// gets house and puts it into memory
+			House temph = getHouse(tempu, 8);
+			int uid = getID(tempu, null, 1);
+			int hid = getID(tempu, temph, 2);
+			System.out.println("User ID: " + uid + "\nHouse ID: " + hid);
+			break;
+		case 13:
+			User tempu2 = getUser("MVPTom");
+			House temph2 = getHouse(tempu2, 8);
 			try {
-				get = getUser(username);
-				get.printUser();
+				houseDeleted = houseDelete(temph2, tempu2);
+				if (!houseDeleted)
+					System.out.println("House not Deleted");
+				else
+					System.out.println("\nHouse succesfully deleted");
 			} catch (NullPointerException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				System.out.println("User not found");
+				System.out.println("House not Deleted");
 			}
 			break;
-		case 6: // send an email
-			sendMail();
+		case 14:
+			int tempPrc = 9001;
+			int varType = 4;
+			User tempu3 = getUser("MVPTom");
+			House temph3 = getHouse(tempu3, 8);
+			check = updateHouse(tempu3, temph3, "price", null, null, null,
+					tempPrc, varType);
+			if (check == true)
+				System.out.println("\nUpdate Successful");
+			else
+				System.out.println("\nFailure");
 			break;
-		case 7: // register
-			boolean regCheck;
-			User reg = null;
-			// user to be inserted
-			reg = new User(username);
-			reg.firstName("New");
-			reg.secondName("User");
-			reg.email(email);
-			reg.admin(false);
-			reg.landlord(false);
-			reg.DOB("2000-02-20");
-			reg.password(password);
-			// reg new user
-			regCheck = userRegister(reg);
-			if (regCheck == false) {
-				// open a error box and make user retry registration
-			} else {
-				// carry on to whatever interface you want, maybe login
-				System.out.println("User: " + reg.username
-						+ " created successfully");
-			}
-			break;
-		case 8:
-			boolean oneCheck;
-			oneCheck = oneFieldCheck("username", username);
-			System.out.println("User: " + username + " Exists: " + oneCheck);
-			break;
-		case 9:
-			boolean loginCheck;
+		case 15:
 
-			try {
-				loginCheck = login(username, password);
+			User tempu4 = getUser("MVPTom");
+			House temph4 = getHouse(tempu4, 8);
 
-				if (loginCheck == true) {
-					System.out.println("User Exists, log them in");
-				} else {
-					System.out.println("Login Failed, user does not exist");
-				}
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			// perhaps enter your own local file to test here, unless you're on
+			// my laptop
+			String localFilePath = "D:/EE course/SWEng/Java/eyehouseHQ1.jpg";
+
+			// Insert image
+			check = insertHouseImage(localFilePath, temph4, tempu4);
+
+			if (check == true)
+				System.out.println("\nInsert Successful");
+			else
+				System.out.println("\nFailure");
+
 			break;
-		case 10:
-			//String tablename, String filepath, String fieldSelect, String id
-			String tablename = "users";
-			String filepath = "D:/EE course/SWEng/Java/Disco1.jpg";
-			String fieldSelect = "profileIMG";
-			int id = 3104;
-			updateImage(tablename,filepath,fieldSelect,id);
+		case 16:
+			User tempu5 = getUser("MVPTom");
+			// gets house and puts it into memory
+			House temph5 = getHouse(tempu5, 8);
+			int hid5 = getID(tempu5, temph5, 2);
+			ArrayList<HouseImage> list = new ArrayList<HouseImage>();
+			list = getHouseImageSet(hid5);
+
+			int i;
+			for (i = 0; i < list.size(); i++) {
+				HouseImage image = list.get(i);
+				System.out.println(image.imageIS);
+
+				// InputStream binaryStream = image.imageBlob.getBinaryStream(1,
+				// image.imageBlob.length());
+				Image picture = ImageIO.read(image.imageIS);
+
+				JFrame frame = new JFrame();
+				JLabel label = new JLabel(new ImageIcon(picture));
+				frame.getContentPane().add(label, BorderLayout.CENTER);
+				frame.pack();
+				frame.setVisible(true);
+				// Deletes all the images for this house
+				// deleteHouseImage(image);
+			}
+
+			break;
+		case 17:
+
+			User tempu6 = getUser("MVPTom");
+
+			House temph6 = getHouse(tempu6, 8);
+
+			String localDir = "D:/EE course/SWEng/Java/";
+			String filename = "example_clip.mp4";
+
+			check = insertHouseVideo(tempu6, temph6, filename, localDir);
+
+			if (check == true)
+				System.out.println("\nInsert Successful");
+			else
+				System.out.println("\nFailure");
+
+			break;
+		case 18:
+
+			User tempu7 = getUser("MVPTom");
+			House temph7 = getHouse(tempu7, 8);
+
+			String filename1 = "example_clip.mp4";
+
+			HouseVideo house1;
+
+			house1 = getVideoInfo(tempu7, temph7, filename1);
+
+			house1.printHouseInfo();
+
+			check = deleteVideo(tempu7, house1);
+			if (check == true)
+				System.out.println("\nDelete Successful");
+			else
+				System.out.println("\nFailure");
+
+			break;
+
+		case 19:
+			// logged in user
+			User tempu12 = getUser("MVPTom");
+			// get user id
+			int uid12 = getID(tempu12, null, 1);
+
+			// Henries ID
+			int targetID = 3106;
+
+			// fill in target ID
+			UserReview reviewDetails = new UserReview(targetID);
+			reviewDetails.uid_reviewer = uid12;
+			reviewDetails.review = "A kind man. Slightly too fond of children";
+			reviewDetails.rating(0);
+			reviewDetails.like(false);
+			reviewDetails.dislike(true);
+
+			// check = insertUserReview(reviewDetails);
+
+			checkReviewExists(reviewDetails);
+
+			UserReview latestReview = null;
+			latestReview = getUserReview(2);
+
+			System.out.println("\nReview: " + latestReview.review);
+
+			// check = deleteUserReview(latestReview);
+
+			// if (check == true)
+			// System.out.println("\nSuccessful");
+			// else
+			// System.out.println("\nFailure");
+
+			break;
+		case 20:
+			// logged in user
+			User tempu13 = getUser("MVPTom");
+			House temph13 = getHouse(tempu13, 8);
+			// get user id
+			int uid13 = getID(tempu13, null, 1);
+			// get hid
+			int hid13 = getID(tempu13, temph13, 2);
+
+			// fill in target ID
+			HouseReview hreviewDetails = new HouseReview(hid13);
+			hreviewDetails.uid = uid13;
+			hreviewDetails.review = "A kind house. Slightly too fond of children";
+			hreviewDetails.rating(0);
+			hreviewDetails.like(false);
+			hreviewDetails.dislike(true);
+
+			// check = insertHouseReview(hreviewDetails);
+
+			HouseReview newHouseReview = getHouseReview(2);
+
+			// checkHouseReviewExists(newHouseReview);
+
+			System.out.println("\nNew review: " + newHouseReview.review);
+
+			// check = deleteHouseReview(newHouseReview);
+
+			checkHouseReviewExists(newHouseReview);
+
+			// if (check == true)
+			// System.out.println("\nSuccessful");
+			// else
+			// System.out.println("\nFailure");
+
 			break;
 		default: // no mode selected
-			System.out.println("Select a valid switch case mode");
+			System.out.println("\nSelect a valid switch case mode");
 			break;
 		}
 	}
