@@ -2,41 +2,44 @@ package presenter;
 
 import java.util.ArrayList;
 
-import database.User;
-import Button.ButtonType;
-import Button.SetupButton;
-import Profile.SavedProperties;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.Pagination;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.util.Callback;
 import javafx.util.Duration;
+import Button.ButtonType;
+import Button.SetupButton;
+import Profile.SavedProperties;
+import database.Database;
+import database.House;
+import database.HouseImage;
+import database.User;
 
 public class HousePages extends Window {
 
-	private ArrayList<Image> galleryList1, galleryList2, galleryList3;
 	private ImageGallery gallery;
 
 	private VBox infoColumn = new VBox(20);
 	private Pagination pagination;
 	private static Button buttonTimerControl;
 	private ArrayList<String> savedProperties = new ArrayList<String>();
+	private ArrayList<House> houses = new ArrayList<House>();
+	private ArrayList<ArrayList<Image>> galleries = new ArrayList<ArrayList<Image>>();
 
-	public HousePages(boolean singlePropertyView) {
+	public HousePages(boolean singlePropertyView, ArrayList<House> houses1) {
 		
+		this.houses = houses1;
 		createGalleryLists();
 		if(singlePropertyView){
-			Pane houseAdvert = createHousePage(currentPropertyID);
+			Pane houseAdvert = createHousePage(0);
 			houseAdvert.relocate(195,80);
 			root.getChildren().add(houseAdvert);
 		}
@@ -45,76 +48,68 @@ public class HousePages extends Window {
 			
 			setupPagination();
 			setupAdvertTimer();
-			setupTimerControl();	
+			setupTimerControl();
 		}
 	}
 	
 	private void createGalleryLists(){
-		galleryList1 = new ArrayList<Image>();
-		galleryList2 = new ArrayList<Image>();
-		galleryList3 = new ArrayList<Image>();
-
-		for (int i = 1; i < 16; i++) {
-			galleryList1.add(new Image(
-					"file:./resources/houses/Modern-A-House-" + i + ".jpg"));
-		}
-
-		for (int i = 1; i < 8; i++) {
-			galleryList2.add(new Image("file:./resources/houses/Empty-Nester-"
-					+ i + ".jpg"));
-		}
-
-		for (int i = 1; i < 9; i++) {
-			galleryList3.add(new Image(
-					"file:./resources/houses/modern-apartment-" + i + ".jpg"));
+		
+		for(int i = 0;i<houses.size();i++){
+			ArrayList<Image> galleryList = new ArrayList<Image>();
+			ArrayList<HouseImage> houseImages = new ArrayList<HouseImage>();
+			
+			houseImages = Database.getHouseImageSet(houses.get(i).hid);
+			
+			for(int j = 0; j < houseImages.size(); j++){
+				HouseImage input = houseImages.get(j);
+				Image image = new Image(input.imageIS);
+				galleryList.add(image);
+			}
+			Image image = new Image(houses.get(i).energyRatingIS);
+			galleryList.add(image);
+			galleries.add(galleryList);
 		}
 	}
 	
 	protected Pane createHousePage(Integer pageIndex) {
-
-		infoColumn.getChildren().clear();
+		
+		StackPane pane = new StackPane();	
+		
+		pane.resize(300,400);
 		Pane galleryPane = new Pane();
 		galleryPane.setPrefSize(750, 550);
 		galleryPane.getChildren().clear();
 
-		switch (pageIndex) {
-		case 0:
-			gallery = new ImageGallery(galleryList1, 20, 80);
-			break;
-		case 1:
-			gallery = new ImageGallery(galleryList2, 20, 80);
-			break;
-		case 2:
-			gallery = new ImageGallery(galleryList3, 20, 80);
-			break;
-		default:
-			break;
-		}
+		gallery = new ImageGallery(galleries.get(pageIndex), 20, 80);
+		
 		galleryPane.getChildren().add(gallery.getGallery());
 
-		infoColumn.relocate(450, 150);
 
-		Label price = new Label("£135 pcm");
-		price.setFont(Font.font(null, FontWeight.EXTRA_BOLD, 36));
-		Label desc = new Label("What a lovely house!");
-		desc.setFont(new Font(28));
-
+		TextElement address = new TextElement(houses.get(pageIndex).address);
+		TextElement price = new TextElement("£" + Integer.toString(houses.get(pageIndex).price) + " pcm");
+		price.setYpos(0.2);
+		TextElement bedrooms = new TextElement("Bedrooms: " + Integer.toString(houses.get(pageIndex).rooms));
+		bedrooms.setYpos(0.4);
+		TextHandler textHandler = new TextHandler();
+		textHandler.addTextElement(address);
+		textHandler.addTextElement(price);
+		textHandler.addTextElement(bedrooms);
+		textHandler.display(pane);
 		
-
-		infoColumn.getChildren().addAll(price, desc);
-		
-		setupSaveButton();
+		pane.relocate(450, 0);
+				
+		setupSaveButton(galleryPane);
 		
 		if(slideID == HOUSE){
 			SavedProperties.setupPropertyBackButton();
 		}
 		
-		galleryPane.getChildren().add(infoColumn);
+		galleryPane.getChildren().add(pane);
 
 		return galleryPane;
 	}
 	
-	private void setupSaveButton(){
+	private void setupSaveButton(Pane galleryPane){
 		ButtonType button1 = new ButtonType("150,150,150", null, "Save", 130,
 				30);
 		final Button buttonSave = new SetupButton().CreateButton(button1);
@@ -122,6 +117,8 @@ public class HousePages extends Window {
 			buttonSave.setDisable(true);
 			buttonSave.setText("Saved");
 		}
+		
+		buttonSave.relocate(450, 400);
 
 		buttonSave.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent ae) {
@@ -134,19 +131,19 @@ public class HousePages extends Window {
 		});
 		
 		if (slideID != INDEX && slideID != HOUSE) {
-			infoColumn.getChildren().add(buttonSave);
+			galleryPane.getChildren().add(buttonSave);
 		}
 	}
 
 	private void setupPagination() {
-		pagination = new Pagination(3, 0);
+		pagination = new Pagination(houses.size(), 0);
 
 		pagination.setPageFactory(new Callback<Integer, Node>() {
 			public Node call(Integer pageIndex) {
 				if (buttonTimerControl.getText().equals("Pause")) {
 					advertTimer.playFromStart();
 				}
-				currentPropertyID = pageIndex;
+				currentPropertyID = houses.get(pageIndex).hid;
 				return createHousePage(pageIndex);
 			}
 		});

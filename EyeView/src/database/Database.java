@@ -400,7 +400,7 @@ public class Database {
 					.prepareStatement("UPDATE users SET " + fieldSelect
 							+ "=? WHERE username=? AND email=?");
 			// if there's a string use string data else it must be a bool
-			if (newField != null)
+			if (newField != null || fieldSelect.equals("properties"))
 				editUser.setString(1, newField);
 			else
 				editUser.setBoolean(1, priv);
@@ -453,20 +453,17 @@ public class Database {
 			return user;
 	}
 
-	public static House getHouse(User userDetails, int hid) {
+	public static House getHouse(int hid) {
 		House house = null;
 		ResultSet houseDetails = null;
 		// select that user
-		int uid;
 		try {
-			// get uid
-			uid = getID(userDetails, null, 1);
+			
 			// select all the columns of house
 			PreparedStatement getHouse = con
-					.prepareStatement("SELECT * FROM houses WHERE uid=? AND hid=?");
+					.prepareStatement("SELECT * FROM houses WHERE hid=?");
 			// parameterise inputs
-			getHouse.setInt(1, uid);
-			getHouse.setInt(2, hid);
+			getHouse.setInt(1, hid);
 			// execute
 			houseDetails = getHouse.executeQuery();
 			// take all the users details and put them in an instance of user
@@ -686,16 +683,14 @@ public class Database {
 	 */
 	public static boolean insertHouseImage(String localFilepath,
 			House houseDetails, User userDetails) throws SQLException {
-		int hid;
 		PreparedStatement insertImage;
 		try {
 			insertImage = con
 					.prepareStatement("INSERT INTO house_images VALUES (?,?,?)");
-			hid = getID(userDetails, houseDetails, 2);
 			// enter the relevant house in parameters so we can use its unqiue
 			// id
 			insertImage.setInt(1, 0);
-			insertImage.setInt(2, hid);
+			insertImage.setInt(2, houseDetails.hid);
 			// check on the image they want to insert
 			File picture = new File(localFilepath);
 			if (!picture.exists())
@@ -1244,14 +1239,14 @@ public class Database {
 			// get House id method and get house as well
 			User tempu = getUser("MVPTom");
 			// gets house and puts it into memory
-			House temph = getHouse(tempu, 8);
+			House temph = getHouse(8);
 			int uid = getID(tempu, null, 1);
 			int hid = getID(tempu, temph, 2);
 			System.out.println("User ID: " + uid + "\nHouse ID: " + hid);
 			break;
 		case 13:
 			User tempu2 = getUser("MVPTom");
-			House temph2 = getHouse(tempu2, 8);
+			House temph2 = getHouse( 8);
 			try {
 				houseDeleted = houseDelete(temph2, tempu2);
 				if (!houseDeleted)
@@ -1268,7 +1263,7 @@ public class Database {
 			int tempPrc = 9001;
 			int varType = 4;
 			User tempu3 = getUser("MVPTom");
-			House temph3 = getHouse(tempu3, 8);
+			House temph3 = getHouse(8);
 			check = updateHouse(tempu3, temph3, "price", null, null, null,
 					tempPrc, varType);
 			if (check == true)
@@ -1279,7 +1274,7 @@ public class Database {
 		case 15:
 
 			User tempu4 = getUser("MVPTom");
-			House temph4 = getHouse(tempu4, 8);
+			House temph4 = getHouse(8);
 
 			// perhaps enter your own local file to test here, unless you're on
 			// my laptop
@@ -1297,7 +1292,7 @@ public class Database {
 		case 16:
 			User tempu5 = getUser("MVPTom");
 			// gets house and puts it into memory
-			House temph5 = getHouse(tempu5, 8);
+			House temph5 = getHouse(8);
 			int hid5 = getID(tempu5, temph5, 2);
 			ArrayList<HouseImage> list = new ArrayList<HouseImage>();
 			list = getHouseImageSet(hid5);
@@ -1325,7 +1320,7 @@ public class Database {
 
 			User tempu6 = getUser("MVPTom");
 
-			House temph6 = getHouse(tempu6, 8);
+			House temph6 = getHouse(8);
 
 			String localDir = "D:/EE course/SWEng/Java/";
 			String filename = "example_clip.mp4";
@@ -1341,7 +1336,7 @@ public class Database {
 		case 18:
 
 			User tempu7 = getUser("MVPTom");
-			House temph7 = getHouse(tempu7, 8);
+			House temph7 = getHouse(8);
 
 			String filename1 = "example_clip.mp4";
 
@@ -1396,7 +1391,7 @@ public class Database {
 		case 20:
 			// logged in user
 			User tempu13 = getUser("MVPTom");
-			House temph13 = getHouse(tempu13, 8);
+			House temph13 = getHouse(8);
 			// get user id
 			int uid13 = getID(tempu13, null, 1);
 			// get hid

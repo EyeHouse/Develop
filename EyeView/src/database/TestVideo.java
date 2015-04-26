@@ -28,7 +28,7 @@ public class TestVideo extends Application {
 		// goes to user Directory
 		HouseVideo house1;
 		User tempu7 = Database.getUser("Henry");
-		House temph7 = Database.getHouse(tempu7, 9);
+		House temph7 = Database.getHouse(9);
 		File file = null;
 
 		// Get video info into HouseVideo

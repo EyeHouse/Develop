@@ -1,5 +1,6 @@
 package database;
 
+import java.io.InputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -8,6 +9,7 @@ import com.mysql.jdbc.Blob;
 public class House {
 
 	private final static int UID = 1;
+	private final static int HID = 2;
 	private final static int TITLE = 3;
 	private final static int POSTCODE = 4;
 	private final static int ADDRESS = 5;
@@ -21,6 +23,7 @@ public class House {
 	private final static int DESCRIPTION = 13;
 	private final static int ENERGYRATING = 14;
 
+	public int hid;
 	public int uid;
 	public String title;
 	public String postcode;
@@ -34,6 +37,7 @@ public class House {
 	public Blob brochure;
 	public String description;
 	public Blob energyRating;
+	public InputStream energyRatingIS;
 
 	// user contructor method
 	public House(String title) {
@@ -44,6 +48,7 @@ public class House {
 			// fill details
 			try {
 				this.uid = houseDetails.getInt(UID);
+				this.hid = houseDetails.getInt(HID);
 				this.title = houseDetails.getString(TITLE);
 				this.postcode = houseDetails.getString(POSTCODE);
 				this.address = houseDetails.getString(ADDRESS);
@@ -56,6 +61,7 @@ public class House {
 				this.brochure = (Blob) houseDetails.getBlob(BROCHURE);
 				this.description = houseDetails.getString(DESCRIPTION);
 				this.energyRating = (Blob) houseDetails.getBlob(ENERGYRATING);
+				this.energyRatingIS = energyRating.getBinaryStream(1, energyRating.length()); 
 			} catch (SQLException e) {
 				e.printStackTrace();
 				e.getMessage();

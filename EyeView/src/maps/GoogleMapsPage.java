@@ -4,6 +4,9 @@ import java.io.*;
 import java.net.*;
 import java.util.Scanner;
 
+import database.Database;
+import database.House;
+
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -77,7 +80,8 @@ public class GoogleMapsPage extends presenter.Window {
 			webView = new WebView();
 			webEngine = webView.getEngine();
 			
-			changeDestination("5 The Link","YO10 4LB");
+			House destination = Database.getHouse(currentPropertyID);
+			changeDestination(destination.address,destination.postcode);
 			
 			File file = new File("src/maps/PropertyMapData.html");
 			try {

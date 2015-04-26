@@ -100,7 +100,7 @@ public class TextElement {
 	/**
 	 * Set the x position of the text.
 	 * 
-	 * @param xpos 	X position in pixels from left of the pane.
+	 * @param xpos 	X position in proportion of pixels from left of the pane.
 	 */
 	public void setXpos(double xpos) {
 		this.xpos = xpos;
@@ -109,9 +109,21 @@ public class TextElement {
 	/**
 	 * Set the y position of the text.
 	 * 
-	 * @param ypos 	Y position in pixels from top of the pane.
+	 * @param ypos 	Y position in proportion of pixels from top of the pane.
 	 */
 	public void setYpos(double ypos) {
+		this.ypos = ypos;
+	}
+	
+	/**
+	 * Set the position of the text.
+	 * 
+	 * @param xpos 	x position in proportion of pixels from top of the pane.
+	 * 
+	 * @param ypos	y position in pixels from top of the pane.
+	 */
+	public void setPosition(double xpos, double ypos){
+		this.xpos = xpos;
 		this.ypos = ypos;
 	}
 

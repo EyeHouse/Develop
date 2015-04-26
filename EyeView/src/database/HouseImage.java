@@ -8,10 +8,10 @@ import com.mysql.jdbc.Blob;
 
 public class HouseImage {
 
-	int iid;
-	int hid;
-	Blob imageBlob;
-	InputStream imageIS;
+	public int iid;
+	public int hid;
+	public Blob imageBlob;
+	public InputStream imageIS;
 	
 	private final static int IID = 1;
 	private final static int HID = 2;

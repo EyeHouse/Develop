@@ -1,11 +1,13 @@
 package presenter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JOptionPane;
 
 import maps.GoogleMapsPage;
 import database.Database;
+import database.House;
 import database.User;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -118,15 +120,27 @@ public class SlideContent extends Window {
 	}
 
 	private void createLoggedOutSlide() {
-				
-		new HousePages(false);
+		
+		House test = Database.getHouse(8);
+		ArrayList<House> testArray = new ArrayList<House>();
+		testArray.add(test);
+		test = Database.getHouse(10);
+		testArray.add(test);
+		
+		new HousePages(false, testArray);
 		createSidebar();
-		createMenuBar();	
+		createMenuBar();
 	}
 
 	private void createHomeSlide() {
         
-		new HousePages(false);
+		House test = Database.getHouse(8);
+		ArrayList<House> testArray = new ArrayList<House>();
+		testArray.add(test);
+		test = Database.getHouse(10);
+		testArray.add(test);
+		
+		new HousePages(false, testArray);
 		createSidebar();
 		createMenuBar();
 	}
@@ -163,7 +177,11 @@ public class SlideContent extends Window {
 	
 	private void createPropertySlide(){
 		
-		new HousePages(true);
+		House test = Database.getHouse(currentPropertyID);
+		ArrayList<House> testArray = new ArrayList<House>();
+		testArray.add(test);
+		
+		new HousePages(true,testArray);
 		createSidebar();
 		createMenuBar();
 	}

@@ -317,7 +317,7 @@ public class FileManager {
 		Database.dbConnect();
 
 		User tempu68 = Database.getUser("MVPTom");
-		House temph68 = Database.getHouse(tempu68, 8);
+		House temph68 = Database.getHouse(8);
 
 		switch (mode) {
 		case 1:
