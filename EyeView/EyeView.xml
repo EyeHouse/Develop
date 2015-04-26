@@ -23,4 +23,12 @@
 	</slide>
 	<slide id="3" title="Register Slide" duration="0">
 	</slide>
+	<slide id="4" title="Video Slide" duration="0">
+		<graphic type="rectangle" xstart="0.0" ystart="0.0" xend="0.19" yend="1.0"
+			duration="0" graphiccolor="#FF7AA9DD" solid="true">
+		</graphic>
+		<image sourcefile="file:./resources/images/profile.png" xstart="0.015" ystart="0.03" scale="0.3" duration="0"
+			starttime="0">
+		</image>
+	</slide>
 </slideshow>

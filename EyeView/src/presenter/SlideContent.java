@@ -190,7 +190,7 @@ public class SlideContent extends Window {
 	}
 	public void createVideoSlide(){
 		
-		//new VideoSlide();
+		new VideoPage();
 		createSidebar();
 		createMenuBar();
 	}
@@ -282,13 +282,17 @@ public class SlideContent extends Window {
 		ButtonType button1 = new ButtonType("144,171,199",null,"Video Tour",140,40);
 		Button videoButton = new SetupButton().CreateButton(button1);
 		videoButton.setFocusTraversable(false);
+		videoButton.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent ae) {
+				loadSlide(VIDEO);
+			}
+		});
 		
 		ButtonType button2 = new ButtonType("144,171,199",null,"Map",140,40);
 		Button mapButton = new SetupButton().CreateButton(button2);
 		mapButton.setFocusTraversable(false);
 		mapButton.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent ae) {
-				System.out.println("Map Button");
 				root.getChildren().clear();
 				slideID = MAP;
 				createSlide();
