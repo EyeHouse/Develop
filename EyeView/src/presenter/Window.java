@@ -32,6 +32,8 @@ public class Window extends Application {
 	public static final int HOUSE = 7;
 	public static final int MOREINFO = 8;
 	public static final int REVIEWS = 9;
+	public static final int MAP = 10;
+	public static final int VIDEO = 11;
 
 	public static SlideshowData slideshow;
 	public static List<SlideData> slideList;

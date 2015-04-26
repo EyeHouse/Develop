@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
+import maps.GoogleMapsPage;
 import database.Database;
 import database.User;
 import javafx.event.ActionEvent;
@@ -68,8 +69,17 @@ public class SlideContent extends Window {
 				break;
 			case MOREINFO:
 				createMoreInfoSlide();
+				break;
 			case REVIEWS:
 				createReviewsSlide();
+				break;
+			case MAP:
+				createMapSlide();
+				break;
+			case VIDEO:
+				createVideoSlide();
+				break;
+				
 			default:
 				break;
 			}
@@ -172,6 +182,19 @@ public class SlideContent extends Window {
 		createMenuBar();
 	}
 	
+	public void createMapSlide(){
+		
+		new GoogleMapsPage();
+		createSidebar();
+		createMenuBar();
+	}
+	public void createVideoSlide(){
+		
+		//new VideoSlide();
+		createSidebar();
+		createMenuBar();
+	}
+	
 	public void createSidebar(){
 		VBox sidebar = new VBox(20);
 		
@@ -263,6 +286,14 @@ public class SlideContent extends Window {
 		ButtonType button2 = new ButtonType("144,171,199",null,"Map",140,40);
 		Button mapButton = new SetupButton().CreateButton(button2);
 		mapButton.setFocusTraversable(false);
+		mapButton.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent ae) {
+				System.out.println("Map Button");
+				root.getChildren().clear();
+				slideID = MAP;
+				createSlide();
+			}
+		});
 	
 		ButtonType button3 = new ButtonType("144,171,199",null,"Information",140,40);
 		Button infoButton = new SetupButton().CreateButton(button3);

@@ -1,50 +1,39 @@
 package maps;
 
 import java.net.URL;
-import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Insets;
-import javafx.scene.Cursor;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
+
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.web.WebEngine;
-import javafx.scene.web.WebEvent;
 import javafx.scene.web.WebView;
-import javafx.stage.Stage;
+import presenter.SlideContent;
  
 
-public class GoogleMapsPage extends Application {
+public class GoogleMapsPage extends presenter.Window {
  
-  Scene scene;
   MyBrowser myBrowser;
   
   GridPane grid = new GridPane();
-  final Button backButton = new Button("Back");
   
-  
-
-  public static void main(String[] args) {
-      launch(args);
-  }
- 
-  @Override
-  public void start(Stage primaryStage) {
-      primaryStage.setTitle("Maps Page");
-     
-      
-      myBrowser = new MyBrowser();
-      scene = new Scene(myBrowser, 960, 800);
+  public GoogleMapsPage(){
+	  
+	  myBrowser = new MyBrowser();
+	  
       setupGrid();
       setupButtons();
       setupTitle();
-      primaryStage.setScene(scene);
-      primaryStage.show();
+      Pane pane = new Pane();
+      
+      pane.getChildren().add(myBrowser);
+      
+      pane.resize(600, 600);
+      pane.relocate(200, 100);
+      
+      root.getChildren().add(pane);
   }
   
   
@@ -52,12 +41,11 @@ public class GoogleMapsPage extends Application {
 
 		grid.setVgap(10);
 		grid.setHgap(10);
-		grid.setPadding(new Insets(5, 5, 5, 200));
 	}
   
   public void setupTitle() {
 
-		final Label topTitle = new Label("Maps");
+		final Label topTitle = new Label("Property Map");
 		topTitle.setTextFill(Color.web("#162252FF"));
 		topTitle.setFont(new Font(35));
 		grid.add(topTitle, 1, 1);
@@ -67,8 +55,7 @@ public class GoogleMapsPage extends Application {
   
   public void setupButtons() {
 	  
-	  grid.add(backButton, 1, 0);
-	  backButton.setCursor(Cursor.HAND);
+	  SlideContent.setupBackButton();
   }
  
   class MyBrowser extends Region{
@@ -92,18 +79,6 @@ public class GoogleMapsPage extends Application {
           getChildren().add(webView);
           grid.add(webView, 1, 2);
           getChildren().add(grid);
-          
-          
-          backButton.setOnAction(new EventHandler<ActionEvent>() {
-  			public void handle(ActionEvent event) {
-  				
-  				getChildren().clear();  				  				
-				//slideID = HOUSES;
-				//SlideContent sc = new SlideContent();
-				//sc.createSlide();
-  				
-  			}
-  		});
          
       }
      
