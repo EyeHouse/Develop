@@ -1,10 +1,13 @@
 package presenter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JOptionPane;
 
+import maps.GoogleMapsPage;
 import database.Database;
+import database.House;
 import database.User;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -31,6 +34,9 @@ public class SlideContent extends Window {
 
 	public void createSlide() {
 
+		//Cancel Advert timer if it is running
+		if(advertTimer != null)advertTimer.stop();
+		
 		// Load all objects from XML file first
 		loadXMLGraphics();
 		loadXMLImages();
@@ -60,6 +66,22 @@ public class SlideContent extends Window {
 			case SAVEDPROPERTIES:
 				createSavedPropertySlide();
 				break;
+			case HOUSE:
+				createPropertySlide();
+				break;
+			case MOREINFO:
+				createMoreInfoSlide();
+				break;
+			case REVIEWS:
+				createReviewsSlide();
+				break;
+			case MAP:
+				createMapSlide();
+				break;
+			case VIDEO:
+				createVideoSlide();
+				break;
+				
 			default:
 				break;
 			}
@@ -98,15 +120,27 @@ public class SlideContent extends Window {
 	}
 
 	private void createLoggedOutSlide() {
-				
-		new HousePages();
+		
+		House test = Database.getHouse(8);
+		ArrayList<House> testArray = new ArrayList<House>();
+		testArray.add(test);
+		test = Database.getHouse(10);
+		testArray.add(test);
+		
+		new HousePages(false, testArray);
 		createSidebar();
-		createMenuBar();	
+		createMenuBar();
 	}
 
 	private void createHomeSlide() {
         
-		new HousePages();
+		House test = Database.getHouse(8);
+		ArrayList<House> testArray = new ArrayList<House>();
+		testArray.add(test);
+		test = Database.getHouse(10);
+		testArray.add(test);
+		
+		new HousePages(false, testArray);
 		createSidebar();
 		createMenuBar();
 	}
@@ -124,11 +158,13 @@ public class SlideContent extends Window {
 	}
 	
 	private void createProfileSlide() {
+		
 		new ProfileViewer();
 		createSidebar();
 	}
 	
 	private void createAccountSettingsSlide() {
+		
 		new AccountSettings();
 		createSidebar();
 	}
@@ -137,6 +173,44 @@ public class SlideContent extends Window {
 		
 		new SavedProperties();
 		createSidebar();
+	}
+	
+	private void createPropertySlide(){
+		
+		House test = Database.getHouse(currentPropertyID);
+		ArrayList<House> testArray = new ArrayList<House>();
+		testArray.add(test);
+		
+		new HousePages(true,testArray);
+		createSidebar();
+		createMenuBar();
+	}
+	
+	public void createMoreInfoSlide(){
+		
+		new MoreInfo();
+		createSidebar();
+		createMenuBar();
+	}
+	
+	public void createReviewsSlide(){
+		
+		new HouseReviews();
+		createSidebar();
+		createMenuBar();
+	}
+	
+	public void createMapSlide(){
+		
+		new GoogleMapsPage();
+		createSidebar();
+		createMenuBar();
+	}
+	public void createVideoSlide(){
+		
+		new VideoPage();
+		createSidebar();
+		createMenuBar();
 	}
 	
 	public void createSidebar(){
@@ -177,8 +251,8 @@ public class SlideContent extends Window {
 		        }
 		    });
 			
-			if(slideID == SAVEDPROPERTIES) labelSavedProperties.setFont(Font.font(null, FontWeight.BOLD, 16.5));
-			else if(slideID == PROFILE) labelProfile.setFont(Font.font(null, FontWeight.BOLD, 16.5));
+			if(slideID == SAVEDPROPERTIES || slideID == HOUSE) labelSavedProperties.setFont(Font.font(null, FontWeight.BOLD, 16.5));
+			else if(slideID == PROFILE || slideID == ACCOUNTSETTINGS) labelProfile.setFont(Font.font(null, FontWeight.BOLD, 16.5));
 			
 			setupLabelHover(labelProfile);
 			setupLabelHover(labelSavedProperties);
@@ -226,18 +300,44 @@ public class SlideContent extends Window {
 		ButtonType button1 = new ButtonType("144,171,199",null,"Video Tour",140,40);
 		Button videoButton = new SetupButton().CreateButton(button1);
 		videoButton.setFocusTraversable(false);
+		videoButton.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent ae) {
+				loadSlide(VIDEO);
+			}
+		});
 		
 		ButtonType button2 = new ButtonType("144,171,199",null,"Map",140,40);
 		Button mapButton = new SetupButton().CreateButton(button2);
 		mapButton.setFocusTraversable(false);
+		mapButton.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent ae) {
+				root.getChildren().clear();
+				slideID = MAP;
+				createSlide();
+			}
+		});
 	
 		ButtonType button3 = new ButtonType("144,171,199",null,"Information",140,40);
 		Button infoButton = new SetupButton().CreateButton(button3);
 		infoButton.setFocusTraversable(false);
+		infoButton.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent ae) {
+				root.getChildren().clear();
+				slideID = MOREINFO;
+				createSlide();
+			}
+		});
 		
 		ButtonType button4 = new ButtonType("144,171,199",null,"Reviews",140,40);
 		Button reviewsButton = new SetupButton().CreateButton(button4);
 		reviewsButton.setFocusTraversable(false);
+		reviewsButton.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent ae) {
+				root.getChildren().clear();
+				slideID = REVIEWS;
+				createSlide();
+			}
+		});
 		
 		if(slideID == INDEX)
 		{

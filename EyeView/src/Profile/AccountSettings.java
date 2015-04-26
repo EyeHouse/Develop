@@ -32,6 +32,7 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import database.Database;
 
 public class AccountSettings extends presenter.Window{
@@ -52,7 +53,6 @@ public class AccountSettings extends presenter.Window{
 	private ComboBox<String> comboDoBYear = new ComboBox<String>();
 	private RadioButton buttonStudent = new RadioButton("Student");
 	private RadioButton buttonLandlord = new RadioButton("Landlord");
-	private RadioButton buttonOther = new RadioButton("Other");
 	private Label labelPasswordIncorrect;
 	private Label labelNewPasswordInvalid;
 	private Label labelUsernameAvailability;
@@ -85,13 +85,13 @@ public class AccountSettings extends presenter.Window{
 		ColumnConstraints col1 = new ColumnConstraints();
 		ColumnConstraints col2 = new ColumnConstraints();
 		col1.setMinWidth(100);
-		col2.setMinWidth(150);
+		col2.setMinWidth(200);
 		grid.getColumnConstraints().addAll(col1, col2);
 	}
 
 	/* Add existing account information to grid */
 	public void setupInfo() {
-		HBox hBoxDoB = new HBox(30);
+		HBox hBoxDoB = new HBox(5);
 		HBox hBoxAccountType = new HBox(30);
 		ToggleGroup group = new ToggleGroup();
 
@@ -116,7 +116,6 @@ public class AccountSettings extends presenter.Window{
 		// Group radio buttons
 		buttonStudent.setToggleGroup(group);
 		buttonLandlord.setToggleGroup(group);
-		buttonOther.setToggleGroup(group);
 
 		// Setup radio buttons with current account type
 		if (currentUser.landlord)
@@ -127,7 +126,7 @@ public class AccountSettings extends presenter.Window{
 		SetupDoB();
 
 		hBoxDoB.getChildren().addAll(comboDoBDay, comboDoBMonth, comboDoBYear);
-		hBoxAccountType.getChildren().addAll(buttonStudent, buttonLandlord, buttonOther);
+		hBoxAccountType.getChildren().addAll(buttonStudent, buttonLandlord);
 
 		grid.addColumn(0, labelFName, labelLName, labelUsername, labelEmail,
 				labelDoB, labelAccountType);
@@ -215,15 +214,28 @@ public class AccountSettings extends presenter.Window{
 
 	/* Add profile label and text area to grid */
 	public void SetupProfileText() {
+		VBox vBoxProfileText = new VBox(5);
 		Label labelProfileText = new Label("Profile");
+		final Label labelProfileChars = new Label("Characters Remaining: " + (256 - profileText.getText().length()));
 
 		// Load profile text area with current user profile and set size
 		profileText.setText("");
 		profileText.setMaxHeight(gridCellHeight * 3);
 		profileText.setPrefWidth(150);
+		profileText.setWrapText(true);
+		
+		profileText.textProperty().addListener(new ChangeListener<String>() {
+		    @Override
+		    public void changed(final ObservableValue<? extends String> observable, final String oldValue, final String newValue) {
+		        if(newValue.length()>256)profileText.setText(oldValue);
+		    	labelProfileChars.setText("Characters Remaining: " + (256 - profileText.getText().length()));
+		    }
+		});
+		vBoxProfileText.getChildren().addAll(profileText,labelProfileChars);
+		profileText.setPrefWidth(200);
 
 		// Add profile label and text area to grid
-		grid.addRow(9, labelProfileText, profileText);
+		grid.addRow(9, labelProfileText, vBoxProfileText);
 	}
 
 	/* Add apply and cancel buttons to grid */
@@ -287,6 +299,7 @@ public class AccountSettings extends presenter.Window{
 		grid.add(hBoxButtons, 0, 10);
 		GridPane.setConstraints(hBoxButtons, 0, 10, 2, 1, HPos.CENTER,
 				VPos.CENTER);
+		SlideContent.setupBackButton();
 	}
 
 	/* Send account changes to database(WHEN IMPLEMENTED FULLY) */

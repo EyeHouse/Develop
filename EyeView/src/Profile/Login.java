@@ -1,6 +1,8 @@
 package Profile;
 
 //TODO Auto-generated constructor stub
+import java.io.IOException;
+
 import javax.swing.JOptionPane;
 
 import Button.ButtonType;
@@ -110,7 +112,12 @@ public class Login extends presenter.Window {
 		if (userExists == true) {
 			User user = Database.getUser(username.getText());
 			currentUsername = username.getText();
-			user.printUser();
+			try {
+				user.printUser();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			loadSlide(HOUSES);
 			//root.getChildren().clear();
 			//slideID = HOUSES;

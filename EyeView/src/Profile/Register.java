@@ -5,6 +5,9 @@ package Profile;
 //import java.text.SimpleDateFormat;
 //import java.util.Locale;
 
+import java.io.IOException;
+
+import javax.swing.JOptionPane;
 import Button.ButtonType;
 import Button.SetupButton;
 import presenter.SlideContent;
@@ -264,9 +267,34 @@ public class Register extends presenter.Window {
 			if (regSuccess == true) {
 				// carry on to whatever interface you want, maybe login, or
 
+				// register user
+				regSuccess = Database.userRegister(user);
+				if (regSuccess == true) {
+					// carry on to whatever interface you want, maybe login, or
+
+					// go to users new profile
+					root.getChildren().clear();
+					slideID = LOGIN;
+					SlideContent sc = new SlideContent();
+					sc.createSlide();
+
+					System.out.println("User: " + user.username
+							+ " created successfully");
+				}
+				//log the new user in
+				User user = Database.getUser(username.getText());
+				currentUsername = username.getText();
+				try {
+					user.printUser();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				// go to users new profile
 				root.getChildren().clear();
-				slideID = LOGIN;
+				slideID = PROFILE;
+				firstLogin = true;
+				currentUsername = user.username;
 				SlideContent sc = new SlideContent();
 				sc.createSlide();
 

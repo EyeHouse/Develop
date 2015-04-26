@@ -75,7 +75,12 @@ public class SetupButton {
 	public Button setButtonImage(Button imageButton, Image image) {
 
 		// Add the image and text to the button
-		imageButton.setGraphic(new ImageView(image));
+		ImageView buttonImage = new ImageView(image);
+		System.out.println(imageButton.getMaxHeight());
+		buttonImage.setFitHeight(imageButton.getMaxHeight());
+		buttonImage.setFitWidth(imageButton.getMaxWidth());
+		
+		imageButton.setGraphic(buttonImage);
 		// Display the image and text in the centre of the button
 		return imageButton;
 	}

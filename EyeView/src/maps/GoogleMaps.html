@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Maps page with estimated time</title>
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+<style>
+html,body {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+#map-canvas {
+	position: right;
+	height: 50%;
+	width: 76%;
+	margin: 0px;
+	padding: 50px;
+}
+
+#outputDiv {
+	font-size: 15px;
+	font-family: verdana;
+	width: 81%;
+	height: 20%;
+	border: 2px solid #999;
+	padding: 25px;
+}
+
+#panel {
+	position: absolute;
+	top: 20px;
+	left: 50%;
+	margin-left: -180px;
+	z-index: 5;
+	background-color: #fff;
+	padding: 5px;
+	border: 1px solid #999;
+}
+</style>
+<script>
+	var directionsDisplay;
+	var directionsService = new google.maps.DirectionsService();
+	var map;
+	var geocoder;
+	var bounds = new google.maps.LatLngBounds();
+	var markersArray = [];
+
+	var origin1 = 'Central Hall, University of York, UK';
+	var destinationA;
+
+	var destinationIcon = 'https://chart.googleapis.com/chart?chst=d_map_pin_letter&chld=B|FF0000|000000';
+	var originIcon = 'https://chart.googleapis.com/chart?chst=d_map_pin_letter&chld=A|FFFF00|000000';
+
+	function initialize() {
+		// Instantiate a directions service.
+		directionsDisplay = new google.maps.DirectionsRenderer();
+
+		// Create a map and center it on UoY.
+		var mapOptions = {
+			center : new google.maps.LatLng('University of York, UK'),
+			zoom : 10
+		}
+		map = new google.maps.Map(document.getElementById('map-canvas'),
+				mapOptions);
+
+		// Create a renderer for directions and bind it to the map.
+		var rendererOptions = {
+			map : map
+		}
+		directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions)
+
+		geocoder = new google.maps.Geocoder();
+		directionsDisplay.setMap(map);
+
+		calculateDistances();
+
+	}
+
+	function calculateDistances() {
+		var service = new google.maps.DistanceMatrixService();
+
+		service.getDistanceMatrix({
+			origins : [ origin1 ],
+			destinations : [ destinationA ],
+			travelMode : google.maps.TravelMode.WALKING,
+			unitSystem : google.maps.UnitSystem.METRIC,
+			avoidHighways : false,
+			avoidTolls : false
+		}, callback);
+	}
+
+	function callback(response, status) {
+		if (status != google.maps.DistanceMatrixStatus.OK) {
+			alert('Error was: ' + status);
+		} else {
+			var origins = response.originAddresses;
+			var destinations = response.destinationAddresses;
+			var outputDiv = document.getElementById('outputDiv');
+			outputDiv.innerHTML = '';
+			deleteOverlays();
+
+			for ( var i = 0; i < origins.length; i++) {
+				var results = response.rows[i].elements;
+				addMarker(origins[i], false);
+				for ( var j = 0; j < results.length; j++) {
+					addMarker(destinations[j], true);
+					outputDiv.innerHTML += '<br>'
+							+ 'Marker A: University of York (Main campus)'
+							+ '<br>' + 'Marker B: ' + destinations[j] + '<br>'
+							+ '<br>' + 'Distance: ' + results[j].distance.text
+							+ '<br>' + 'Walking time: '
+							+ results[j].duration.text + '<br>';
+				}
+			}
+		}
+
+	}
+
+	function addMarker(location, isDestination) {
+		var icon;
+		if (isDestination) {
+			icon = destinationIcon;
+		} else {
+			icon = originIcon;
+		}
+		geocoder.geocode({
+			'address' : location
+		}, function(results, status) {
+			if (status == google.maps.GeocoderStatus.OK) {
+				bounds.extend(results[0].geometry.location);
+				map.fitBounds(bounds);
+				var marker = new google.maps.Marker({
+					map : map,
+					position : results[0].geometry.location,
+					icon : icon
+				});
+				markersArray.push(marker);
+			} else {
+				alert('Geocode was not successful for the following reason: '
+						+ status);
+			}
+		});
+	}
+
+	function deleteOverlays() {
+
+		// removing any existing markers from the map.
+		for ( var i = 0; i < markersArray.length; i++) {
+			markersArray[i].setMap(null);
+		}
+		// clearing the array itself.
+		markersArray = [];
+	}
+
+	function calcRoute() {
+
+		// Retrieve the start and end locations and create
+		// a DirectionsRequest using selected route.
+		var selectedMode = document.getElementById('mode').value;
+		var request = {
+			origin : origin1,
+			destination : destinationA,
+			travelMode : google.maps.TravelMode[selectedMode]
+		};
+
+		
+		directionsService.route(request, function(response, status) {
+			if (status == google.maps.DirectionsStatus.OK) {
+				directionsDisplay.setDirections(response);
+			}
+		});
+
+		deleteOverlays();
+	}
+
+	google.maps.event.addDomListener(window, 'load', initialize);
+</script>
+</head>
+<body>
+
+	<div id="panel">
+		<b>Travel Routes: </b> <select id="mode" onchange="calcRoute();">
+			<option value="DRIVING">Driving</option>
+			<option value="WALKING">Walking</option>
+			<option value="BICYCLING">Bicycling</option>
+			<option value="TRANSIT">Transit</option>
+		</select>
+	</div>
+	<div id="map-canvas"></div>
+	<div id="outputDiv"></div>
+</body>
+</html>
