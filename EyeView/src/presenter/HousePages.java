@@ -12,7 +12,6 @@ import javafx.scene.control.Pagination;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 import javafx.util.Duration;
 import Button.ButtonType;
@@ -26,8 +25,7 @@ import database.User;
 public class HousePages extends Window {
 
 	private ImageGallery gallery;
-
-	private VBox infoColumn = new VBox(20);
+	
 	private Pagination pagination;
 	private static Button buttonTimerControl;
 	private ArrayList<String> savedProperties = new ArrayList<String>();
