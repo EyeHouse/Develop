@@ -55,6 +55,7 @@ public class TestVideo extends Application {
 		StackPane root = new StackPane();
 		root.getChildren().add(viewer);
 
+		
 		// set the Scene
 		Scene scenes = new Scene(root, 500, 500, Color.BLACK);
 		stage.setScene(scenes);
