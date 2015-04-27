@@ -826,7 +826,7 @@ public class Database {
 		// NOTE: the location also includes a U-PW-SRVR element that needs
 		// to be constant.
 		FileManager update = new FileManager();
-		update.uploadVideo(userDetails, houseDetails, filename, localDirectory);
+		update.uploadVideo(userDetails, houseDetails, localDirectory, filename);
 
 		return true;
 	}
@@ -1158,7 +1158,7 @@ public class Database {
 
 		String title = "York Minster";
 
-		int mode = 20;
+		int mode = 17;
 		boolean insertSuccess;
 		boolean houseDeleted;
 		boolean updateSuccess;

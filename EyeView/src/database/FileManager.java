@@ -58,7 +58,7 @@ public class FileManager {
 			// Create the SFTP URI using the host name, userid, password, remote
 			// path and file name
 			String sftpUri = "sftp://" + USERNAME + ":" + PASSWORD + "@"
-					+ serverAddress + ":8080/" + "/" + remoteDirectory
+					+ serverAddress + ":22/" + "/" + remoteDirectory
 					+ fileToDownload;
 
 			// Create local file object
@@ -102,7 +102,7 @@ public class FileManager {
 			// Create the SFTP URI using the host name, userid, password, remote
 			// path and file name
 			String sftpUri = "sftp://" + USERNAME + ":" + PASSWORD + "@"
-					+ Database.url + ":8080//" + "group/eyeHouse.net/"
+					+ Database.url + ":22//" + "group/eyeHouse.net/"
 					+ filepath;
 			remoteFile = manager.resolveFile(sftpUri, opts);
 			FileContent temp = remoteFile.getContent();
@@ -139,7 +139,7 @@ public class FileManager {
 			// Create the SFTP URI using the host name, userid, password, remote
 			// path and file name
 			String sftpUri = "sftp://" + USERNAME + ":" + PASSWORD + "@"
-					+ Database.url + ":8080//" + "group/eyeHouse.net/"
+					+ Database.dbConnect() + ":22//" + "group/eyeHouse.net/"
 					+ filepath;
 
 			remoteFile = manager.resolveFile(sftpUri, opts);
@@ -229,7 +229,7 @@ public class FileManager {
 			// path and file name
 
 			String sftpUri = "sftp://" + USERNAME + ":" + PASSWORD + "@"
-					+ Database.url + ":8080//" + "group/eyeHouse.net/eyehouse/"
+					+ Database.dbConnect() + ":22//" + "group/eyeHouse.net/eyehouse/"
 					+ userDetails.username + "/" + hid + "/" + filename;
 
 			// upload a default image
@@ -280,7 +280,7 @@ public class FileManager {
 			// Create the SFTP URI using the host name, userid, password, remote
 			// path and file name
 			String sftpUri = "sftp://" + USERNAME + ":" + PASSWORD + "@" + url
-					+ ":8080//" + "group/eyeHouse.net/"
+					+ ":22//" + "group/eyeHouse.net/"
 					+ videoDetails.videoLocation;
 
 			// String sftpUri = "sftp://tb77931004:72dw42WRq!2345@" + url +

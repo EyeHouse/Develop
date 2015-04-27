@@ -163,11 +163,9 @@ public class User {
 		    frame.pack();
 		    frame.setVisible(true);
 			
-			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-
 }
