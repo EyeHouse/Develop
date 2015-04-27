@@ -110,19 +110,8 @@ public class Login extends presenter.Window {
 		// if exists create user object
 		System.out.println("User:" + (String) username.getText());
 		if (userExists == true) {
-			User user = Database.getUser(username.getText());
 			currentUsername = username.getText();
-			try {
-				user.printUser();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 			loadSlide(HOUSES);
-			//root.getChildren().clear();
-			//slideID = HOUSES;
-			//SlideContent sc = new SlideContent();
-			//sc.createSlide();
 		} else {
 			JOptionPane.showMessageDialog(null,
 					"Login Failed. Please try again.", "Login Error!",

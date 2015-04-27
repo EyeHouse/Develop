@@ -1,5 +1,7 @@
 package presenter;
 
+import java.io.InputStream;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +16,8 @@ import javafx.event.EventHandler;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -32,6 +36,8 @@ import Profile.SavedProperties;
 
 public class SlideContent extends Window {
 
+	public ImageView profilePictureView;
+	
 	public void createSlide() {
 
 		//Cancel Advert timer if it is running
@@ -159,7 +165,7 @@ public class SlideContent extends Window {
 	
 	private void createProfileSlide() {
 		
-		new ProfileViewer();
+		new ProfileViewer(currentUsername);
 		createSidebar();
 	}
 	
@@ -217,7 +223,23 @@ public class SlideContent extends Window {
 		VBox sidebar = new VBox(20);
 		
 		if(slideID != INDEX&& slideID !=LOGIN && slideID != REGISTER){
+			
 			User currentUser = Database.getUser(currentUsername);
+			try {
+				InputStream binaryStream = currentUser.profimg.getBinaryStream(1,
+						currentUser.profimg.length());
+				Image profilePicture = new Image(binaryStream);
+				profilePictureView = new ImageView(profilePicture);
+				// Set maximum dimensions for profile picture
+				profilePictureView.setFitWidth(100);
+				profilePictureView.setFitHeight(100);
+				profilePictureView.setPreserveRatio(true);
+				sidebar.getChildren().add(profilePictureView);
+			} catch (SQLException e) {
+				System.out.println("Failed to retrieve profile picture.");
+				e.printStackTrace();
+			}
+
 			Label labelName = new Label(currentUser.first_name);
 			labelName.setWrapText(true);
 			labelName.setFont(Font.font(null, FontWeight.BOLD, 20));
