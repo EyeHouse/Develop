@@ -1377,6 +1377,8 @@ public class Database {
 			int k;
 			for (k = 0; k < list2.size(); k++) {
 				System.out.println("\nReview: " + list2.get(k).review);
+				System.out.println("\nReview id: " + list2.get(k).urid);
+				System.out.println("\nReviewer id: " + list2.get(k).uid_reviewer);
 			}
 			// check = deleteUserReview(list2.get(1));
 
