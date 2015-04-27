@@ -18,7 +18,7 @@ import com.mysql.jdbc.Blob;
 public class User {
 
 	
-	
+	private final static int UID = 1;
 	private final static int FNAME = 2;
 	private final static int SNAME = 3;
 	private final static int USER = 4;
@@ -31,6 +31,7 @@ public class User {
 	private final static int PROP = 11;
 
 	// id should automatically be created on insertion
+	public int uid;
 	public String first_name;
 	public String second_name;
 	public String email;
@@ -51,6 +52,7 @@ public class User {
 	public User(ResultSet userDetails) {
 		// fill details
 		try {
+			this.uid = userDetails.getInt(UID);
 			this.username = userDetails.getString(USER);
 			this.first_name = userDetails.getString(FNAME);
 			this.second_name = userDetails.getString(SNAME);
@@ -161,11 +163,9 @@ public class User {
 		    frame.pack();
 		    frame.setVisible(true);
 			
-			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-
 }

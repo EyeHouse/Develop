@@ -826,7 +826,7 @@ public class Database {
 		// NOTE: the location also includes a U-PW-SRVR element that needs
 		// to be constant.
 		FileManager update = new FileManager();
-		update.uploadVideo(userDetails, houseDetails, filename, localDirectory);
+		update.uploadVideo(userDetails, houseDetails, localDirectory, filename);
 
 		return true;
 	}
@@ -949,8 +949,8 @@ public class Database {
 			insertUserReview.setInt(3, reviewDetails.uid_reviewer);
 			insertUserReview.setString(4, reviewDetails.review);
 			insertUserReview.setInt(5, reviewDetails.rating);
-			insertUserReview.setBoolean(6, reviewDetails.like);
-			insertUserReview.setBoolean(7, reviewDetails.dislike);
+			insertUserReview.setInt(6, reviewDetails.like);
+			insertUserReview.setInt(7, reviewDetails.dislike);
 
 			// execute the query
 			insertUserReview.executeUpdate();
@@ -1040,8 +1040,8 @@ public class Database {
 			insertUserReview.setInt(3, reviewDetails.uid);
 			insertUserReview.setString(4, reviewDetails.review);
 			insertUserReview.setInt(5, reviewDetails.rating);
-			insertUserReview.setBoolean(6, reviewDetails.like);
-			insertUserReview.setBoolean(7, reviewDetails.dislike);
+			insertUserReview.setInt(6, reviewDetails.like);
+			insertUserReview.setInt(7, reviewDetails.dislike);
 
 			// execute the query
 			insertUserReview.executeUpdate();
@@ -1158,7 +1158,7 @@ public class Database {
 
 		String title = "York Minster";
 
-		int mode = 20;
+		int mode = 17;
 		boolean insertSuccess;
 		boolean houseDeleted;
 		boolean updateSuccess;
@@ -1368,8 +1368,8 @@ public class Database {
 			reviewDetails.uid_reviewer = uid12;
 			reviewDetails.review = "A kind man. Slightly too fond of children";
 			reviewDetails.rating(0);
-			reviewDetails.like(false);
-			reviewDetails.dislike(true);
+			reviewDetails.like(69);
+			reviewDetails.dislike(0);
 
 			// check = insertUserReview(reviewDetails);
 
@@ -1402,8 +1402,8 @@ public class Database {
 			hreviewDetails.uid = uid13;
 			hreviewDetails.review = "A kind house. Slightly too fond of children";
 			hreviewDetails.rating(0);
-			hreviewDetails.like(false);
-			hreviewDetails.dislike(true);
+			hreviewDetails.like(23);
+			hreviewDetails.dislike(49);
 
 			// check = insertHouseReview(hreviewDetails);
 

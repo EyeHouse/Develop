@@ -13,15 +13,15 @@ public class UserReview {
 	private final static int LIKE = 6;
 	private final static int DISLIKE = 7;
 
-	int urid;
-	int uid_target;
-	int uid_reviewer;
-	int rating;
+	public int urid;
+	public int uid_target;
+	public int uid_reviewer;
+	public int rating;
 
-	String review;
+	public String review;
 
-	boolean like;
-	boolean dislike;
+	public int like;
+	public int dislike;
 
 	// Manually create a view off of new input
 	public UserReview(int urTG) {
@@ -36,8 +36,8 @@ public class UserReview {
 			this.uid_reviewer = reviewDetails.getInt(UID_REVIEWER);
 			this.review = reviewDetails.getString(REVIEW);
 			this.rating = reviewDetails.getInt(RATING);
-			this.like = reviewDetails.getBoolean(LIKE);
-			this.dislike = reviewDetails.getBoolean(DISLIKE);
+			this.like = reviewDetails.getInt(LIKE);
+			this.dislike = reviewDetails.getInt(DISLIKE);
 		} catch (SQLException e) {
 			System.out.println("\nError in UserReview class.");
 			e.printStackTrace();
@@ -56,11 +56,11 @@ public class UserReview {
 		this.rating = rating;
 	}
 
-	public void like(boolean lk) {
+	public void like(int lk) {
 		this.like = lk;
 	}
 
-	public void dislike(boolean dslk) {
+	public void dislike(int dslk) {
 		this.dislike = dslk;
 	}
 
