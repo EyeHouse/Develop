@@ -13,10 +13,10 @@ public class UserReview {
 	private final static int LIKE = 6;
 	private final static int DISLIKE = 7;
 
-	int urid;
-	int uid_target;
-	int uid_reviewer;
-	int rating;
+	public int urid;
+	public int uid_target;
+	public int uid_reviewer;
+	public int rating;
 
 	String review;
 
