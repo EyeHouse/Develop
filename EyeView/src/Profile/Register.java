@@ -7,7 +7,6 @@ package Profile;
 
 import java.io.IOException;
 
-import javax.swing.JOptionPane;
 import Button.ButtonType;
 import Button.SetupButton;
 import presenter.SlideContent;

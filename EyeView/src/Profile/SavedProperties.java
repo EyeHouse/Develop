@@ -2,6 +2,9 @@ package Profile;
 
 import java.util.ArrayList;
 
+import database.Database;
+import database.House;
+import database.HouseImage;
 import database.User;
 import Button.ButtonType;
 import Button.SetupButton;
@@ -16,12 +19,13 @@ import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import presenter.SlideContent;
@@ -122,15 +126,24 @@ public class SavedProperties extends presenter.Window {
 
 			HBox listItem = new HBox(10);
 			VBox propertyInfo = new VBox(10);
-			Rectangle propertyImage = new Rectangle(100, 100, Color.BLUEVIOLET);
-			Label propertyAddress = new Label(properties.get(i));
+			
+			ArrayList<HouseImage> houseImages = new ArrayList<HouseImage>();
+			houseImages = Database.getHouseImageSet(Integer.parseInt(properties.get(i)));
+			HouseImage input = houseImages.get(0);
+			ImageView thumbnail = new ImageView(new Image(input.imageIS));
+			thumbnail.setFitHeight(100);
+			thumbnail.setFitWidth(100);
+			
+			House house = Database.getHouse(Integer.parseInt(properties.get(i)));
+			//Rectangle propertyImage = new Rectangle(100, 100, Color.BLUEVIOLET);
+			Label propertyAddress = new Label(house.address);
 			Label propertyDetails = new Label(
-					"No. of Bedrooms: 2\nPrice: £75pppw");
+					"No. of Bedrooms: "+ house.rooms + "\nPrice: £" + house.price + " pcm");
 
 			propertyAddress.setFont(Font.font(null, FontWeight.BOLD, 20));
 
 			propertyInfo.getChildren().addAll(propertyAddress, propertyDetails);
-			listItem.getChildren().addAll(propertyImage, propertyInfo);
+			listItem.getChildren().addAll(thumbnail, propertyInfo);
 
 			items.add(listItem);
 		}

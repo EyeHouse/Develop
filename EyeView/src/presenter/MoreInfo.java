@@ -1,5 +1,7 @@
 package presenter;
 
+import database.Database;
+import database.House;
 import presenter.SlideContent;
 import presenter.TextElement;
 import presenter.TextHandler;
@@ -19,7 +21,10 @@ public class MoreInfo extends presenter.Window {
 		pane.setAlignment(Pos.CENTER);
 		pane.relocate(250,200);
 		pane.resize(400, 400);
-		addTextElement(null, 0, 0, 0, null, null, 0);
+		
+		House house = Database.getHouse(currentPropertyID);
+		
+		addTextElement(house.description, 0, 0, 1, null, null, 0);
 		root.getChildren().add(pane);
 		//add BackButton
 		SlideContent.setupBackButton();
@@ -30,7 +35,8 @@ public class MoreInfo extends presenter.Window {
 			double wrappingWidth, Color color, Font font, double timeout) {
 		
 		// Add text element
-		TextElement textElement = new TextElement("Test String\nText 123456");
+		TextElement textElement = new TextElement(text);
+		textElement.setWrappingWidth(wrappingWidth);
 		TextHandler textHandler = new TextHandler();
 		textHandler.addTextElement(textElement);
 		textHandler.display(pane);

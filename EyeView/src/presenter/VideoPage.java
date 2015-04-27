@@ -1,5 +1,8 @@
 package presenter;
 
+import database.Database;
+import database.House;
+import database.HouseVideo;
 import javafx.scene.layout.StackPane;
 
 public class VideoPage extends presenter.Window {
@@ -13,6 +16,8 @@ public class VideoPage extends presenter.Window {
 	private void setupVideoPlayer(){
 		StackPane videoPane = new StackPane();
 
+		House house = Database.getHouse(currentPropertyID);
+		//HouseVideo vid = Database.getVideoInfo()
 		VideoElement video = new VideoElement(
 				"./resources/videos/avengers-featurehp.mp4");
 		video.setWidth(500);
