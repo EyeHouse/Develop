@@ -222,14 +222,12 @@ public class ProfileViewer extends presenter.Window {
 				if (newProfilePictureFile != null) {
 					profilePicture = new Image(newProfilePictureFile.toURI()
 							.toString());
-					int userID = Database.getID(profileUser, null, 1);
-
 					try {
 
 						// Upload new profile picture to database
 						Database.updateImage("users",
 								newProfilePictureFile.getAbsolutePath(),
-								"profileIMG", userID);
+								"profileIMG", profileUser.uid);
 
 						reloadProfile();
 					} catch (FileNotFoundException e) {
@@ -263,22 +261,18 @@ public class ProfileViewer extends presenter.Window {
 				new FileChooser.ExtensionFilter("PNG", "*.png"));
 	}
 
-	/*
-	 * TODO Get review number from database as number between 0 and 5
-	 */
 	/**
 	 * Add review stars to profile based on average review from database
 	 */
 	private void AddStars() {
 		// HBox to contain the stars
 		HBox hBoxStars = new HBox(5);
+		int rating = 0;
 
-		int userID = Database.getID(profileUser, null, 1);
-
-		//UserReview review = Database.getUserReview(userID);
-
-		// rating = review.
-		int rating = 4;
+		UserReview review = Database.getUserReview(profileUser.uid);
+		if(review != null){
+			rating = review.rating;
+		}
 
 		// Populate hBox based on user rating
 		for (int i = 0; i < 5; i++) {
@@ -356,21 +350,15 @@ public class ProfileViewer extends presenter.Window {
 					textNewReview.clear();
 					textReview.appendText("\n" + newRating);
 
-					/*
-					 * int userID = Database.getID(profileUser, null, 1); int
-					 * reviewerID =
-					 * Database.getID(Database.getUser(currentUsername),null,1);
-					 * UserReview newReview = new UserReview(userID);
-					 * newReview.uid_reviewer(reviewerID);
-					 * newReview.review(textNewReview.getText());
-					 * newReview.rating(newRating);
-					 */
+					UserReview newReview = new UserReview(profileUser.uid);
+					newReview.uid_reviewer(Database.getUser(currentUsername).uid);
+					newReview.review(textNewReview.getText());
+					newReview.rating(newRating);
+					newReview.like(0);
+					newReview.dislike(0);
+					Database.insertUserReview(newReview);
 
-					/*
-					 * TODO add newRating to database ((float)newRating + float
-					 * databaseRating)/2 = newdatabaseRating upload
-					 * newdatabaseRating to database
-					 */
+					reloadProfile();
 				}
 			});
 			// Add new review and rating label and text area
@@ -469,9 +457,9 @@ public class ProfileViewer extends presenter.Window {
 			}
 		}
 	}
-	
-	private void reloadProfile(){
-		
+
+	private void reloadProfile() {
+
 		root.getChildren().clear();
 		slideID = PROFILE;
 		SlideContent sc = new SlideContent();

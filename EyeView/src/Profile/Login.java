@@ -1,7 +1,6 @@
 package Profile;
 
 //TODO Auto-generated constructor stub
-import java.io.IOException;
 
 import javax.swing.JOptionPane;
 
@@ -10,7 +9,6 @@ import Button.SetupButton;
 import presenter.SlideContent;
 import database.DataHandler;
 import database.Database;
-import database.User;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
