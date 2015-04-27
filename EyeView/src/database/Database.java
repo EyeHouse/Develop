@@ -458,7 +458,7 @@ public class Database {
 		ResultSet houseDetails = null;
 		// select that user
 		try {
-			
+
 			// select all the columns of house
 			PreparedStatement getHouse = con
 					.prepareStatement("SELECT * FROM houses WHERE hid=?");
@@ -965,24 +965,21 @@ public class Database {
 		return true;
 	}
 
-	public static UserReview getUserReview(int urid) {
+	public static ArrayList<UserReview> getUserReview(int target) {
 
 		ResultSet userReview;
-		UserReview newReview;
+		ArrayList<UserReview> list = new ArrayList<UserReview>();
+
 		try {
 			PreparedStatement getUserReview = con
-					.prepareStatement("SELECT * FROM user_reviews WHERE urid=?");
+					.prepareStatement("SELECT * FROM user_reviews WHERE uid_target=?");
 
-			getUserReview.setInt(1, urid);
+			getUserReview.setInt(1, target);
 
 			userReview = getUserReview.executeQuery();
-			if (userReview.next()) {
-				newReview = new UserReview(userReview);
-				System.out.println("\nReview id: " + newReview.urid);
-				return newReview;
-			} else {
-				System.out.println("\nNo user review with that ID exists");
-				return null;
+			while (userReview.next()) {
+				//
+				list.add(new UserReview(userReview));
 			}
 
 		} catch (SQLException e) {
@@ -990,6 +987,7 @@ public class Database {
 			e.printStackTrace();
 			return null;
 		}
+		return list;
 	}
 
 	public static boolean deleteUserReview(UserReview reviewDetails) {
@@ -1158,7 +1156,7 @@ public class Database {
 
 		String title = "York Minster";
 
-		int mode = 17;
+		int mode = 19;
 		boolean insertSuccess;
 		boolean houseDeleted;
 		boolean updateSuccess;
@@ -1246,7 +1244,7 @@ public class Database {
 			break;
 		case 13:
 			User tempu2 = getUser("MVPTom");
-			House temph2 = getHouse( 8);
+			House temph2 = getHouse(8);
 			try {
 				houseDeleted = houseDelete(temph2, tempu2);
 				if (!houseDeleted)
@@ -1356,36 +1354,36 @@ public class Database {
 
 		case 19:
 			// logged in user
-			User tempu12 = getUser("MVPTom");
-			// get user id
-			int uid12 = getID(tempu12, null, 1);
+			User tempu12 = getUser("Alxandir");
 
 			// Henries ID
 			int targetID = 3106;
 
 			// fill in target ID
 			UserReview reviewDetails = new UserReview(targetID);
-			reviewDetails.uid_reviewer = uid12;
-			reviewDetails.review = "A kind man. Slightly too fond of children";
-			reviewDetails.rating(0);
-			reviewDetails.like(69);
+			reviewDetails.uid_reviewer = tempu12.uid;
+			reviewDetails.review = "Hes such a dick. Thank god hes not in charge of anything important";
+			reviewDetails.rating(1);
+			reviewDetails.like(1000);
 			reviewDetails.dislike(0);
 
 			// check = insertUserReview(reviewDetails);
 
 			checkReviewExists(reviewDetails);
 
-			UserReview latestReview = null;
-			latestReview = getUserReview(2);
+			ArrayList<UserReview> list2 = new ArrayList<UserReview>();
+			list2 = getUserReview(targetID);
 
-			System.out.println("\nReview: " + latestReview.review);
+			int k;
+			for (k = 0; k < list2.size(); k++) {
+				System.out.println("\nReview: " + list2.get(k).review);
+			}
+			// check = deleteUserReview(list2.get(1));
 
-			// check = deleteUserReview(latestReview);
-
-			// if (check == true)
-			// System.out.println("\nSuccessful");
-			// else
-			// System.out.println("\nFailure");
+//			if (check == true)
+//				System.out.println("\nSuccessful");
+//			else
+//				System.out.println("\nFailure");
 
 			break;
 		case 20:
