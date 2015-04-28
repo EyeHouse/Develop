@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import Button.ButtonType;
 import Button.SetupButton;
@@ -19,6 +20,8 @@ import presenter.SlideContent;
 import database.Database;
 import database.User;
 import database.UserReview;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -26,6 +29,7 @@ import javafx.geometry.VPos;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -54,6 +58,8 @@ public class ProfileViewer extends presenter.Window {
 	private Image profilePicture;
 	private ImageView profilePictureView;
 	private int newRating;
+	ListView<HBox> reviewList;
+	ObservableList<HBox> items = FXCollections.observableArrayList();
 
 	private Button[] buttonStar;
 	private Image reviewStarFull;
@@ -269,25 +275,17 @@ public class ProfileViewer extends presenter.Window {
 		HBox hBoxStars = new HBox(5);
 		int rating = 0;
 
-		UserReview review = Database.getUserReview(profileUser.uid);
-		if(review != null){
-			rating = review.rating;
+		ArrayList<UserReview> userReviews = Database
+				.getUserReview(profileUser.uid);
+		if (userReviews != null) {
+			for (int i = 0; i < userReviews.size(); i++) {
+				rating += userReviews.get(i).rating;
+			}
+			rating /= userReviews.size();
 		}
 
 		// Populate hBox based on user rating
-		for (int i = 0; i < 5; i++) {
-			if (i < rating)
-				hBoxStars
-						.getChildren()
-						.add(new ImageView(new Image(
-								"file:resources/images/stars/starFull_28.png")));
-			else
-				hBoxStars
-						.getChildren()
-						.add(new ImageView(
-								new Image(
-										"file:resources/images/stars/starOutline_28.png")));
-		}
+		hBoxStars = createStarHBox(5, 28, rating);
 		// Add star HBox to grid
 		profileGrid.addRow(1, hBoxStars);
 	}
@@ -298,7 +296,7 @@ public class ProfileViewer extends presenter.Window {
 	private void SetupProfileReview() {
 
 		TextArea textProfile = new TextArea();
-		final TextArea textReview = new TextArea();
+		reviewList = new ListView<HBox>();
 		final TextArea textNewReview = new TextArea();
 		Label labelProfile, labelReview, labelNewReview, labelNewRating;
 
@@ -346,10 +344,6 @@ public class ProfileViewer extends presenter.Window {
 				@Override
 				public void handle(ActionEvent event) {
 					// Add new review to new line of review text area
-					textReview.appendText("\n\n" + textNewReview.getText());
-					textNewReview.clear();
-					textReview.appendText("\n" + newRating);
-
 					UserReview newReview = new UserReview(profileUser.uid);
 					newReview.uid_reviewer(Database.getUser(currentUsername).uid);
 					newReview.review(textNewReview.getText());
@@ -418,23 +412,71 @@ public class ProfileViewer extends presenter.Window {
 		labelReview = new Label("Reviews");
 		labelReview.setFont(fontMain);
 
-		/*
-		 * TODO get reviews from database
-		 */
-
 		// Setup text areas with text wrapping
 		textProfile.setText("");
 		textProfile.setEditable(false);
 		textProfile.setWrapText(true);
-		textReview.setText("Crackin bloke!");
-		textReview.setEditable(false);
-		textReview.setWrapText(true);
+
+		reviewList.setPrefHeight(200);
+		ArrayList<UserReview> userReviews = Database
+				.getUserReview(profileUser.uid);
+		
+		Image thumbsUp = new Image("file:resources/images/stars/thumbs_up.png");
+		Image thumbsDown = new Image("file:resources/images/stars/thumbs_down.png");
+		
+		for (int i = 0; i < userReviews.size(); i++) {
+
+			HBox reviewItem = new HBox(10);
+			VBox reviewLeft = new VBox(10);
+			VBox buttons = new VBox(12);
+			HBox stars = createStarHBox(2, 14, userReviews.get(i).rating);
+
+			Label reviewText = new Label(userReviews.get(i).review + "\n"
+					+ "Likes: " + userReviews.get(i).like + "  Dislikes: "
+					+ userReviews.get(i).dislike);
+			reviewText.setWrapText(true);
+			reviewText.setPrefWidth(200);
+			
+			ImageView like = new ImageView(thumbsUp);
+			like.setOnMouseClicked(new likeHandler(userReviews.get(i)));
+			like.setCursor(Cursor.HAND);
+			
+			ImageView dislike = new ImageView(thumbsDown);
+			dislike.setOnMouseClicked(new dislikeHandler(userReviews.get(i)));
+			dislike.setCursor(Cursor.HAND);
+
+			reviewLeft.getChildren().addAll(reviewText, stars);
+			buttons.getChildren().addAll(like,dislike);
+			reviewItem.getChildren().addAll(reviewLeft, buttons);
+			items.add(reviewItem);
+		}
+		reviewList.setItems(items);
 
 		// Populate grid with profile and review information
 		vBoxProfile.getChildren().addAll(labelProfile, textProfile);
-		vBoxReview.getChildren().addAll(labelReview, textReview);
+		vBoxReview.getChildren().addAll(labelReview, reviewList);
 		profileGrid.addRow(2, vBoxProfile, vBoxReview);
 
+	}
+
+	public HBox createStarHBox(int spacing, int size, int rating) {
+		HBox stars = new HBox(spacing);
+		for (int i = 0; i < 5; i++) {
+			if (i < rating) {
+				ImageView star = new ImageView(new Image(
+						"file:resources/images/stars/starFull_28.png"));
+				star.setFitWidth(size);
+				star.setFitHeight(size);
+				stars.getChildren().add(star);
+			} else {
+				ImageView star = new ImageView(new Image(
+						"file:resources/images/stars/starOutline_28.png"));
+				star.setFitWidth(size);
+				star.setFitHeight(size);
+				stars.getChildren().add(star);
+			}
+		}
+		return stars;
 	}
 
 	public class starButtonHandler implements EventHandler<ActionEvent> {
@@ -455,6 +497,38 @@ public class ProfileViewer extends presenter.Window {
 					buttonStar[i].setGraphic(new ImageView(reviewStarOutline));
 				}
 			}
+		}
+	}
+
+	public class likeHandler implements EventHandler<MouseEvent> {
+		private UserReview review;
+
+		public likeHandler(UserReview review) {
+			this.review = review;
+		}
+
+		@Override
+		public void handle(MouseEvent event) {
+			Database.deleteUserReview(review);
+			review.like(review.like + 1);
+			Database.insertUserReview(review);
+			reloadProfile();
+		}
+	}
+
+	public class dislikeHandler implements EventHandler<MouseEvent> {
+		private UserReview review;
+
+		public dislikeHandler(UserReview review) {
+			this.review = review;
+		}
+
+		@Override
+		public void handle(MouseEvent event) {
+			Database.deleteUserReview(review);
+			review.dislike(review.dislike + 1);
+			Database.insertUserReview(review);
+			reloadProfile();
 		}
 	}
 
