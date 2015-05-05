@@ -11,6 +11,8 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.ButtonBuilder;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.HBox;
@@ -103,6 +105,7 @@ public class VideoElement {
 	 * @param filename
 	 */
 	public VideoElement(String filename) {
+		
 		/* Default values */
 		xpos = 0;
 		ypos = 0;
@@ -272,6 +275,18 @@ public class VideoElement {
 		containerPane.getChildren().add(mediaView);
 		containerPane.getChildren().add(timePane);
 		containerPane.getChildren().add(buttonsPane);
+		
+		turnOffPickOnBoundsFor(timePane);
+		turnOffPickOnBoundsFor(buttonsPane);
+	}
+	
+	private void turnOffPickOnBoundsFor(Node n) {
+		n.setPickOnBounds(false);
+		if (n instanceof Parent) {
+			for (Node c: ((Parent) n).getChildrenUnmodifiable()) {
+				turnOffPickOnBoundsFor(c);
+			}
+		}
 	}
 	
 	/**
