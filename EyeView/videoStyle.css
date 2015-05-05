@@ -1,0 +1,67 @@
+/* Labels */
+
+#volume-label {
+	-fx-fill: white;
+	-fx-font-weight: bold;
+}
+
+#time-label {
+	-fx-fill: white;
+	-fx-font-weight: bold;
+}
+
+/* Buttons */
+
+.button {
+	-fx-background-color: transparent;
+    -fx-padding: 0;
+	-fx-content-display: graphic-only;
+}
+
+#play-btn {
+	-fx-graphic: url(resources/icons/play.png);
+}
+
+#play-btn:hover {
+	-fx-graphic: url(resources/icons/play-hover.png);
+}
+
+#play-btn:armed {
+	-fx-graphic: url(resources/icons/play-armed.png);
+}
+
+#pause-btn {
+	-fx-graphic: url(resources/icons/pause.png);
+}
+
+#pause-btn:hover {
+	-fx-graphic: url(resources/icons/pause-hover.png);
+}
+
+#pause-btn:armed {
+	-fx-graphic: url(resources/icons/pause-armed.png);
+}
+
+#stop-btn {
+	-fx-graphic: url(resources/icons/stop.png);
+}
+
+#stop-btn:hover {
+	-fx-graphic: url(resources/icons/stop-hover.png);
+}
+
+#stop-btn:armed {
+	-fx-graphic: url(resources/icons/stop-armed.png);
+}
+
+#rewind-btn {
+	-fx-graphic: url(resources/icons/rewind.png);
+}
+
+#rewind-btn:hover {
+	-fx-graphic: url(resources/icons/rewind-hover.png);
+}
+
+#rewind-btn:armed {
+	-fx-graphic: url(resources/icons/rewind-armed.png);
+}

@@ -36,7 +36,7 @@ import javafx.util.Duration;
  * <li>Time text - "time-label" - class Text</li>
  * <li>Time slider - "time-slider" - class Slider</li>
  * <li>Volume text - "volume-label" - class Text</li>
- * <li>Time slider - "time-slider" - class Slider</li>
+ * <li>Volume slider - "volume-slider" - class Slider</li>
  * <li>Play button - "play-btn" - class Button</li>
  * <li>Pause button - "pause-btn" - class Button</li>
  * <li>Stop button - "stop-btn" - class Button</li>
@@ -84,12 +84,11 @@ public class VideoElement {
 	 */
 	private boolean automaticSizing;
 	
-
 	private Media media;
 	private MediaPlayer mediaPlayer;
 	private MediaView mediaView;
 	
-	private VBox containerPane;
+	private StackPane containerPane;
 	private HBox buttonsPane;
 	private HBox timePane;
 	
@@ -116,6 +115,7 @@ public class VideoElement {
 		media = new Media(new File(filename).toURI().toString());
 		mediaPlayer = new MediaPlayer(media);
 		mediaView = new MediaView(mediaPlayer);
+		mediaView.setId("video-container");
 		
 		/* Time change listener */
 		final InvalidationListener mediaTimeListener = 
@@ -195,6 +195,9 @@ public class VideoElement {
 		/* Add buttons to button pane */
 		buttonsPane = new HBox();
 		buttonsPane.setId("video-container");
+		buttonsPane.setPadding(new Insets(10, 10, 10, 10));
+		buttonsPane.setAlignment(Pos.BOTTOM_CENTER);
+		buttonsPane.setMouseTransparent(false);
 		
 		buttonsPane.getChildren().add(
 				ButtonBuilder.create()
@@ -231,8 +234,10 @@ public class VideoElement {
 		/* Set up time pane */
 		timePane = new HBox();
 		timePane.setId("video-container");
-		timePane.setPadding(new Insets(5, 5, 5, 5));
+		timePane.setPadding(new Insets(10, 10, 10, 10));
 		timePane.setSpacing(5);
+		timePane.setAlignment(Pos.BASELINE_CENTER);
+		timePane.setMouseTransparent(false);
 		
 		// The time label will display the time of the video in h:mm:ss format
 		timeLabel = new Text(formatTime(new Duration(0.0)));
@@ -243,13 +248,13 @@ public class VideoElement {
 		timeSlider.setId("time-slider");
 		HBox.setHgrow(timeSlider, Priority.ALWAYS);
 		
-		volumeLabel = new Text("Volume:");
+		volumeLabel = new Text("     Volume:");
 		volumeLabel.setId("volume-label");
 		
 		volumeSlider = new Slider(0, 100, 100);
 		volumeSlider.valueProperty().addListener(volumeSliderChangeHandler);
 		volumeSlider.setId("volume-slider");
-		//volumeSlider.setMinWidth(70);
+		volumeSlider.setPrefWidth(80);
 		
 		timePane.getChildren().add(timeLabel);
 		timePane.getChildren().add(timeSlider);
@@ -263,15 +268,10 @@ public class VideoElement {
 		//timePane.setMaxHeight(50);
 		//timePane.setMinHeight(50);
 		
-		containerPane = new VBox();
-		
+		containerPane = new StackPane();
 		containerPane.getChildren().add(mediaView);
-		mediaView.setId("video-container");
-		
 		containerPane.getChildren().add(timePane);
-		
 		containerPane.getChildren().add(buttonsPane);
-		buttonsPane.setAlignment(Pos.CENTER);
 	}
 	
 	/**
@@ -304,8 +304,7 @@ public class VideoElement {
 				(Math.floor(duration.toMinutes()) * 60));
 		int minutes = (int) Math.floor(duration.toMinutes() - 
 				(Math.floor(duration.toHours()) * 60));
-		int hours = (int) Math.floor(duration.toHours());
-		return String.format("%01d:%02d:%02d", hours, minutes, seconds);
+		return String.format("%02d:%02d", minutes, seconds);
 		
 	}
 	
