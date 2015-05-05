@@ -964,7 +964,31 @@ public class Database {
 		return true;
 	}
 
-	public static ArrayList<UserReview> getUserReview(int target) {
+	public static UserReview getUserReview(int urid) {
+
+		ResultSet userReview;
+		UserReview userRev = null;
+
+		try {
+			PreparedStatement getUserReview = con
+					.prepareStatement("SELECT * FROM user_reviews WHERE urid=?");
+
+			getUserReview.setInt(1, urid);
+			userReview = getUserReview.executeQuery();
+			
+			if (userReview.next()) {
+				userRev = new UserReview(userReview);
+				return userRev;
+			}
+		} catch (SQLException e) {
+			System.out.println("\nNo user review with that ID exists");
+			e.printStackTrace();
+			return null;
+		}
+		return userRev;
+	}
+	
+	public static ArrayList<UserReview> getUserReviewList(int target) {
 
 		ResultSet userReview;
 		ArrayList<UserReview> list = new ArrayList<UserReview>();
@@ -1318,10 +1342,14 @@ public class Database {
 
 		String title = "York Minster";
 
-		int mode = 2;
+		int mode = 21;
 		boolean insertSuccess;
 		boolean houseDeleted;
 		boolean updateSuccess;
+		
+		// Henries ID
+		int targetID = 3106;
+		
 		// testing switch
 		switch (mode) {
 		case 2: // insert User
@@ -1518,8 +1546,7 @@ public class Database {
 			// logged in user
 			User tempu12 = getUser("Alxandir");
 
-			// Henries ID
-			int targetID = 3106;
+		
 
 			// fill in target ID
 			UserReview reviewDetails = new UserReview(targetID);
@@ -1534,7 +1561,7 @@ public class Database {
 			checkReviewExists(reviewDetails);
 
 			ArrayList<UserReview> list2 = new ArrayList<UserReview>();
-			list2 = getUserReview(targetID);
+			list2 = getUserReviewList(targetID);
 
 			int k;
 			for (k = 0; k < list2.size(); k++) {
@@ -1585,6 +1612,30 @@ public class Database {
 			// else
 			// System.out.println("\nFailure");
 
+			break;
+		case 21:
+			
+			User tempu14 = getUser("MVPTom");
+			
+			// MVPTom review on 
+			// HouseReview one = getHouseReview(2);
+			
+			ArrayList<UserReview> list3 = new ArrayList<UserReview>();
+			list3 = getUserReviewList(targetID);
+
+		
+			for (k = 0; k < list3.size(); k++) {
+				System.out.println("\nReview: " + list3.get(k).review);
+				System.out.println("\nReview id: " + list3.get(k).urid);
+				System.out.println("\nReviewer id: "
+						+ list3.get(k).uid_reviewer);
+			}
+			
+			likeReview(tempu14,null,
+					list3.get(0),1);
+			
+			
+			
 			break;
 		default: // no mode selected
 			System.out.println("\nSelect a valid switch case mode");
