@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -137,7 +136,7 @@ public class Database {
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				System.out.println("\nunsurpisingly theres been an sftp error");
+				System.out.println("\nTheres been an sftp error");
 			}
 			insertUser.setString(properties, null);
 			// execute the query
@@ -1141,6 +1140,102 @@ public class Database {
 		}
 	}
 
+	public static boolean likeReview(User userDetails, HouseReview houseReview,
+			UserReview userReview, int type) {
+
+		// type 1 = User review
+
+		// type 2 = House review
+		if (type == 1) {
+			ResultSet userLikeCheck;
+
+			// Check User-Review like record exists
+			try {
+				PreparedStatement checkLikes = con
+						.prepareStatement("SELECT * FROM likes WHERE type=? AND uid=? AND rid=?");
+				// Users is
+				checkLikes.setInt(1, type);
+				checkLikes.setInt(2, userDetails.uid);
+				checkLikes.setInt(3, userReview.urid);
+
+				userLikeCheck = checkLikes.executeQuery();
+				boolean userLikeStatus;
+				if (userLikeCheck.next()) {
+					// Record already exists
+					// Check if they liked or disliked
+					userLikeStatus = userLikeCheck.getBoolean("liked");
+					if (!userLikeStatus) {
+						// If disliked
+						try {
+							PreparedStatement like = con
+									.prepareStatement("UPDATE likes SET liked=? WHERE rid=? AND type=?");
+							like.setBoolean(1, true);
+							like.setInt(2, userReview.urid);
+							like.setInt(3, type);
+							like.executeUpdate();
+							try {
+								// iterate the reviews like count
+								PreparedStatement iterateUserLikes = con
+										.prepareStatement("UPDATE user_reviews SET like=?, dislike=? WHERE urid=?");
+								iterateUserLikes.setInt(1, userReview.like + 1);
+								iterateUserLikes.setInt(2, userReview.dislike -1);
+								iterateUserLikes.setInt(3, userReview.urid);
+								iterateUserLikes.executeUpdate();
+							} catch (Exception e) {
+								System.out.println("\nFailure to iterate like number");
+								e.printStackTrace();
+							}
+						} catch (Exception e) {
+							e.printStackTrace();
+							System.out.println("\nFailure to change like status");
+						}
+						
+					} else {
+						// If already liked delete record
+						// and decrement likes
+						// if the video location exists
+						try {
+							PreparedStatement dropLikeRec = con
+									.prepareStatement("DELETE FROM likes WHERE type=? AND rid=?");
+							dropLikeRec.setInt(1, type);
+							dropLikeRec.setInt(2, userReview.urid);
+							dropLikeRec.executeQuery();
+							try {
+								// iterate the reviews like count
+								PreparedStatement iterateUserLikes = con
+										.prepareStatement("UPDATE user_reviews SET like=? WHERE urid=?");
+								iterateUserLikes.setInt(1, userReview.like - 1);
+								iterateUserLikes.setInt(2, userReview.urid);
+								iterateUserLikes.executeUpdate();
+							} catch (Exception e) {
+								System.out.println("\nFailure to iterate like number");
+								e.printStackTrace();
+							}
+						} catch (Exception e) {
+							System.out.println("\nFailure to drop like record");
+							e.printStackTrace();
+						}
+						
+					}
+				} else {
+					// If record doesn't exist create it
+					// and add a like to the review
+				}
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+
+		}
+		if (type == 2) {
+
+		} else {
+
+		}
+		return false;
+
+	}
+
 	public static void main(String[] args) throws Exception {
 		// Connect to the Database
 		dbConnect();
@@ -1148,15 +1243,15 @@ public class Database {
 		boolean check;
 		User insert = null;
 		// User checkUse = null
-		String username = "DefTest2";
+		String username = "DefTest3";
 		String password = "Eyehouse1";
 		String hashPassword = DataHandler.crypt(password);
 
-		String email = "DefProfTest2@york.ac.uk";
+		String email = "DefProfTest3@york.ac.uk";
 
 		String title = "York Minster";
 
-		int mode = 19;
+		int mode = 2;
 		boolean insertSuccess;
 		boolean houseDeleted;
 		boolean updateSuccess;
@@ -1166,8 +1261,8 @@ public class Database {
 
 			// user to be inserted
 			insert = new User(username);
-			insert.firstName("Lol");
-			insert.secondName("Waddlesworth");
+			insert.firstName("Testing");
+			insert.secondName("File read");
 			insert.email(email);
 			insert.admin(true);
 			insert.landlord(true);
@@ -1378,14 +1473,15 @@ public class Database {
 			for (k = 0; k < list2.size(); k++) {
 				System.out.println("\nReview: " + list2.get(k).review);
 				System.out.println("\nReview id: " + list2.get(k).urid);
-				System.out.println("\nReviewer id: " + list2.get(k).uid_reviewer);
+				System.out.println("\nReviewer id: "
+						+ list2.get(k).uid_reviewer);
 			}
 			// check = deleteUserReview(list2.get(1));
 
-//			if (check == true)
-//				System.out.println("\nSuccessful");
-//			else
-//				System.out.println("\nFailure");
+			// if (check == true)
+			// System.out.println("\nSuccessful");
+			// else
+			// System.out.println("\nFailure");
 
 			break;
 		case 20:

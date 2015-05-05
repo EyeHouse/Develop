@@ -79,7 +79,6 @@ public class FileManager {
 		} finally {
 			manager.close();
 		}
-
 		return true;
 	}
 
@@ -229,15 +228,16 @@ public class FileManager {
 			// path and file name
 
 			String sftpUri = "sftp://" + USERNAME + ":" + PASSWORD + "@"
-					+ Database.dbConnect() + ":8022//" + "group/eyeHouse.net/eyehouse/"
-					+ userDetails.username + "/" + hid + "/" + filename;
+					+ Database.dbConnect() + ":8022//"
+					+ "group/eyeHouse.net/eyehouse/" + userDetails.username
+					+ "/" + hid + "/" + filename;
 
 			// upload a default image
-			/*
-			 * String sftpUri = "sftp://" + USERNAME + ":" + PASSWORD + "@" +
-			 * Database.url + ":8080//" +
-			 * "group/eyeHouse.net/eyehouse/defaults/" + filename;
-			 */
+
+			// String sftpUri = "sftp://" + USERNAME + ":" + PASSWORD + "@"
+			// + Database.dbConnect() + ":8080//"
+			// + "home/ehfile1004/group/eyeHouse.net/eyehouse/defaults/" +
+			// filename;
 
 			System.out.println(sftpUri);
 			// Create local file object
