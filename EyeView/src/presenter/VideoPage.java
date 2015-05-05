@@ -19,8 +19,8 @@ public class VideoPage extends Window {
 
 		House house = Database.getHouse(currentPropertyID);
 		// HouseVideo vid = Database.getVideoInfo()
-		VideoElement video = new VideoElement("./resources/videos/avengers-featurehp.mp4");
-		video.setStylesheet("videoStyle.css");
+		VideoElement video = new VideoElement("resources/videos/avengers-featurehp.mp4");
+		video.setStylesheet("resources/videoStyle.css");
 		video.setWidth(500);
 		video.setAutoplay(true);
 		video.display(videoPane);
