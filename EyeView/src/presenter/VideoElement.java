@@ -3,6 +3,10 @@ package presenter;
 
 import java.io.File;
 
+import javafx.animation.FadeTransitionBuilder;
+import javafx.animation.Interpolator;
+import javafx.animation.ParallelTransition;
+import javafx.animation.ParallelTransitionBuilder;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.value.ObservableValue;
@@ -15,10 +19,10 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.ButtonBuilder;
 import javafx.scene.control.Slider;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
@@ -56,6 +60,7 @@ import javafx.util.Duration;
  * @author Joel Fergusson
  *
  */
+@SuppressWarnings("deprecation")
 public class VideoElement {
 	/**
 	 * Relative x position (0.0 - 1.0 as a fraction of the width of the parent 
@@ -98,6 +103,8 @@ public class VideoElement {
 	private Slider volumeSlider;
 	private Text timeLabel;
 	private Slider timeSlider;
+	
+	private ParallelTransition transition = null;
 	
 	/**
 	 * Creates a VideoElement object associated with a file. 
@@ -200,39 +207,30 @@ public class VideoElement {
 		buttonsPane.setId("video-container");
 		buttonsPane.setPadding(new Insets(10, 10, 10, 10));
 		buttonsPane.setAlignment(Pos.BOTTOM_CENTER);
-		buttonsPane.setMouseTransparent(false);
+		buttonsPane.setOpacity(0.0);
 		
-		buttonsPane.getChildren().add(
-				ButtonBuilder.create()
+		buttonsPane.getChildren().addAll(
+			ButtonBuilder.create()
 				.id("play-btn")
 				.text("Play")
 				.onAction(playBtnEventHandler)
-				.build()
-				);
-		
-		buttonsPane.getChildren().add(
-				ButtonBuilder.create()
+				.build(),
+			ButtonBuilder.create()
 				.id("pause-btn")
 				.text("Pause")
 				.onAction(pauseBtnEventHandler)
-				.build()
-				);
-		
-		buttonsPane.getChildren().add(
-				ButtonBuilder.create()
+				.build(),
+			ButtonBuilder.create()
 				.id("stop-btn")
 				.text("Stop")
 				.onAction(stopBtnEventHandler)
-				.build()
-				);
-		
-		buttonsPane.getChildren().add(
-				ButtonBuilder.create()
+				.build(),
+			ButtonBuilder.create()
 				.id("rewind-btn")
 				.text("Rewind")
 				.onAction(rewindBtnEventHandler)
 				.build()
-				);
+		);
 		
 		/* Set up time pane */
 		timePane = new HBox();
@@ -240,7 +238,7 @@ public class VideoElement {
 		timePane.setPadding(new Insets(10, 10, 10, 10));
 		timePane.setSpacing(5);
 		timePane.setAlignment(Pos.BASELINE_CENTER);
-		timePane.setMouseTransparent(false);
+		timePane.setOpacity(0.0);
 		
 		// The time label will display the time of the video in h:mm:ss format
 		timeLabel = new Text(formatTime(new Duration(0.0)));
@@ -263,14 +261,7 @@ public class VideoElement {
 		timePane.getChildren().add(timeSlider);
 		timePane.getChildren().add(volumeLabel);
 		timePane.getChildren().add(volumeSlider);
-		
-		/* Construct main container */
-		//buttonsPane.setMaxHeight(50);
-		//buttonsPane.setMinHeight(50);
-		
-		//timePane.setMaxHeight(50);
-		//timePane.setMinHeight(50);
-		
+				
 		containerPane = new StackPane();
 		containerPane.getChildren().add(mediaView);
 		containerPane.getChildren().add(timePane);
@@ -278,9 +269,55 @@ public class VideoElement {
 		
 		turnOffPickOnBoundsFor(timePane);
 		turnOffPickOnBoundsFor(buttonsPane);
+		
+		containerPane.setOnMouseEntered(new EventHandler<MouseEvent>() {
+            @Override public void handle(MouseEvent t) {
+                if (transition != null) transition.stop();
+                transition = ParallelTransitionBuilder.create()
+                    .children(
+                        FadeTransitionBuilder.create()
+                            .node(timePane)
+                            .toValue(1.0)
+                            .duration(Duration.millis(200))
+                            .interpolator(Interpolator.EASE_OUT)
+                            .build(),
+                        FadeTransitionBuilder.create()
+                            .node(buttonsPane)
+                            .toValue(1.0)
+                            .duration(Duration.millis(200))
+                            .interpolator(Interpolator.EASE_OUT)
+                            .build()
+                    )
+                    .build();
+                transition.play();
+            }
+        });
+		containerPane.setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override public void handle(MouseEvent t) {
+                if (transition != null) transition.stop();
+                transition = ParallelTransitionBuilder.create()
+                    .children(
+                        FadeTransitionBuilder.create()
+                            .node(timePane)
+                            .toValue(0.0)
+                            .duration(Duration.millis(200))
+                            .interpolator(Interpolator.EASE_OUT)
+                            .build(),
+                        FadeTransitionBuilder.create()
+                            .node(buttonsPane)
+                            .toValue(0.0)
+                            .duration(Duration.millis(200))
+                            .interpolator(Interpolator.EASE_OUT)
+                            .build()
+                    )
+                    .build();
+                transition.play();
+            }
+        });
 	}
 	
 	private void turnOffPickOnBoundsFor(Node n) {
+		
 		n.setPickOnBounds(false);
 		if (n instanceof Parent) {
 			for (Node c: ((Parent) n).getChildrenUnmodifiable()) {
@@ -315,12 +352,12 @@ public class VideoElement {
 	 * @return String of format h:mm:ss
 	 */
 	private String formatTime(Duration duration) {
+		
 		int seconds = (int) Math.floor(duration.toSeconds() - 
 				(Math.floor(duration.toMinutes()) * 60));
 		int minutes = (int) Math.floor(duration.toMinutes() - 
 				(Math.floor(duration.toHours()) * 60));
 		return String.format("%02d:%02d", minutes, seconds);
-		
 	}
 	
 	/**
@@ -329,6 +366,7 @@ public class VideoElement {
 	 * @param pane
 	 */
 	public void display(StackPane pane) {
+		
 		pane.getChildren().add(containerPane);
 
 		StackPane.setMargin(containerPane, new Insets(
@@ -437,6 +475,7 @@ public class VideoElement {
 	 * based on the current settings of the videoElement.
 	 */
 	private void setSize() {
+		
 		double width = this.prefWidth;
 		double height = this.prefHeight;
 		
@@ -465,9 +504,6 @@ public class VideoElement {
 			mediaView.setFitWidth(width);
 			containerPane.setMaxWidth(width);
 		}
-		
-		
-		
 	}
 
 	/**

@@ -24,9 +24,9 @@ public class VideoPage extends Window {
 		video.setWidth(500);
 		video.setAutoplay(true);
 		video.display(videoPane);
-
+		
 		videoPane.relocate(300, 100);
-
+		
 		root.getChildren().add(videoPane);
 	}
 }
