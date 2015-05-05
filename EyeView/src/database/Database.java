@@ -1030,6 +1030,10 @@ public class Database {
 				System.out.println("\nRating is out of 5");
 				return false;
 			}
+			if (reviewDetails.rating % 0 != 0) {
+				System.out.println("\nRating must be an integer");
+				return false;
+			}
 
 			// Values to insert
 			insertUserReview.setInt(id, 0);
@@ -1144,96 +1148,159 @@ public class Database {
 			UserReview userReview, int type) {
 
 		// type 1 = User review
-
 		// type 2 = House review
-		if (type == 1) {
-			ResultSet userLikeCheck;
-
-			// Check User-Review like record exists
-			try {
-				PreparedStatement checkLikes = con
-						.prepareStatement("SELECT * FROM likes WHERE type=? AND uid=? AND rid=?");
-				// Users is
-				checkLikes.setInt(1, type);
-				checkLikes.setInt(2, userDetails.uid);
+		ResultSet likeCheck;
+		// Check User-Review like record exists
+		try {
+			PreparedStatement checkLikes = con
+					.prepareStatement("SELECT * FROM likes WHERE type=? AND uid=? AND rid=?");
+			// Users is
+			checkLikes.setInt(1, type);
+			checkLikes.setInt(2, userDetails.uid);
+			if (type == 1)
 				checkLikes.setInt(3, userReview.urid);
+			if (type == 2)
+				checkLikes.setInt(3, houseReview.hrid);
+			likeCheck = checkLikes.executeQuery();
 
-				userLikeCheck = checkLikes.executeQuery();
-				boolean userLikeStatus;
-				if (userLikeCheck.next()) {
-					// Record already exists
-					// Check if they liked or disliked
-					userLikeStatus = userLikeCheck.getBoolean("liked");
-					if (!userLikeStatus) {
-						// If disliked
-						try {
-							PreparedStatement like = con
-									.prepareStatement("UPDATE likes SET liked=? WHERE rid=? AND type=?");
-							like.setBoolean(1, true);
+			boolean likeStatus;
+
+			if (likeCheck.next()) {
+				// Record already exists
+				// Check if they liked or disliked
+				likeStatus = likeCheck.getBoolean("liked");
+				if (!likeStatus) {
+					// If disliked
+					try {
+						PreparedStatement like = con
+								.prepareStatement("UPDATE likes SET liked=? WHERE rid=? AND type=?");
+						like.setBoolean(1, true);
+						if (type == 1)
 							like.setInt(2, userReview.urid);
-							like.setInt(3, type);
-							like.executeUpdate();
-							try {
-								// iterate the reviews like count
+						if (type == 2)
+							like.setInt(2, houseReview.hrid);
+						like.setInt(3, type);
+						like.executeUpdate();
+						try {
+							// iterate the reviews like count and decrement
+							// dislikes
+							if (type == 1) {
 								PreparedStatement iterateUserLikes = con
 										.prepareStatement("UPDATE user_reviews SET like=?, dislike=? WHERE urid=?");
 								iterateUserLikes.setInt(1, userReview.like + 1);
-								iterateUserLikes.setInt(2, userReview.dislike -1);
+								iterateUserLikes.setInt(2,
+										userReview.dislike - 1);
 								iterateUserLikes.setInt(3, userReview.urid);
 								iterateUserLikes.executeUpdate();
-							} catch (Exception e) {
-								System.out.println("\nFailure to iterate like number");
-								e.printStackTrace();
+							}
+							if (type == 2) {
+								PreparedStatement iterateHouseLikes = con
+										.prepareStatement("UPDATE house_reviews SET like=?, dislike=? WHERE hrid=?");
+								iterateHouseLikes.setInt(1,
+										houseReview.like + 1);
+								iterateHouseLikes.setInt(2,
+										houseReview.dislike - 1);
+								iterateHouseLikes.setInt(3, houseReview.hrid);
+								iterateHouseLikes.executeUpdate();
+							} else {
+								System.out
+										.println("\nBad type integer. Read method comments.");
 							}
 						} catch (Exception e) {
+							System.out
+									.println("\nFailure to iterate like number");
 							e.printStackTrace();
-							System.out.println("\nFailure to change like status");
 						}
-						
-					} else {
-						// If already liked delete record
-						// and decrement likes
-						// if the video location exists
-						try {
-							PreparedStatement dropLikeRec = con
-									.prepareStatement("DELETE FROM likes WHERE type=? AND rid=?");
-							dropLikeRec.setInt(1, type);
+					} catch (Exception e) {
+						e.printStackTrace();
+						System.out.println("\nFailure to change like status");
+					}
+
+				} else {
+					// If already liked delete record
+					// and decrement likes
+					// if the video location exists
+					try {
+						PreparedStatement dropLikeRec = con
+								.prepareStatement("DELETE FROM likes WHERE type=? AND rid=?");
+						dropLikeRec.setInt(1, type);
+						if (type == 1)
 							dropLikeRec.setInt(2, userReview.urid);
-							dropLikeRec.executeQuery();
-							try {
-								// iterate the reviews like count
+						if (type == 2)
+							dropLikeRec.setInt(2, houseReview.hrid);
+						dropLikeRec.executeQuery();
+						try {
+							// decrememt the reviews like count
+							if (type == 1) {
 								PreparedStatement iterateUserLikes = con
 										.prepareStatement("UPDATE user_reviews SET like=? WHERE urid=?");
 								iterateUserLikes.setInt(1, userReview.like - 1);
 								iterateUserLikes.setInt(2, userReview.urid);
 								iterateUserLikes.executeUpdate();
-							} catch (Exception e) {
-								System.out.println("\nFailure to iterate like number");
-								e.printStackTrace();
+							}
+							if (type == 2) {
+								PreparedStatement iterateHouseLikes = con
+										.prepareStatement("UPDATE house_reviews SET like=? WHERE hrid=?");
+								iterateHouseLikes.setInt(1,
+										houseReview.like - 1);
+								iterateHouseLikes.setInt(3, houseReview.hrid);
+								iterateHouseLikes.executeUpdate();
 							}
 						} catch (Exception e) {
-							System.out.println("\nFailure to drop like record");
+							System.out
+									.println("\nFailure to iterate like number");
 							e.printStackTrace();
 						}
-						
+					} catch (Exception e) {
+						System.out.println("\nFailure to drop like record");
+						e.printStackTrace();
 					}
-				} else {
-					// If record doesn't exist create it
-					// and add a like to the review
 				}
-
-			} catch (SQLException e) {
-				e.printStackTrace();
+			} else {
+				// If record doesn't exist create it
+				// and add a like to the review
+				try {
+					PreparedStatement newRecord = con
+							.prepareStatement("INSERT INTO likes VALUES (?,?,?,?)");
+					// ID of the user submitting a like
+					newRecord.setInt(1, userDetails.uid);
+					newRecord.setInt(2, type);
+					// ID of the review being like
+					if (type == 1)
+						newRecord.setInt(3, userReview.urid);
+					if (type == 2)
+						newRecord.setInt(3, houseReview.hrid);
+					newRecord.setBoolean(4, true);
+					newRecord.executeUpdate();
+				} catch (Exception e) {
+					System.out.println("\nFailure to insert like record");
+					e.printStackTrace();
+				}
+				try {
+					// iterate the reviews like count
+					if (type == 1) {
+						PreparedStatement iterateUserLikes = con
+								.prepareStatement("UPDATE user_reviews SET like=? WHERE urid=?");
+						iterateUserLikes.setInt(1, userReview.like + 1);
+						iterateUserLikes.setInt(2, userReview.urid);
+						iterateUserLikes.executeUpdate();
+					}
+					if (type == 2) {
+						PreparedStatement iterateHouseLikes = con
+								.prepareStatement("UPDATE house_reviews SET like=?, dislike=? WHERE hrid=?");
+						iterateHouseLikes.setInt(1, houseReview.like + 1);
+						iterateHouseLikes.setInt(3, houseReview.hrid);
+						iterateHouseLikes.executeUpdate();
+					}
+				} catch (Exception e) {
+					System.out.println("\nFailure to iterate like number : 2");
+					e.printStackTrace();
+				}
 			}
-
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
-		if (type == 2) {
-
-		} else {
-
-		}
-		return false;
-
+		return true;
 	}
 
 	public static void main(String[] args) throws Exception {
