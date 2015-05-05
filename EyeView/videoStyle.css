@@ -2,12 +2,31 @@
 
 #volume-label {
 	-fx-fill: white;
+	-fx-font-size: 10pt;
 	-fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, black, 0, 0.0, 1, 1);
 }
 
 #time-label {
 	-fx-fill: white;
+	-fx-font-size: 10pt;
 	-fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, black, 0, 0.0, 1, 1);
+}
+
+/* Sliders */
+.slider .track {
+    -fx-background-color: linear-gradient(#d0d0d0, #2f2f2f);
+    -fx-background-insets: 1 0 -1 0, 0, 1;
+    -fx-background-radius: 2, 2, 2;
+    -fx-padding: 0.2em;
+}
+
+.slider .thumb {
+	-fx-background-color: white;
+    -fx-background-insets: 0, 1, 2;
+    -fx-background-radius: 2em;
+    -fx-padding: 0.4em;
 }
 
 /* Buttons */
