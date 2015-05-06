@@ -5,24 +5,25 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.control.Button;
-import Button.ButtonType;
-import Button.SetupButton;
+import javafx.scene.Cursor;
+import javafx.scene.image.*;
+import javafx.scene.input.MouseEvent;
 
-public class SkypePage extends Window {
-	public SkypePage(){
+public class SkypeCall extends Window {
+	
+	public ImageView addCallButton(String skypeID, double width){
+		Image logo = new Image("file:resources/images/Skype.png");
+		ImageView skypeLogo = new ImageView(logo);
+		skypeLogo.setPreserveRatio(true);
+		skypeLogo.setFitWidth(width);
+		skypeLogo.setCursor(Cursor.HAND);
+		skypeLogo.setOnMouseClicked(new callHandler(skypeID));
 		
-		ButtonType button1 = new ButtonType("150,150,150",null,"Call Echo",100,30);
-		Button buttonCall = new SetupButton().CreateButton(button1);
-		
-		buttonCall.setOnAction(new callHandler("adam.m.252337"));
-		root.getChildren().add(buttonCall);
-		buttonCall.relocate(400,300);
+		return skypeLogo;
 	}
 	
-	public class callHandler implements EventHandler<ActionEvent> {
+	private class callHandler implements EventHandler<MouseEvent> {
 		
 		final String skypeID;
 		
@@ -31,7 +32,7 @@ public class SkypePage extends Window {
 		}
 		
 		@Override
-		public void handle(ActionEvent arg0) {
+		public void handle(MouseEvent arg0) {
 			try {
 				URI uri = new URI("skype:" + skypeID + "?call");
 				if (Desktop.isDesktopSupported()) {

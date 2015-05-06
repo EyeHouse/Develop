@@ -1,4 +1,4 @@
-package Profile;
+package language;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 public class BadWordCheck {
 	Scanner x;
-	String fileName = "C:/Users/Toby/Documents/UNIVERSITY/University Work/Software Engineering/blackListedWords.txt";
+	String fileName = "blackListedWords.txt";
 	String badWord;
 	Pattern punctuation;
 	
