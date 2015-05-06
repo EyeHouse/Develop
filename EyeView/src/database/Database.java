@@ -1264,7 +1264,7 @@ public class Database {
 										.prepareStatement("UPDATE house_reviews SET `like`=? WHERE hrid=?");
 								iterateHouseLikes.setInt(1,
 										houseReview.like - 1);
-								iterateHouseLikes.setInt(3, houseReview.hrid);
+								iterateHouseLikes.setInt(2, houseReview.hrid);
 								iterateHouseLikes.executeUpdate();
 							}
 						} catch (Exception e) {
@@ -1308,9 +1308,9 @@ public class Database {
 					}
 					if (type == 2) {
 						PreparedStatement iterateHouseLikes = con
-								.prepareStatement("UPDATE house_reviews SET `like`=?, dislike=? WHERE hrid=?");
+								.prepareStatement("UPDATE house_reviews SET `like`=? WHERE hrid=?");
 						iterateHouseLikes.setInt(1, houseReview.like + 1);
-						iterateHouseLikes.setInt(3, houseReview.hrid);
+						iterateHouseLikes.setInt(2, houseReview.hrid);
 						iterateHouseLikes.executeUpdate();
 					}
 				} catch (Exception e) {
@@ -1377,7 +1377,7 @@ public class Database {
 										.prepareStatement("UPDATE house_reviews SET dislike=? WHERE hrid=?");
 								iterateHouseLikes.setInt(1,
 										houseReview.dislike - 1);
-								iterateHouseLikes.setInt(3, houseReview.hrid);
+								iterateHouseLikes.setInt(2, houseReview.hrid);
 								iterateHouseLikes.executeUpdate();
 							}
 						} catch (Exception e) {
@@ -1470,7 +1470,7 @@ public class Database {
 						PreparedStatement iterateHouseLikes = con
 								.prepareStatement("UPDATE house_reviews SET dislike=? WHERE hrid=?");
 						iterateHouseLikes.setInt(1, houseReview.dislike + 1);
-						iterateHouseLikes.setInt(3, houseReview.hrid);
+						iterateHouseLikes.setInt(2, houseReview.hrid);
 						iterateHouseLikes.executeUpdate();
 					}
 				} catch (Exception e) {
@@ -1517,11 +1517,12 @@ public class Database {
 			// MVPTom review on
 			// HouseReview one = getHouseReview(2);
 
-			UserReview test1 = getUserReview(2);
+			HouseReview test1 = getHouseReview(2);
+			UserReview test2 = getUserReview(2);
 
-			likeReview(tempu14, null, test1, 1);
+			// likeReview(tempu14, test1, test2, 2);
 
-			// dislikeReview(tempu14, null, test1, 1);
+			dislikeReview(tempu14, test1, test2, 2);
 
 			break;
 		case 2: // insert User
