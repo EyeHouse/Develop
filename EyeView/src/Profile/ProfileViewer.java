@@ -276,7 +276,7 @@ public class ProfileViewer extends presenter.Window {
 		int rating = 0;
 
 		ArrayList<UserReview> userReviews = Database
-				.getUserReview(profileUser.uid);
+				.getUserReviewList(profileUser.uid);
 		if (userReviews != null) {
 			for (int i = 0; i < userReviews.size(); i++) {
 				rating += userReviews.get(i).rating;
@@ -419,7 +419,7 @@ public class ProfileViewer extends presenter.Window {
 
 		reviewList.setPrefHeight(200);
 		ArrayList<UserReview> userReviews = Database
-				.getUserReview(profileUser.uid);
+				.getUserReviewList(profileUser.uid);
 		
 		Image thumbsUp = new Image("file:resources/images/stars/thumbs_up.png");
 		Image thumbsDown = new Image("file:resources/images/stars/thumbs_down.png");
