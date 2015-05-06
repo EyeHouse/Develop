@@ -975,7 +975,7 @@ public class Database {
 
 			getUserReview.setInt(1, urid);
 			userReview = getUserReview.executeQuery();
-			
+
 			if (userReview.next()) {
 				userRev = new UserReview(userReview);
 				return userRev;
@@ -987,7 +987,7 @@ public class Database {
 		}
 		return userRev;
 	}
-	
+
 	public static ArrayList<UserReview> getUserReviewList(int target) {
 
 		ResultSet userReview;
@@ -1210,7 +1210,7 @@ public class Database {
 							// dislikes
 							if (type == 1) {
 								PreparedStatement iterateUserLikes = con
-										.prepareStatement("UPDATE user_reviews SET like=?, dislike=? WHERE urid=?");
+										.prepareStatement("UPDATE user_reviews SET `like`=?, dislike=? WHERE urid=?");
 								iterateUserLikes.setInt(1, userReview.like + 1);
 								iterateUserLikes.setInt(2,
 										userReview.dislike - 1);
@@ -1226,10 +1226,7 @@ public class Database {
 										houseReview.dislike - 1);
 								iterateHouseLikes.setInt(3, houseReview.hrid);
 								iterateHouseLikes.executeUpdate();
-							} else {
-								System.out
-										.println("\nBad type integer. Read method comments.");
-							}
+							} 
 						} catch (Exception e) {
 							System.out
 									.println("\nFailure to iterate like number");
@@ -1252,12 +1249,12 @@ public class Database {
 							dropLikeRec.setInt(2, userReview.urid);
 						if (type == 2)
 							dropLikeRec.setInt(2, houseReview.hrid);
-						dropLikeRec.executeQuery();
+						dropLikeRec.executeUpdate();
 						try {
 							// decrememt the reviews like count
 							if (type == 1) {
 								PreparedStatement iterateUserLikes = con
-										.prepareStatement("UPDATE user_reviews SET like=? WHERE urid=?");
+										.prepareStatement("UPDATE user_reviews SET `like`=? WHERE urid=?");
 								iterateUserLikes.setInt(1, userReview.like - 1);
 								iterateUserLikes.setInt(2, userReview.urid);
 								iterateUserLikes.executeUpdate();
@@ -1304,7 +1301,7 @@ public class Database {
 					// iterate the reviews like count
 					if (type == 1) {
 						PreparedStatement iterateUserLikes = con
-								.prepareStatement("UPDATE user_reviews SET like=? WHERE urid=?");
+								.prepareStatement("UPDATE user_reviews SET `like`=? WHERE urid=?");
 						iterateUserLikes.setInt(1, userReview.like + 1);
 						iterateUserLikes.setInt(2, userReview.urid);
 						iterateUserLikes.executeUpdate();
@@ -1346,10 +1343,10 @@ public class Database {
 		boolean insertSuccess;
 		boolean houseDeleted;
 		boolean updateSuccess;
-		
+
 		// Henries ID
 		int targetID = 3106;
-		
+
 		// testing switch
 		switch (mode) {
 		case 2: // insert User
@@ -1546,8 +1543,6 @@ public class Database {
 			// logged in user
 			User tempu12 = getUser("Alxandir");
 
-		
-
 			// fill in target ID
 			UserReview reviewDetails = new UserReview(targetID);
 			reviewDetails.uid_reviewer = tempu12.uid;
@@ -1614,28 +1609,16 @@ public class Database {
 
 			break;
 		case 21:
-			
-			User tempu14 = getUser("MVPTom");
-			
-			// MVPTom review on 
-			// HouseReview one = getHouseReview(2);
-			
-			ArrayList<UserReview> list3 = new ArrayList<UserReview>();
-			list3 = getUserReviewList(targetID);
 
-		
-			for (k = 0; k < list3.size(); k++) {
-				System.out.println("\nReview: " + list3.get(k).review);
-				System.out.println("\nReview id: " + list3.get(k).urid);
-				System.out.println("\nReviewer id: "
-						+ list3.get(k).uid_reviewer);
-			}
-			
-			likeReview(tempu14,null,
-					list3.get(0),1);
-			
-			
-			
+			User tempu14 = getUser("MVPTom");
+
+			// MVPTom review on
+			// HouseReview one = getHouseReview(2);
+
+			UserReview test1 = getUserReview(2);
+
+			likeReview(tempu14, null, test1, 1);
+
 			break;
 		default: // no mode selected
 			System.out.println("\nSelect a valid switch case mode");
