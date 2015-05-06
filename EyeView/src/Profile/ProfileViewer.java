@@ -276,7 +276,7 @@ public class ProfileViewer extends presenter.Window {
 		int rating = 0;
 
 		ArrayList<UserReview> userReviews = Database
-				.getUserReview(profileUser.uid);
+				.getUserReviewList(profileUser.uid);
 		if (userReviews.size()>0) {
 			for (int i = 0; i < userReviews.size(); i++) {
 				rating += userReviews.get(i).rating;
@@ -289,8 +289,7 @@ public class ProfileViewer extends presenter.Window {
 		// Add star HBox to grid
 		profileGrid.addRow(1, hBoxStars);
 	}
-
-	/**
+	/*
 	 * Setup profile and appendable review text areas
 	 */
 	private void SetupProfileReview() {
@@ -419,7 +418,7 @@ public class ProfileViewer extends presenter.Window {
 
 		reviewList.setPrefHeight(200);
 		ArrayList<UserReview> userReviews = Database
-				.getUserReview(profileUser.uid);
+				.getUserReviewList(profileUser.uid);
 		
 		Image thumbsUp = new Image("file:resources/images/stars/thumbs_up.png");
 		Image thumbsDown = new Image("file:resources/images/stars/thumbs_down.png");
@@ -457,6 +456,9 @@ public class ProfileViewer extends presenter.Window {
 		// Populate grid with profile and review information
 		vBoxProfile.getChildren().addAll(labelProfile, textProfile);
 		vBoxReview.getChildren().addAll(labelReview, reviewList);
+		profileGrid.addRow(2, vBoxProfile, vBoxReview);
+
+	}
 		profileGrid.addRow(2, vBoxProfile, vBoxReview);
 
 	}
