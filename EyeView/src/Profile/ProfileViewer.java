@@ -339,21 +339,20 @@ public class ProfileViewer extends presenter.Window {
 			textNewReview.setMaxHeight(50);
 
 			// Setup add review button event
-			buttonReview.setOnAction(new EventHandler<ActionEvent>() {
-				@Override
-				public void handle(ActionEvent event) {
-					// Add new review to new line of review text area
-					UserReview newReview = new UserReview(profileUser.uid);
-					newReview.uid_reviewer(Database.getUser(currentUsername).uid);
-					newReview.review(textNewReview.getText());
-					newReview.rating(newRating);
-					newReview.like(0);
-					newReview.dislike(0);
-					Database.insertUserReview(newReview);
+			buttonReview.setOnAction(new EventHandler<ActionEvent>(){
+							public void handle(ActionEvent event) {
+								// Add new review to new line of review text area
+								UserReview newReview = new UserReview(profileUser.uid);
+								newReview.uid_reviewer(Database.getUser(currentUsername).uid);
+								newReview.review(textNewReview.getText());
+								newReview.rating(newRating);
+								newReview.like(0);
+								newReview.dislike(0);
+								Database.insertUserReview(newReview);
 
-					reloadProfile();
-				}
-			});
+								reloadProfile();
+							}
+						});
 			// Add new review and rating label and text area
 			vBoxNewReview.getChildren().addAll(labelNewReview, textNewReview,
 					labelNewRating);
@@ -457,10 +456,6 @@ public class ProfileViewer extends presenter.Window {
 		vBoxProfile.getChildren().addAll(labelProfile, textProfile);
 		vBoxReview.getChildren().addAll(labelReview, reviewList);
 		profileGrid.addRow(2, vBoxProfile, vBoxReview);
-
-	}
-		profileGrid.addRow(2, vBoxProfile, vBoxReview);
-
 	}
 
 	public HBox createStarHBox(int spacing, int size, int rating) {
