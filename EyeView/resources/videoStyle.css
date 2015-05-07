@@ -2,14 +2,14 @@
 
 #volume-label {
 	-fx-fill: white;
-	-fx-font-size: 10pt;
+	-fx-font-size: 12pt;
 	-fx-font-weight: bold;
     -fx-effect: dropshadow(gaussian, black, 0, 0.0, 1, 1);
 }
 
 #time-label {
 	-fx-fill: white;
-	-fx-font-size: 10pt;
+	-fx-font-size: 12pt;
 	-fx-font-weight: bold;
     -fx-effect: dropshadow(gaussian, black, 0, 0.0, 1, 1);
 }
@@ -38,49 +38,49 @@
 }
 
 #play-btn {
-	-fx-graphic: url(icons/play.png);
+	-fx-graphic: url("icons/play.png");
 }
 
 #play-btn:hover {
-	-fx-graphic: url(icons/play-hover.png);
+	-fx-graphic: url("icons/play-hover.png");
 }
 
 #play-btn:armed {
-	-fx-graphic: url(icons/play-armed.png);
+	-fx-graphic: url("icons/play-armed.png");
 }
 
 #pause-btn {
-	-fx-graphic: url(icons/pause.png);
+	-fx-graphic: url("icons/pause.png");
 }
 
 #pause-btn:hover {
-	-fx-graphic: url(icons/pause-hover.png);
+	-fx-graphic: url("icons/pause-hover.png");
 }
 
 #pause-btn:armed {
-	-fx-graphic: url(icons/pause-armed.png);
+	-fx-graphic: url("icons/pause-armed.png");
 }
 
 #stop-btn {
-	-fx-graphic: url(icons/stop.png);
+	-fx-graphic: url("icons/stop.png");
 }
 
 #stop-btn:hover {
-	-fx-graphic: url(icons/stop-hover.png);
+	-fx-graphic: url("icons/stop-hover.png");
 }
 
 #stop-btn:armed {
-	-fx-graphic: url(icons/stop-armed.png);
+	-fx-graphic: url("icons/stop-armed.png");
 }
 
 #rewind-btn {
-	-fx-graphic: url(icons/rewind.png);
+	-fx-graphic: url("icons/rewind.png");
 }
 
 #rewind-btn:hover {
-	-fx-graphic: url(icons/rewind-hover.png);
+	-fx-graphic: url("icons/rewind-hover.png");
 }
 
 #rewind-btn:armed {
-	-fx-graphic: url(icons/rewind-armed.png);
+	-fx-graphic: url("icons/rewind-armed.png");
 }
