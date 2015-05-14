@@ -7,6 +7,8 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
+import landlord.EditProperty;
+import landlord.LandlordProperties;
 import maps.GoogleMapsPage;
 import database.Database;
 import database.House;
@@ -87,7 +89,12 @@ public class SlideContent extends Window {
 			case VIDEO:
 				createVideoSlide();
 				break;
-				
+			case LANDLORDPROPERTIES:
+				createLandlordPropertiesSlide();
+				break;
+			case EDITPROPERTY:
+				createEditPropertySlide();
+				break;
 			default:
 				break;
 			}
@@ -179,6 +186,7 @@ public class SlideContent extends Window {
 		
 		new SavedProperties();
 		createSidebar();
+		prevSlideID = slideID;
 	}
 	
 	private void createPropertySlide(){
@@ -217,6 +225,17 @@ public class SlideContent extends Window {
 		new VideoPage();
 		createSidebar();
 		createMenuBar();
+	}
+	
+	public void createLandlordPropertiesSlide(){
+		new LandlordProperties(currentUsername);
+		createSidebar();
+		prevSlideID = slideID;
+	}
+	
+	public void createEditPropertySlide(){
+		new EditProperty(0,currentPropertyID);
+		createSidebar();
 	}
 	
 	public void createSidebar(){
@@ -264,6 +283,15 @@ public class SlideContent extends Window {
 					createSlide();
 		        }
 		    });
+			Label labelLandlordProperties = new Label("My Properties");
+			labelLandlordProperties.setFont(new Font(16));
+			labelLandlordProperties.setOnMouseClicked(new EventHandler<MouseEvent>(){
+				public void handle(MouseEvent arg0) {
+					root.getChildren().clear();
+					slideID = LANDLORDPROPERTIES;
+					createSlide();
+		        }
+		    });
 			Label labelLogOut = new Label("Log Out");
 			labelLogOut.setFont(new Font(16));
 			labelLogOut.setOnMouseClicked(new EventHandler<MouseEvent>(){
@@ -275,12 +303,14 @@ public class SlideContent extends Window {
 			
 			if(slideID == SAVEDPROPERTIES || slideID == HOUSE) labelSavedProperties.setFont(Font.font(null, FontWeight.BOLD, 16.5));
 			else if(slideID == PROFILE || slideID == ACCOUNTSETTINGS) labelProfile.setFont(Font.font(null, FontWeight.BOLD, 16.5));
+			else if(slideID == LANDLORDPROPERTIES || slideID == EDITPROPERTY) labelLandlordProperties.setFont(Font.font(null, FontWeight.BOLD, 16.5));
 			
 			setupLabelHover(labelProfile);
 			setupLabelHover(labelSavedProperties);
+			setupLabelHover(labelLandlordProperties);
 			setupLabelHover(labelLogOut);
 			
-			sidebar.getChildren().addAll(labelName,labelProfile,labelSavedProperties,labelLogOut);
+			sidebar.getChildren().addAll(labelName,labelProfile,labelSavedProperties,labelLandlordProperties,labelLogOut);
 		}		
 		else{
 			Label labelLogin = new Label("Login");

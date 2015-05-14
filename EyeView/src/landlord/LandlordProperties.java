@@ -1,13 +1,14 @@
-package Profile;
+package landlord;
 
 import java.util.ArrayList;
 
+import Button.ButtonType;
+import Button.SetupButton;
 import database.Database;
 import database.House;
 import database.HouseImage;
 import database.User;
-import Button.ButtonType;
-import Button.SetupButton;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -30,24 +31,33 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import presenter.SlideContent;
 
-public class SavedProperties extends presenter.Window {
-
+public class LandlordProperties extends presenter.Window {
+	
 	GridPane grid = new GridPane();
 	ArrayList<String> properties = new ArrayList<String>();
 	ListView<HBox> propertyList = new ListView<HBox>();
 	ObservableList<HBox> items = FXCollections.observableArrayList();
-
-	public SavedProperties() {
-
+	User viewedUser;
+	
+	public LandlordProperties(String pageUsername){
+		
+		viewedUser = Database.getUser(pageUsername);
+		
 		setupGrid();
 		setupTitle();
-		setupButtons();
+		if(viewedUser.username.equals(currentUsername)){
+			setupLandlordButtons();
+		}
+		else{
+			setupViewerButtons();
+		}
 		setupPropertyList();
 
 		SlideContent.setupBackButton();
 
 		root.getChildren().add(grid);
 	}
+	
 
 	private void setupGrid() {
 
@@ -61,10 +71,17 @@ public class SavedProperties extends presenter.Window {
 		grid.setHgap(30);
 		grid.relocate(220, 80);
 	}
-
+	
 	private void setupTitle() {
 
-		Label labelTitle = new Label("Saved Properties");
+		Label labelTitle;
+		if(viewedUser.username.equals(currentUsername)){
+			labelTitle = new Label("Manage Properties");
+		}
+		else{
+			labelTitle = new Label(viewedUser.first_name + "'s Properties");
+		}
+		
 		labelTitle.setTextFill(Color.web("#162252FF"));
 		labelTitle.setFont(new Font(35));
 		grid.add(labelTitle, 0, 0);
@@ -72,18 +89,29 @@ public class SavedProperties extends presenter.Window {
 				VPos.CENTER);
 	}
 
-	private void setupButtons() {
+	private void setupLandlordButtons() {
 		VBox buttons = new VBox(30);
 		
-		ButtonType button1 = new ButtonType("150,150,150",null,"View",100,30);
-		ButtonType button2 = new ButtonType("150,150,150",null,"Remove",100,30);
+		ButtonType button1 = new ButtonType("150,150,150",null,"Edit",100,30);
+		ButtonType button2 = new ButtonType("150,150,150",null,"Delete",100,30);
 		
-		Button buttonView = new SetupButton().CreateButton(button1);
-		Button buttonRemove = new SetupButton().CreateButton(button2);
+		Button buttonEdit = new SetupButton().CreateButton(button1);
+		Button buttonDelete = new SetupButton().CreateButton(button2);
 
-		buttonView.setCursor(Cursor.HAND);
-		buttonRemove.setCursor(Cursor.HAND);
-		buttonRemove.setOnAction(new EventHandler<ActionEvent>() {
+		buttonEdit.setCursor(Cursor.HAND);
+		buttonDelete.setCursor(Cursor.HAND);
+		buttonEdit.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent event) {
+				int index = propertyList.getSelectionModel().getSelectedIndex();
+				currentPropertyID = Integer.parseInt(properties.get(index));
+				
+				root.getChildren().clear();
+				slideID = EDITPROPERTY;
+				SlideContent sc  = new SlideContent();
+				sc.createSlide();
+			}
+		});
+		/*buttonDelete.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				int index = propertyList.getSelectionModel().getSelectedIndex();
 
@@ -96,8 +124,19 @@ public class SavedProperties extends presenter.Window {
 				properties.remove(index); // update database of current user
 				User.updateSavedProperties(currentUsername, properties);
 			}
-		});
+		});*/
 
+		buttons.getChildren().addAll(buttonEdit, buttonDelete);
+		buttons.setAlignment(Pos.CENTER);
+		grid.add(buttons, 1, 1);
+	}
+	
+	private void setupViewerButtons(){
+		ButtonType button1 = new ButtonType("150,150,150",null,"View",100,30);
+		
+		Button buttonView = new SetupButton().CreateButton(button1);
+
+		buttonView.setCursor(Cursor.HAND);
 		buttonView.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				int index = propertyList.getSelectionModel().getSelectedIndex();
@@ -110,16 +149,14 @@ public class SavedProperties extends presenter.Window {
 			}
 		});
 
-		buttons.getChildren().addAll(buttonView, buttonRemove);
-		buttons.setAlignment(Pos.CENTER);
-		grid.add(buttons, 1, 1);
+		grid.add(buttonView, 1, 1);
 	}
 
 	private void setupPropertyList() {
 
 		propertyList.setPrefHeight(550);
 		
-		properties = User.getSavedProperties(currentUsername);
+		properties = User.getSavedProperties(viewedUser.username);
 		
 		// Loop based on number of houses saved in profile.
 		for (int i = 0; i < properties.size(); i++) {
@@ -152,21 +189,4 @@ public class SavedProperties extends presenter.Window {
 		grid.add(propertyList, 0, 1);
 	}
 	
-	public static void setupPropertyBackButton(){
-		ButtonType button1 = new ButtonType("150,150,150",null,"Back",100,30);
-		Button buttonBack = new SetupButton().CreateButton(button1);
-		buttonBack.relocate(195, 20);
-		
-		buttonBack.setCursor(Cursor.HAND);
-		buttonBack.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent ae) {
-				root.getChildren().clear();
-				slideID = prevSlideID;
-				SlideContent sc  = new SlideContent();
-				sc.createSlide();
-			}
-		});
-		
-		root.getChildren().add(buttonBack);
-	}
 }
