@@ -8,6 +8,8 @@ package Profile;
  * Copyright:
  */
 
+import java.util.ArrayList;
+
 import javax.swing.JOptionPane;
 
 import Button.ButtonType;
@@ -33,6 +35,7 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import landlord.EditProperty;
 import database.Database;
 
 public class AccountSettings extends presenter.Window{
@@ -48,15 +51,13 @@ public class AccountSettings extends presenter.Window{
 	private PasswordField fieldNewPassword = new PasswordField();
 	private PasswordField fieldConfNewPassword = new PasswordField();
 	private TextArea profileText = new TextArea();
-	private ComboBox<String> comboDoBDay = new ComboBox<String>();
-	private ComboBox<String> comboDoBMonth = new ComboBox<String>();
-	private ComboBox<String> comboDoBYear = new ComboBox<String>();
 	private RadioButton buttonStudent = new RadioButton("Student");
 	private RadioButton buttonLandlord = new RadioButton("Landlord");
 	private Label labelPasswordIncorrect;
 	private Label labelNewPasswordInvalid;
 	private Label labelUsernameAvailability;
 	private User currentUser;
+	ArrayList<ComboBox<String>> dateComboArray;
 
 	/* Account Settings Methods */
 
@@ -91,7 +92,7 @@ public class AccountSettings extends presenter.Window{
 
 	/* Add existing account information to grid */
 	public void setupInfo() {
-		HBox hBoxDoB = new HBox(5);
+		
 		HBox hBoxAccountType = new HBox(30);
 		ToggleGroup group = new ToggleGroup();
 
@@ -123,9 +124,11 @@ public class AccountSettings extends presenter.Window{
 		else
 			buttonStudent.setSelected(true);
 
-		SetupDoB();
+		dateComboArray = EditProperty.setupDate(currentUser.DOB);
+		HBox hBoxDoB = new HBox(10);
+		hBoxDoB.getChildren().addAll(dateComboArray.get(0),
+				dateComboArray.get(1), dateComboArray.get(2));
 
-		hBoxDoB.getChildren().addAll(comboDoBDay, comboDoBMonth, comboDoBYear);
 		hBoxAccountType.getChildren().addAll(buttonStudent, buttonLandlord);
 
 		grid.addColumn(0, labelFName, labelLName, labelUsername, labelEmail,
@@ -133,61 +136,6 @@ public class AccountSettings extends presenter.Window{
 		grid.addColumn(1, fieldFName, fieldLName, fieldUsername, fieldEmail,
 				hBoxDoB, hBoxAccountType);
 		grid.add(labelUsernameAvailability, 2, 2);
-	}
-
-	/* Add Date of Birth comboboxes to grid */
-	public void SetupDoB() {
-
-		// Populate comboboxes with relevant string values
-		for (int i = 1; i < 32; i++) {
-			comboDoBDay.getItems().add(String.format("%02d", i));
-		}
-		for (int i = 1; i < 13; i++) {
-			comboDoBMonth.getItems().add(String.format("%02d", i));
-		}
-		for (int i = 2015; i > 1919; i--) {
-			comboDoBYear.getItems().add(String.format("%04d", i));
-		}
-
-		// Set the selected item of the combo boxes to the current account
-		// settings
-		int doBDay = Integer.valueOf(currentUser.DOB.substring(8, 10), 10)
-				.intValue();
-		int doBMonth = Integer.valueOf(currentUser.DOB.substring(5, 7), 10)
-				.intValue();
-		int doBYear = Integer.valueOf(currentUser.DOB.substring(0, 4), 10)
-				.intValue();
-		comboDoBDay.getSelectionModel().select(doBDay - 1);
-		comboDoBMonth.getSelectionModel().select(doBMonth - 1);
-		comboDoBYear.getSelectionModel().select(2015 - doBYear);
-
-		// Add change listener to month combobox
-		comboDoBMonth.valueProperty().addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(@SuppressWarnings("rawtypes") ObservableValue ov, String previousValue,
-					String newValue) {
-				switch (newValue) {
-					case "09":
-					case "04":
-					case "06":
-					case "11":
-						for (int j = 1; j < 31; j++) {
-							comboDoBDay.getItems().add(String.format("%02d", j));
-						}
-						break;
-					case "02":
-						for (int j = 1; j < 29; j++) {
-							comboDoBDay.getItems().add(String.format("%02d", j));
-						}
-						break;
-					default:
-						for (int j = 1; j < 32; j++) {
-							comboDoBDay.getItems().add(String.format("%04d", j));
-						}
-						break;
-				}
-			}
-		});
 	}
 
 	/* Add password labels and text areas to grid */
@@ -304,7 +252,8 @@ public class AccountSettings extends presenter.Window{
 
 	/* Send account changes to database(WHEN IMPLEMENTED FULLY) */
 	private void ApplyChanges() {
-		String doB = comboDoBYear.getValue() + "-" + comboDoBMonth.getValue() + "-" + comboDoBDay.getValue();
+		
+		String doB = dateComboArray.get(2).getValue() + "-" + dateComboArray.get(1).getValue() + "-" + dateComboArray.get(0).getValue();
 		
 		Database.userUpdate(currentUser,"first_name",null,fieldFName.getText());
 		Database.userUpdate(currentUser,"second_name",null,fieldLName.getText());
