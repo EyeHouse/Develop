@@ -15,6 +15,7 @@ import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -38,19 +39,25 @@ import database.User;
 public class EditProperty extends presenter.Window {
 
 	private int page;
+	private int hid;
 	private static final int INFO = 0;
 	private static final int PICS = 1;
 	private static final int VIDEO = 2;
 	private GridPane grid = new GridPane();
 	private House house;
-	private TextField uploadPath;
+	private TextField address,postcode,price,beds,baths,deposit,uploadPath;
+	private CheckBox furnished;
+	private TextArea description;
+	ArrayList<ComboBox<String>> dateComboArray;
 	private Button buttonUpload;
 	private String filePath;
+	private ArrayList<HouseImage> houseImages;
+	private ArrayList<CheckBox> deleteImage = new ArrayList<CheckBox>();
 
 	public EditProperty(int page, int houseID) {
 		this.page = page;
-		house = Database.getHouse(houseID);
-
+		this.hid = houseID;
+		
 		createEditPage();
 
 		root.getChildren().add(grid);
@@ -138,14 +145,17 @@ public class EditProperty extends presenter.Window {
 	}
 
 	private void setupHouseInfo() {
+		house = Database.getHouse(hid);
+		
 		VBox vBoxDesc = new VBox(10);
 		Label labelAddress = new Label("Address:");
 		Label labelPostcode = new Label("Postcode:");
-		Label labelPrice = new Label("Price:");
+		Label labelPrice = new Label("Price (£pppw):");
 		Label labelBeds = new Label("Bedrooms:");
 		Label labelBaths = new Label("Bathrooms:");
+		Label labelFurnished = new Label("Furnished:");
 		Label labelDate = new Label("Date Available:");
-		Label labelDeposit = new Label("Deposit:");
+		Label labelDeposit = new Label("Deposit (£):");
 		Label labelDesc = new Label("Description");
 
 		labelAddress.setFont(Font.font(null, FontWeight.BOLD, 14));
@@ -153,24 +163,27 @@ public class EditProperty extends presenter.Window {
 		labelPrice.setFont(Font.font(null, FontWeight.BOLD, 14));
 		labelBeds.setFont(Font.font(null, FontWeight.BOLD, 14));
 		labelBaths.setFont(Font.font(null, FontWeight.BOLD, 14));
+		labelFurnished.setFont(Font.font(null, FontWeight.BOLD, 14));
 		labelDate.setFont(Font.font(null, FontWeight.BOLD, 14));
 		labelDeposit.setFont(Font.font(null, FontWeight.BOLD, 14));
 		labelDesc.setFont(Font.font(null, FontWeight.BOLD, 14));
+		
+		address = new TextField(house.address);
+		postcode = new TextField(house.postcode);
+		price = new TextField(Integer.toString(house.price));
+		beds = new TextField(Integer.toString(house.rooms));
+		baths = new TextField(Integer.toString(house.bathrooms));
+		furnished = new CheckBox();
+		deposit = new TextField(Integer.toString(house.deposit));
+		description = new TextArea(house.description);
 
-		TextField address = new TextField(house.address);
-		TextField postcode = new TextField(house.postcode);
-		TextField price = new TextField("£" + Integer.toString(house.price));
-		TextField beds = new TextField(Integer.toString(house.rooms));
-		TextField baths = new TextField(Integer.toString(house.bathrooms));
-		TextField deposit = new TextField("£" + Integer.toString(house.deposit));
-		TextArea description = new TextArea(house.description);
-
-		ArrayList<ComboBox<String>> dateComboArray = setupDate(house.dateAvailable);
+		dateComboArray = setupDate(house.dateAvailable);
 		HBox dateAvailable = new HBox(10);
 		dateAvailable.getChildren().addAll(dateComboArray.get(0),
 				dateComboArray.get(1), dateComboArray.get(2));
 		description.setPrefSize(300, 100);
 		description.setWrapText(true);
+		furnished.setSelected(house.furnished);
 
 		vBoxDesc.getChildren().addAll(labelDesc, description);
 
@@ -185,15 +198,202 @@ public class EditProperty extends presenter.Window {
 		grid.addRow(4, labelPrice, price);
 		grid.addRow(5, labelBeds, beds);
 		grid.addRow(6, labelBaths, baths);
-		grid.addRow(7, labelDate, dateAvailable);
-		grid.addRow(8, labelDeposit, deposit);
-		grid.addRow(9, vBoxDesc);
-		grid.add(buttonSave, 2, 10);
+		grid.addRow(7, labelFurnished, furnished);
+		grid.addRow(8, labelDate, dateAvailable);
+		grid.addRow(9, labelDeposit, deposit);
+		grid.addRow(10, vBoxDesc);
+		grid.add(buttonSave, 2, 11);
 		GridPane.setConstraints(address, 1, 2, 2, 1, HPos.CENTER, VPos.CENTER);
-		GridPane.setConstraints(vBoxDesc, 0, 9, 3, 1, HPos.CENTER, VPos.CENTER);
+		GridPane.setConstraints(vBoxDesc, 0, 10, 3, 1, HPos.CENTER, VPos.CENTER);
 
 	}
 
+	public void setupHousePictures() {
+
+		GridPane imageGrid = new GridPane();
+
+		imageGrid.setVgap(20);
+		imageGrid.setHgap(50);
+		int x = 0;
+		int y = 0;
+		houseImages = new ArrayList<HouseImage>();
+		ScrollPane imageWindow = new ScrollPane();
+		imageWindow.setPrefSize(560, 600);
+
+		Label labelUpload = new Label("Add a new image:");
+		labelUpload.setFont(Font.font(null, FontWeight.BOLD, 14));
+		uploadPath = new TextField();
+		uploadPath.setEditable(false);
+
+		ButtonType button1 = new ButtonType("150,150,150", null, "Browse", 70,
+				30);
+		Button buttonBrowse = new SetupButton().CreateButton(button1);
+		buttonBrowse.setCursor(Cursor.HAND);
+		buttonBrowse.setOnAction(new Browse());
+
+		ButtonType button2 = new ButtonType("150,150,150", null, "Upload", 70,
+				30);
+		buttonUpload = new SetupButton().CreateButton(button2);
+		buttonUpload.setDisable(true);
+		buttonUpload.setOnAction(new Upload());
+		
+		ButtonType button3 = new ButtonType("150,150,150", null, "Delete", 70,
+				30);
+		Button buttonDelete = new SetupButton().CreateButton(button3);
+		buttonDelete.setOnAction(new DeleteImage());
+
+		HBox buttons = new HBox(10);
+		buttons.getChildren().addAll(buttonBrowse, buttonUpload);
+		grid.addRow(1, labelUpload, uploadPath, buttons);
+
+		houseImages = Database.getHouseImageSet(hid);
+
+		for (int i = 0; i < houseImages.size(); i++) {
+			HouseImage input = houseImages.get(i);
+			Image image = new Image(input.imageIS);
+			ImageView propertyImage = new ImageView(image);
+			propertyImage.setFitWidth(150);
+			propertyImage.setFitHeight(150);
+			imageGrid.add(propertyImage, x, y);
+
+			CheckBox delete = new CheckBox();
+			deleteImage.add(delete);
+			imageGrid.add(delete, x, y + 1);
+
+			GridPane.setConstraints(delete, x, y + 1, 1, 1, HPos.CENTER,
+					VPos.CENTER);
+			GridPane.setConstraints(propertyImage, x, y, 1, 1, HPos.CENTER,
+					VPos.CENTER);
+
+			x++;
+			if (x > 2) {
+				x = 0;
+				y += 2;
+			}
+		}
+
+		imageWindow.setContent(imageGrid);
+		grid.add(imageWindow, 0, 2);
+		grid.add(buttonDelete, 3, 2);
+		GridPane.setConstraints(imageWindow, 0, 2, 3, 1, HPos.CENTER,
+				VPos.CENTER);
+	}
+
+	public class ApplyChanges implements EventHandler<ActionEvent> {
+
+		public void handle(ActionEvent arg0) {
+			User owner = Database.getUser("MVPTom");
+			
+			String dateAvailableString = dateComboArray.get(2).getValue() + "-" + dateComboArray.get(1).getValue() + "-" + dateComboArray.get(0).getValue();
+			System.out.println(house.dateAvailable);
+			System.out.println(dateAvailableString);
+			Database.updateHouse(owner, house, "address", address.getText(), null, null,
+					0, 1);
+			Database.updateHouse(owner, house, "postcode", postcode.getText(), null, null,
+					0, 1);
+			Database.updateHouse(owner, house, "price", null, null, null,
+					Integer.parseInt(price.getText()), 4);
+			Database.updateHouse(owner, house, "rooms", null, null, null,
+					Integer.parseInt(beds.getText()), 4);
+			Database.updateHouse(owner, house, "bathrooms", null, null, null,
+					Integer.parseInt(baths.getText()), 4);
+			Database.updateHouse(owner, house, "furnished", null, furnished.isSelected(), null,
+					0, 2);
+			Database.updateHouse(owner, house, "deposit", null, null, null,
+					Integer.parseInt(deposit.getText()), 4);
+			Database.updateHouse(owner, house, "description", description.getText(), null, null,
+					0, 1);
+			Database.updateHouse(owner, house, "date_available", dateAvailableString, null, null,
+					0, 1);
+			grid.getChildren().clear();
+			createEditPage();
+		}
+	}
+
+	public class ChangePage implements EventHandler<ActionEvent> {
+		final int direction;
+
+		public ChangePage(int dir) {
+			direction = dir;
+		}
+
+		public void handle(ActionEvent arg0) {
+			grid.getChildren().clear();
+			page = page + direction;
+			createEditPage();
+		}
+	}
+
+	public class Browse implements EventHandler<ActionEvent> {
+
+		public void handle(ActionEvent arg0) {
+			File newImageFile;
+
+			// Open file chooser window
+			FileChooser profilePictureChooser = new FileChooser();
+			configureFileChooser(profilePictureChooser);
+			Window fileChooserStage = null;
+
+			// Replace profile picture with new one from selected file
+			newImageFile = profilePictureChooser
+					.showOpenDialog(fileChooserStage);
+			if (newImageFile != null) {
+				uploadPath.setText(newImageFile.getName());
+				buttonUpload.setCursor(Cursor.HAND);
+				buttonUpload.setDisable(false);
+				filePath = newImageFile.getAbsolutePath();
+			}
+		}
+
+		private void configureFileChooser(FileChooser profilePictureChooser) {
+
+			// Set title of file chooser
+			profilePictureChooser.setTitle("Choose Property Image to Upload");
+			// Set directory that the file chooser will initially open into
+			profilePictureChooser.setInitialDirectory(new File(System
+					.getProperty("user.home")));
+			// Set file types displayed in the file chooser as png and jpg
+			profilePictureChooser.getExtensionFilters().addAll(
+					new FileChooser.ExtensionFilter("JPG, PNG", "*.jpg",
+							"*.png"),
+					new FileChooser.ExtensionFilter("PNG", "*.png"));
+		}
+	}
+
+	public class Upload implements EventHandler<ActionEvent> {
+
+		public void handle(ActionEvent arg0) {
+			User owner = Database.getUser("MVPTom");
+			try {
+				boolean check = Database.insertHouseImage(filePath, house,
+						owner);
+				if (check) {
+					grid.getChildren().clear();
+					createEditPage();
+				}
+			} catch (SQLException e) {
+				System.out.println("Upload Failed");
+			}
+		}
+	}
+
+	public class DeleteImage implements EventHandler<ActionEvent> {
+
+		public void handle(ActionEvent arg0) {
+			for (int i = 0; i < houseImages.size(); i++) {
+				if (deleteImage.get(i).isSelected()) {
+					boolean check = Database.deleteHouseImage(houseImages
+							.get(i));
+					if (check) {
+						System.out.println("Image Deleted");
+					}
+				}
+			}
+			grid.getChildren().clear();
+			createEditPage();
+		}
+	}
+	
 	public static ArrayList<ComboBox<String>> setupDate(String initialDate) {
 
 		final ComboBox<String> comboAvailableDay = new ComboBox<String>();
@@ -263,132 +463,5 @@ public class EditProperty extends presenter.Window {
 		date.add(comboAvailableMonth);
 		date.add(comboAvailableYear);
 		return date;
-	}
-
-	public void setupHousePictures() {
-
-		GridPane imageGrid = new GridPane();
-
-		imageGrid.setVgap(50);
-		imageGrid.setHgap(50);
-		int x = 0;
-		int y = 0;
-		ArrayList<HouseImage> houseImages = new ArrayList<HouseImage>();
-		ScrollPane imageWindow = new ScrollPane();
-		imageWindow.setPrefSize(560, 600);
-
-		Label labelUpload = new Label("Add a new image:");
-		labelUpload.setFont(Font.font(null, FontWeight.BOLD, 14));
-		uploadPath = new TextField();
-		uploadPath.setEditable(false);
-		
-		ButtonType button1 = new ButtonType("150,150,150", null, "Browse", 70, 30);
-		Button buttonBrowse = new SetupButton().CreateButton(button1);
-		buttonBrowse.setCursor(Cursor.HAND);
-		buttonBrowse.setOnAction(new Browse());
-
-		ButtonType button2 = new ButtonType("150,150,150", null, "Upload", 70, 30);
-		buttonUpload = new SetupButton().CreateButton(button2);
-		buttonUpload.setDisable(true);
-		buttonUpload.setOnAction(new Upload());
-		
-		HBox buttons = new HBox(10);
-		buttons.getChildren().addAll(buttonBrowse,buttonUpload);
-		grid.addRow(1,labelUpload,uploadPath,buttons);
-		
-		houseImages = Database.getHouseImageSet(house.hid);
-
-		for (int i = 0; i < houseImages.size(); i++) {
-			HouseImage input = houseImages.get(i);
-			Image image = new Image(input.imageIS);
-			ImageView propertyImage = new ImageView(image);
-			propertyImage.setFitWidth(150);
-			propertyImage.setFitHeight(150);
-			imageGrid.add(propertyImage, x, y);
-			x++;
-			if (x > 2) {
-				x = 0;
-				y++;
-			}
-		}
-
-		imageWindow.setContent(imageGrid);
-		grid.add(imageWindow, 0, 2);
-		GridPane.setConstraints(imageWindow, 0, 2, 3, 1, HPos.CENTER,
-				VPos.CENTER);
-	}
-
-	public class ApplyChanges implements EventHandler<ActionEvent> {
-
-		public void handle(ActionEvent arg0) {
-
-		}
-	}
-
-	public class ChangePage implements EventHandler<ActionEvent> {
-		final int direction;
-
-		public ChangePage(int dir) {
-			direction = dir;
-		}
-
-		public void handle(ActionEvent arg0) {
-			grid.getChildren().clear();
-			page = page + direction;
-			createEditPage();
-		}
-	}
-	
-	public class Browse implements EventHandler<ActionEvent>{
-
-		public void handle(ActionEvent arg0) {
-			File newImageFile;
-
-			// Open file chooser window
-			FileChooser profilePictureChooser = new FileChooser();
-			configureFileChooser(profilePictureChooser);
-			Window fileChooserStage = null;
-
-			// Replace profile picture with new one from selected file
-			newImageFile = profilePictureChooser
-					.showOpenDialog(fileChooserStage);
-			if (newImageFile != null) {
-				uploadPath.setText(newImageFile.getName());
-				buttonUpload.setCursor(Cursor.HAND);
-				buttonUpload.setDisable(false);
-				filePath = newImageFile.getAbsolutePath();
-			}
-		}
-		
-		private void configureFileChooser(FileChooser profilePictureChooser) {
-
-			// Set title of file chooser
-			profilePictureChooser.setTitle("Choose Property Image to Upload");
-			// Set directory that the file chooser will initially open into
-			profilePictureChooser.setInitialDirectory(new File(System
-					.getProperty("user.home")));
-			// Set file types displayed in the file chooser as png and jpg
-			profilePictureChooser.getExtensionFilters().addAll(
-					new FileChooser.ExtensionFilter("JPG, PNG", "*.jpg", "*.png"),
-					new FileChooser.ExtensionFilter("PNG", "*.png"));
-		}
-		
-	}
-	
-	public class Upload implements EventHandler<ActionEvent>{
-
-		public void handle(ActionEvent arg0) {
-			User owner = Database.getUser("MVPTom");
-			try {
-				boolean check = Database.insertHouseImage(filePath, house, owner);
-				if(check){
-					grid.getChildren().clear();
-					createEditPage();
-				}
-			} catch (SQLException e) {
-				System.out.println("Upload Failed");
-			}
-		}
-		
 	}
 }
