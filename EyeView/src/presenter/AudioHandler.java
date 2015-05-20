@@ -22,6 +22,7 @@ import javafx.util.Duration;
 public class AudioHandler{
 
 	/**
+	 * This method plays the target audio file after the defined delay.
 	 * 
 	 * @param filepath	File path of target audio
 	 * @param delay		Time delay before playback
