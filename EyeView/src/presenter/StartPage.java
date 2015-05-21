@@ -44,28 +44,14 @@ public class StartPage extends Window {
 	private static Timeline scrollTimer;
 	private PicturesBanner bannerPictures;
 	
-	public ArrayList<Image> galleryImages = new ArrayList<Image>();
 	public static final double picturesHeight = 80;
 	public static final double picturesWidth = 130;
 	Color c = Color.rgb(104,158,239,0.3);
 	
-	public StartPage(ArrayList<Image> galleryList, float xPosition, float yPosition) {
+	public StartPage(float xPosition, float yPosition) {
+
 		
-		this.galleryImages = galleryList;
-		Image image1 = new Image("file:resources/images/palace1.jpg");
-		Image image2 = new Image("file:resources/images/palace2.jpg");
-		Image image3 = new Image("file:resources/images/palace3.jpg");
-		Image image4 = new Image("file:resources/images/palace4.jpg");
-		galleryImages.add(image1);
-		galleryImages.add(image2);
-		galleryImages.add(image3);
-		galleryImages.add(image4);
-		
-		// create display shelf
-		bannerPictures = new PicturesBanner(galleryImages);
-		bannerPictures.setPrefSize(xResolution, bannerHeight);
-		
-		root.getChildren().add(bannerPictures);
+
 		createPageElements();
 	}
 	
@@ -128,6 +114,26 @@ public class StartPage extends Window {
 		
 		root.getChildren().addAll(background, centreBox, elementBox, logo);
 		
+		ArrayList<Image> gallery = new ArrayList<Image>();
+		Image image1 = new Image("file:resources/images/palace1.jpg");
+		Image image2 = new Image("file:resources/images/palace2.jpg");
+		Image image3 = new Image("file:resources/images/palace3.jpg");
+		Image image4 = new Image("file:resources/images/palace4.jpg");
+		Image image5 = new Image("file:resources/images/buckingham-palace.jpg");
+		Image image6 = new Image("file:resources/images/Skype.png");
+		gallery.add(image1);
+		gallery.add(image2);
+		gallery.add(image3);
+		gallery.add(image4);
+		gallery.add(image5);
+		gallery.add(image6);
+		System.out.println(gallery.get(0).getHeight());
+		// create display shelf
+		bannerPictures = new PicturesBanner(gallery);
+		bannerPictures.setPrefSize(xResolution, bannerHeight);
+		
+		root.getChildren().add(bannerPictures);
+		
 	}
 	
 		//Image Slide
@@ -137,39 +143,54 @@ public class StartPage extends Window {
 	        private static final Interpolator INTERPOLATOR = Interpolator.EASE_BOTH;
 	        private static final double SPACING = 320;
 	        
-			private BannerPictures[] items;
+			private ArrayList<BannerPictures> items = new ArrayList<BannerPictures>();
 	        
 	        private Group centered = new Group();
 	        private Group left = new Group();
 	        private Group center = new Group();
 	        private Group right = new Group();
-	        private int centerIndex = 0;
+	        private int centerIndex = 3;
 	        private Timeline timeline;
+	        private int index = 3;
 	        
 	    	public static final double picturesHeight = 80;
 	    	public static final double picturesWidth = 130;
-	    	private int index;
 	        
 	        public PicturesBanner(final ArrayList<Image> galleryImages) {	          	           
 				  	
 	            // create items
 	            for (int i=0; i < galleryImages.size(); i++) {
 	            	
-	            	items[i] = new BannerPictures(galleryImages.get(i));
-	            	index = i;
-					
-					scrollTimer = new Timeline(new KeyFrame(Duration.millis(2 * 1000),
-		    				new EventHandler<ActionEvent>() {
-		    					public void handle(ActionEvent ae) {
-		    						shiftToCenter(items[index]);
-			    					index++;
-			    				if (index >= galleryImages.size()){
-			    						index = 0;
-			    				}
-		    					}
-		    				}));
-					scrollTimer.play();
+	            	items.add(new BannerPictures(galleryImages.get(i)));		            
 	            }
+	            
+	            scrollTimer = new Timeline(new KeyFrame(Duration.millis(0.5 * 1000),
+	    				new EventHandler<ActionEvent>() {
+	    					public void handle(ActionEvent ae) {
+	    						System.out.println(index);
+	    						
+	    						shiftToCenter(items.get(index));
+
+	    						if(index == items.size() - 3){
+	    							items.add(items.get(0));
+		    						items.remove(0);
+		    						index = 1;
+	    						}
+	    						else{
+	    							index++;
+	    						}
+	    						
+//	    						
+//	    						if(index >= items.size()){
+//	    							index = 0;
+//	    						}
+	    					}
+	    				}));
+	            
+
+	            scrollTimer.setCycleCount(Timeline.INDEFINITE);
+	            scrollTimer.setAutoReverse(true);
+	            scrollTimer.play();
 
 	            // create content
 	            centered.getChildren().addAll(left, right, center);
@@ -194,12 +215,12 @@ public class StartPage extends Window {
 	            right.getChildren().clear();
 
 	            for (int i = 0; i < centerIndex; i++) {
-	                left.getChildren().add(items[i]);
+	                left.getChildren().add(items.get(i));
 	            }
 
-	            center.getChildren().add(items[centerIndex]);
-	            for (int i = items.length - 1; i > centerIndex; i--) {
-	                right.getChildren().add(items[i]);
+	            center.getChildren().add(items.get(centerIndex));
+	            for (int i = items.size() - 1; i > centerIndex; i--) {
+	                right.getChildren().add(items.get(i));
 	            }
 
 	            // stop old timeline if there is one running
@@ -212,7 +233,7 @@ public class StartPage extends Window {
 	            final ObservableList<KeyFrame> keyFrames = timeline.getKeyFrames();
 	            for (int i = 0; i < left.getChildren().size(); i++) {
 
-	                final BannerPictures it = items[i];
+	                final BannerPictures it = items.get(i);
 	                double newX = -left.getChildren().size() *
 	                        SPACING + SPACING * i;
 	                keyFrames.add(new KeyFrame(DURATION,
@@ -220,13 +241,13 @@ public class StartPage extends Window {
 	            }
 
 	            // add keyframe for center item
-	            final BannerPictures centerItem = items[centerIndex];
+	            final BannerPictures centerItem = items.get(centerIndex);
 	            keyFrames.add(new KeyFrame(DURATION,
 	                    new KeyValue(centerItem.translateXProperty(), 0, INTERPOLATOR)));
 
 	            // add keyframes for right items
 	            for (int i = 0; i < right.getChildren().size(); i++) {
-	                final BannerPictures it = items[items.length - i - 1];
+	                final BannerPictures it = items.get(items.size() - i - 1);
 	                final double newX = right.getChildren().size() *
 	                        SPACING - SPACING * i;
 	                keyFrames.add(new KeyFrame(DURATION,
@@ -261,7 +282,7 @@ public class StartPage extends Window {
 	 
 	        public void shift(int shiftAmount) {
 	            if (centerIndex <= 0 && shiftAmount > 0) return;
-	            if (centerIndex >= items.length - 1 && shiftAmount < 0) return;
+	            if (centerIndex >= items.size() - 1 && shiftAmount < 0) return;
 	            centerIndex -= shiftAmount;
 	            update();
 	        }
