@@ -94,12 +94,16 @@ public class LandlordProperties extends presenter.Window {
 		
 		ButtonType button1 = new ButtonType("150,150,150",null,"Edit",100,30);
 		ButtonType button2 = new ButtonType("150,150,150",null,"Delete",100,30);
+		ButtonType button3 = new ButtonType("150,150,150",null,"New",100,30);
 		
 		Button buttonEdit = new SetupButton().CreateButton(button1);
 		Button buttonDelete = new SetupButton().CreateButton(button2);
+		Button buttonNew = new SetupButton().CreateButton(button3);
 
 		buttonEdit.setCursor(Cursor.HAND);
 		buttonDelete.setCursor(Cursor.HAND);
+		buttonNew.setCursor(Cursor.HAND);
+		
 		buttonEdit.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				int index = propertyList.getSelectionModel().getSelectedIndex();
@@ -125,8 +129,19 @@ public class LandlordProperties extends presenter.Window {
 				User.updateSavedProperties(currentUsername, properties);
 			}
 		});*/
+		
+		buttonNew.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent event) {
+				currentPropertyID = 0;
+				
+				root.getChildren().clear();
+				slideID = EDITPROPERTY;
+				SlideContent sc  = new SlideContent();
+				sc.createSlide();
+			}
+		});
 
-		buttons.getChildren().addAll(buttonEdit, buttonDelete);
+		buttons.getChildren().addAll(buttonNew, buttonEdit, buttonDelete);
 		buttons.setAlignment(Pos.CENTER);
 		grid.add(buttons, 1, 1);
 	}

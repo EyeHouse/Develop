@@ -1,7 +1,7 @@
 package landlord;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -12,6 +12,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
+import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
@@ -45,18 +46,32 @@ public class EditProperty extends presenter.Window {
 	private static final int VIDEO = 2;
 	private GridPane grid = new GridPane();
 	private House house;
-	private TextField address,postcode,price,beds,baths,deposit,uploadPath;
-	private CheckBox furnished;
-	private TextArea description;
-	ArrayList<ComboBox<String>> dateComboArray;
+	private TextField address = new TextField();
+	private TextField postcode = new TextField();
+	private TextField price = new TextField();
+	private TextField beds = new TextField();
+	private TextField baths = new TextField();
+	private TextField deposit = new TextField();
+	private TextField uploadPath = new TextField();
+	private CheckBox furnished = new CheckBox();
+	private TextArea description = new TextArea();
+	ArrayList<ComboBox<String>> dateComboArray = new ArrayList<ComboBox<String>>();
+	private VBox allButtons;
 	private Button buttonUpload;
 	private String filePath;
+	private ArrayList<String> imagePaths = new ArrayList<String>();
 	private ArrayList<HouseImage> houseImages;
 	private ArrayList<CheckBox> deleteImage = new ArrayList<CheckBox>();
+	private ImageView infoStatus,picStatus;
+	Image tick, cross;
 
 	public EditProperty(int page, int houseID) {
 		this.page = page;
 		this.hid = houseID;
+		infoStatus = new ImageView();
+		picStatus = new ImageView();
+		tick = new Image("file:resources/images/Status/Tick.png");
+		cross = new Image("file:resources/images/Status/Cross.png");
 		
 		createEditPage();
 
@@ -86,20 +101,26 @@ public class EditProperty extends presenter.Window {
 		grid.setVgap(30);
 		grid.relocate(220, 20);
 
-		ColumnConstraints col1 = new ColumnConstraints();
-		col1.setMinWidth(100);
-		grid.getColumnConstraints().addAll(col1, col1, col1);
+		grid.setMaxWidth(650);
+		grid.setMinWidth(650);
 	}
 
 	private void setupTabLabels(int page) {
 
-		HBox hBoxTabs = new HBox(60);
+		HBox info = new HBox(5);
+		HBox pics = new HBox(5);
+		HBox vids = new HBox(5);
+		
 		Label labelInfoTab = new Label("1. House Information");
 		Label labelPictureTab = new Label("2. House Pictures");
 		Label labelVideoTab = new Label("3. House Videos");
-		labelInfoTab.setFont(new Font(16));
-		labelPictureTab.setFont(new Font(16));
-		labelVideoTab.setFont(new Font(16));
+		labelInfoTab.setFont(new Font(14));
+		labelPictureTab.setFont(new Font(14));
+		labelVideoTab.setFont(new Font(14));
+		
+		labelInfoTab.setMinWidth(140);
+		labelPictureTab.setMinWidth(120);
+		labelVideoTab.setMinWidth(100);
 
 		switch (page) {
 		case INFO:
@@ -115,15 +136,24 @@ public class EditProperty extends presenter.Window {
 					labelVideoTab.getFont().getSize()));
 			break;
 		}
-
-		hBoxTabs.getChildren().addAll(labelInfoTab, labelPictureTab,
-				labelVideoTab);
-
-		grid.add(hBoxTabs, 0, 0);
-		GridPane.setConstraints(hBoxTabs, 0, 0, 3, 1, HPos.CENTER, VPos.CENTER);
+		
+		UpdateTabLabels();
+		
+		info.getChildren().addAll(labelInfoTab,infoStatus);
+		pics.getChildren().addAll(labelPictureTab,picStatus);
+		vids.getChildren().add(labelVideoTab);		
+		
+		if(hid == 0){
+			grid.addRow(0,info,pics,vids);
+		}
+		else{
+			grid.addRow(0, labelInfoTab, labelPictureTab, labelVideoTab);
+		}
 	}
 
 	private void setupButtons() {
+		root.getChildren().removeAll(allButtons);
+		allButtons = new VBox(10);
 		HBox buttons = new HBox(10);
 		ButtonType button1 = new ButtonType("150,150,150", null, "Next", 50, 30);
 		Button buttonNext = new SetupButton().CreateButton(button1);
@@ -134,18 +164,26 @@ public class EditProperty extends presenter.Window {
 		Button buttonPrev = new SetupButton().CreateButton(button2);
 		buttonPrev.setCursor(Cursor.HAND);
 		buttonPrev.setOnAction(new ChangePage(-1));
+		
+		ButtonType button3 = new ButtonType("150,150,150", null, "Finish", 110, 30);
+		Button buttonFinish = new SetupButton().CreateButton(button3);
+		buttonFinish.setCursor(Cursor.HAND);
+		buttonFinish.setOnAction(new CreateHouse());
 
 		buttons.getChildren().addAll(buttonPrev, buttonNext);
+		allButtons.getChildren().add(buttons);
+		if(hid == 0)allButtons.getChildren().add(buttonFinish);
+		
 		if (page == 0)
 			buttonPrev.setVisible(false);
 		if (page == 2)
 			buttonNext.setVisible(false);
-		grid.add(buttons, 3, 0);
-		GridPane.setConstraints(buttons, 3, 0, 1, 1, HPos.RIGHT, VPos.CENTER);
+		allButtons.relocate(840,20);
+		root.getChildren().add(allButtons);
 	}
 
 	private void setupHouseInfo() {
-		house = Database.getHouse(hid);
+		
 		
 		VBox vBoxDesc = new VBox(10);
 		Label labelAddress = new Label("Address:");
@@ -168,22 +206,41 @@ public class EditProperty extends presenter.Window {
 		labelDeposit.setFont(Font.font(null, FontWeight.BOLD, 14));
 		labelDesc.setFont(Font.font(null, FontWeight.BOLD, 14));
 		
-		address = new TextField(house.address);
-		postcode = new TextField(house.postcode);
-		price = new TextField(Integer.toString(house.price));
-		beds = new TextField(Integer.toString(house.rooms));
-		baths = new TextField(Integer.toString(house.bathrooms));
-		furnished = new CheckBox();
-		deposit = new TextField(Integer.toString(house.deposit));
-		description = new TextArea(house.description);
-
-		dateComboArray = setupDate(house.dateAvailable);
+		
+		if(hid != 0){
+			house = Database.getHouse(hid);
+			address = new TextField(house.address);
+			postcode = new TextField(house.postcode);
+			price = new TextField(Integer.toString(house.price));
+			beds = new TextField(Integer.toString(house.rooms));
+			baths = new TextField(Integer.toString(house.bathrooms));
+			furnished = new CheckBox();
+			deposit = new TextField(Integer.toString(house.deposit));
+			description = new TextArea(house.description);
+			
+			dateComboArray = setupDate(house.dateAvailable);
+			furnished.setSelected(house.furnished);
+		}
+		else{
+			address.textProperty().addListener(new TextChanged());
+			postcode.textProperty().addListener(new TextChanged());
+			price.textProperty().addListener(new TextChanged());
+			beds.textProperty().addListener(new TextChanged());
+			baths.textProperty().addListener(new TextChanged());
+			deposit.textProperty().addListener(new TextChanged());
+			description.textProperty().addListener(new TextChanged());
+		}
+		
+		if(dateComboArray.size() == 0){
+			dateComboArray = setupDate("2015-01-01");
+		}
+		
 		HBox dateAvailable = new HBox(10);
 		dateAvailable.getChildren().addAll(dateComboArray.get(0),
 				dateComboArray.get(1), dateComboArray.get(2));
 		description.setPrefSize(300, 100);
 		description.setWrapText(true);
-		furnished.setSelected(house.furnished);
+		
 
 		vBoxDesc.getChildren().addAll(labelDesc, description);
 
@@ -192,7 +249,7 @@ public class EditProperty extends presenter.Window {
 		Button buttonSave = new SetupButton().CreateButton(button1);
 		buttonSave.setCursor(Cursor.HAND);
 		buttonSave.setOnAction(new ApplyChanges());
-
+		
 		grid.addRow(2, labelAddress, address);
 		grid.addRow(3, labelPostcode, postcode);
 		grid.addRow(4, labelPrice, price);
@@ -202,7 +259,10 @@ public class EditProperty extends presenter.Window {
 		grid.addRow(8, labelDate, dateAvailable);
 		grid.addRow(9, labelDeposit, deposit);
 		grid.addRow(10, vBoxDesc);
-		grid.add(buttonSave, 2, 11);
+		if(hid != 0){
+			grid.add(buttonSave, 2, 11);
+		}
+		
 		GridPane.setConstraints(address, 1, 2, 2, 1, HPos.CENTER, VPos.CENTER);
 		GridPane.setConstraints(vBoxDesc, 0, 10, 3, 1, HPos.CENTER, VPos.CENTER);
 
@@ -218,7 +278,7 @@ public class EditProperty extends presenter.Window {
 		int y = 0;
 		houseImages = new ArrayList<HouseImage>();
 		ScrollPane imageWindow = new ScrollPane();
-		imageWindow.setPrefSize(560, 600);
+		imageWindow.setMinSize(560, 600);
 
 		Label labelUpload = new Label("Add a new image:");
 		labelUpload.setFont(Font.font(null, FontWeight.BOLD, 14));
@@ -246,31 +306,58 @@ public class EditProperty extends presenter.Window {
 		buttons.getChildren().addAll(buttonBrowse, buttonUpload);
 		grid.addRow(1, labelUpload, uploadPath, buttons);
 
-		houseImages = Database.getHouseImageSet(hid);
-
-		for (int i = 0; i < houseImages.size(); i++) {
-			HouseImage input = houseImages.get(i);
-			Image image = new Image(input.imageIS);
-			ImageView propertyImage = new ImageView(image);
-			propertyImage.setFitWidth(150);
-			propertyImage.setFitHeight(150);
-			imageGrid.add(propertyImage, x, y);
-
-			CheckBox delete = new CheckBox();
-			deleteImage.add(delete);
-			imageGrid.add(delete, x, y + 1);
-
-			GridPane.setConstraints(delete, x, y + 1, 1, 1, HPos.CENTER,
-					VPos.CENTER);
-			GridPane.setConstraints(propertyImage, x, y, 1, 1, HPos.CENTER,
-					VPos.CENTER);
-
-			x++;
-			if (x > 2) {
-				x = 0;
-				y += 2;
+		if(hid != 0){
+			houseImages = Database.getHouseImageSet(hid);
+			
+			for (int i = 0; i < houseImages.size(); i++) {
+				HouseImage input = houseImages.get(i);
+				Image image = new Image(input.imageIS);
+				ImageView propertyImage = new ImageView(image);
+				propertyImage.setFitWidth(150);
+				propertyImage.setFitHeight(150);
+				imageGrid.add(propertyImage, x, y);
+	
+				CheckBox delete = new CheckBox();
+				deleteImage.add(delete);
+				imageGrid.add(delete, x, y + 1);
+	
+				GridPane.setConstraints(delete, x, y + 1, 1, 1, HPos.CENTER,
+						VPos.CENTER);
+				GridPane.setConstraints(propertyImage, x, y, 1, 1, HPos.CENTER,
+						VPos.CENTER);
+	
+				x++;
+				if (x > 2) {
+					x = 0;
+					y += 2;
+				}
 			}
 		}
+		else{
+			for (int i = 0; i < imagePaths.size(); i++) {
+				Image image = new Image(imagePaths.get(i));
+				ImageView propertyImage = new ImageView(image);
+				propertyImage.setFitWidth(150);
+				propertyImage.setFitHeight(150);
+				imageGrid.add(propertyImage, x, y);
+	
+				CheckBox delete = new CheckBox();
+				deleteImage.add(delete);
+				imageGrid.add(delete, x, y + 1);
+	
+				GridPane.setConstraints(delete, x, y + 1, 1, 1, HPos.CENTER,
+						VPos.CENTER);
+				GridPane.setConstraints(propertyImage, x, y, 1, 1, HPos.CENTER,
+						VPos.CENTER);
+	
+				x++;
+				if (x > 2) {
+					x = 0;
+					y += 2;
+				}
+			}
+		}
+		
 
 		imageWindow.setContent(imageGrid);
 		grid.add(imageWindow, 0, 2);
@@ -309,7 +396,83 @@ public class EditProperty extends presenter.Window {
 			createEditPage();
 		}
 	}
+	
+	public class CreateHouse implements EventHandler<ActionEvent> {
 
+		public void handle(ActionEvent arg0) {
+			House newHouse = new House(address.getText());
+			
+			String dateAvailableString = dateComboArray.get(2).getValue() + "-" + dateComboArray.get(1).getValue() + "-" + dateComboArray.get(0).getValue();
+			
+			if(CheckInfoPage() && imagePaths.size() > 0){
+				newHouse.address(address.getText());
+				newHouse.bathrooms(Integer.parseInt(baths.getText()));
+				newHouse.postcode(postcode.getText());
+				newHouse.price(Integer.parseInt(price.getText()));
+				newHouse.deposit(Integer.parseInt(deposit.getText()));
+				newHouse.rooms(Integer.parseInt(beds.getText()));
+				newHouse.dateAvailable(dateAvailableString);
+				newHouse.furnished(furnished.isSelected());
+				newHouse.description(description.getText());
+				
+				User temp = Database.getUser(currentUsername);
+				if (!Database.checkHouseExists(temp, newHouse)) {
+					try {
+						boolean created = Database.houseInsert(newHouse, null, null, temp);
+					} catch (IOException e) {
+						System.out.println("House creation failed");
+					}
+				}
+			}
+			else{
+				System.out.println("House info incomplete");
+			}
+			
+		}
+	}
+	
+	public boolean CheckInfoPage(){
+		int check = 0;
+		if(!address.getText().equals("")) check++;
+		if(!baths.getText().equals("")) check++;
+		if(!postcode.getText().equals("")) check++;
+		if(!price.getText().equals("")) check++;
+		if(!beds.getText().equals("")) check++;
+		if(!address.getText().equals("")) check++;
+		if(!description.getText().equals("")) check++;
+		
+		if(check == 7){
+			return true;
+		}
+		else
+			return false;
+	}
+	
+	public void UpdateTabLabels(){
+
+		if(CheckInfoPage()){
+			infoStatus.setImage(tick);
+		}
+		else
+			infoStatus.setImage(cross);
+		
+		if(imagePaths.size() > 0){
+			picStatus.setImage(tick);
+		}
+		else
+			picStatus.setImage(cross);
+			
+	}
+
+	public class TextChanged implements ChangeListener<String>{
+
+		public void changed(ObservableValue<? extends String> arg0,
+				String arg1, String arg2) {
+			UpdateTabLabels();
+		}
+		
+	}
+	
 	public class ChangePage implements EventHandler<ActionEvent> {
 		final int direction;
 
@@ -363,6 +526,15 @@ public class EditProperty extends presenter.Window {
 	public class Upload implements EventHandler<ActionEvent> {
 
 		public void handle(ActionEvent arg0) {
+			
+			if(hid == 0){
+				UpdateTabLabels();
+				imagePaths.add("file:" + filePath);
+				grid.getChildren().clear();
+				createEditPage();
+				return;
+			}
+			
 			User owner = Database.getUser("MVPTom");
 			try {
 				boolean check = Database.insertHouseImage(filePath, house,
@@ -380,7 +552,19 @@ public class EditProperty extends presenter.Window {
 	public class DeleteImage implements EventHandler<ActionEvent> {
 
 		public void handle(ActionEvent arg0) {
-			for (int i = 0; i < houseImages.size(); i++) {
+			
+			if(hid == 0){
+				for (int i = 0; i < imagePaths.size(); i++) {
+					if (deleteImage.get(i).isSelected()) {
+						UpdateTabLabels();
+						imagePaths.remove(i);
+					}
+				}
+			}
+			
+			else
+			{
+				for (int i = 0; i < houseImages.size(); i++) {
 				if (deleteImage.get(i).isSelected()) {
 					boolean check = Database.deleteHouseImage(houseImages
 							.get(i));
@@ -389,6 +573,8 @@ public class EditProperty extends presenter.Window {
 					}
 				}
 			}
+			}
+			
 			grid.getChildren().clear();
 			createEditPage();
 		}
