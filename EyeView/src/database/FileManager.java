@@ -30,6 +30,7 @@ public class FileManager {
 	public static final String SUFFIX = ".tmp";
 	private static String USERNAME = "ehfile1004";
 	private static String PASSWORD = "Jigsaw12!";
+	public static String puttY = "127.0.0.1";
 
 	public boolean downloadFTP(String propertiesFilename, String fileToDownload) {
 
@@ -57,8 +58,15 @@ public class FileManager {
 
 			// Create the SFTP URI using the host name, userid, password, remote
 			// path and file name
+			
+			String port = "";
+
+			if (Database.url.equals(puttY)) {
+				port = ":8022/";
+			}
+			
 			String sftpUri = "sftp://" + USERNAME + ":" + PASSWORD + "@"
-					+ serverAddress + ":8022/" + "/" + remoteDirectory
+					+ serverAddress + port + "/" + remoteDirectory
 					+ fileToDownload;
 
 			// Create local file object
@@ -101,8 +109,14 @@ public class FileManager {
 			// Create the SFTP URI using the host name, userid, password, remote
 			// path and file name
 
+			String port = "";
+
+			if (Database.url.equals(puttY)) {
+				port = ":8022/";
+			}
+
 			String sftpUri = "sftp://" + USERNAME + ":" + PASSWORD + "@"
-					+ Database.url + "/group/eyeHouse.net/" + filepath;
+					+ Database.url + port + "/group/eyeHouse.net/" + filepath;
 
 			System.out.println(sftpUri);
 			remoteFile = manager.resolveFile(sftpUri, opts);
@@ -139,8 +153,15 @@ public class FileManager {
 
 			// Create the SFTP URI using the host name, userid, password, remote
 			// path and file name
+
+			String port = "";
+
+			if (Database.url.equals(puttY)) {
+				port = ":8022/";
+			}
+
 			String sftpUri = "sftp://" + USERNAME + ":" + PASSWORD + "@"
-					+ Database.dbConnect() + ":8022//" + "group/eyeHouse.net/"
+					+ Database.dbConnect() + port + "/group/eyeHouse.net/"
 					+ filepath;
 
 			remoteFile = manager.resolveFile(sftpUri, opts);
@@ -229,9 +250,15 @@ public class FileManager {
 			// Create the SFTP URI using the host name, userid, password, remote
 			// path and file name
 
+			String port = "";
+
+			if (Database.url.equals(puttY)) {
+				port = ":8022/";
+			}
+
 			String sftpUri = "sftp://" + USERNAME + ":" + PASSWORD + "@"
-					+ Database.dbConnect() + ":8022//"
-					+ "group/eyeHouse.net/eyehouse/" + userDetails.username
+					+ Database.dbConnect() + port
+					+ "/group/eyeHouse.net/eyehouse/" + userDetails.username
 					+ "/" + hid + "/" + filename;
 
 			// upload a default image
@@ -281,8 +308,15 @@ public class FileManager {
 
 			// Create the SFTP URI using the host name, userid, password, remote
 			// path and file name
+
+			String port = "";
+
+			if (Database.url.equals(puttY)) {
+				port = ":8022/";
+			}
+
 			String sftpUri = "sftp://" + USERNAME + ":" + PASSWORD + "@" + url
-					+ ":8022//" + "group/eyeHouse.net/"
+					+ port + "/group/eyeHouse.net/"
 					+ videoDetails.videoLocation;
 
 			// String sftpUri = "sftp://tb77931004:72dw42WRq!2345@" + url +
