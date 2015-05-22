@@ -100,9 +100,11 @@ public class FileManager {
 
 			// Create the SFTP URI using the host name, userid, password, remote
 			// path and file name
+
 			String sftpUri = "sftp://" + USERNAME + ":" + PASSWORD + "@"
-					+ Database.url + ":8022//" + "group/eyeHouse.net/"
-					+ filepath;
+					+ Database.url + "/group/eyeHouse.net/" + filepath;
+
+			System.out.println(sftpUri);
 			remoteFile = manager.resolveFile(sftpUri, opts);
 			FileContent temp = remoteFile.getContent();
 			InputStream is = temp.getInputStream();

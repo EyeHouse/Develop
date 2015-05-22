@@ -1503,7 +1503,7 @@ public class Database {
 
 		String title = "Testing Date Available";
 
-		int mode = 14;
+		int mode = 2;
 		boolean insertSuccess;
 		boolean houseDeleted;
 		boolean updateSuccess;
@@ -1553,7 +1553,7 @@ public class Database {
 			insert.DOB("0000-01-01");
 			String encryptedPassword = DataHandler.crypt(password);
 			insert.password(encryptedPassword);
-
+			
 			// insert
 			insertSuccess = userInsert(insert);
 			if (insertSuccess == false) {
