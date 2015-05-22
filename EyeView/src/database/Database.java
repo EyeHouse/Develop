@@ -1498,9 +1498,9 @@ public class Database {
 
 		String email = "DefProfTest3@york.ac.uk";
 
-		String title = "York Minster";
+		String title = "Testing Date Available";
 
-		int mode = 21;
+		int mode = 14;
 		boolean insertSuccess;
 		boolean houseDeleted;
 		boolean updateSuccess;
@@ -1510,6 +1510,19 @@ public class Database {
 
 		// testing switch
 		switch (mode) {
+		case 14:
+			int tempPrc = 9001;
+			// for a date string
+			int varType = 1;
+			User tempu3 = getUser("MVPTom");
+			House temph3 = getHouse(8);
+			check = updateHouse(tempu3, temph3, "date_available","2015-06-22", null, null,
+					tempPrc, varType);
+			if (check == true)
+				System.out.println("\nUpdate Successful");
+			else
+				System.out.println("\nFailure");
+			break;
 		case 21:
 
 			User tempu14 = getUser("MVPTom");
@@ -1573,13 +1586,13 @@ public class Database {
 		case 11:
 			// insert the houses basic info
 			House eyehouseHQ = null;
-			int pricepermonth = 20;
+			int pricepermonth = 56;
 			boolean house;
 			String brc = "D:/EE course/SWEng/Java/testbrochure.pdf";
 			String enrg = "D:/EE course/SWEng/Java/energy-rating-card.jpg";
 			eyehouseHQ = new House(title);
-			eyehouseHQ.postcode("YO1 7HH");
-			eyehouseHQ.address("Religious center");
+			eyehouseHQ.postcode("YO1 7HP");
+			eyehouseHQ.address("Testing Date");
 			eyehouseHQ.price(pricepermonth);
 			eyehouseHQ.deposit(pricepermonth);
 			eyehouseHQ.rooms(pricepermonth);
@@ -1587,7 +1600,7 @@ public class Database {
 			eyehouseHQ.dateAvailable("2015-04-24");
 			eyehouseHQ.furnished(true);
 			eyehouseHQ
-					.description("A fine fine building made of shattered dreams and peadophilia");
+					.description("Test");
 			User temp = getUser("MVPTom");
 			if (!checkHouseExists(temp, eyehouseHQ)) {
 				house = houseInsert(eyehouseHQ, brc, enrg, temp);
@@ -1620,18 +1633,7 @@ public class Database {
 				System.out.println("House not Deleted");
 			}
 			break;
-		case 14:
-			int tempPrc = 9001;
-			int varType = 4;
-			User tempu3 = getUser("MVPTom");
-			House temph3 = getHouse(8);
-			check = updateHouse(tempu3, temph3, "price", null, null, null,
-					tempPrc, varType);
-			if (check == true)
-				System.out.println("\nUpdate Successful");
-			else
-				System.out.println("\nFailure");
-			break;
+		
 		case 15:
 
 			User tempu4 = getUser("MVPTom");
@@ -1654,9 +1656,9 @@ public class Database {
 			User tempu5 = getUser("MVPTom");
 			// gets house and puts it into memory
 			House temph5 = getHouse(8);
-			int hid5 = getID(tempu5, temph5, 2);
+			// int hid5 = getID(tempu5, temph5, 2);
 			ArrayList<HouseImage> list = new ArrayList<HouseImage>();
-			list = getHouseImageSet(hid5);
+			list = getHouseImageSet(10);
 
 			int i;
 			for (i = 0; i < list.size(); i++) {
@@ -1673,9 +1675,11 @@ public class Database {
 				frame.pack();
 				frame.setVisible(true);
 				// Deletes all the images for this house
-				// deleteHouseImage(image);
+				if(image.iid == 19) {
+					deleteHouseImage(image);
+				}
 			}
-
+			 
 			break;
 		case 17:
 
