@@ -189,13 +189,12 @@ public class Database {
 	}
 
 	public static boolean checkHouseExists(User userDetails, House houseDetails) {
-		int id = getID(userDetails, null, 1);
 		ResultSet title;
 		String titleStr;
 		try {
 			PreparedStatement checkTitle = con
 					.prepareStatement("SELECT title FROM houses WHERE uid=?");
-			checkTitle.setInt(1, id);
+			checkTitle.setInt(1, userDetails.uid);
 			title = checkTitle.executeQuery();
 			while (title.next()) {
 				titleStr = title.getString("title");
@@ -208,15 +207,19 @@ public class Database {
 					return true;
 				}
 			}
+			if (!title.next()) {
+				System.out
+						.println("\nHouse with same title already exists for this user");
+				return true;
+			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.out.println("\nSQL error in house check");
 			return false;
 		}
-		System.out
-				.println("\nHouse with same title already exists for this user");
-		return true;
+		System.out.println("\nCase unspecified");
+		return false;
 	}
 
 	/**
@@ -1516,8 +1519,8 @@ public class Database {
 			int varType = 1;
 			User tempu3 = getUser("MVPTom");
 			House temph3 = getHouse(8);
-			check = updateHouse(tempu3, temph3, "date_available","2015-06-22", null, null,
-					tempPrc, varType);
+			check = updateHouse(tempu3, temph3, "date_available", "2015-06-22",
+					null, null, tempPrc, varType);
 			if (check == true)
 				System.out.println("\nUpdate Successful");
 			else
@@ -1599,8 +1602,7 @@ public class Database {
 			eyehouseHQ.bathrooms(pricepermonth);
 			eyehouseHQ.dateAvailable("2015-04-24");
 			eyehouseHQ.furnished(true);
-			eyehouseHQ
-					.description("Test");
+			eyehouseHQ.description("Test");
 			User temp = getUser("MVPTom");
 			if (!checkHouseExists(temp, eyehouseHQ)) {
 				house = houseInsert(eyehouseHQ, brc, enrg, temp);
@@ -1633,7 +1635,7 @@ public class Database {
 				System.out.println("House not Deleted");
 			}
 			break;
-		
+
 		case 15:
 
 			User tempu4 = getUser("MVPTom");
@@ -1675,11 +1677,11 @@ public class Database {
 				frame.pack();
 				frame.setVisible(true);
 				// Deletes all the images for this house
-				if(image.iid == 19) {
+				if (image.iid == 19) {
 					deleteHouseImage(image);
 				}
 			}
-			 
+
 			break;
 		case 17:
 
