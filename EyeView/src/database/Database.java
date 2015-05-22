@@ -1655,9 +1655,7 @@ public class Database {
 
 			break;
 		case 16:
-			User tempu5 = getUser("MVPTom");
-			// gets house and puts it into memory
-			House temph5 = getHouse(8);
+			
 			// int hid5 = getID(tempu5, temph5, 2);
 			ArrayList<HouseImage> list = new ArrayList<HouseImage>();
 			list = getHouseImageSet(10);
