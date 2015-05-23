@@ -107,23 +107,24 @@ public void loadXMLText() throws IOException {
 	
 	public void loadXMLVideos() {
 		
-		StackPane videoPane = new StackPane();
-		videoPane.relocate(0, 0);
-		videoPane.resize(xResolution, yResolution);
+		
 		
 		List<VideoData> videoList = slideData.getVideoList();
 		
 		for (VideoData currentVideo : videoList) {
+			StackPane videoPane = new StackPane();
+			videoPane.relocate(0, 0);
+			videoPane.resize(xResolution, yResolution);
 			VideoElement video = new VideoElement(
 					currentVideo.getSource());
-			video.setStylesheet("resources/videoStyle.css");
 			video.setWidth(500);
 			video.setAutoplay(true);
 			video.setXpos(currentVideo.getXstart());
 			video.setYpos(currentVideo.getYstart());
 			video.display(videoPane);
+			root.getChildren().add(videoPane);
 		}
-		root.getChildren().add(videoPane);
+		
 	}
 	
 }
