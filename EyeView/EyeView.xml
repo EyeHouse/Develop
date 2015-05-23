@@ -12,23 +12,54 @@
 		<fontsize>12</fontsize>
 		<fontcolor>#ffcccc00</fontcolor>
 	</defaultsettings>
-	<slide id="0" title="Logged Out Home" duration="0">
+	<slide id="0" title="Start Page" duration="0">
+	</slide>
+	<slide id="1" title="Logged Out Home" duration="0">
 		<graphic type="rectangle" xstart="0.0" ystart="0.0" xend="0.19" yend="1.0" solid="true" graphiccolor="#FF7AA9DD" duration="0" />
 	</slide>
-	<slide id="1" title="Logged In Home" duration="0">
+	<slide id="2" title="Logged In Home" duration="0">
 		<graphic type="rectangle" xstart="0.0" ystart="0.0" xend="0.19" yend="1.0" solid="true" graphiccolor="#FF7AA9DD" duration="0" />
 		<image sourcefile="file:./resources/images/profile.png" xstart="0.015" ystart="0.03" scale="0.3" duration="0" starttime="0" />
 	</slide>
-	<slide id="2" title="Login Slide" duration="0">
+	<slide id="3" title="Login Slide" duration="0">
+		<graphic type="rectangle" xstart="0.0" ystart="0.0" xend="0.19" yend="1.0" solid="true" graphiccolor="#FF7AA9DD" duration="0" />
 	</slide>
-	<slide id="3" title="Register Slide" duration="0">
+	<slide id="4" title="Register Slide" duration="0">
+		<graphic type="rectangle" xstart="0.0" ystart="0.0" xend="0.19" yend="1.0" solid="true" graphiccolor="#FF7AA9DD" duration="0" />
 	</slide>
-	<slide id="4" title="Video Slide" duration="0">
+	<slide id="5" title="Video Slide" duration="0">
 		<graphic type="rectangle" xstart="0.0" ystart="0.0" xend="0.19" yend="1.0"
 			duration="0" graphiccolor="#FF7AA9DD" solid="true">
 		</graphic>
 		<image sourcefile="file:./resources/images/profile.png" xstart="0.015" ystart="0.03" scale="0.3" duration="0"
 			starttime="0">
 		</image>
+	</slide>
+	<slide id="6" title="Profile Slide" duration="0">
+		<graphic type="rectangle" xstart="0.0" ystart="0.0" xend="0.19" yend="1.0" solid="true" graphiccolor="#FF7AA9DD" duration="0" />
+	</slide>
+	<slide id="7" title="Account Settings Slide" duration="0">
+		<graphic type="rectangle" xstart="0.0" ystart="0.0" xend="0.19" yend="1.0" solid="true" graphiccolor="#FF7AA9DD" duration="0" />
+	</slide>
+	<slide id="8" title="Saved Properties Slide" duration="0">
+		<graphic type="rectangle" xstart="0.0" ystart="0.0" xend="0.19" yend="1.0" solid="true" graphiccolor="#FF7AA9DD" duration="0" />
+	</slide>
+	<slide id="9" title="House Slide" duration="0">
+		<graphic type="rectangle" xstart="0.0" ystart="0.0" xend="0.19" yend="1.0" solid="true" graphiccolor="#FF7AA9DD" duration="0" />
+	</slide>
+	<slide id="10" title="More Info Slide" duration="0">
+		<graphic type="rectangle" xstart="0.0" ystart="0.0" xend="0.19" yend="1.0" solid="true" graphiccolor="#FF7AA9DD" duration="0" />
+	</slide>
+	<slide id="11" title="Review Slide" duration="0">
+		<graphic type="rectangle" xstart="0.0" ystart="0.0" xend="0.19" yend="1.0" solid="true" graphiccolor="#FF7AA9DD" duration="0" />
+	</slide>
+	<slide id="12" title="Map Slide" duration="0">
+		<graphic type="rectangle" xstart="0.0" ystart="0.0" xend="0.19" yend="1.0" solid="true" graphiccolor="#FF7AA9DD" duration="0" />
+	</slide>
+	<slide id="13" title="Landlord Properties Slide" duration="0">
+		<graphic type="rectangle" xstart="0.0" ystart="0.0" xend="0.19" yend="1.0" solid="true" graphiccolor="#FF7AA9DD" duration="0" />
+	</slide>
+	<slide id="14" title="Edit Property Slide" duration="0">
+		<graphic type="rectangle" xstart="0.0" ystart="0.0" xend="0.19" yend="1.0" solid="true" graphiccolor="#FF7AA9DD" duration="0" />
 	</slide>
 </slideshow>
