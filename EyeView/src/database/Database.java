@@ -1503,7 +1503,7 @@ public class Database {
 
 		String title = "Testing Date Available";
 
-		int mode = 14;
+		int mode = 2;
 		boolean insertSuccess;
 		boolean houseDeleted;
 		boolean updateSuccess;
@@ -1553,7 +1553,7 @@ public class Database {
 			insert.DOB("0000-01-01");
 			String encryptedPassword = DataHandler.crypt(password);
 			insert.password(encryptedPassword);
-
+			
 			// insert
 			insertSuccess = userInsert(insert);
 			if (insertSuccess == false) {
@@ -1655,9 +1655,7 @@ public class Database {
 
 			break;
 		case 16:
-			User tempu5 = getUser("MVPTom");
-			// gets house and puts it into memory
-			House temph5 = getHouse(8);
+			
 			// int hid5 = getID(tempu5, temph5, 2);
 			ArrayList<HouseImage> list = new ArrayList<HouseImage>();
 			list = getHouseImageSet(10);
