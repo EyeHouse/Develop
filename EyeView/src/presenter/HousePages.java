@@ -63,8 +63,10 @@ public class HousePages extends Window {
 				Image image = new Image(input.imageIS);
 				galleryList.add(image);
 			}
-			Image image = new Image(houses.get(i).energyRatingIS);
-			galleryList.add(image);
+			if(houses.get(i).energyRatingIS != null){
+				Image image = new Image(houses.get(i).energyRatingIS);
+				galleryList.add(image);
+			}
 			galleries.add(galleryList);
 		}
 	}

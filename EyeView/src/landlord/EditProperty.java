@@ -335,10 +335,11 @@ public class EditProperty extends presenter.Window {
 			}
 		} else {
 			for (int i = 0; i < imagePaths.size(); i++) {
-				Image image = new Image(imagePaths.get(i));
+				Image image = new Image("file:" + imagePaths.get(i));
 				ImageView propertyImage = new ImageView(image);
 				propertyImage.setFitWidth(150);
-
+				propertyImage.setFitHeight(120);
+				
 				CheckBox delete = new CheckBox();
 				deleteImage.add(delete);
 
@@ -410,11 +411,14 @@ public class EditProperty extends presenter.Window {
 
 				User temp = Database.getUser(currentUsername);
 				if (!Database.checkHouseExists(temp, newHouse)) {
+					int newhid = 0;
 					try {
 						Database.houseInsert(newHouse, null,
 								null, temp);
-						int hid = Database.getID(temp, newHouse, 2);
-						House house = Database.getHouse(hid);
+						
+						newhid = Database.getID(temp, newHouse, 2);
+						System.out.println("House ID: " + newhid);
+						House house = Database.getHouse(newhid);
 						for(int i= 0; i < imagePaths.size(); i++){
 							try {
 								Database.insertHouseImage(imagePaths.get(i), house, temp);
@@ -427,7 +431,7 @@ public class EditProperty extends presenter.Window {
 						System.out.println("House creation failed");
 					}
 					ArrayList<String> savedProperties = User.getSavedProperties(currentUsername);
-					savedProperties.add(String.format("%03d", hid));
+					savedProperties.add(String.format("%03d", newhid));
 					User.updateSavedProperties(currentUsername, savedProperties);
 					
 					root.getChildren().clear();
@@ -564,7 +568,7 @@ public class EditProperty extends presenter.Window {
 
 			if (hid == 0) {
 				UpdateTabLabels();
-				imagePaths.add("file:" + filePath);
+				imagePaths.add(filePath);
 				grid.getChildren().clear();
 				createEditPage();
 				return;

@@ -29,6 +29,8 @@ public class User {
 	private final static int ADMIN = 9;
 	private final static int PROFIMG = 10;
 	private final static int PROP = 11;
+	private final static int SKYPE = 12;
+	private final static int BIO = 13;
 
 	// id should automatically be created on insertion
 	public int uid;
@@ -42,6 +44,8 @@ public class User {
 	public boolean admin;
 	public Blob profimg;
 	public String properties;
+	public String skype;
+	public String bio;
 
 	// user contructor method
 	public User(String username) {
@@ -63,6 +67,8 @@ public class User {
 			this.admin = userDetails.getBoolean(ADMIN);
 			this.profimg = (Blob) userDetails.getBlob(PROFIMG);
 			this.properties = userDetails.getString(PROP);
+			this.skype = userDetails.getString(SKYPE);
+			this.bio = userDetails.getString(BIO);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			e.getMessage();
@@ -109,6 +115,14 @@ public class User {
 	
 	public void properties(String userHouses) {
 		properties = userHouses;
+	}
+	
+	public void skype(String username){
+		skype = username;
+	}
+	
+	public void bio(String biography){
+		bio = biography;
 	}
 	
 	public static ArrayList<String> getSavedProperties(String username) {
