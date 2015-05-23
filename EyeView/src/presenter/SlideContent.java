@@ -64,6 +64,9 @@ public class SlideContent extends Window {
 		if (groupID.matches("5")) {
 			// Loads objects not within the XML for a given slide
 			switch (slideID) {
+			case STARTPAGE:
+				createStartSlide();
+				break;
 			case INDEX:
 				createLoggedOutSlide();
 				break;
@@ -142,6 +145,10 @@ public class SlideContent extends Window {
 		}
 	}
 
+	private void createStartSlide(){
+		new StartPage();
+	}
+	
 	private void createLoggedOutSlide() {
 
 		House test = Database.getHouse(8);
@@ -182,7 +189,7 @@ public class SlideContent extends Window {
 
 	private void createProfileSlide() {
 
-		new ProfileViewer(currentUsername);
+		new ProfileViewer(viewedUsername);
 		createSidebar();
 	}
 
@@ -252,7 +259,7 @@ public class SlideContent extends Window {
 	public void createSidebar() {
 		VBox sidebar = new VBox(20);
 
-		if (slideID != INDEX && slideID != LOGIN && slideID != REGISTER) {
+		if (currentUsername != null) {
 
 			User currentUser = Database.getUser(currentUsername);
 			try {
@@ -280,9 +287,8 @@ public class SlideContent extends Window {
 			labelProfile.setFont(new Font(16));
 			labelProfile.setOnMouseClicked(new EventHandler<MouseEvent>() {
 				public void handle(MouseEvent arg0) {
-					root.getChildren().clear();
-					slideID = PROFILE;
-					createSlide();
+					viewedUsername = currentUsername;
+					loadSlide(PROFILE);
 				}
 			});
 
@@ -292,9 +298,7 @@ public class SlideContent extends Window {
 			labelSavedProperties
 					.setOnMouseClicked(new EventHandler<MouseEvent>() {
 						public void handle(MouseEvent arg0) {
-							root.getChildren().clear();
-							slideID = SAVEDPROPERTIES;
-							createSlide();
+							loadSlide(SAVEDPROPERTIES);
 						}
 					});
 			labelLandlordProperties = new Label(Translate.translateText(languageIndex,
@@ -303,9 +307,7 @@ public class SlideContent extends Window {
 			labelLandlordProperties
 					.setOnMouseClicked(new EventHandler<MouseEvent>() {
 						public void handle(MouseEvent arg0) {
-							root.getChildren().clear();
-							slideID = LANDLORDPROPERTIES;
-							createSlide();
+							loadSlide(LANDLORDPROPERTIES);
 						}
 					});
 			labelLogOut = new Label(Translate.translateText(languageIndex,
@@ -333,7 +335,9 @@ public class SlideContent extends Window {
 			setupLabelHover(labelLogOut);
 
 			sidebar.getChildren().addAll(labelName, labelProfile,
-					labelSavedProperties, labelLandlordProperties, labelLogOut);
+					labelSavedProperties);
+			if(currentUser.landlord)sidebar.getChildren().add(labelLandlordProperties);
+			sidebar.getChildren().add(labelLogOut);
 		} else {
 			labelLogin = new Label(Translate.translateText(languageIndex,
 					"Login"));
@@ -508,8 +512,7 @@ public class SlideContent extends Window {
 					.getSelectedIndex();
 
 			if (slideID == INDEX || slideID == HOUSES) {
-				/*houseAdverts.desc.setText(Translate.translateText(
-						languageIndex, "What a lovely house!"));*/
+				houseAdverts.UpdateLanguage();
 				
 				videoButton.setText(Translate.translateText(languageIndex,
 						"Video Tour"));

@@ -67,8 +67,7 @@ public class Database {
 	// down box or another selection method that calls your own string for the
 	// field
 	// required to check if you even give the user the option
-	private final static String usernameField = "username";
-	private final static String passwordField = "password";
+
 
 	/**
 	 * A void function used to open our database connection
@@ -474,7 +473,7 @@ public class Database {
 		// select that user
 		try {
 			PreparedStatement getUsername = con
-					.prepareStatement("SELECT username FROM users WHERE uid=?");
+					.prepareStatement("SELECT username FROM users WHERE id=?");
 			// parameterise inputs
 			getUsername.setInt(1, uid);
 			// execute

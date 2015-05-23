@@ -6,49 +6,47 @@ package Profile;
 //import java.util.Locale;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
-import Button.ButtonType;
-import Button.SetupButton;
-import presenter.SlideContent;
-import database.DataHandler;
-import database.Database;
-import database.User;
-import javafx.event.EventHandler;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.Cursor;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.text.Font;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import landlord.EditProperty;
+import presenter.SlideContent;
+import Button.ButtonType;
+import Button.SetupButton;
+import database.DataHandler;
+import database.Database;
+import database.User;
 
 public class Register extends presenter.Window {
 
-	public String userFirstname, userLastName, userEmail, userName,
-			encryptedPassword, dateOfBirth;
+	public String encryptedPassword, dateOfBirth;
 	public User user = null;
-	private String userPassword, userRepeatPassword;
 	// private static MessageDigest digester;
 
-	private TextField username;
-	private TextField firstname;
-	private TextField lastname;
-	private TextField email;
+	private TextField username, firstname, lastname, email, skypeID;
 	private PasswordField password;
 	private PasswordField repeatPassword;
 	private GridPane registerGrid = new GridPane();
-	
+
 	private RadioButton buttonStudent = new RadioButton("Student");
 	private RadioButton buttonLandlord = new RadioButton("Landlord");
-	private RadioButton buttonOther = new RadioButton("Other");
 
-	private ComboBox<String> comboDoBYear = new ComboBox<String>();
-	private ComboBox<String> comboDoBMonth = new ComboBox<String>();
-	private ComboBox<String> comboDoBDay = new ComboBox<String>();
+	ArrayList<ComboBox<String>> dateOfBirthCombo = new ArrayList<ComboBox<String>>();
 
 	public static void main(String[] args) {
 		Database.dbConnect();
@@ -56,14 +54,13 @@ public class Register extends presenter.Window {
 	}
 
 	public Register() {
-		
+
 		setupGrid();
 		setupTitle();
 		setupTextFields(registerGrid);
-		setupDoB();
 		setupPasswordFields(registerGrid);
 		setupButtons();
-		
+
 		root.getChildren().add(registerGrid);
 
 	}
@@ -72,9 +69,9 @@ public class Register extends presenter.Window {
 
 		registerGrid.setVgap(30);
 		registerGrid.setHgap(30);
-		registerGrid.relocate(250,90);
+		registerGrid.relocate(250, 90);
 	}
-	
+
 	public void setupTitle() {
 
 		final Label topTitle = new Label("Register");
@@ -88,219 +85,150 @@ public class Register extends presenter.Window {
 	public void setupTextFields(GridPane grid) {
 		HBox hBoxAccountType = new HBox(10);
 		ToggleGroup group = new ToggleGroup();
-		
+
 		// username field
 		username = new TextField();
 		username.setPromptText("Username");
 		username.setPrefColumnCount(10);
-		registerGrid.addRow(1,new Label("Enter your username:"),username);
+		registerGrid.addRow(1, new Label("Enter your username:"), username);
 
 		// First Name field
 		firstname = new TextField();
 		firstname.setPromptText("Joe");
 		firstname.setPrefColumnCount(10);
-		registerGrid.addRow(2,new Label("First name:"),firstname);
+		registerGrid.addRow(2, new Label("First name:"), firstname);
 
 		// Last Name field
 		lastname = new TextField();
 		lastname.setPromptText("Bloggs");
 		lastname.setPrefColumnCount(10);
-		registerGrid.addRow(3,new Label("Last name:"),lastname);
-		
+		registerGrid.addRow(3, new Label("Last name:"), lastname);
+
 		// Account Type radio buttons
 		buttonStudent.setToggleGroup(group);
 		buttonLandlord.setToggleGroup(group);
-		buttonOther.setToggleGroup(group);
-		hBoxAccountType.getChildren().addAll(buttonStudent, buttonLandlord, buttonOther);
-		registerGrid.addRow(5,new Label("Account Type:"),hBoxAccountType);
-		
+		hBoxAccountType.getChildren().addAll(buttonStudent, buttonLandlord);
+		registerGrid.addRow(5, new Label("Account Type:"), hBoxAccountType);
+
 		// Email field
 		email = new TextField();
 		email.setPromptText("example@mail.com");
 		email.setPrefColumnCount(10);
-		registerGrid.addRow(6,new Label("Email:"),email);
-	}
-	
-	public void setupDoB() {
+		registerGrid.addRow(6, new Label("Email:"), email);
 
-		// Populate comboboxes with relevant string values
-				for (int i = 1; i < 32; i++) {
-					comboDoBDay.getItems().add(String.format("%02d", i));
-				}
-				for (int i = 1; i < 13; i++) {
-					comboDoBMonth.getItems().add(String.format("%02d", i));
-				}
-				for (int i = 2015; i > 1919; i--) {
-					comboDoBYear.getItems().add(String.format("%04d", i));
-				}
+		skypeID = new TextField();
+		skypeID.setPromptText("jBloggs1");
+		skypeID.setPrefColumnCount(10);
+		registerGrid.addRow(7, new Label("Skype Username:"), skypeID);
 
-		registerGrid.add(new Label("Date of Birth: "), 0, 4);
-
-		comboDoBDay.setValue("DD");
-		comboDoBMonth.setValue("MM");
-		comboDoBYear.setValue("YYYY");
-		
-		comboDoBMonth.valueProperty().addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(@SuppressWarnings("rawtypes") ObservableValue ov, String previousValue,
-					String newValue) {
-				
-				comboDoBDay.setValue("DA");
-				comboDoBDay.getItems().clear();
-				switch (newValue) {
-					case "09":
-					case "04":
-					case "06":
-					case "11":
-						for (int i = 1; i < 31; i++) {
-							comboDoBDay.getItems().add(String.format("%02d", i));
-						}
-						break;
-					case "02":
-						for (int i = 1; i < 29; i++) {
-							comboDoBDay.getItems().add(String.format("%02d", i));
-						}
-						break;
-					default:
-						for (int i = 1; i < 32; i++) {
-							comboDoBDay.getItems().add(String.format("%02d", i));
-						}
-						break;
-				
-				}
-				comboDoBDay.setValue("DD");
-				
-			}
-		});
-		
+		dateOfBirthCombo = EditProperty.setupDate("2015-01-01");
 		HBox comboBoxes = new HBox(30);
-		comboBoxes.getChildren().addAll(comboDoBDay,comboDoBMonth,comboDoBYear);
+		comboBoxes.getChildren().addAll(dateOfBirthCombo.get(0),
+				dateOfBirthCombo.get(1), dateOfBirthCombo.get(2));
 		registerGrid.add(comboBoxes, 1, 4);
-
 	}
 
 	public void setupPasswordFields(GridPane grid) {
 
 		// Password field
 		password = new PasswordField();
-		registerGrid.add(new Label("Password: "), 0, 7);
+		registerGrid.add(new Label("Password: "), 0, 8);
 		password.setPromptText("Your Password");
 		password.setPrefColumnCount(10);
-		registerGrid.add(password, 1, 7);
+		registerGrid.add(password, 1, 8);
+		
 
 		// Repeat Password field
 		repeatPassword = new PasswordField();
-		registerGrid.add(new Label("Confirm Password: "), 0, 8);
+		registerGrid.add(new Label("Confirm Password: "), 0, 9);
 		repeatPassword.setPromptText("Your Password");
 		repeatPassword.setPrefColumnCount(10);
-		registerGrid.add(repeatPassword, 1, 8);
+		registerGrid.add(repeatPassword, 1, 9);
 	}
 
-	
-
 	public void setupButtons() {
-		
+
 		// Add button to grid
-		ButtonType button1 = new ButtonType("150,150,150",null,"Register",100,30);
+		ButtonType button1 = new ButtonType("150,150,150", null, "Register",
+				100, 30);
 		Button registerButton = new SetupButton().CreateButton(button1);
-		registerGrid.add(registerButton, 0, 9);
-		GridPane.setConstraints(registerButton, 0, 9, 2, 1, HPos.CENTER, VPos.CENTER);
+		registerGrid.add(registerButton, 0, 10);
+		GridPane.setConstraints(registerButton, 0, 10, 2, 1, HPos.CENTER,
+				VPos.CENTER);
 
 		// Save button
 		registerButton.setCursor(Cursor.HAND);
-		registerButton.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent event) {
-
-				saveChanges();
-			}
-
-		});
+		registerButton.setOnAction(new saveChanges());
 
 		SlideContent.setupBackButton();
 	}
 
-	public boolean saveChanges() {
+	public class saveChanges implements EventHandler<ActionEvent> {
 
-		boolean regSuccess;
+		public void handle(ActionEvent arg0) {
 
-		user = new User((String) username.getText());
+			boolean regSuccess;
 
-		// Storing inputs from user
-		userPassword = (String) password.getText();
-		userFirstname = (String) firstname.getText();
+			user = new User(username.getText());
 
-		userLastName = (String) lastname.getText();
+			dateOfBirth = dateOfBirthCombo.get(2).getValue() + "-"
+					+ dateOfBirthCombo.get(1).getValue() + "-"
+					+ dateOfBirthCombo.get(0).getValue();
 
-		userName = (String) username.getText();
-		userEmail = (String) email.getText();
+			String userEmail = email.getText();
+			// Check if the entered email address is valid
+			if (DataHandler.isValidEmailAddress(email.getText()) == false) {
+				userEmail = "";
+			}
 
-		userRepeatPassword = (String) repeatPassword.getText();
+			// Check if the entered passwords address is valid
+			// If valid, it is encrypted and stored
+			if (DataHandler.passwordChecker(password.getText(), repeatPassword.getText()) == false) {
+				System.out.println("Password check failed");
+			} else {
+				encryptedPassword = DataHandler.crypt(password.getText());
+				user.password(encryptedPassword);
 
-		dateOfBirth = comboDoBYear.getValue() + "-" + comboDoBMonth.getValue() + "-" + comboDoBDay.getValue();
-
-		// Check if the entered email address is valid
-		if (DataHandler.isValidEmailAddress(userEmail) == false) {
-			userEmail = "";
-		}
-
-		// Check if the entered passwords address is valid
-		// If valid, it is encrypted and stored
-		if (DataHandler.passwordChecker(userPassword, userRepeatPassword) == false) {
-			System.out.println("Password check failed");
-			return false;
-		} else {
-			encryptedPassword = DataHandler.crypt(userPassword);
-			user.password(encryptedPassword);
-
-			// initialize user
-			user.DOB(dateOfBirth);
-			user.firstName(userFirstname);
-			user.secondName(userLastName);
-			user.email(userEmail);
-			// no priviledges
-			user.admin(false);
-			user.landlord(false);
-
-			// register user
-			regSuccess = Database.userRegister(user);
-			if (regSuccess == true) {
-				// carry on to whatever interface you want, maybe login, or
+				// initialize user
+				user.DOB(dateOfBirth);
+				user.firstName(firstname.getText());
+				user.secondName(lastname.getText());
+				user.email(userEmail);
+				// no priviledges
+				user.admin(false);
+				
+				user.landlord(buttonLandlord.isSelected());
 
 				// register user
 				regSuccess = Database.userRegister(user);
+				
 				if (regSuccess == true) {
 					// carry on to whatever interface you want, maybe login, or
 
+					// register user
+					regSuccess = Database.userRegister(user);
+					if (regSuccess == true) {
+
+						System.out.println("User: " + user.username
+								+ " created successfully");
+					}
+					// log the new user in
+					User user = Database.getUser(username.getText());
+					currentUsername = username.getText();
+					try {
+						user.printUser();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 					// go to users new profile
-					root.getChildren().clear();
-					slideID = LOGIN;
-					SlideContent sc = new SlideContent();
-					sc.createSlide();
+					firstLogin = true;
+					currentUsername = user.username;
+					loadSlide(PROFILE);
 
 					System.out.println("User: " + user.username
 							+ " created successfully");
 				}
-				//log the new user in
-				User user = Database.getUser(username.getText());
-				currentUsername = username.getText();
-				try {
-					user.printUser();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				// go to users new profile
-				root.getChildren().clear();
-				slideID = PROFILE;
-				firstLogin = true;
-				currentUsername = user.username;
-				SlideContent sc = new SlideContent();
-				sc.createSlide();
-
-				System.out.println("User: " + user.username
-						+ " created successfully");
 			}
 		}
-		return regSuccess;
 	}
 }

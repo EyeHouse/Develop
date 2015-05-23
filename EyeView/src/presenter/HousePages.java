@@ -6,14 +6,21 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Pagination;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.util.Callback;
 import javafx.util.Duration;
+import language.Translate;
 import Button.ButtonType;
 import Button.SetupButton;
 import Profile.SavedProperties;
@@ -31,6 +38,8 @@ public class HousePages extends Window {
 	private ArrayList<String> savedProperties = new ArrayList<String>();
 	private ArrayList<House> houses = new ArrayList<House>();
 	private ArrayList<ArrayList<Image>> galleries = new ArrayList<ArrayList<Image>>();
+	public Label labelBedrooms = new Label();
+	public Label labelLandlord= new Label();
 
 	public HousePages(boolean singlePropertyView, ArrayList<House> houses1) {
 		
@@ -73,9 +82,8 @@ public class HousePages extends Window {
 	
 	protected Pane createHousePage(Integer pageIndex) {
 		
-		StackPane pane = new StackPane();	
+		VBox propertyInfo = new VBox(20);
 		
-		pane.resize(300,400);
 		Pane galleryPane = new Pane();
 		galleryPane.setPrefSize(750, 550);
 		galleryPane.getChildren().clear();
@@ -85,18 +93,40 @@ public class HousePages extends Window {
 		galleryPane.getChildren().add(gallery.getGallery());
 
 
-		TextElement address = new TextElement(houses.get(pageIndex).address);
-		TextElement price = new TextElement("£" + Integer.toString(houses.get(pageIndex).price) + " pcm");
-		price.setYpos(0.2);
-		TextElement bedrooms = new TextElement("Bedrooms: " + Integer.toString(houses.get(pageIndex).rooms));
-		bedrooms.setYpos(0.4);
-		TextHandler textHandler = new TextHandler();
-		textHandler.addTextElement(address);
-		textHandler.addTextElement(price);
-		textHandler.addTextElement(bedrooms);
-		textHandler.display(pane);
+		Label address = new Label(houses.get(pageIndex).address);
+		address.setFont(Font.font(null, FontWeight.BOLD, 24));
+		Label price = new Label("£" + Integer.toString(houses.get(pageIndex).price) + " pcm");
+		price.setFont(new Font(20));
 		
-		pane.relocate(450, 0);
+		HBox bedroomsBox = new HBox(0);
+		labelBedrooms = new Label(Translate.translateText(languageIndex, "Bedrooms") + ": ");
+		labelBedrooms.setFont(new Font(20));
+		Label bedrooms = new Label(Integer.toString(houses.get(pageIndex).rooms));
+		bedroomsBox.getChildren().addAll(labelBedrooms,bedrooms);
+		bedrooms.setFont(new Font(20));
+		
+		HBox landlordBox = new HBox(0);
+		final User landlordUser = Database.getUser(Database.getUsername(houses.get(pageIndex).uid));
+		labelLandlord = new Label(Translate.translateText(languageIndex, "Landlord") + ": ");
+		labelLandlord.setFont(new Font(20));
+		Label landlord = new Label(landlordUser.first_name);
+		if(currentUsername != null){
+			landlord.setCursor(Cursor.HAND);
+			landlord.setOnMouseClicked(new EventHandler<MouseEvent>() {
+				public void handle(MouseEvent ae) {
+					// Add house save to database.
+					viewedUsername = landlordUser.username;
+					loadSlide(PROFILE);
+				}
+			});
+		}
+				
+		landlordBox.getChildren().addAll(labelLandlord,landlord);
+		landlord.setFont(new Font(20));
+		
+		propertyInfo.getChildren().addAll(address,price,bedroomsBox,landlordBox);
+		propertyInfo.relocate(450, 100);
+
 				
 		setupSaveButton(galleryPane);
 		
@@ -104,7 +134,7 @@ public class HousePages extends Window {
 			SavedProperties.setupPropertyBackButton();
 		}
 		
-		galleryPane.getChildren().add(pane);
+		galleryPane.getChildren().add(propertyInfo);
 
 		return galleryPane;
 	}
@@ -198,5 +228,12 @@ public class HousePages extends Window {
 			advertTimer.pause();
 			break;
 		}
+	}
+	
+	public void UpdateLanguage(){
+		labelBedrooms.setText(Translate.translateText(
+				languageIndex, "Bedrooms") + ": ");
+		labelLandlord.setText(Translate.translateText(
+				languageIndex, "Landlord") + ": ");
 	}
 }

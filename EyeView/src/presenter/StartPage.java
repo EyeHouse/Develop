@@ -9,6 +9,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
@@ -84,12 +85,12 @@ public class StartPage extends Window {
 		centreBox.setHeight(rectangleHeight);
 		
 		//Define start button type
-		ButtonType button1 = new ButtonType("104,158,239", "104,158,239", "Start", 100,
+		ButtonType button1 = new ButtonType("104,158,239", null, "Start", 100,
 				30);
 		
 		//Create start button
 		buttonStart = new SetupButton().CreateButton(button1);
-		
+		buttonStart.setCursor(Cursor.HAND);
 		//Set the action of the start button
 		buttonStart.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent ae) {
@@ -118,33 +119,17 @@ public class StartPage extends Window {
 		
 		//Create an arraylist of pictures for the pictures banner
 		ArrayList<Image> gallery = new ArrayList<Image>();
-		Image image1 = new Image("file:resources/start_page_images/House1.JPG");
-		Image image2 = new Image("file:resources/start_page_images/House2.jpg");
-		Image image3 = new Image("file:resources/start_page_images/House3.jpg");
-		Image image4 = new Image("file:resources/start_page_images/House4.jpg");
-		Image image5 = new Image("file:resources/start_page_images/House5.jpg");
-		Image image6 = new Image("file:resources/start_page_images/House6.jpg");
-		Image image7 = new Image("file:resources/start_page_images/House7.jpg");
-		Image image8 = new Image("file:resources/start_page_images/House8.jpg");
-		Image image9 = new Image("file:resources/start_page_images/House9.jpg");
-		Image image10 = new Image("file:resources/start_page_images/House10.jpg");		
-		gallery.add(image1);
-		gallery.add(image2);
-		gallery.add(image3);
-		gallery.add(image4);
-		gallery.add(image5);
-		gallery.add(image6);
-		gallery.add(image7);
-		gallery.add(image8);
-		gallery.add(image9);
-		gallery.add(image10);
+		for(int i = 1; i < 11; i++){
+			Image image = new Image("file:resources/start_page_images/House" + i + ".JPG");
+			gallery.add(image);
+		}
 
 		//Create pictures banner
 		bannerPictures = new PicturesBanner(gallery);
 		bannerPictures.setPrefSize(xResolution, bannerHeight);
 		
 		//Add all elements to the page
-		root.getChildren().addAll(background, centreBox, elementBox, logo, bannerPictures);
+		root.getChildren().addAll(background, centreBox, logo, bannerPictures, elementBox);
 	}
 	
 		/**
