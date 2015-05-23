@@ -4,34 +4,45 @@
 		<author>EyeHouse</author>
 		<version>1.0</version>
 		<comment>Private Student Housing Software</comment>
-		<groupid>5</groupid>
+		<groupid>0</groupid>
 	</documentinfo>
 	<defaultsettings>
 		<backgroundcolor>#ff00ff00</backgroundcolor>
 		<font>Calibri</font>
 		<fontsize>12</fontsize>
-		<fontcolor>#ffcccc00</fontcolor>
+		<fontcolor>#ff0000ff</fontcolor>
 	</defaultsettings>
-	<slide id="1" title="First Slide">
-		<text sourcefile="" xstart="0.5" ystart="0.5" font="arial" fontsize="24" fontcolor="#ff112233"  duration="1.5">
-			Some Text.
+	<slide duration="5">
+		<text sourcefile="" xstart="0.1" ystart="0.1" font="impact" fontsize="40" fontcolor="#ff0000ff" duration="0">
+			slide ONE
 		</text>
-		<image sourcefile="selfie.jpg" xstart="0.5" ystart="0.5" scale="1.0" duration="1.5" starttime="2.0" />
+		<text sourcefile="" xstart="0.1" ystart="0.2">
+			slide ONE in default setting
+		</text>
+		<text sourcefile="info.txt" xstart="0.1" ystart="0.3">
+			it shouldnt display this. in default settings
+		</text>
+		<text sourcefile="info.txt" xstart="0.1" ystart="0.4" font="impact" fontsize="40" fontcolor="#ff0000ff" duration="2">
+			it shouldnt display this. 
+		</text>
+		<image sourcefile="file:./resources/images/profile.png" xstart="0.2" ystart="0.1" scale="0.5" duration="2" starttime="2"/>
+		<image sourcefile="file:./resources/images/Skype.png" xstart="0.5" ystart="0.5" scale="1.0" duration="2" starttime="2"/>
 		<audio sourcefile="gavel.wav" starttime="2.5" />
-		<video sourcefile="avengers.mp4" xstart="0.5" ystart="0.5" />
-		<image sourcefile="icon.png" xstart="0.2" ystart="0.1" scale="0.25" />
-		<graphic type="oval" xstart="0.5" ystart="0.5" xend="0.7" yend="0.7" solid="true" graphiccolor="#11223344" duration="1.5">
+		<video sourcefile="resources/videos/avengers-featurehp.mp4" xstart="0" ystart="0" />
+		<video sourcefile="resources/videos/avengers-featurehp.mp4" xstart="0.5" ystart="0" />
+		<graphic type="rectangle" xstart="0.5" ystart="0.2" xend="0.7" yend="0.7" solid="true" graphiccolor="#ff223344" duration="1.5" />
+		<graphic type="oval" xstart="0.5" ystart="0.5" xend="0.7" yend="0.7" solid="true" graphiccolor="#ff0000ff" duration="3.5">
 			<cyclicshading shadingcolor="#88776655" />
 		</graphic>
 	</slide>
-	<slide id="2" title="Second Slide">
-		<video sourcefile="prometheus.mp4" xstart="0.1" ystart="0.1" />
-		<text sourcefile="info.txt" xstart="0.5" ystart="0.5">
-			This text should be ignored.
+	<slide duration="0">
+		<text sourcefile="" xstart="0.1" ystart="0.1" font="impact" fontsize="40" fontcolor="#ff0000ff" duration="0">
+			slide TWO
 		</text>
-		<image sourcefile="companylogo.jpg" xstart="0.5" ystart="0.5" scale="1.0" duration="1.5" starttime="2.0" />
-		<audio sourcefile="honk.wav" starttime="2.5" />
-		<video sourcefile="musicvideo.mp4" xstart="0.3" ystart="0.6" />
-		<graphic type="rectangle" xstart="0.5" ystart="0.5" xend="0.7" yend="0.7" solid="true" graphiccolor="#11223344" duration="1.5" />
+		<video sourcefile="resources/videos/avengers-featurehp.mp4" xstart="0" ystart="0" />
+		<video sourcefile="resources/videos/avengers-featurehp.mp4" xstart="0.5" ystart="0" />
+		<video sourcefile="resources/videos/avengers-featurehp.mp4" xstart="0" ystart="0.5" />
+		<video sourcefile="resources/videos/avengers-featurehp.mp4" xstart="0.5" ystart="0.5" />
+		<graphic type="rectangle" xstart="0.5" ystart="0.5" xend="0.7" yend="0.7" solid="true" graphiccolor="#ff223344" duration="1.5" />
 	</slide>
 </slideshow>
