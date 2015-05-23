@@ -27,6 +27,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import parser.AudioData;
 import parser.GraphicData;
 import parser.ImageData;
 import parser.TextData;
@@ -42,16 +43,14 @@ import Profile.SavedProperties;
 public class LoadXML extends Window{
 
 public void loadXMLText() throws IOException {
-		
-		StackPane textPane = new StackPane();
-		textPane.relocate(0, 0);
-		textPane.resize(xResolution, yResolution);
-		
-		TextHandler th = new TextHandler();
+	
 		List<TextData> textList = slideData.getTextList();
 		
 		for (TextData currentText : textList) {
-			//System.out.println(currentText.getSource());
+			TextHandler th = new TextHandler();
+			StackPane textPane = new StackPane();
+			textPane.relocate(0, 0);
+			textPane.resize(xResolution, yResolution);
 			
 			if (currentText.getSource().endsWith(".txt")) {
 				th.addTextElementByFile(
@@ -68,10 +67,9 @@ public void loadXMLText() throws IOException {
 						new Font(currentText.getFont(), currentText.getFontSize()),
 						currentText.getDuration());
 			}
+			th.display(textPane);
+			root.getChildren().add(textPane);
 		}
-		
-		th.display(textPane);
-		root.getChildren().add(textPane);
 	}
 	
 	public void loadXMLGraphics() {
@@ -101,14 +99,19 @@ public void loadXMLText() throws IOException {
 					currentImage.getYstart(), currentImage.getScale(),
 					currentImage.getDuration(), currentImage.getStarttime(),
 					0);
+			System.out.println(image.sourcefile);
+			System.out.println(image.duration);
+			System.out.println(image.scale);
+			System.out.println(image.specifiedWidth);
+			System.out.println(image.starttime);
+			System.out.println(image.xstart);
+			System.out.println(image.ystart);
 			ih.createImage(image);
 		}
 	}
 	
 	public void loadXMLVideos() {
-		
-		
-		
+			
 		List<VideoData> videoList = slideData.getVideoList();
 		
 		for (VideoData currentVideo : videoList) {
@@ -122,9 +125,19 @@ public void loadXMLText() throws IOException {
 			video.setXpos(currentVideo.getXstart());
 			video.setYpos(currentVideo.getYstart());
 			video.display(videoPane);
+			video.setStylesheet("resources/videoStyle.css");
 			root.getChildren().add(videoPane);
 		}
+	}
+	
+	public void loadXMLAudio() {
 		
+		List<AudioData> audioList = slideData.getAudioList();
+		
+		for (AudioData currentAudio : audioList) {
+			AudioHandler.setupAudioElement(currentAudio.getSource(), currentAudio.getStarttime());
+			//System.out.println(currentAudio.getSource() + " " + currentAudio.getStarttime());
+		}  
 	}
 	
 }
