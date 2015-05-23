@@ -104,6 +104,9 @@ public class VideoElement {
 	private Text timeLabel;
 	private Slider timeSlider;
 	
+	public double currentVideoTime;
+	
+	
 	private ParallelTransition transition = null;
 	
 	/**
@@ -343,7 +346,19 @@ public class VideoElement {
 		timeSlider.setValue(mediaPlayer.getCurrentTime().toSeconds());
 		
 		timeLabel.setText(formatTime(mediaPlayer.getCurrentTime()));
+
 	}
+
+	public String printCurrentVideoTime() {
+		currentVideoTime = mediaPlayer.getCurrentTime().toSeconds();
+		
+		int seconds = (int) Math.floor(mediaPlayer.getCurrentTime().toSeconds() - 
+				(Math.floor(mediaPlayer.getCurrentTime().toMinutes()) * 60));
+		int minutes = (int) Math.floor(mediaPlayer.getCurrentTime().toMinutes() - 
+				(Math.floor(mediaPlayer.getCurrentTime().toHours()) * 60));
+		return String.format("%02d:%02d", minutes, seconds);
+	}
+	
 	
 	/**
 	 * Turns a duration into a string, format "h:mm:ss"
@@ -515,4 +530,5 @@ public class VideoElement {
 	public void setAutoplay(boolean autoplay) {
 		this.autoplay = autoplay;
 	}
+
 }
