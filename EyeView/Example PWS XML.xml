@@ -28,7 +28,8 @@
 		<image sourcefile="file:./resources/images/profile.png" xstart="0.2" ystart="0.1" scale="0.5" duration="2" starttime="2"/>
 		<image sourcefile="file:./resources/images/Skype.png" xstart="0.5" ystart="0.5" scale="1.0" duration="2" starttime="2"/>
 		<audio sourcefile="gavel.wav" starttime="2.5" />
-		<video sourcefile="avengers.mp4" xstart="0.5" ystart="0.5" />
+		<video sourcefile="resources/videos/avengers-featurehp.mp4" xstart="0" ystart="0" />
+		<video sourcefile="resources/videos/avengers-featurehp.mp4" xstart="0.5" ystart="0" />
 		<graphic type="rectangle" xstart="0.5" ystart="0.2" xend="0.7" yend="0.7" solid="true" graphiccolor="#ff223344" duration="1.5" />
 		<graphic type="oval" xstart="0.5" ystart="0.5" xend="0.7" yend="0.7" solid="true" graphiccolor="#ff0000ff" duration="3.5">
 			<cyclicshading shadingcolor="#88776655" />
@@ -38,7 +39,10 @@
 		<text sourcefile="" xstart="0.1" ystart="0.1" font="impact" fontsize="40" fontcolor="#ff0000ff" duration="0">
 			slide TWO
 		</text>
-		
+		<video sourcefile="resources/videos/avengers-featurehp.mp4" xstart="0" ystart="0" />
+		<video sourcefile="resources/videos/avengers-featurehp.mp4" xstart="0.5" ystart="0" />
+		<video sourcefile="resources/videos/avengers-featurehp.mp4" xstart="0" ystart="0.5" />
+		<video sourcefile="resources/videos/avengers-featurehp.mp4" xstart="0.5" ystart="0.5" />
 		<graphic type="rectangle" xstart="0.5" ystart="0.5" xend="0.7" yend="0.7" solid="true" graphiccolor="#ff223344" duration="1.5" />
 	</slide>
 </slideshow>
