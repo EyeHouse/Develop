@@ -34,6 +34,8 @@ public class Window extends Application {
 	public static final int MOREINFO = 9;
 	public static final int REVIEWS = 10;
 	public static final int MAP = 11;
+	public static final int LANDLORDPROPERTIES = 12;
+	public static final int EDITPROPERTY = 13;
 	
 
 	public static SlideshowData slideshow;
@@ -41,6 +43,7 @@ public class Window extends Application {
 	public static SlideData slideData;
 	public static String groupID;
 	public static int slideID;
+	public static int prevSlideID = INDEX;
 
 	public static String currentUsername = null;
 	public static int currentPropertyID = 0;
