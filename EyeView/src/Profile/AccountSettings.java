@@ -162,28 +162,18 @@ public class AccountSettings extends presenter.Window{
 
 	/* Add profile label and text area to grid */
 	public void SetupProfileText() {
-		VBox vBoxProfileText = new VBox(5);
 		Label labelProfileText = new Label("Profile");
-		final Label labelProfileChars = new Label("Characters Remaining: " + (256 - profileText.getText().length()));
 
 		// Load profile text area with current user profile and set size
-		profileText.setText("");
+		profileText.setText(currentUser.bio);
 		profileText.setMaxHeight(gridCellHeight * 3);
 		profileText.setPrefWidth(150);
 		profileText.setWrapText(true);
 		
-		profileText.textProperty().addListener(new ChangeListener<String>() {
-		    @Override
-		    public void changed(final ObservableValue<? extends String> observable, final String oldValue, final String newValue) {
-		        if(newValue.length()>256)profileText.setText(oldValue);
-		    	labelProfileChars.setText("Characters Remaining: " + (256 - profileText.getText().length()));
-		    }
-		});
-		vBoxProfileText.getChildren().addAll(profileText,labelProfileChars);
 		profileText.setPrefWidth(200);
 
 		// Add profile label and text area to grid
-		grid.addRow(9, labelProfileText, vBoxProfileText);
+		grid.addRow(9, labelProfileText, profileText);
 	}
 
 	/* Add apply and cancel buttons to grid */
