@@ -1,44 +1,16 @@
 package presenter;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JOptionPane;
-
-import maps.GoogleMapsPage;
-import database.Database;
-import database.House;
-import database.User;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Pos;
-import javafx.scene.Cursor;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import parser.AudioData;
 import parser.GraphicData;
 import parser.ImageData;
 import parser.TextData;
 import parser.VideoData;
-import Button.ButtonType;
-import Button.SetupButton;
-import Profile.AccountSettings;
-import Profile.Login;
-import Profile.ProfileViewer;
-import Profile.Register;
-import Profile.SavedProperties;
 
 public class LoadXML extends Window{
 
@@ -136,7 +108,7 @@ public void loadXMLText() throws IOException {
 		
 		for (AudioData currentAudio : audioList) {
 			AudioHandler.setupAudioElement(currentAudio.getSource(), currentAudio.getStarttime());
-			//System.out.println(currentAudio.getSource() + " " + currentAudio.getStarttime());
+			System.out.println(currentAudio.getSource() + " " + currentAudio.getStarttime());
 		}  
 	}
 	

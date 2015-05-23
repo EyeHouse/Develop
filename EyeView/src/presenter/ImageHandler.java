@@ -1,154 +1,157 @@
 package presenter;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.ArrayList;
 
-import presenter.ImageElement;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.util.Duration;
 
 /**
- * This class implements an image element function with values passed in
+ * This class implements an image element function with values passed in.
  * 
- * @version 2.4 05.03.15
+ * @version 2.5 12.03.15
  * @author EyeHouse
- *  
+ * 
  *         Copyright 2015 EyeHouse
  */
 
-public class ImageHandler extends Window {
+public class ImageHandler extends Window{
 
 	private float xPosition; // Horizontal position of image to be displayed
 	private float yPosition; // Vertical position of image to be displayed
 	private float width; // Pixel width of image
 	private float scaleFactor; // Factor to scale image by specified width
 	private float scaledWidth; // Pixel width after image scaling
-	private Timer imageTimer;
-	private ImageView houseImage; // ImageView in which Image is drawn
+
+	// ArrayList of ImageViews to contain images added to group.
+	private ArrayList<ImageView> imageObjectArray = new ArrayList<ImageView>();
+
+	// ImageElement to contain information of current image.
+	private ImageElement imageData;
+
+	private int imageIndex; // Index of current image.
 
 	/**
 	 * This method loads an image and places it in the group at the specified x
 	 * and y position, and with specified scale, and displays it at a specified
 	 * time and for a specified duration
 	 * 
+	 * @param root
+	 *            Group to be populated with image.
 	 * @param image
 	 *            A container containing the sourcefile and the data required to
 	 *            place an image on the screen at a specified x and y position,
 	 *            with a specified scale, and displays it at a specified time
 	 *            and for a specified duration
+	 * @param xResolution
+	 *            Width of target area in pixels.
+	 * @param yResolution
+	 *            Height of target area in pixels.
 	 */
-	public void createImage(ImageElement image) {
-
+	public void createImage(ImageElement imageData) {
+		this.imageData = imageData;
 		/*
 		 * Convert relative screen position of image to a pixel value using the
 		 * native resolution of the user's display
 		 */
-		xPosition = (float) (xResolution * image.xstart);
-		yPosition = (float) (yResolution * image.ystart);
+		xPosition = (float) (xResolution * imageData.xstart);
+		yPosition = (float) (yResolution * imageData.ystart);
 
 		// Load Image from source file
-		Image house = new Image(image.sourcefile);
-		houseImage = new ImageView(house);
+		Image image = new Image(imageData.sourcefile);
+		ImageView imageObject = new ImageView(image);
 
-		// Get the width of the image
-		width = (float) houseImage.getImage().getWidth();
+		// Get the width of the image file in pixels.
+		width = (float) imageObject.getImage().getWidth();
 
 		// Calculations for scaling the image by width if a width is specified
-		if (image.specifiedWidth != 0) {
-			scaleFactor = (image.specifiedWidth / width);
+		if (imageData.specifiedWidth != 0) {
+			scaleFactor = (imageData.specifiedWidth / width);
 			scaledWidth = (scaleFactor * width);
 
-			houseImage.setFitWidth(scaledWidth * image.scale);
+			imageObject.setFitWidth(scaledWidth * imageData.scale);
 		} else {
 			// If a width is not specified then do not scale by width
-			houseImage.setFitWidth(width * image.scale);
+			imageObject.setFitWidth(width * imageData.scale);
 		}
 
 		// Set top left pixel of image as x and y position anchor
-		houseImage.setX(xPosition);
-		houseImage.setY(yPosition);
+		imageObject.setX(xPosition);
+		imageObject.setY(yPosition);
 
 		// Preserve the aspect ratio
-		houseImage.setPreserveRatio(true);
-
-		houseImage.setVisible(false); // Make image invisible
-		root.getChildren().add(houseImage); // Add image to group
+		imageObject.setPreserveRatio(true);
+		imageObject.setVisible(false);
+		imageObjectArray.add(imageObject);
+		root.getChildren().add(imageObject);
 
 		// Initialise timer to add image
-		imageTimer = new Timer();
-		// Initialise timer task to display image on screen
-		AddImageTask addImage = new AddImageTask(image.duration);
-		/*
-		 * Schedule adding the image to the screen when timer has reached time
-		 * 'starttime'
-		 * 
-		 * Multiply 'starttime' by 1000 to convert milliseconds to seconds
-		 */
-		imageTimer.schedule(addImage, (long) image.starttime * 1000);
+		SetupImageTimer();
 	}
 
 	/**
-	 * This returns the original width of the image
+	 * This returns the width of the image
 	 * 
-	 * @return the original width of the image before any processing by the
-	 *         handler
+	 * @param widthImage
+	 *            ImageElement object containing the source file in question.
+	 * 
+	 * @return The original width of the image file before any processing by the
+	 *         handler.
 	 */
-	public float GetImageWidth() {
-		return width;
+	public float GetImageWidth(ImageElement widthImage) {
+
+		// Load Image from source file
+		Image image = new Image(widthImage.sourcefile);
+		ImageView imageObject = new ImageView(image);
+
+		// Return the width of the image file in pixels.
+		return (float) imageObject.getImage().getWidth();
 	}
 
-	/**
-	 * This class sets up and runs timer to add an image to screen after a
-	 * pre-defined delay
-	 */
-	private class AddImageTask extends TimerTask {
+	/* Setup start and duration timers to show and remove images */
+	private void SetupImageTimer() {
 
-		private float duration;
+		// Store index
+		final int currentImageIndex = imageIndex;
+		imageIndex++;
 
-		/**
-		 * Constructor allows duration to be passed into AddImageTask timer task
-		 * 
-		 * @param duration
-		 *            the length of time that the image should be displayed on
-		 *            the screen
-		 */
-		private AddImageTask(float duration) {
-			this.duration = duration;
+		// Add timeline if starttime is greater than zero.
+		if (imageData.starttime > 0) {
+
+			// Instantiate timeline to show image after start time.
+			new Timeline(new KeyFrame(
+					Duration.millis(imageData.starttime * 1000),
+					new EventHandler<ActionEvent>() {
+						public void handle(ActionEvent ae) {
+							imageObjectArray.get(currentImageIndex).setVisible(
+									true);
+						}
+					})).play();
+		} else {
+
+			// Show image if start time is 0.
+			imageObjectArray.get(currentImageIndex).setVisible(true);
 		}
 
-		/**
-		 * Method to determine what timer does when it is run
-		 */
-		public void run() {
-			houseImage.setVisible(true); // Make image visible
-			imageTimer.cancel(); // Cancel timer
+		// Add timeline if duration is greater than zero.
+		if (imageData.duration > 0) {
 
-			// Initialise a new timer to remove image
-			imageTimer = new Timer();
-			// Initialise timer task to remove image from screen
-			RemoveImageTask removeImage = new RemoveImageTask();
-			/*
-			 * Schedule the removal of the image from the screen when timer has
-			 * reached time 'starttime'
-			 * 
-			 * Multiply 'starttime' by 1000 to convert milliseconds to seconds
-			 */
-			imageTimer.schedule(removeImage, (long) duration * 1000);
+			// Instantiate Timeline to remove image after total image time.
+			new Timeline(
+					new KeyFrame(
+							Duration.millis((imageData.starttime + imageData.duration) * 1000),
+							new EventHandler<ActionEvent>() {
+								public void handle(ActionEvent ae) {
+									imageObjectArray.get(currentImageIndex)
+											.setVisible(false);
+								}
+							})).play();
 		}
-	}
 
-	/**
-	 * This class sets up and runs timer to remove an image from the screen
-	 * after a pre-defined delay
-	 */
-	private class RemoveImageTask extends TimerTask {
-
-		/**
-		 * Method to determine what timer does when it is run
-		 */
-		public void run() {
-			houseImage.setVisible(false); // Make image invisible
-			imageTimer.cancel(); // Cancel timer
-		}
 	}
 }
