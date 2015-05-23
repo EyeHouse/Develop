@@ -14,6 +14,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Cursor;
@@ -26,9 +27,9 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -171,12 +172,19 @@ public class EditProperty extends presenter.Window {
 		Button buttonFinish = new SetupButton().CreateButton(button3);
 		buttonFinish.setCursor(Cursor.HAND);
 		buttonFinish.setOnAction(new CreateHouse());
+		
+		ButtonType button4 = new ButtonType("150,150,150", null, "Cancel", 110,
+				30);
+		Button buttonCancel = new SetupButton().CreateButton(button4);
+		buttonCancel.setCursor(Cursor.HAND);
+		buttonCancel.setOnAction(new Cancel());
 
 		buttons.getChildren().addAll(buttonPrev, buttonNext);
 		allButtons.getChildren().add(buttons);
 		if (hid == 0)
 			allButtons.getChildren().add(buttonFinish);
 
+		allButtons.getChildren().add(buttonCancel);
 		if (page == 0)
 			buttonPrev.setVisible(false);
 		if (page == 2)
@@ -269,15 +277,17 @@ public class EditProperty extends presenter.Window {
 
 	public void setupHousePictures() {
 
-		GridPane imageGrid = new GridPane();
+		TilePane imageTiles = new TilePane();
 
-		imageGrid.setVgap(20);
-		imageGrid.setHgap(50);
-		int x = 0;
-		int y = 0;
+		imageTiles.setVgap(25);
+		imageTiles.setHgap(25);
+		imageTiles.setPadding(new Insets(20,20,20,20));
+		imageTiles.setTileAlignment(Pos.CENTER);
+		imageTiles.setPrefColumns(3);
+
 		houseImages = new ArrayList<HouseImage>();
 		ScrollPane imageWindow = new ScrollPane();
-		imageWindow.setMinSize(560, 600);
+		imageWindow.setMinSize(545, 600);
 
 		Label labelUpload = new Label("Add a new image:");
 		labelUpload.setFont(Font.font(null, FontWeight.BOLD, 14));
@@ -313,50 +323,33 @@ public class EditProperty extends presenter.Window {
 				Image image = new Image(input.imageIS);
 				ImageView propertyImage = new ImageView(image);
 				propertyImage.setFitWidth(150);
-				propertyImage.setFitHeight(150);
-				imageGrid.add(propertyImage, x, y);
+				propertyImage.setFitHeight(120);
 
 				CheckBox delete = new CheckBox();
 				deleteImage.add(delete);
-				imageGrid.add(delete, x, y + 1);
-
-				GridPane.setConstraints(delete, x, y + 1, 1, 1, HPos.CENTER,
-						VPos.CENTER);
-				GridPane.setConstraints(propertyImage, x, y, 1, 1, HPos.CENTER,
-						VPos.CENTER);
-
-				x++;
-				if (x > 2) {
-					x = 0;
-					y += 2;
-				}
+				
+				VBox tile = new VBox(5);
+				tile.setAlignment(Pos.CENTER);
+				tile.getChildren().addAll(propertyImage,delete);
+				imageTiles.getChildren().add(tile);
 			}
 		} else {
 			for (int i = 0; i < imagePaths.size(); i++) {
 				Image image = new Image(imagePaths.get(i));
 				ImageView propertyImage = new ImageView(image);
 				propertyImage.setFitWidth(150);
-				propertyImage.setFitHeight(150);
-				imageGrid.add(propertyImage, x, y);
 
 				CheckBox delete = new CheckBox();
 				deleteImage.add(delete);
-				imageGrid.add(delete, x, y + 1);
 
-				GridPane.setConstraints(delete, x, y + 1, 1, 1, HPos.CENTER,
-						VPos.CENTER);
-				GridPane.setConstraints(propertyImage, x, y, 1, 1, HPos.CENTER,
-						VPos.CENTER);
-
-				x++;
-				if (x > 2) {
-					x = 0;
-					y += 2;
-				}
+				VBox tile = new VBox(5);
+				tile.setAlignment(Pos.CENTER);
+				tile.getChildren().addAll(propertyImage,delete);
+				imageTiles.getChildren().add(tile);
 			}
 		}
 
-		imageWindow.setContent(imageGrid);
+		imageWindow.setContent(imageTiles);
 		grid.add(imageWindow, 0, 2);
 		grid.add(buttonDelete, 3, 2);
 		GridPane.setConstraints(imageWindow, 0, 2, 3, 1, HPos.CENTER,
@@ -446,6 +439,17 @@ public class EditProperty extends presenter.Window {
 				System.out.println("House info incomplete");
 			}
 		}
+	}
+	
+	public class Cancel implements EventHandler<ActionEvent>{
+
+		public void handle(ActionEvent arg0) {
+			root.getChildren().clear();
+			slideID = LANDLORDPROPERTIES;
+			SlideContent sc = new SlideContent();
+			sc.createSlide();
+		}
+		
 	}
 
 	public boolean CheckInfoPage() {
@@ -595,7 +599,9 @@ public class EditProperty extends presenter.Window {
 
 			else {
 				for (int i = 0; i < houseImages.size(); i++) {
+					System.out.println("Check");
 					if (deleteImage.get(i).isSelected()) {
+						System.out.println(i);
 						boolean check = Database.deleteHouseImage(houseImages
 								.get(i));
 						if (check) {
