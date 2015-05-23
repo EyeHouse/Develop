@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import javax.swing.JOptionPane;
+
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
 import javafx.scene.image.*;
@@ -39,7 +41,9 @@ public class SkypeCall extends Window {
 				    try {
 						Desktop.getDesktop().browse(uri);
 					} catch (IOException e) {
-						System.out.println("Skype not available");
+						JOptionPane.showMessageDialog(null,
+								"Skype must be installed to utilise this feature.", "Skype Call Error",
+								JOptionPane.WARNING_MESSAGE);
 					}
 				}
 			} catch (URISyntaxException e) {

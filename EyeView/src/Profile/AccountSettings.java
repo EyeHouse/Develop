@@ -10,14 +10,6 @@ package Profile;
 
 import java.util.ArrayList;
 
-import javax.swing.JOptionPane;
-
-import Button.ButtonType;
-import Button.SetupButton;
-import presenter.SlideContent;
-import database.User;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -34,9 +26,16 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+
+import javax.swing.JOptionPane;
+
 import landlord.EditProperty;
+import language.BadWordCheck;
+import presenter.SlideContent;
+import Button.ButtonType;
+import Button.SetupButton;
 import database.Database;
+import database.User;
 
 public class AccountSettings extends presenter.Window{
 
@@ -53,9 +52,8 @@ public class AccountSettings extends presenter.Window{
 	private TextArea profileText = new TextArea();
 	private RadioButton buttonStudent = new RadioButton("Student");
 	private RadioButton buttonLandlord = new RadioButton("Landlord");
-	private Label labelPasswordIncorrect;
-	private Label labelNewPasswordInvalid;
-	private Label labelUsernameAvailability;
+	private Label labelPasswordIncorrect, labelNewPasswordInvalid;
+	private Label labelUsernameError, labelBadLanguage;
 	private User currentUser;
 	ArrayList<ComboBox<String>> dateComboArray;
 
@@ -105,8 +103,8 @@ public class AccountSettings extends presenter.Window{
 		Label labelAccountType = new Label("Account Type");
 
 		// Setup username error label
-		labelUsernameAvailability = new Label("Username already exists");
-		labelUsernameAvailability.setVisible(false);
+		labelUsernameError = new Label();
+		labelUsernameError.setVisible(false);
 
 		// Setup labels with current account settings
 		fieldFName = new TextField(currentUser.first_name);
@@ -135,7 +133,7 @@ public class AccountSettings extends presenter.Window{
 				labelDoB, labelAccountType);
 		grid.addColumn(1, fieldFName, fieldLName, fieldUsername, fieldEmail,
 				hBoxDoB, hBoxAccountType);
-		grid.add(labelUsernameAvailability, 2, 2);
+		grid.add(labelUsernameError, 2, 2);
 	}
 
 	/* Add password labels and text areas to grid */
@@ -163,7 +161,9 @@ public class AccountSettings extends presenter.Window{
 	/* Add profile label and text area to grid */
 	public void SetupProfileText() {
 		Label labelProfileText = new Label("Profile");
-
+		labelBadLanguage = new Label("Contains Bad Language");
+		
+		labelBadLanguage.setVisible(false);
 		// Load profile text area with current user profile and set size
 		profileText.setText(currentUser.bio);
 		profileText.setMaxHeight(gridCellHeight * 3);
@@ -173,7 +173,7 @@ public class AccountSettings extends presenter.Window{
 		profileText.setPrefWidth(200);
 
 		// Add profile label and text area to grid
-		grid.addRow(9, labelProfileText, profileText);
+		grid.addRow(9, labelProfileText, profileText,labelBadLanguage);
 	}
 
 	/* Add apply and cancel buttons to grid */
@@ -205,8 +205,7 @@ public class AccountSettings extends presenter.Window{
 			@Override
 			public void handle(ActionEvent event) {
 
-				// Return to profile page
-				OpenProfile();
+				loadSlide(PROFILE);
 			}
 		});
 		
@@ -217,8 +216,7 @@ public class AccountSettings extends presenter.Window{
 				boolean check = Database.userDelete(currentUser.username);
 				if(check){
 					currentUsername = null;
-					root.getChildren().clear();
-					new Login();
+					loadSlide(LOGIN);
 				}
 				else JOptionPane.showMessageDialog(null,
 						"Failed to delete user", "Account Error",
@@ -251,8 +249,10 @@ public class AccountSettings extends presenter.Window{
 		Database.userUpdate(currentUser,"DOB",null,doB);
 		Database.userUpdate(currentUser,"first_name",null,fieldFName.getText());
 		Database.userUpdate(currentUser,"landlord",buttonLandlord.isSelected(),null);
-		Database.userUpdate(currentUser, "bio", null, profileText.getText());
+		
 
+		CheckBio();
+		
 		// Check username availability
 		CheckUsername();
 
@@ -264,6 +264,20 @@ public class AccountSettings extends presenter.Window{
 		fieldNewPassword.setText("");
 		fieldConfNewPassword.setText("");
 	}
+	
+	private void CheckBio(){
+		BadWordCheck bwc = new BadWordCheck();
+		if(bwc.containsBlackListedWords(profileText.getText())){
+			labelBadLanguage.setVisible(true);
+			profileText.setText(bwc.highlightBlackListedWords(profileText.getText()));
+			
+		}
+		else{
+			//System.out.println(bwc.highlightBlackListedWords(profileText.getText()));
+			labelBadLanguage.setVisible(false);
+			Database.userUpdate(currentUser, "bio", null, profileText.getText());
+		}
+	}
 
 	/* Check whether new username is available */
 	private void CheckUsername() {
@@ -271,21 +285,28 @@ public class AccountSettings extends presenter.Window{
 		// Skip check if username unchanged
 		if (!fieldUsername.getText().equals(currentUser.username)&&(!fieldUsername.getText().equals(""))) {
 
+			BadWordCheck bwc = new BadWordCheck();
+			
+			if(bwc.containsBlackListedWords(fieldUsername.getText())){
+				labelUsernameError.setText("Contains Bad Language");
+				labelUsernameError.setVisible(true);
+			}
 			// If username is unavailable
-			if (!Database.oneFieldCheck("username", fieldUsername.getText())) {
+			else if (!Database.oneFieldCheck("username", fieldUsername.getText())) {
 				// Send new username to database and remove error message
 				Database.userUpdate(currentUser,"username",null,fieldUsername.getText());
 				currentUser.username = fieldUsername.getText();
-				labelUsernameAvailability.setVisible(false);
+				labelUsernameError.setVisible(false);
 			} else {
 				
 				// Show error message if username is unavailable
-				labelUsernameAvailability.setVisible(true);
+				labelUsernameError.setText("Username Already Exists");
+				labelUsernameError.setVisible(true);
 			}
 		} else {
 			
 			// Remove error message if username is unchanged
-			labelUsernameAvailability.setVisible(false);
+			labelUsernameError.setVisible(false);
 		}
 	}
 
@@ -295,8 +316,8 @@ public class AccountSettings extends presenter.Window{
 		// Return to profile if password is not entered and there is
 		// no username error
 		if (fieldPassword.getText().equals("")) {
-			if (!labelUsernameAvailability.isVisible()) {
-				OpenProfile();
+			if (!labelUsernameError.isVisible() && !labelBadLanguage.isVisible()) {
+				loadSlide(PROFILE);
 			}
 
 			// Show password incorrect error if current password does not match
@@ -316,8 +337,8 @@ public class AccountSettings extends presenter.Window{
 				Database.userUpdate(currentUser,"password",null,fieldPassword.getText());
 
 				// Return to profile if there is no username error
-				if (!labelUsernameAvailability.isVisible()) {
-					OpenProfile();
+				if (!labelUsernameError.isVisible() && !labelBadLanguage.isVisible()) {
+					loadSlide(PROFILE);
 				}
 
 				// Show new password invalid error if new password fields do not
@@ -326,15 +347,5 @@ public class AccountSettings extends presenter.Window{
 				labelNewPasswordInvalid.setVisible(true);
 			}
 		}
-	}
-
-	/* Return to the profile page */
-	private void OpenProfile() {
-
-		// Instantiate a new ProfileViewer object and open with current user
-		root.getChildren().clear();
-		slideID = PROFILE;
-		SlideContent sc = new SlideContent();
-		sc.createSlide();
 	}
 }

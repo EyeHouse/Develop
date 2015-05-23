@@ -115,7 +115,7 @@ public class LandlordProperties extends presenter.Window {
 				sc.createSlide();
 			}
 		});
-		/*buttonDelete.setOnAction(new EventHandler<ActionEvent>() {
+		buttonDelete.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				int index = propertyList.getSelectionModel().getSelectedIndex();
 
@@ -126,9 +126,9 @@ public class LandlordProperties extends presenter.Window {
 				items.remove(items.size() - 1);
 				
 				properties.remove(index); // update database of current user
-				User.updateSavedProperties(currentUsername, properties);
+				Database.houseDelete(properties.get(index), viewedUser);
 			}
-		});*/
+		});
 		
 		buttonNew.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {

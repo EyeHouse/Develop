@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 public class BadWordCheck {
 	Scanner x;
-	String fileName = "blackListedWords.txt";
+	String fileName = "src/language/blackListedWords.txt";
 	String badWord;
 	Pattern punctuation;
 	
@@ -22,9 +22,10 @@ public class BadWordCheck {
 	 */
 	private void openFile(){
 		try{
-			x = new Scanner(new File(fileName));
+			File file = new File(fileName);
+			x = new Scanner(file);
 		} catch(Exception e) {
-			System.out.println("Could not find file" + fileName);
+			System.out.println("Could not find file: " + fileName);
 		}
 	}
 
@@ -61,7 +62,6 @@ public class BadWordCheck {
 		openFile();
 		while(x.hasNext()){
 			badWord = x.nextLine();
-			
 			if (inputText == ""){
 				badWordDectected = false;
 				break;
@@ -163,7 +163,7 @@ public class BadWordCheck {
 	public boolean containsBlackListedWords(String inputText){
 		boolean badWordDetected = false;
 		String[] inputTextWordArray = inputText.split(" ");
-		
+
 		for (int i = 0; i < inputTextWordArray.length; i++){
 			badWordDetected = CheckforBlackListedWords(inputTextWordArray[i]);
 			

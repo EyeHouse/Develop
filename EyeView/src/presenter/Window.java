@@ -22,20 +22,21 @@ public class Window extends Application {
 
 	public static final double xResolution = 960;
 	public static final double yResolution = 800;
-	public static final int INDEX = 0;
-	public static final int HOUSES = 1;
-	public static final int LOGIN = 2;
-	public static final int REGISTER = 3;
-	public static final int VIDEO = 4;
-	public static final int PROFILE = 5;
-	public static final int ACCOUNTSETTINGS = 6;
-	public static final int SAVEDPROPERTIES = 7;
-	public static final int HOUSE = 8;
-	public static final int MOREINFO = 9;
-	public static final int REVIEWS = 10;
-	public static final int MAP = 11;
-	public static final int LANDLORDPROPERTIES = 12;
-	public static final int EDITPROPERTY = 13;
+	public static final int STARTPAGE = 0;
+	public static final int INDEX = 1;
+	public static final int HOUSES = 2;
+	public static final int LOGIN = 3;
+	public static final int REGISTER = 4;
+	public static final int VIDEO = 5;
+	public static final int PROFILE = 6;
+	public static final int ACCOUNTSETTINGS = 7;
+	public static final int SAVEDPROPERTIES = 8;
+	public static final int HOUSE = 9;
+	public static final int MOREINFO = 10;
+	public static final int REVIEWS = 11;
+	public static final int MAP = 12;
+	public static final int LANDLORDPROPERTIES = 13;
+	public static final int EDITPROPERTY = 14;
 	
 
 	public static SlideshowData slideshow;
@@ -43,9 +44,10 @@ public class Window extends Application {
 	public static SlideData slideData;
 	public static String groupID;
 	public static int slideID;
-	public static int prevSlideID = INDEX;
+	public static int prevSlideID = STARTPAGE;
 
 	public static String currentUsername = null;
+	public static String viewedUsername = null;
 	public static int currentPropertyID = 0;
 	public static boolean firstLogin = false;
 	public static int languageIndex = 0;
@@ -76,7 +78,7 @@ public class Window extends Application {
 		Database.dbConnect();
 		
 		sc = new SlideContent();
-		loadSlide(INDEX);
+		loadSlide(STARTPAGE);
 		// Database.getRating(property.id);
 	}
 

@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 import Button.ButtonType;
 import Button.SetupButton;
+import presenter.SkypeCall;
 import presenter.SlideContent;
 import database.Database;
 import database.User;
@@ -48,7 +49,7 @@ public class ProfileViewer extends presenter.Window {
 
 	// Profile Static Variables
 	private static final int gridCellWidth = 20;
-	private static final int gridCellHeight = 30;
+	private static final int gridCellHeight = 10;
 
 	// Profile Global Variables
 	private GridPane profileGrid = new GridPane();
@@ -81,8 +82,6 @@ public class ProfileViewer extends presenter.Window {
 		AddStars();
 		SetupProfileReview();
 		SlideContent.setupBackButton();
-
-		root.getChildren().add(profileGrid);
 	}
 
 	/**
@@ -102,6 +101,8 @@ public class ProfileViewer extends presenter.Window {
 		profileGrid.setHgap(gridCellWidth);
 		profileGrid.setVgap(gridCellHeight);
 		profileGrid.relocate(220, 80);
+		
+		root.getChildren().add(profileGrid);
 	}
 
 	/**
@@ -151,6 +152,15 @@ public class ProfileViewer extends presenter.Window {
 				+ profileUser.DOB.substring(0, 4));
 		labelDoB.setFont(fontMain);
 
+		HBox skypeBox = new HBox(10);
+		if(profileUser.skype != null && !profileUser.username.equals(currentUsername)){
+			SkypeCall skype = new SkypeCall();
+			ImageView skypeButton = skype.addCallButton(profileUser.skype, 50);
+			Label labelSkype = new Label("Available on Skype:");
+			labelSkype.setFont(fontMain);
+			skypeBox.getChildren().addAll(labelSkype,skypeButton);
+		}
+		
 		// Setup account type label based on boolean landlord value
 		if (profileUser.landlord) {
 			labelType = new Label("Landlord");
@@ -158,11 +168,11 @@ public class ProfileViewer extends presenter.Window {
 			labelType = new Label("Student");
 		labelType.setFont(fontMain);
 		vBoxUserText.getChildren().addAll(labelName, labelType, labelEmail,
-				labelDoB);
+				labelDoB,skypeBox);
 
 		// Add profile picture and user text to grid
 		profileGrid.addRow(0, vBoxUserPicture, vBoxUserText);
-		GridPane.setConstraints(vBoxUserText, 1, 0, 2, 1, HPos.LEFT,
+		GridPane.setConstraints(vBoxUserText, 1, 0, 2, 2, HPos.LEFT,
 				VPos.CENTER);
 	}
 
@@ -309,10 +319,7 @@ public class ProfileViewer extends presenter.Window {
 				@Override
 				public void handle(ActionEvent event) {
 					// Instantiate account settings page
-					root.getChildren().clear();
-					slideID = ACCOUNTSETTINGS;
-					SlideContent sc = new SlideContent();
-					sc.createSlide();
+					loadSlide(ACCOUNTSETTINGS);
 				}
 			});
 
@@ -397,6 +404,11 @@ public class ProfileViewer extends presenter.Window {
 			for (int i = 0; i < 5; i++) {
 				buttonStar[i].setOnAction(new starButtonHandler(i));
 			}
+			
+			//if(profileUser.skype != null){
+				
+			//}
+			
 		}
 
 		// VBox to contain Profile label and text area
