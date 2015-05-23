@@ -34,7 +34,7 @@ import presenter.SlideContent;
 public class LandlordProperties extends presenter.Window {
 	
 	GridPane grid = new GridPane();
-	ArrayList<String> properties = new ArrayList<String>();
+	ArrayList<House> properties = new ArrayList<House>();
 	ListView<HBox> propertyList = new ListView<HBox>();
 	ObservableList<HBox> items = FXCollections.observableArrayList();
 	User viewedUser;
@@ -107,7 +107,7 @@ public class LandlordProperties extends presenter.Window {
 		buttonEdit.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				int index = propertyList.getSelectionModel().getSelectedIndex();
-				currentPropertyID = Integer.parseInt(properties.get(index));
+				currentPropertyID = properties.get(index).hid;
 				
 				root.getChildren().clear();
 				slideID = EDITPROPERTY;
@@ -155,7 +155,7 @@ public class LandlordProperties extends presenter.Window {
 		buttonView.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				int index = propertyList.getSelectionModel().getSelectedIndex();
-				currentPropertyID = Integer.parseInt(properties.get(index));
+				currentPropertyID = properties.get(index).hid;
 				root.getChildren().clear();
 				slideID = HOUSE;
 				SlideContent sc  = new SlideContent();
@@ -171,7 +171,7 @@ public class LandlordProperties extends presenter.Window {
 
 		propertyList.setPrefHeight(550);
 		
-		properties = User.getSavedProperties(viewedUser.username);
+		properties = Database.getLandlordProperties(viewedUser.uid);
 		
 		// Loop based on number of houses saved in profile.
 		for (int i = 0; i < properties.size(); i++) {
@@ -180,14 +180,13 @@ public class LandlordProperties extends presenter.Window {
 			VBox propertyInfo = new VBox(10);
 			
 			ArrayList<HouseImage> houseImages = new ArrayList<HouseImage>();
-			houseImages = Database.getHouseImageSet(Integer.parseInt(properties.get(i)));
+			houseImages = Database.getHouseImageSet(properties.get(i).hid);
 			HouseImage input = houseImages.get(0);
 			ImageView thumbnail = new ImageView(new Image(input.imageIS));
 			thumbnail.setFitHeight(100);
 			thumbnail.setFitWidth(100);
 			
-			House house = Database.getHouse(Integer.parseInt(properties.get(i)));
-			//Rectangle propertyImage = new Rectangle(100, 100, Color.BLUEVIOLET);
+			House house = properties.get(i);
 			Label propertyAddress = new Label(house.address);
 			Label propertyDetails = new Label(
 					"No. of Bedrooms: "+ house.rooms + "\nPrice: £" + house.price + " pcm");

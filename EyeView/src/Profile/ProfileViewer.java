@@ -54,7 +54,7 @@ public class ProfileViewer extends presenter.Window {
 	private GridPane profileGrid = new GridPane();
 	private Font fontTitle = new Font(24);
 	private Font fontMain = new Font(18);
-	private User profileUser = new User("Alxandir");
+	private User profileUser;
 	private Image profilePicture;
 	private ImageView profilePictureView;
 	private int newRating;
@@ -411,7 +411,7 @@ public class ProfileViewer extends presenter.Window {
 		labelReview.setFont(fontMain);
 
 		// Setup text areas with text wrapping
-		textProfile.setText("");
+		textProfile.setText(profileUser.bio);
 		textProfile.setEditable(false);
 		textProfile.setWrapText(true);
 

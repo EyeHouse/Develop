@@ -261,6 +261,7 @@ public class AccountSettings extends presenter.Window{
 		Database.userUpdate(currentUser,"DOB",null,doB);
 		Database.userUpdate(currentUser,"first_name",null,fieldFName.getText());
 		Database.userUpdate(currentUser,"landlord",buttonLandlord.isSelected(),null);
+		Database.userUpdate(currentUser, "bio", null, profileText.getText());
 
 		// Check username availability
 		CheckUsername();

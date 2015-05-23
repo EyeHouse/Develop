@@ -61,7 +61,13 @@ public class House {
 				this.brochure = (Blob) houseDetails.getBlob(BROCHURE);
 				this.description = houseDetails.getString(DESCRIPTION);
 				this.energyRating = (Blob) houseDetails.getBlob(ENERGYRATING);
-				this.energyRatingIS = energyRating.getBinaryStream(1, energyRating.length()); 
+				if(energyRating == null){
+					this.energyRatingIS = null;
+				}
+				else{
+					this.energyRatingIS = energyRating.getBinaryStream(1, energyRating.length()); 
+				}
+				
 			} catch (SQLException e) {
 				e.printStackTrace();
 				e.getMessage();

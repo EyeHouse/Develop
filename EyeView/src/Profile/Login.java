@@ -103,8 +103,7 @@ public class Login extends presenter.Window {
 		// check the user exits
 		String hashpass = DataHandler.crypt((String) password.getText());
 
-		userExists = Database.twoFieldCheck("username",
-				(String) username.getText(), "password", hashpass);
+		userExists = Database.login((String) username.getText(), hashpass);
 		// if exists create user object
 		System.out.println("User:" + (String) username.getText());
 		if (userExists == true) {

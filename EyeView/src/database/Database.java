@@ -43,6 +43,8 @@ public class Database {
 	private final static int admin = 9;
 	private final static int profileIMG = 10;
 	private final static int properties = 11;
+	private final static int skype = 12;
+	private final static int bio = 13;
 
 	private final static int UID = 1;
 	private final static int TITLE = 3;
@@ -126,6 +128,8 @@ public class Database {
 			insertUser.setBoolean(landlord, userDetails.landlord);
 			insertUser.setString(DOB, userDetails.DOB);
 			insertUser.setBoolean(admin, userDetails.admin);
+			insertUser.setString(skype, userDetails.skype);
+			insertUser.setString(bio, userDetails.bio);
 			try {
 				picture = FileManager
 						.readFile("eyehouse/defaults/default_profpic.jpg");
@@ -209,8 +213,8 @@ public class Database {
 			}
 			if (!title.next()) {
 				System.out
-						.println("\nHouse with same title already exists for this user");
-				return true;
+						.println("\nHouse doesnt exist");
+				return false;
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -454,6 +458,41 @@ public class Database {
 		else
 			return user;
 	}
+	
+	/**
+	 * To be used if the user has been confirmed to exist in the login stage if
+	 * they do exist then the username and password is correct this gets all the
+	 * users details and stores them in an object
+	 * 
+	 * This method is currently superfluous (while loginCheck does the same
+	 * thing)
+	 */
+	public static String getUsername(int uid) throws NullPointerException {
+		// Takes a unique field (username) and returns the user
+		String username = null;
+		ResultSet userDetails = null;
+		// select that user
+		try {
+			PreparedStatement getUsername = con
+					.prepareStatement("SELECT username FROM users WHERE uid=?");
+			// parameterise inputs
+			getUsername.setInt(1, uid);
+			// execute
+			userDetails = getUsername.executeQuery();
+			// take all the users details and put them in an instance of user
+			if(userDetails.next()) {
+				// construct an instance using the logged on users details
+				username = userDetails.getString("username");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			e.getMessage();
+		}
+		if (username == null)
+			throw new NullPointerException();
+		else
+			return username;
+	}
 
 	public static House getHouse(int hid) {
 		House house = null;
@@ -484,6 +523,27 @@ public class Database {
 			throw new NullPointerException();
 		else
 			return house;
+	}
+	
+	public static ArrayList<House> getLandlordProperties(int uid) {
+		ResultSet houses;
+		ArrayList<House> list = new ArrayList<House>();
+		try {
+			PreparedStatement getHouses = con
+					.prepareStatement("SELECT * FROM houses WHERE uid=?");
+			getHouses.setInt(1, uid);
+			houses = getHouses.executeQuery();
+
+			while (houses.next()) {
+				list.add(new House(houses));
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		return list;
 	}
 
 	/**
@@ -565,11 +625,9 @@ public class Database {
 	public static boolean login(String username, String password) {
 		ResultSet result = null;
 		// check to see if Username and password exist in db
-
 		try {
 			PreparedStatement checkExists = con
-					.prepareStatement("SELECT * FROM users WHERE "
-							+ usernameField + "=? AND " + passwordField + "=?");
+					.prepareStatement("SELECT * FROM users WHERE username=? AND password=?");
 			// parameterise queries
 			checkExists.setString(1, username);
 			checkExists.setString(2, password);
