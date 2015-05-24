@@ -56,10 +56,6 @@ public class SlideContent extends Window {
 
 	public void createSlide() {
 
-		// Cancel Advert timer if it is running
-		if (advertTimer != null)
-			advertTimer.stop();
-
 		// Load all objects from XML file first
 		try {
 			new LoadXML();
@@ -69,6 +65,9 @@ public class SlideContent extends Window {
 
 		// Checks if the XML belongs to group 5 (EyeHouse)
 		if (groupID.matches("5")) {
+			// Cancel Advert timer if it is running
+			if (advertTimer != null)
+			advertTimer.stop();
 			// Loads objects not within the XML for a given slide
 			switch (slideID) {
 			case STARTPAGE:

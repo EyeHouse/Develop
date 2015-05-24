@@ -60,22 +60,24 @@ public class Window extends Application {
 
 		/* Runs the XML parser */
 		XMLParser parser = new XMLParser();
-		slideshow = parser.loadSlideshow("EyeView.xml");
+		slideshow = parser.loadSlideshow("Example PWS XML.xml");
 		slideList = slideshow.getSlides();
 		groupID = slideshow.getInfo().getGroupID();
-
-		/* Initialises primary stage */
 		primaryStage.setTitle(slideshow.getTitle());
-		primaryStage.getIcons().add(
-				new Image("file:./resources/icons/xxxhdpi.png"));
+		/* Initialises primary stage */
+		
 		primaryStage.setWidth(xResolution);
 		primaryStage.setHeight(yResolution);
 		primaryStage.setResizable(false);
 
 		root = new Group();
 		primaryStage.setScene(new Scene(root));
+		if (groupID.matches("5")) {
+			primaryStage.getIcons().add(
+					new Image("file:./resources/icons/xxxhdpi.png"));
+			Database.dbConnect();
+		}
 		
-		Database.dbConnect();
 		
 		sc = new SlideContent();
 		loadSlide(STARTPAGE);
