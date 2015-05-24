@@ -1,4 +1,4 @@
-package presenter;
+package handlers;
 
 /**
  * This class contains all a the data values required to place an image on the

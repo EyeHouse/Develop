@@ -1,4 +1,4 @@
-package presenter;
+package Profile;
 
 import java.awt.Desktop;
 import java.io.IOException;
@@ -7,6 +7,7 @@ import java.net.URISyntaxException;
 
 import javax.swing.JOptionPane;
 
+import presenter.Window;
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
 import javafx.scene.image.*;

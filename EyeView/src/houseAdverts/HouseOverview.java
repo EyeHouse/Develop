@@ -1,7 +1,8 @@
-package presenter;
+package houseAdverts;
 
 import java.util.ArrayList;
 
+import javafx.animation.Animation.Status;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
@@ -12,6 +13,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Pagination;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -21,6 +23,7 @@ import javafx.scene.text.FontWeight;
 import javafx.util.Callback;
 import javafx.util.Duration;
 import language.Translate;
+import presenter.Window;
 import Button.ButtonType;
 import Button.SetupButton;
 import Profile.SavedProperties;
@@ -29,20 +32,25 @@ import database.House;
 import database.HouseImage;
 import database.User;
 
-public class HousePages extends Window {
+public class HouseOverview extends Window {
 
 	private ImageGallery gallery;
 	
 	private Pagination pagination;
-	private static Button buttonTimerControl;
 	private ArrayList<String> savedProperties = new ArrayList<String>();
 	private ArrayList<House> houses = new ArrayList<House>();
 	private ArrayList<ArrayList<Image>> galleries = new ArrayList<ArrayList<Image>>();
 	public Label labelBedrooms = new Label();
 	public Label labelLandlord= new Label();
+	static Image play;
 
-	public HousePages(boolean singlePropertyView, ArrayList<House> houses1) {
+	static Image pause;
+	static ImageView playButton;
+
+	public HouseOverview(boolean singlePropertyView, ArrayList<House> houses1) {
 		
+		play = new Image("file:resources/advert_icons/play.png");
+		pause = new Image("file:resources/advert_icons/pause.png");
 		this.houses = houses1;
 		createGalleryLists();
 		if(singlePropertyView){
@@ -170,7 +178,7 @@ public class HousePages extends Window {
 
 		pagination.setPageFactory(new Callback<Integer, Node>() {
 			public Node call(Integer pageIndex) {
-				if (buttonTimerControl.getText().equals("Pause")) {
+				if (advertTimer.getStatus().equals(Status.RUNNING)) {
 					advertTimer.playFromStart();
 				}
 				currentPropertyID = houses.get(pageIndex).hid;
@@ -184,14 +192,15 @@ public class HousePages extends Window {
 	}
 
 	private void setupTimerControl() {
-		ButtonType button1 = new ButtonType("150,150,150", null, "Pause", 100,
-				30);
-		buttonTimerControl = new SetupButton().CreateButton(button1);
-		buttonTimerControl.relocate(800, 700);
 
-		buttonTimerControl.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent ae) {
-				if (buttonTimerControl.getText().equals("Pause")) {
+		playButton = new ImageView(play);
+		playButton.setPreserveRatio(true);
+		playButton.setFitWidth(35);
+		playButton.relocate(800,680);
+		playButton.setCursor(Cursor.HAND);
+		playButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			public void handle(MouseEvent ae) {
+				if (!advertTimer.getStatus().equals(Status.PAUSED)) {
 					setTimerState("PAUSE");
 				} else {
 					setTimerState("PLAY");
@@ -199,7 +208,7 @@ public class HousePages extends Window {
 			}
 		});
 
-		root.getChildren().add(buttonTimerControl);
+		root.getChildren().addAll(playButton);
 	}
 
 	private void setupAdvertTimer() {
@@ -220,11 +229,11 @@ public class HousePages extends Window {
 	public static void setTimerState(String newState) {
 		switch (newState) {
 		case "PLAY":
-			buttonTimerControl.setText("Pause");
+			playButton.setImage(play);
 			advertTimer.play();
 			break;
 		case "PAUSE":
-			buttonTimerControl.setText("Play");
+			playButton.setImage(pause);
 			advertTimer.pause();
 			break;
 		}

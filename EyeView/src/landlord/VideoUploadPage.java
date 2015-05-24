@@ -1,4 +1,4 @@
-package presenter;
+package landlord;
 
 /**
  * VideoUploadPage provides methods necessary for landlords to upload a new
@@ -10,8 +10,12 @@ package presenter;
  * Copyright Eyehouse
  */
 
+import handlers.VideoElement;
+
 import java.io.File;
 
+import presenter.SlideContent;
+import presenter.Window;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;

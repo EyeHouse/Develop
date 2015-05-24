@@ -1,10 +1,11 @@
-package presenter;
+package houseAdverts;
 
+import handlers.TextElement;
+import handlers.TextHandler;
 import database.Database;
 import database.House;
 import presenter.SlideContent;
-import presenter.TextElement;
-import presenter.TextHandler;
+import presenter.Window;
 import javafx.geometry.Pos;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;

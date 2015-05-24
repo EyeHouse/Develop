@@ -1,7 +1,7 @@
-package presenter;
+package handlers;
 
 /* Graphic Element class */
-class GraphicElement {
+public class GraphicElement {
 
 	public String type;
 	public float xstart, ystart, xend, yend, duration;

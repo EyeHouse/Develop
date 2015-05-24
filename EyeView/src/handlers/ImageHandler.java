@@ -1,7 +1,8 @@
-package presenter;
+package handlers;
 
 import java.util.ArrayList;
 
+import presenter.Window;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;

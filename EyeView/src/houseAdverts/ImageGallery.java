@@ -1,8 +1,9 @@
-package presenter;
+package houseAdverts;
 
 
 import java.util.ArrayList;
 
+import presenter.Window;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -121,7 +122,7 @@ public class ImageGallery extends Window {
 
 				items[i].setOnMouseClicked(new EventHandler<MouseEvent>() {
 					public void handle(MouseEvent me) {
-						HousePages.setTimerState("PAUSE");
+						HouseOverview.setTimerState("PAUSE");
 						
 						localChange = true;
 						scrollBar.setValue(index - 1);
@@ -148,7 +149,7 @@ public class ImageGallery extends Window {
 			scrollBar.setBlockIncrement(1);
 			scrollBar.valueProperty().addListener(new InvalidationListener() {
 				public void invalidated(Observable ov) {
-					HousePages.setTimerState("PAUSE");
+					HouseOverview.setTimerState("PAUSE");
 					if (!localChange && (currentIndex != 0)){
 						shiftToCenter(items[(int) (scrollBar.getValue() + 1.5)]);
 					}

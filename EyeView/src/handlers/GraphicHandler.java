@@ -1,4 +1,4 @@
-package presenter;
+package handlers;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -14,7 +14,7 @@ import javafx.util.Duration;
 
 import java.util.ArrayList;
 
-import presenter.GraphicElement;
+import presenter.Window;
 
 public class GraphicHandler extends Window {
 

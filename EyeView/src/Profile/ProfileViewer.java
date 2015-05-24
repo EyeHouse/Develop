@@ -16,7 +16,6 @@ import java.util.ArrayList;
 
 import Button.ButtonType;
 import Button.SetupButton;
-import presenter.SkypeCall;
 import presenter.SlideContent;
 import database.Database;
 import database.User;

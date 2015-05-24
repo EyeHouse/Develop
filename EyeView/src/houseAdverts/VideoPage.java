@@ -1,5 +1,8 @@
-package presenter;
+package houseAdverts;
 
+import presenter.SlideContent;
+import presenter.Window;
+import handlers.VideoElement;
 import database.Database;
 import database.House;
 import database.HouseVideo;

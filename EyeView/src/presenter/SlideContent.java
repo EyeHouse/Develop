@@ -1,19 +1,15 @@
 package presenter;
 
+import houseAdverts.HouseOverview;
+import houseAdverts.HouseReviews;
+import houseAdverts.MoreInfo;
+import houseAdverts.VideoPage;
+
+import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 
-import javax.swing.JOptionPane;
-
-import landlord.EditProperty;
-import landlord.LandlordProperties;
-import language.Translate;
-import maps.GoogleMapsPage;
-import database.Database;
-import database.House;
-import database.User;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -30,8 +26,13 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import parser.GraphicData;
-import parser.ImageData;
+
+import javax.swing.JOptionPane;
+
+import landlord.EditProperty;
+import landlord.LandlordProperties;
+import language.Translate;
+import maps.GoogleMapsPage;
 import Button.ButtonType;
 import Button.SetupButton;
 import Profile.AccountSettings;
@@ -39,12 +40,15 @@ import Profile.Login;
 import Profile.ProfileViewer;
 import Profile.Register;
 import Profile.SavedProperties;
+import database.Database;
+import database.House;
+import database.User;
 
 public class SlideContent extends Window {
 
 	public ImageView profilePictureView;
 	public static ComboBox<ImageView> languageComboBox = new ComboBox<ImageView>();
-	public static HousePages houseAdverts;
+	public static HouseOverview houseAdverts;
 	public static Label labelLogin, labelRegister, labelLogOut, labelProfile,
 			labelSavedProperties, labelLandlordProperties;
 	public static Button videoButton, mapButton, infoButton, reviewsButton,
@@ -57,8 +61,11 @@ public class SlideContent extends Window {
 			advertTimer.stop();
 
 		// Load all objects from XML file first
-		loadXMLGraphics();
-		loadXMLImages();
+		try {
+			new LoadXML();
+		} catch (IOException e) {
+			System.out.println("Error loading XML data.");
+		}
 
 		// Checks if the XML belongs to group 5 (EyeHouse)
 		if (groupID.matches("5")) {
@@ -115,36 +122,6 @@ public class SlideContent extends Window {
 		}
 	}
 
-	public void loadXMLGraphics() {
-
-		GraphicHandler gh = new GraphicHandler();
-		List<GraphicData> graphicList = slideData.getGraphicList();
-
-		for (GraphicData currentGraphic : graphicList) {
-			GraphicElement graphic = new GraphicElement(
-					currentGraphic.getType(), currentGraphic.getXstart(),
-					currentGraphic.getYstart(), currentGraphic.getXend(),
-					currentGraphic.getYend(), currentGraphic.getDuration(),
-					currentGraphic.isSolid(), currentGraphic.getGraphicColor(),
-					currentGraphic.getShadingColor());
-			gh.addShapeToCanvas(graphic);
-		}
-	}
-
-	public void loadXMLImages() {
-
-		ImageHandler ih = new ImageHandler();
-		List<ImageData> imageList = slideData.getImageList();
-
-		for (ImageData currentImage : imageList) {
-			ImageElement image = new ImageElement(currentImage.getSource(),
-					currentImage.getXstart(), currentImage.getYstart(),
-					currentImage.getScale(), currentImage.getDuration(),
-					currentImage.getStarttime(), 200);
-			ih.createImage(image);
-		}
-	}
-
 	private void createStartSlide(){
 		new StartPage();
 	}
@@ -157,7 +134,7 @@ public class SlideContent extends Window {
 		test = Database.getHouse(10);
 		testArray.add(test);
 
-		houseAdverts = new HousePages(false, testArray);
+		houseAdverts = new HouseOverview(false, testArray);
 		createSidebar();
 		createMenuBar();
 	}
@@ -170,7 +147,7 @@ public class SlideContent extends Window {
 		test = Database.getHouse(10);
 		testArray.add(test);
 
-		houseAdverts = new HousePages(false, testArray);
+		houseAdverts = new HouseOverview(false, testArray);
 		createSidebar();
 		createMenuBar();
 	}
@@ -212,7 +189,7 @@ public class SlideContent extends Window {
 		ArrayList<House> testArray = new ArrayList<House>();
 		testArray.add(test);
 
-		new HousePages(true, testArray);
+		new HouseOverview(true, testArray);
 		createSidebar();
 		createMenuBar();
 	}
@@ -479,19 +456,18 @@ public class SlideContent extends Window {
 
 	public static void setupBackButton() {
 
-		ButtonType button1 = new ButtonType("150,150,150", null, "Back", 100,
-				30);
-		Button buttonBack = new SetupButton().CreateButton(button1);
-		buttonBack.relocate(195, 20);
-
+		ImageView buttonBack = new ImageView(new Image("file:resources/advert_icons/back.png"));
+		buttonBack.relocate(200, 20);
+		buttonBack.setPreserveRatio(true);
+		buttonBack.setFitWidth(80);
 		buttonBack.setCursor(Cursor.HAND);
-		buttonBack.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent ae) {
+		buttonBack.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			public void handle(MouseEvent ae) {
 				if (currentUsername != null)
 					loadSlide(HOUSES);
 				else
 					loadSlide(INDEX);
-				HousePages.setTimerState("PAUSE");
+				HouseOverview.setTimerState("PAUSE");
 			}
 		});
 
