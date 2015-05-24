@@ -28,7 +28,7 @@ import com.mysql.jdbc.Blob;
 public class Database {
 
 	// Public variables
-	static Connection con = null;
+	public static Connection con = null;
 	// Define the column numbers of the db table as integer variables
 	// 'id' autoincrements due to the table set up, enter any integer when
 	// required
@@ -62,15 +62,8 @@ public class Database {
 
 	public static String url = "10.10.0.1";
 
-	// when using userCheck, don't allow the user to enter the string, display a
-	// drop
-	// down box or another selection method that calls your own string for the
-	// field
-	// required to check if you even give the user the option
-
-
 	/**
-	 * A void function used to open our database connection
+	 * A void function used to open the database connection
 	 */
 	public static String dbConnect() {
 		// Create a connection with db:master_db user:root pw:
@@ -1548,7 +1541,7 @@ public class Database {
 	public static void main(String[] args) throws Exception {
 		// Connect to the Database
 		dbConnect();
-
+		
 		boolean check;
 		User insert = null;
 		// User checkUse = null
