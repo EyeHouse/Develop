@@ -1,5 +1,7 @@
 package landlord;
 
+import handlers.VideoElement;
+
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -11,6 +13,8 @@ import Button.ButtonType;
 import Button.SetupButton;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -22,6 +26,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -29,6 +34,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -55,14 +61,23 @@ public class EditProperty extends presenter.Window {
 	private TextField beds = new TextField();
 	private TextField baths = new TextField();
 	private TextField deposit = new TextField();
-	private TextField uploadPath = new TextField();
+	private TextField uploadPathImage;
+	private TextField uploadPathVideo;
+	private TextField newRoomField;
 	private CheckBox furnished = new CheckBox();
 	private TextArea description = new TextArea();
 	ArrayList<ComboBox<String>> dateComboArray = new ArrayList<ComboBox<String>>();
 	private VBox allButtons;
 	private Button buttonUpload;
+	Button uploadVideoButton;
 	private String filePath;
 	private ArrayList<String> imagePaths = new ArrayList<String>();
+
+	private String videoPath;
+	private VideoElement video;
+	ListView<HBox> markerList = new ListView<HBox>();
+	ObservableList<HBox> items = FXCollections.observableArrayList();
+
 	private ArrayList<HouseImage> houseImages;
 	private ArrayList<CheckBox> deleteImage = new ArrayList<CheckBox>();
 	private ImageView infoStatus, picStatus;
@@ -102,7 +117,12 @@ public class EditProperty extends presenter.Window {
 	private void setupGrid() {
 		// Set grid size and spacing in group.
 		grid.setHgap(50);
-		grid.setVgap(30);
+		if (page == VIDEO) {
+			grid.setVgap(20);
+		} else {
+			grid.setVgap(30);
+		}
+
 		grid.relocate(220, 20);
 
 		grid.setMaxWidth(650);
@@ -173,7 +193,7 @@ public class EditProperty extends presenter.Window {
 		Button buttonFinish = new SetupButton().CreateButton(button3);
 		buttonFinish.setCursor(Cursor.HAND);
 		buttonFinish.setOnAction(new CreateHouse());
-		
+
 		ButtonType button4 = new ButtonType("150,150,150", null, "Cancel", 110,
 				30);
 		Button buttonCancel = new SetupButton().CreateButton(button4);
@@ -282,7 +302,7 @@ public class EditProperty extends presenter.Window {
 
 		imageTiles.setVgap(25);
 		imageTiles.setHgap(25);
-		imageTiles.setPadding(new Insets(20,20,20,20));
+		imageTiles.setPadding(new Insets(20, 20, 20, 20));
 		imageTiles.setTileAlignment(Pos.CENTER);
 		imageTiles.setPrefColumns(3);
 
@@ -292,8 +312,8 @@ public class EditProperty extends presenter.Window {
 
 		Label labelUpload = new Label("Add a new image:");
 		labelUpload.setFont(Font.font(null, FontWeight.BOLD, 14));
-		uploadPath = new TextField();
-		uploadPath.setEditable(false);
+		uploadPathImage = new TextField();
+		uploadPathImage.setEditable(false);
 
 		ButtonType button1 = new ButtonType("150,150,150", null, "Browse", 70,
 				30);
@@ -314,7 +334,7 @@ public class EditProperty extends presenter.Window {
 
 		HBox buttons = new HBox(10);
 		buttons.getChildren().addAll(buttonBrowse, buttonUpload);
-		grid.addRow(1, labelUpload, uploadPath, buttons);
+		grid.addRow(1, labelUpload, uploadPathImage, buttons);
 
 		if (hid != 0) {
 			houseImages = Database.getHouseImageSet(hid);
@@ -328,10 +348,10 @@ public class EditProperty extends presenter.Window {
 
 				CheckBox delete = new CheckBox();
 				deleteImage.add(delete);
-				
+
 				VBox tile = new VBox(5);
 				tile.setAlignment(Pos.CENTER);
-				tile.getChildren().addAll(propertyImage,delete);
+				tile.getChildren().addAll(propertyImage, delete);
 				imageTiles.getChildren().add(tile);
 			}
 		} else {
@@ -340,13 +360,13 @@ public class EditProperty extends presenter.Window {
 				ImageView propertyImage = new ImageView(image);
 				propertyImage.setFitWidth(150);
 				propertyImage.setFitHeight(120);
-				
+
 				CheckBox delete = new CheckBox();
 				deleteImage.add(delete);
 
 				VBox tile = new VBox(5);
 				tile.setAlignment(Pos.CENTER);
-				tile.getChildren().addAll(propertyImage,delete);
+				tile.getChildren().addAll(propertyImage, delete);
 				imageTiles.getChildren().add(tile);
 			}
 		}
@@ -355,6 +375,133 @@ public class EditProperty extends presenter.Window {
 		grid.add(imageWindow, 0, 2);
 		grid.add(buttonDelete, 3, 2);
 		GridPane.setConstraints(imageWindow, 0, 2, 3, 1, HPos.CENTER,
+				VPos.CENTER);
+	}
+
+	/**
+	 * Setup text field and browse button to select video file to upload
+	 */
+	private void setupHouseVideo() {
+		// Create HBox to contain file browser
+		HBox fileHBox = new HBox(10);
+		// fileHBox.setAlignment(VPos.CENTER);
+		Label fileLabel = new Label("File:");
+		// Create file directory text field
+		uploadPathVideo = new TextField();
+		uploadPathVideo.setPrefWidth(250);
+		uploadPathVideo.textProperty().addListener(new UploadTextChanged());
+
+		// Add FileChooser button
+		ButtonType button1 = new ButtonType("150,150,150", null, "Browse", 100,
+				30);
+		Button fileChooserButton = new SetupButton().CreateButton(button1);
+
+		// Add Upload Video button
+		if (uploadPathVideo.getText() != null) {
+
+			// uploadVideoButton.setDisable(false);
+
+			ButtonType button2 = new ButtonType("150,150,150", null, "Upload",
+					100, 30);
+			uploadVideoButton = new SetupButton().CreateButton(button2);
+			uploadVideoButton.setDisable(true);
+
+			// Setup Upload video button event
+			uploadVideoButton.setOnAction(new Upload());
+		}
+
+		// Setup FileChooser (browse) button event
+		fileChooserButton.setOnAction(new Browse());
+
+		// Add text field to hbox
+		fileHBox.getChildren().addAll(fileLabel, uploadPathVideo,
+				fileChooserButton, uploadVideoButton);
+		fileHBox.setAlignment(Pos.CENTER);
+
+		// Add hbox to gridpane row 0, spanning two columns
+		// (Node child, int columnIndex, int rowIndex, int colspan, int rowspan)
+		grid.add(fileHBox, 0, 1);
+		GridPane.setConstraints(fileHBox, 0, 1, 3, 1, HPos.CENTER, VPos.CENTER);
+
+		if (hid == 0) {
+			if (videoPath != null) {
+				SetupVideoPlayer(videoPath);
+				SetupRoomMarkers();
+			}
+		}
+	}
+
+	/**
+	 * Sets up video player within page
+	 */
+	private void SetupVideoPlayer(String newVideoFileString) {
+
+		StackPane videoPane = new StackPane();
+
+		// House house = Database.getHouse(currentPropertyID);
+		// HouseVideo vid = Database.getVideoInfo()
+		video = new VideoElement(newVideoFileString);
+		video.setStylesheet("resources/videoStyle.css");
+		video.setWidth(500);
+		video.setAutoplay(true);
+		video.display(videoPane);
+
+		// Add video player to GridPane
+		grid.add(videoPane, 0, 2);
+		GridPane.setConstraints(videoPane, 0, 2, 3, 1, HPos.CENTER, VPos.CENTER);
+	}
+
+	private void SetupRoomMarkers() {
+
+		HBox markerSetup = new HBox(10);
+		markerList.setPrefHeight(220);
+		markerList.setMaxWidth(300);
+
+		HBox markerListHeader = new HBox(10);
+		markerListHeader.setMaxWidth(300);
+
+		/* Add room name label and textfield */
+		Label addNewRoomLabel = new Label("Add New Room: ");
+		newRoomField = new TextField();
+
+		/* Add Set Marker Button */
+		ButtonType button1 = new ButtonType("150,150,150", null, "Set Marker",
+				100, 30);
+		Button setMarkerButton = new SetupButton().CreateButton(button1);
+		setMarkerButton.setOnAction(new AddMarker());
+
+		/* Add Set Marker Button */
+		ButtonType button2 = new ButtonType("150,150,150", null, "Delete", 100,
+				30);
+		Button deleteMarker = new SetupButton().CreateButton(button2);
+		deleteMarker.setOnAction(new deleteMarker());
+
+		Label roomNamesHeader = new Label("Rooms");
+		roomNamesHeader.setStyle("-fx-font-weight: bold");
+		roomNamesHeader.setPrefWidth(190);
+		Label videoTimesHeader = new Label("Times in Video");
+		videoTimesHeader.setStyle("-fx-font-weight: bold");
+
+		// Add marker setup to HBox
+		markerSetup.getChildren().addAll(addNewRoomLabel, newRoomField,
+				setMarkerButton);
+		markerSetup.setAlignment(Pos.CENTER);
+		markerListHeader.getChildren()
+				.addAll(roomNamesHeader, videoTimesHeader);
+		// markerListHeader.setAlignment(Pos.CENTER);
+		markerList.setItems(items);
+		// Add to GridPane
+		grid.add(markerSetup, 0, 3);
+		GridPane.setConstraints(markerSetup, 0, 3, 3, 1, HPos.CENTER,
+				VPos.CENTER);
+		grid.add(markerListHeader, 0, 4);
+		GridPane.setConstraints(markerListHeader, 0, 4, 3, 1, HPos.CENTER,
+				VPos.CENTER);
+		grid.add(markerList, 0, 5);
+		GridPane.setConstraints(markerList, 0, 5, 3, 1, HPos.CENTER,
+				VPos.CENTER);
+		grid.add(deleteMarker, 0, 6);
+		GridPane.setConstraints(deleteMarker, 0, 6, 3, 1, HPos.CENTER,
 				VPos.CENTER);
 	}
 
@@ -390,10 +537,6 @@ public class EditProperty extends presenter.Window {
 			createEditPage();
 		}
 	}
-	
-	private void setupHouseVideo(){
-		
-	}
 
 	public class CreateHouse implements EventHandler<ActionEvent> {
 
@@ -418,30 +561,31 @@ public class EditProperty extends presenter.Window {
 				if (!Database.checkHouseExists(temp, newHouse)) {
 					int newhid = 0;
 					try {
-						Database.houseInsert(newHouse, null,
-								null, temp);
-						
+						Database.houseInsert(newHouse, null, null, temp);
+
 						newhid = Database.getID(temp, newHouse, 2);
 						System.out.println("House ID: " + newhid);
 						House house = Database.getHouse(newhid);
-						for(int i= 0; i < imagePaths.size(); i++){
+						for (int i = 0; i < imagePaths.size(); i++) {
 							try {
-								Database.insertHouseImage(imagePaths.get(i), house, temp);
+								Database.insertHouseImage(imagePaths.get(i),
+										house, temp);
 							} catch (SQLException e) {
 								System.out.println("Failed to add image");
 							}
 						}
-						
+
 					} catch (IOException e) {
 						System.out.println("House creation failed");
 					}
-					ArrayList<String> savedProperties = User.getSavedProperties(currentUsername);
+					ArrayList<String> savedProperties = User
+							.getSavedProperties(currentUsername);
 					savedProperties.add(String.format("%03d", newhid));
 					User.updateSavedProperties(currentUsername, savedProperties);
-					
+
 					root.getChildren().clear();
 					slideID = prevSlideID;
-					SlideContent sc  = new SlideContent();
+					SlideContent sc = new SlideContent();
 					sc.createSlide();
 				}
 			} else {
@@ -449,8 +593,8 @@ public class EditProperty extends presenter.Window {
 			}
 		}
 	}
-	
-	public class Cancel implements EventHandler<ActionEvent>{
+
+	public class Cancel implements EventHandler<ActionEvent> {
 
 		public void handle(ActionEvent arg0) {
 			root.getChildren().clear();
@@ -458,7 +602,7 @@ public class EditProperty extends presenter.Window {
 			SlideContent sc = new SlideContent();
 			sc.createSlide();
 		}
-		
+
 	}
 
 	public boolean CheckInfoPage() {
@@ -542,28 +686,56 @@ public class EditProperty extends presenter.Window {
 			Window fileChooserStage = null;
 
 			// Replace profile picture with new one from selected file
-			newFile = uploadChooser
-					.showOpenDialog(fileChooserStage);
+			newFile = uploadChooser.showOpenDialog(fileChooserStage);
 			if (newFile != null) {
-				uploadPath.setText(newFile.getName());
-				buttonUpload.setCursor(Cursor.HAND);
-				buttonUpload.setDisable(false);
-				filePath = newFile.getAbsolutePath();
+				switch (page) {
+				case INFO:
+					break;
+				case PICS:
+					uploadPathImage.setText(newFile.getName());
+					buttonUpload.setCursor(Cursor.HAND);
+					buttonUpload.setDisable(false);
+					filePath = newFile.getAbsolutePath();
+					break;
+				case VIDEO:
+					uploadPathVideo.clear();
+					uploadPathVideo.appendText(newFile.getName());
+					uploadVideoButton.setDisable(false);
+					filePath = newFile.getAbsolutePath();
+					System.out.println(filePath);
+					break;
+				}
+
 			}
 		}
 
-		private void configureFileChooser(FileChooser profilePictureChooser) {
+		private void configureFileChooser(FileChooser uploadChooser) {
 
-			// Set title of file chooser
-			profilePictureChooser.setTitle("Choose Property Image to Upload");
 			// Set directory that the file chooser will initially open into
-			profilePictureChooser.setInitialDirectory(new File(System
+			uploadChooser.setInitialDirectory(new File(System
 					.getProperty("user.home")));
-			// Set file types displayed in the file chooser as png and jpg
-			profilePictureChooser.getExtensionFilters().addAll(
-					new FileChooser.ExtensionFilter("JPG, PNG", "*.jpg",
-							"*.png"),
-					new FileChooser.ExtensionFilter("PNG", "*.png"));
+
+			switch (page) {
+			case INFO:
+				break;
+			case PICS:
+				// Set title of file chooser
+				uploadChooser.setTitle("Choose Property Image to Upload");
+				// Set file types displayed in the file chooser as png and jpg
+				uploadChooser.getExtensionFilters().addAll(
+						new FileChooser.ExtensionFilter("JPG, PNG", "*.jpg",
+								"*.png"),
+						new FileChooser.ExtensionFilter("PNG", "*.png"));
+				break;
+			case VIDEO:
+				// Set title of file chooser
+				uploadChooser.setTitle("Choose Video to Upload");
+				// Set file types displayed in the file chooser as mp4
+				uploadChooser.getExtensionFilters().add(
+						new FileChooser.ExtensionFilter("MP4", "*.mp4"));
+				break;
+			}
+
 		}
 	}
 
@@ -573,16 +745,32 @@ public class EditProperty extends presenter.Window {
 
 			if (hid == 0) {
 				UpdateTabLabels();
-				imagePaths.add(filePath);
-				grid.getChildren().clear();
-				createEditPage();
+				switch (page) {
+				case INFO:
+					break;
+				case PICS:
+					imagePaths.add(filePath);
+					grid.getChildren().clear();
+					createEditPage();
+					break;
+				case VIDEO:
+					videoPath = filePath;
+					SetupVideoPlayer(videoPath);
+					SetupRoomMarkers();
+					break;
+				}
 				return;
 			}
 
 			User owner = Database.getUser(currentUsername);
 			try {
-				boolean check = Database.insertHouseImage(filePath, house,
-						owner);
+				boolean check = false;
+				if (page == PICS) {
+					check = Database.insertHouseImage(filePath, house, owner);
+				} else if (page == VIDEO) {
+
+				}
+
 				if (check) {
 					grid.getChildren().clear();
 					createEditPage();
@@ -622,6 +810,72 @@ public class EditProperty extends presenter.Window {
 
 			grid.getChildren().clear();
 			createEditPage();
+		}
+	}
+
+	/**
+	 * Change listener class to enable upload button when text is entered in
+	 * text field and disable if no text in field
+	 * 
+	 * @author hcw515
+	 * 
+	 */
+	public class UploadTextChanged implements ChangeListener<String> {
+
+		public void changed(ObservableValue<? extends String> arg0,
+				String arg1, String arg2) {
+
+			if (uploadPathVideo.getText() != null) {
+				uploadVideoButton.setDisable(false);
+			} else {
+				uploadVideoButton.setDisable(true);
+			}
+		}
+	}
+
+	public class AddMarker implements EventHandler<ActionEvent> {
+
+		public void handle(ActionEvent arg0) {
+
+			if (!newRoomField.getText().equals("")) {
+
+				// Create room name and video time labels
+				HBox newMarker = new HBox(0);
+				Label newRoomLabel = new Label(newRoomField.getText());
+				newRoomLabel.setPrefWidth(200);
+				Label newVideoTimeLabel = new Label(
+						video.printCurrentVideoTime());
+				newVideoTimeLabel.setPrefWidth(80);
+				newMarker.getChildren().addAll(newRoomLabel, newVideoTimeLabel);
+
+				newMarker.setAlignment(Pos.CENTER_LEFT);
+
+				items.add(newMarker);
+				newRoomField.clear();
+			}
+		}
+
+	}
+
+	/**
+	 * Button handler for deleteMarkerButton
+	 * 
+	 * @author hcw515
+	 */
+	public class deleteMarker implements EventHandler<ActionEvent> {
+
+		@Override
+		public void handle(ActionEvent event) {
+			int index = markerList.getSelectionModel().getSelectedIndex();
+
+			if (index >= 0) {
+				for (int i = index; i < items.size() - 1; i++) {
+					items.set(i, items.get(i + 1));
+				}
+
+				items.remove(items.size() - 1);
+			}
+
 		}
 	}
 
