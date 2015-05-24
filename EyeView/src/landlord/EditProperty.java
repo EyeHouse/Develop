@@ -92,6 +92,7 @@ public class EditProperty extends presenter.Window {
 			setupHousePictures();
 			break;
 		case VIDEO:
+			setupHouseVideo();
 			break;
 		}
 		setupButtons();
@@ -389,6 +390,10 @@ public class EditProperty extends presenter.Window {
 			createEditPage();
 		}
 	}
+	
+	private void setupHouseVideo(){
+		
+	}
 
 	public class CreateHouse implements EventHandler<ActionEvent> {
 
@@ -529,21 +534,21 @@ public class EditProperty extends presenter.Window {
 	public class Browse implements EventHandler<ActionEvent> {
 
 		public void handle(ActionEvent arg0) {
-			File newImageFile;
+			File newFile;
 
 			// Open file chooser window
-			FileChooser profilePictureChooser = new FileChooser();
-			configureFileChooser(profilePictureChooser);
+			FileChooser uploadChooser = new FileChooser();
+			configureFileChooser(uploadChooser);
 			Window fileChooserStage = null;
 
 			// Replace profile picture with new one from selected file
-			newImageFile = profilePictureChooser
+			newFile = uploadChooser
 					.showOpenDialog(fileChooserStage);
-			if (newImageFile != null) {
-				uploadPath.setText(newImageFile.getName());
+			if (newFile != null) {
+				uploadPath.setText(newFile.getName());
 				buttonUpload.setCursor(Cursor.HAND);
 				buttonUpload.setDisable(false);
-				filePath = newImageFile.getAbsolutePath();
+				filePath = newFile.getAbsolutePath();
 			}
 		}
 
@@ -574,7 +579,7 @@ public class EditProperty extends presenter.Window {
 				return;
 			}
 
-			User owner = Database.getUser("MVPTom");
+			User owner = Database.getUser(currentUsername);
 			try {
 				boolean check = Database.insertHouseImage(filePath, house,
 						owner);
