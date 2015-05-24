@@ -136,7 +136,6 @@ public class Register extends presenter.Window {
 		password.setPromptText("Your Password");
 		password.setPrefColumnCount(10);
 		registerGrid.add(password, 1, 8);
-		
 
 		// Repeat Password field
 		repeatPassword = new PasswordField();
@@ -183,7 +182,8 @@ public class Register extends presenter.Window {
 
 			// Check if the entered passwords address is valid
 			// If valid, it is encrypted and stored
-			if (DataHandler.passwordChecker(password.getText(), repeatPassword.getText()) == false) {
+			if (DataHandler.passwordChecker(password.getText(),
+					repeatPassword.getText()) == false) {
 				System.out.println("Password check failed");
 			} else {
 				encryptedPassword = DataHandler.crypt(password.getText());
@@ -194,39 +194,32 @@ public class Register extends presenter.Window {
 				user.firstName(firstname.getText());
 				user.secondName(lastname.getText());
 				user.email(userEmail);
+				if (!skypeID.getText().equals("")) {
+					user.skype(skypeID.getText());
+				}
+
 				// no priviledges
 				user.admin(false);
-				
+
 				user.landlord(buttonLandlord.isSelected());
 
 				// register user
 				regSuccess = Database.userRegister(user);
-				
+
 				if (regSuccess == true) {
-					// carry on to whatever interface you want, maybe login, or
-
-					// register user
-					regSuccess = Database.userRegister(user);
-					if (regSuccess == true) {
-
-						System.out.println("User: " + user.username
-								+ " created successfully");
-					}
 					// log the new user in
 					User user = Database.getUser(username.getText());
-					currentUsername = username.getText();
-					try {
-						user.printUser();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+
 					// go to users new profile
 					firstLogin = true;
 					currentUsername = user.username;
+					viewedUsername = user.username;
 					loadSlide(PROFILE);
 
 					System.out.println("User: " + user.username
 							+ " created successfully");
+				} else {
+					System.out.println("Registration failed.");
 				}
 			}
 		}

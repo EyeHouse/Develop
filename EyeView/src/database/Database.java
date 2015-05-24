@@ -116,7 +116,7 @@ public class Database {
 			File picture = null;
 			PreparedStatement insertUser = con
 					.prepareStatement("INSERT INTO users "
-							+ "VALUES (?,?,?,?,?,?,?,?,?,?,?)");
+							+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)");
 			// insert the users data
 			insertUser.setInt(id, 0);
 			insertUser.setString(firstName, userDetails.first_name);
@@ -127,13 +127,11 @@ public class Database {
 			insertUser.setBoolean(landlord, userDetails.landlord);
 			insertUser.setString(DOB, userDetails.DOB);
 			insertUser.setBoolean(admin, userDetails.admin);
-			insertUser.setString(skype, userDetails.skype);
-			insertUser.setString(bio, userDetails.bio);
+			
 			try {
 				picture = FileManager
 						.readFile("eyehouse/defaults/default_profpic.jpg");
 				FileInputStream fis = new FileInputStream(picture);
-				System.out.println(picture);
 				insertUser.setBinaryStream(profileIMG, fis, fis.available());
 				// insertUser.setBinaryStream(profileIMG, is, is.available());
 			} catch (IOException e) {
@@ -142,6 +140,8 @@ public class Database {
 				System.out.println("\nTheres been an sftp error");
 			}
 			insertUser.setString(properties, null);
+			insertUser.setString(skype, userDetails.skype);
+			insertUser.setString(bio, userDetails.bio);
 			// execute the query
 			insertUser.executeUpdate();
 		} catch (SQLException e) {

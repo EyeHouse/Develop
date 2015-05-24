@@ -80,7 +80,9 @@ public class ProfileViewer extends presenter.Window {
 		SetupUserInfo();
 		AddStars();
 		SetupProfileReview();
-		SlideContent.setupBackButton();
+		if(!firstLogin){
+			SlideContent.setupBackButton();
+		}
 	}
 
 	/**
