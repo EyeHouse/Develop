@@ -1,7 +1,5 @@
 package houseAdverts;
 
-import presenter.SlideContent;
-import presenter.Window;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -21,11 +19,18 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import language.Translate;
+import presenter.SlideContent;
 import Button.ButtonType;
 import Button.SetupButton;
 
 public class HouseReviews extends presenter.Window {
 
+	private static Label ratingLabel = new Label("Overall:");
+//	private static Button buttonSubmit;
+	private static ButtonType button2 = new ButtonType("144,171,199", null, "Submit", 60, 25);
+	private static Button buttonSubmit = new SetupButton().CreateButton(button2);
+	
 	GridPane pane;
 	TextArea newReviewText, reviewText;
 	String review;
@@ -66,9 +71,9 @@ public class HouseReviews extends presenter.Window {
 
 		SlideContent.setupBackButton();
 
-		ButtonType button2 = new ButtonType("144,171,199", null, "Submit", 60,
-				25);
-		Button buttonSubmit = new SetupButton().CreateButton(button2);
+//		ButtonType button2 = new ButtonType("144,171,199", null, "Submit", 60,
+//				25);
+//		buttonSubmit = new SetupButton().CreateButton(button2);
 		buttonSubmit.relocate(785, 720);
 		buttonSubmit.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent ae) {
@@ -90,40 +95,40 @@ public class HouseReviews extends presenter.Window {
 
 	public void setupTitle() {
 
-		Label Overall = new Label("Overall:");
-		Overall.setTextFill(Color.web("#000000"));
-		Overall.setFont(new Font(25));
-		hBoxOverallRating.getChildren().add(Overall);
+//		ratingLabel = new Label("Overall:");
+		ratingLabel.setTextFill(Color.web("#000000"));
+		ratingLabel.setFont(new Font(25));
+		hBoxOverallRating.getChildren().add(ratingLabel);
 
-		Label Safety = new Label("Safety:");
-		Safety.setTextFill(Color.web("#000000"));
-		Safety.setFont(new Font(16));
+//		Label Safety = new Label("Safety:");
+//		Safety.setTextFill(Color.web("#000000"));
+//		Safety.setFont(new Font(16));
+//
+//		Label Transport = new Label("Transport:");
+//		Transport.setTextFill(Color.web("#000000"));
+//		Transport.setFont(new Font(16));
+//
+//		Label Noise = new Label("Quiet:");
+//		Noise.setTextFill(Color.web("#000000"));
+//		Noise.setFont(new Font(16));
+//
+//		Label Entertainment = new Label("Entertainment:");
+//		Entertainment.setTextFill(Color.web("#000000"));
+//		Entertainment.setFont(new Font(16));
 
-		Label Transport = new Label("Transport:");
-		Transport.setTextFill(Color.web("#000000"));
-		Transport.setFont(new Font(16));
-
-		Label Noise = new Label("Quiet:");
-		Noise.setTextFill(Color.web("#000000"));
-		Noise.setFont(new Font(16));
-
-		Label Entertainment = new Label("Entertainment:");
-		Entertainment.setTextFill(Color.web("#000000"));
-		Entertainment.setFont(new Font(16));
-
-		pane.add(Safety, 0, 1);
-		pane.add(Transport, 0, 2);
-		pane.add(Noise, 0, 3);
-		pane.add(Entertainment, 0, 4);
+//		pane.add(Safety, 0, 1);
+//		pane.add(Transport, 0, 2);
+//		pane.add(Noise, 0, 3);
+//		pane.add(Entertainment, 0, 4);
 
 	}
 
 	private void setupStars() {
 		allStar();
-		safetyStar();
-		transStar();
-		quietStar();
-		entertStar();
+//		safetyStar();
+//		transStar();
+//		quietStar();
+//		entertStar();
 	}
 
 	public void allStar() {
@@ -140,45 +145,45 @@ public class HouseReviews extends presenter.Window {
 				VPos.CENTER);
 	}
 
-	public void safetyStar() {
-
-		Image stars = new Image("file:./resources/images/stars/star"
-				+ safetyRating + ".png");
-		ImageView blue = new ImageView(stars);
-		blue.setFitHeight(25);
-		blue.setFitWidth(150);
-		pane.add(blue, 1, 1);
-	}
-
-	public void transStar() {
-
-		Image stars = new Image("file:./resources/images/stars/star"
-				+ transRating + ".png");
-		ImageView blue = new ImageView(stars);
-		blue.setFitHeight(25);
-		blue.setFitWidth(150);
-		pane.add(blue, 1, 2);
-	}
-
-	public void quietStar() {
-
-		Image stars = new Image("file:./resources/images/stars/star"
-				+ quietRating + ".png");
-		ImageView blue = new ImageView(stars);
-		blue.setFitHeight(25);
-		blue.setFitWidth(150);
-		pane.add(blue, 1, 3);
-	}
-
-	public void entertStar() {
-
-		Image stars = new Image("file:./resources/images/stars/star"
-				+ entertRating + ".png");
-		ImageView blue = new ImageView(stars);
-		blue.setFitHeight(25);
-		blue.setFitWidth(150);
-		pane.add(blue, 1, 4);
-	}
+//	public void safetyStar() {
+//
+//		Image stars = new Image("file:./resources/images/stars/star"
+//				+ safetyRating + ".png");
+//		ImageView blue = new ImageView(stars);
+//		blue.setFitHeight(25);
+//		blue.setFitWidth(150);
+//		pane.add(blue, 1, 1);
+//	}
+//
+//	public void transStar() {
+//
+//		Image stars = new Image("file:./resources/images/stars/star"
+//				+ transRating + ".png");
+//		ImageView blue = new ImageView(stars);
+//		blue.setFitHeight(25);
+//		blue.setFitWidth(150);
+//		pane.add(blue, 1, 2);
+//	}
+//
+//	public void quietStar() {
+//
+//		Image stars = new Image("file:./resources/images/stars/star"
+//				+ quietRating + ".png");
+//		ImageView blue = new ImageView(stars);
+//		blue.setFitHeight(25);
+//		blue.setFitWidth(150);
+//		pane.add(blue, 1, 3);
+//	}
+//
+//	public void entertStar() {
+//
+//		Image stars = new Image("file:./resources/images/stars/star"
+//				+ entertRating + ".png");
+//		ImageView blue = new ImageView(stars);
+//		blue.setFitHeight(25);
+//		blue.setFitWidth(150);
+//		pane.add(blue, 1, 4);
+//	}
 
 	public void textShow() {
 
@@ -227,29 +232,29 @@ public class HouseReviews extends presenter.Window {
 				.build();
 		hBoxComboboxes.getChildren().add(rate1);
 
-		ComboBox rate2 = ComboBoxBuilder
-				.create()
-				.id("uneditable-combobox")
-				.promptText("Transport")
-				.items(FXCollections.observableArrayList(strings.subList(0, 5)))
-				.build();
-		hBoxComboboxes.getChildren().add(rate2);
-
-		ComboBox rate3 = ComboBoxBuilder
-				.create()
-				.id("uneditable-combobox")
-				.promptText("Quiet")
-				.items(FXCollections.observableArrayList(strings.subList(0, 5)))
-				.build();
-		hBoxComboboxes.getChildren().add(rate3);
-
-		ComboBox rate4 = ComboBoxBuilder
-				.create()
-				.id("uneditable-combobox")
-				.promptText("Entertainment")
-				.items(FXCollections.observableArrayList(strings.subList(0, 5)))
-				.build();
-		hBoxComboboxes.getChildren().add(rate4);
+//		ComboBox rate2 = ComboBoxBuilder
+//				.create()
+//				.id("uneditable-combobox")
+//				.promptText("Transport")
+//				.items(FXCollections.observableArrayList(strings.subList(0, 5)))
+//				.build();
+//		hBoxComboboxes.getChildren().add(rate2);
+//
+//		ComboBox rate3 = ComboBoxBuilder
+//				.create()
+//				.id("uneditable-combobox")
+//				.promptText("Quiet")
+//				.items(FXCollections.observableArrayList(strings.subList(0, 5)))
+//				.build();
+//		hBoxComboboxes.getChildren().add(rate3);
+//
+//		ComboBox rate4 = ComboBoxBuilder
+//				.create()
+//				.id("uneditable-combobox")
+//				.promptText("Entertainment")
+//				.items(FXCollections.observableArrayList(strings.subList(0, 5)))
+//				.build();
+//		hBoxComboboxes.getChildren().add(rate4);
 		
 		pane.add(hBoxComboboxes, 0, 6);
 		hBoxComboboxes.setAlignment(Pos.CENTER);
@@ -257,4 +262,12 @@ public class HouseReviews extends presenter.Window {
 				VPos.CENTER);
 
 	}
+	
+	public static void UpdateLanguage() {
+		ratingLabel.setText(Translate.translateText(
+				languageIndex, "Rating") + ": ");
+		buttonSubmit.setText(Translate.translateText(languageIndex,
+				"Submit"));
+	}
+	
 }
