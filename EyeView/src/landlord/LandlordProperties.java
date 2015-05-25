@@ -29,35 +29,30 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import language.Translate;
 import presenter.SlideContent;
 
 public class LandlordProperties extends presenter.Window {
-	
+
 	GridPane grid = new GridPane();
 	ArrayList<House> properties = new ArrayList<House>();
 	ListView<HBox> propertyList = new ListView<HBox>();
 	ObservableList<HBox> items = FXCollections.observableArrayList();
 	User viewedUser;
-	
-	public LandlordProperties(String pageUsername){
-		
+
+	public LandlordProperties(String pageUsername) {
+
 		viewedUser = Database.getUser(pageUsername);
-		
+
 		setupGrid();
 		setupTitle();
-		if(viewedUser.username.equals(currentUsername)){
-			setupLandlordButtons();
-		}
-		else{
-			setupViewerButtons();
-		}
+		setupLandlordButtons();
 		setupPropertyList();
 
 		SlideContent.setupBackButton();
 
 		root.getChildren().add(grid);
 	}
-	
 
 	private void setupGrid() {
 
@@ -71,17 +66,11 @@ public class LandlordProperties extends presenter.Window {
 		grid.setHgap(30);
 		grid.relocate(220, 80);
 	}
-	
+
 	private void setupTitle() {
 
-		Label labelTitle;
-		if(viewedUser.username.equals(currentUsername)){
-			labelTitle = new Label("Manage Properties");
-		}
-		else{
-			labelTitle = new Label(viewedUser.first_name + "'s Properties");
-		}
-		
+		Label labelTitle = new Label(Translate.translateText(languageIndex, "Manage Properties"));
+
 		labelTitle.setTextFill(Color.web("#162252FF"));
 		labelTitle.setFont(new Font(35));
 		grid.add(labelTitle, 0, 0);
@@ -91,105 +80,110 @@ public class LandlordProperties extends presenter.Window {
 
 	private void setupLandlordButtons() {
 		VBox buttons = new VBox(30);
-		
-		ButtonType button1 = new ButtonType("150,150,150",null,"Edit",100,30);
-		ButtonType button2 = new ButtonType("150,150,150",null,"Delete",100,30);
-		ButtonType button3 = new ButtonType("150,150,150",null,"New",100,30);
-		
+
+		ButtonType button1 = new ButtonType("150,150,150", null, Translate.translateText(languageIndex, "Edit"), 100,
+				30);
+		ButtonType button2 = new ButtonType("150,150,150", null, Translate.translateText(languageIndex, "Delete"), 100,
+				30);
+		ButtonType button3 = new ButtonType("150,150,150", null, Translate.translateText(languageIndex, "New"), 100, 30);
+		ButtonType button4 = new ButtonType("150,150,150", null, Translate.translateText(languageIndex, "View"), 100,
+				30);
+
 		Button buttonEdit = new SetupButton().CreateButton(button1);
 		Button buttonDelete = new SetupButton().CreateButton(button2);
 		Button buttonNew = new SetupButton().CreateButton(button3);
+		Button buttonView = new SetupButton().CreateButton(button4);
 
 		buttonEdit.setCursor(Cursor.HAND);
 		buttonDelete.setCursor(Cursor.HAND);
 		buttonNew.setCursor(Cursor.HAND);
-		
+		buttonView.setCursor(Cursor.HAND);
+
 		buttonEdit.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
-				int index = propertyList.getSelectionModel().getSelectedIndex();
-				currentPropertyID = properties.get(index).hid;
-				
-				root.getChildren().clear();
-				slideID = EDITPROPERTY;
-				SlideContent sc  = new SlideContent();
-				sc.createSlide();
+				if (propertyList.getSelectionModel().getSelectedIndex() >= 0) {
+					int index = propertyList.getSelectionModel()
+							.getSelectedIndex();
+					currentPropertyID = properties.get(index).hid;
+
+					root.getChildren().clear();
+					slideID = EDITPROPERTY;
+					SlideContent sc = new SlideContent();
+					sc.createSlide();
+				}
 			}
 		});
 		buttonDelete.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
-				int index = propertyList.getSelectionModel().getSelectedIndex();
+				if (propertyList.getSelectionModel().getSelectedIndex() >= 0) {
+					int index = propertyList.getSelectionModel()
+							.getSelectedIndex();
 
-				for (int i = index; i < items.size() - 1; i++) {
-					items.set(i, items.get(i + 1));
+					for (int i = index; i < items.size() - 1; i++) {
+						items.set(i, items.get(i + 1));
+					}
+
+					items.remove(items.size() - 1);
+
+					Database.houseDelete(properties.get(index), viewedUser);
+					properties.remove(index); // update database of current user
+
 				}
-				
-				items.remove(items.size() - 1);
-				
-				properties.remove(index); // update database of current user
-				Database.houseDelete(properties.get(index), viewedUser);
 			}
 		});
-		
+
+		buttonView.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent event) {
+				if (propertyList.getSelectionModel().getSelectedIndex() >= 0) {
+					int index = propertyList.getSelectionModel()
+							.getSelectedIndex();
+					currentPropertyID = properties.get(index).hid;
+					loadSlide(HOUSE);
+					// Open single property advert of selection
+				}
+			}
+		});
+
 		buttonNew.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				currentPropertyID = 0;
-				
+
 				root.getChildren().clear();
 				slideID = EDITPROPERTY;
-				SlideContent sc  = new SlideContent();
+				SlideContent sc = new SlideContent();
 				sc.createSlide();
 			}
 		});
 
-		buttons.getChildren().addAll(buttonNew, buttonEdit, buttonDelete);
+		buttons.getChildren().addAll(buttonNew, buttonView, buttonEdit,
+				buttonDelete);
 		buttons.setAlignment(Pos.CENTER);
 		grid.add(buttons, 1, 1);
-	}
-	
-	private void setupViewerButtons(){
-		ButtonType button1 = new ButtonType("150,150,150",null,"View",100,30);
-		
-		Button buttonView = new SetupButton().CreateButton(button1);
-
-		buttonView.setCursor(Cursor.HAND);
-		buttonView.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent event) {
-				int index = propertyList.getSelectionModel().getSelectedIndex();
-				currentPropertyID = properties.get(index).hid;
-				root.getChildren().clear();
-				slideID = HOUSE;
-				SlideContent sc  = new SlideContent();
-				sc.createSlide();
-				// Open single property advert of selection
-			}
-		});
-
-		grid.add(buttonView, 1, 1);
 	}
 
 	private void setupPropertyList() {
 
 		propertyList.setPrefHeight(550);
-		
+
 		properties = Database.getLandlordProperties(viewedUser.uid);
-		
+
 		// Loop based on number of houses saved in profile.
 		for (int i = 0; i < properties.size(); i++) {
 
 			HBox listItem = new HBox(10);
 			VBox propertyInfo = new VBox(10);
-			
+
 			ArrayList<HouseImage> houseImages = new ArrayList<HouseImage>();
 			houseImages = Database.getHouseImageSet(properties.get(i).hid);
 			HouseImage input = houseImages.get(0);
 			ImageView thumbnail = new ImageView(new Image(input.imageIS));
 			thumbnail.setFitHeight(100);
 			thumbnail.setFitWidth(100);
-			
+
 			House house = properties.get(i);
 			Label propertyAddress = new Label(house.address);
-			Label propertyDetails = new Label(
-					"No. of Bedrooms: "+ house.rooms + "\nPrice: £" + house.price + " pcm");
+			Label propertyDetails = new Label(Translate.translateText(languageIndex, "Bedrooms: ") + house.rooms
+					+ "\n" + Translate.translateText(languageIndex, "Price:") + " £" + house.price + " pppw");
 
 			propertyAddress.setFont(Font.font(null, FontWeight.BOLD, 20));
 
@@ -202,5 +196,5 @@ public class LandlordProperties extends presenter.Window {
 
 		grid.add(propertyList, 0, 1);
 	}
-	
+
 }
