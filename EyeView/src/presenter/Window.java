@@ -60,7 +60,7 @@ public class Window extends Application {
 
 		/* Runs the XML parser */
 		XMLParser parser = new XMLParser();
-		slideshow = parser.loadSlideshow("Example PWS XML.xml");
+		slideshow = parser.loadSlideshow("EyeView.xml");
 		slideList = slideshow.getSlides();
 		groupID = slideshow.getInfo().getGroupID();
 		primaryStage.setTitle(slideshow.getTitle());
