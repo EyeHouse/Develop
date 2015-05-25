@@ -41,6 +41,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
+import language.Translate;
 import database.Database;
 import database.House;
 import database.HouseImage;
@@ -67,7 +68,9 @@ public class EditProperty extends presenter.Window {
 	private CheckBox furnished = new CheckBox();
 	private TextArea description = new TextArea();
 	ArrayList<ComboBox<String>> dateComboArray = new ArrayList<ComboBox<String>>();
-	private VBox allButtons;
+	private HBox pageChangeButtons;
+	private VBox backButtons;
+	Button buttonSave = new Button();
 	private Button buttonUpload;
 	Button uploadVideoButton;
 	private String filePath;
@@ -134,10 +137,10 @@ public class EditProperty extends presenter.Window {
 		HBox info = new HBox(5);
 		HBox pics = new HBox(5);
 		HBox vids = new HBox(5);
-
-		Label labelInfoTab = new Label("1. House Information");
-		Label labelPictureTab = new Label("2. House Pictures");
-		Label labelVideoTab = new Label("3. House Videos");
+		HBox tabs = new HBox(100);
+		Label labelInfoTab = new Label("1. " + Translate.translateText(languageIndex, "House Information"));
+		Label labelPictureTab = new Label("2. "+ Translate.translateText(languageIndex, "House Pictures"));
+		Label labelVideoTab = new Label("3. " + Translate.translateText(languageIndex, "House Videos"));
 		labelInfoTab.setFont(new Font(14));
 		labelPictureTab.setFont(new Font(14));
 		labelVideoTab.setFont(new Font(14));
@@ -168,64 +171,73 @@ public class EditProperty extends presenter.Window {
 		vids.getChildren().add(labelVideoTab);
 
 		if (hid == 0) {
+			tabs.getChildren().addAll(info, pics, vids);
 			grid.addRow(0, info, pics, vids);
 		} else {
-			grid.addRow(0, labelInfoTab, labelPictureTab, labelVideoTab);
+			tabs.getChildren().addAll(labelInfoTab, labelPictureTab,
+					labelVideoTab);
+
 		}
+		grid.addRow(0, tabs);
+		GridPane.setConstraints(tabs, 0, 0, 3, 1, HPos.LEFT, VPos.CENTER);
 	}
 
 	private void setupButtons() {
-		root.getChildren().removeAll(allButtons);
-		allButtons = new VBox(10);
-		HBox buttons = new HBox(10);
-		ButtonType button1 = new ButtonType("150,150,150", null, "Next", 50, 30);
+		root.getChildren().removeAll(backButtons);
+		root.getChildren().removeAll(pageChangeButtons);
+
+		backButtons = new VBox(10);
+		pageChangeButtons = new HBox(400);
+		ButtonType button1 = new ButtonType("150,150,150", null, Translate.translateText(languageIndex, "Next"), 50, 30);
 		Button buttonNext = new SetupButton().CreateButton(button1);
 		buttonNext.setCursor(Cursor.HAND);
 		buttonNext.setOnAction(new ChangePage(1));
 
-		ButtonType button2 = new ButtonType("150,150,150", null, "Prev", 50, 30);
+		ButtonType button2 = new ButtonType("150,150,150", null, Translate.translateText(languageIndex, "Prev"), 50, 30);
 		Button buttonPrev = new SetupButton().CreateButton(button2);
 		buttonPrev.setCursor(Cursor.HAND);
 		buttonPrev.setOnAction(new ChangePage(-1));
 
-		ButtonType button3 = new ButtonType("150,150,150", null, "Finish", 110,
+		ButtonType button3 = new ButtonType("150,150,150", null, Translate.translateText(languageIndex, "Finish"), 110,
 				30);
 		Button buttonFinish = new SetupButton().CreateButton(button3);
 		buttonFinish.setCursor(Cursor.HAND);
 		buttonFinish.setOnAction(new CreateHouse());
 
-		ButtonType button4 = new ButtonType("150,150,150", null, "Cancel", 110,
+		ButtonType button4 = new ButtonType("150,150,150", null, Translate.translateText(languageIndex, "Cancel"), 110,
 				30);
 		Button buttonCancel = new SetupButton().CreateButton(button4);
 		buttonCancel.setCursor(Cursor.HAND);
 		buttonCancel.setOnAction(new Cancel());
 
-		buttons.getChildren().addAll(buttonPrev, buttonNext);
-		allButtons.getChildren().add(buttons);
-		if (hid == 0)
-			allButtons.getChildren().add(buttonFinish);
+		pageChangeButtons.getChildren().addAll(buttonPrev, buttonNext);
+		if (hid == 0) {
+			backButtons.getChildren().add(buttonFinish);
+		}
+		backButtons.getChildren().add(buttonCancel);
 
-		allButtons.getChildren().add(buttonCancel);
 		if (page == 0)
 			buttonPrev.setVisible(false);
 		if (page == 2)
 			buttonNext.setVisible(false);
-		allButtons.relocate(840, 20);
-		root.getChildren().add(allButtons);
+
+		backButtons.relocate(840, 20);
+		pageChangeButtons.relocate(220, 740);
+		root.getChildren().addAll(backButtons, pageChangeButtons);
 	}
 
 	private void setupHouseInfo() {
 
 		VBox vBoxDesc = new VBox(10);
-		Label labelAddress = new Label("Address:");
-		Label labelPostcode = new Label("Postcode:");
-		Label labelPrice = new Label("Price (£pppw):");
-		Label labelBeds = new Label("Bedrooms:");
-		Label labelBaths = new Label("Bathrooms:");
-		Label labelFurnished = new Label("Furnished:");
-		Label labelDate = new Label("Date Available:");
-		Label labelDeposit = new Label("Deposit (£):");
-		Label labelDesc = new Label("Description");
+		Label labelAddress = new Label(Translate.translateText(languageIndex, "Address:"));
+		Label labelPostcode = new Label(Translate.translateText(languageIndex, "Postcode:"));
+		Label labelPrice = new Label(Translate.translateText(languageIndex, "Price (£pppw):"));
+		Label labelBeds = new Label(Translate.translateText(languageIndex, "Bedrooms:"));
+		Label labelBaths = new Label(Translate.translateText(languageIndex, "Bathrooms:"));
+		Label labelFurnished = new Label(Translate.translateText(languageIndex, "Furnished:"));
+		Label labelDate = new Label(Translate.translateText(languageIndex, "Date Available:"));
+		Label labelDeposit = new Label(Translate.translateText(languageIndex, "Deposit (£):"));
+		Label labelDesc = new Label(Translate.translateText(languageIndex, "Description"));
 
 		labelAddress.setFont(Font.font(null, FontWeight.BOLD, 14));
 		labelPostcode.setFont(Font.font(null, FontWeight.BOLD, 14));
@@ -250,15 +262,15 @@ public class EditProperty extends presenter.Window {
 
 			dateComboArray = setupDate(house.dateAvailable);
 			furnished.setSelected(house.furnished);
-		} else {
-			address.textProperty().addListener(new TextChanged());
-			postcode.textProperty().addListener(new TextChanged());
-			price.textProperty().addListener(new TextChanged());
-			beds.textProperty().addListener(new TextChanged());
-			baths.textProperty().addListener(new TextChanged());
-			deposit.textProperty().addListener(new TextChanged());
-			description.textProperty().addListener(new TextChanged());
 		}
+
+		address.textProperty().addListener(new TextChanged());
+		postcode.textProperty().addListener(new TextChanged());
+		price.textProperty().addListener(new TextChanged());
+		beds.textProperty().addListener(new TextChanged());
+		baths.textProperty().addListener(new TextChanged());
+		deposit.textProperty().addListener(new TextChanged());
+		description.textProperty().addListener(new TextChanged());
 
 		if (dateComboArray.size() == 0) {
 			dateComboArray = setupDate("2015-01-01");
@@ -274,8 +286,9 @@ public class EditProperty extends presenter.Window {
 
 		ButtonType button1 = new ButtonType("150,150,150", null, "Save", 150,
 				30);
-		Button buttonSave = new SetupButton().CreateButton(button1);
+		buttonSave = new SetupButton().CreateButton(button1);
 		buttonSave.setCursor(Cursor.HAND);
+		buttonSave.setDisable(true);
 		buttonSave.setOnAction(new ApplyChanges());
 
 		grid.addRow(2, labelAddress, address);
@@ -310,31 +323,35 @@ public class EditProperty extends presenter.Window {
 		ScrollPane imageWindow = new ScrollPane();
 		imageWindow.setMinSize(545, 600);
 
-		Label labelUpload = new Label("Add a new image:");
+		Label labelUpload = new Label(Translate.translateText(languageIndex, "Add a New Image:"));
 		labelUpload.setFont(Font.font(null, FontWeight.BOLD, 14));
 		uploadPathImage = new TextField();
 		uploadPathImage.setEditable(false);
 
-		ButtonType button1 = new ButtonType("150,150,150", null, "Browse", 70,
+		ButtonType button1 = new ButtonType("150,150,150", null, Translate.translateText(languageIndex, "Browse"), 70,
 				30);
 		Button buttonBrowse = new SetupButton().CreateButton(button1);
 		buttonBrowse.setCursor(Cursor.HAND);
 		buttonBrowse.setOnAction(new Browse());
 
-		ButtonType button2 = new ButtonType("150,150,150", null, "Upload", 70,
+		ButtonType button2 = new ButtonType("150,150,150", null, Translate.translateText(languageIndex, "Upload"), 70,
 				30);
 		buttonUpload = new SetupButton().CreateButton(button2);
 		buttonUpload.setDisable(true);
 		buttonUpload.setOnAction(new Upload());
 
-		ButtonType button3 = new ButtonType("150,150,150", null, "Delete", 70,
+		ButtonType button3 = new ButtonType("150,150,150", null, Translate.translateText(languageIndex, "Delete"), 70,
 				30);
 		Button buttonDelete = new SetupButton().CreateButton(button3);
 		buttonDelete.setOnAction(new DeleteImage());
 
-		HBox buttons = new HBox(10);
-		buttons.getChildren().addAll(buttonBrowse, buttonUpload);
-		grid.addRow(1, labelUpload, uploadPathImage, buttons);
+		HBox uploadControls = new HBox(10);
+		uploadControls.setAlignment(Pos.CENTER);
+		uploadControls.getChildren().addAll(labelUpload, uploadPathImage,
+				buttonBrowse, buttonUpload);
+		grid.addRow(1, uploadControls);
+		GridPane.setConstraints(uploadControls, 0, 1, 3, 1, HPos.CENTER,
+				VPos.CENTER);
 
 		if (hid != 0) {
 			houseImages = Database.getHouseImageSet(hid);
@@ -392,7 +409,7 @@ public class EditProperty extends presenter.Window {
 		uploadPathVideo.textProperty().addListener(new UploadTextChanged());
 
 		// Add FileChooser button
-		ButtonType button1 = new ButtonType("150,150,150", null, "Browse", 100,
+		ButtonType button1 = new ButtonType("150,150,150", null, Translate.translateText(languageIndex, "Browse"), 100,
 				30);
 		Button fileChooserButton = new SetupButton().CreateButton(button1);
 
@@ -401,7 +418,7 @@ public class EditProperty extends presenter.Window {
 
 			// uploadVideoButton.setDisable(false);
 
-			ButtonType button2 = new ButtonType("150,150,150", null, "Upload",
+			ButtonType button2 = new ButtonType("150,150,150", null, Translate.translateText(languageIndex, "Upload"),
 					100, 30);
 			uploadVideoButton = new SetupButton().CreateButton(button2);
 			uploadVideoButton.setDisable(true);
@@ -423,11 +440,9 @@ public class EditProperty extends presenter.Window {
 		grid.add(fileHBox, 0, 1);
 		GridPane.setConstraints(fileHBox, 0, 1, 3, 1, HPos.CENTER, VPos.CENTER);
 
-		if (hid == 0) {
-			if (videoPath != null) {
-				SetupVideoPlayer(videoPath);
-				SetupRoomMarkers();
-			}
+		if (videoPath != null) {
+			SetupVideoPlayer(videoPath);
+			SetupRoomMarkers();
 		}
 	}
 
@@ -461,25 +476,25 @@ public class EditProperty extends presenter.Window {
 		markerListHeader.setMaxWidth(300);
 
 		/* Add room name label and textfield */
-		Label addNewRoomLabel = new Label("Add New Room: ");
+		Label addNewRoomLabel = new Label(Translate.translateText(languageIndex, "Add New Room: "));
 		newRoomField = new TextField();
 
 		/* Add Set Marker Button */
-		ButtonType button1 = new ButtonType("150,150,150", null, "Set Marker",
+		ButtonType button1 = new ButtonType("150,150,150", null, Translate.translateText(languageIndex, "Set Marker"),
 				100, 30);
 		Button setMarkerButton = new SetupButton().CreateButton(button1);
 		setMarkerButton.setOnAction(new AddMarker());
 
 		/* Add Set Marker Button */
-		ButtonType button2 = new ButtonType("150,150,150", null, "Delete", 100,
+		ButtonType button2 = new ButtonType("150,150,150", null, Translate.translateText(languageIndex, "Delete"), 100,
 				30);
 		Button deleteMarker = new SetupButton().CreateButton(button2);
 		deleteMarker.setOnAction(new deleteMarker());
 
-		Label roomNamesHeader = new Label("Rooms");
+		Label roomNamesHeader = new Label(Translate.translateText(languageIndex, "Rooms"));
 		roomNamesHeader.setStyle("-fx-font-weight: bold");
 		roomNamesHeader.setPrefWidth(190);
-		Label videoTimesHeader = new Label("Times in Video");
+		Label videoTimesHeader = new Label(Translate.translateText(languageIndex, "Times in Video"));
 		videoTimesHeader.setStyle("-fx-font-weight: bold");
 
 		// Add marker setup to HBox
@@ -508,7 +523,7 @@ public class EditProperty extends presenter.Window {
 	public class ApplyChanges implements EventHandler<ActionEvent> {
 
 		public void handle(ActionEvent arg0) {
-			User owner = Database.getUser("MVPTom");
+			User owner = Database.getUser(currentUsername);
 
 			String dateAvailableString = dateComboArray.get(2).getValue() + "-"
 					+ dateComboArray.get(1).getValue() + "-"
@@ -597,10 +612,8 @@ public class EditProperty extends presenter.Window {
 	public class Cancel implements EventHandler<ActionEvent> {
 
 		public void handle(ActionEvent arg0) {
-			root.getChildren().clear();
-			slideID = LANDLORDPROPERTIES;
-			SlideContent sc = new SlideContent();
-			sc.createSlide();
+			video = null;
+			loadSlide(LANDLORDPROPERTIES);
 		}
 
 	}
@@ -611,7 +624,7 @@ public class EditProperty extends presenter.Window {
 			check++;
 		if (!baths.getText().equals("") && CheckNumber(baths.getText()))
 			check++;
-		if (!postcode.getText().equals(""))
+		if (!postcode.getText().equals("") && postcode.getText().length() <= 10)
 			check++;
 		if (!price.getText().equals("") && CheckNumber(price.getText()))
 			check++;
@@ -619,10 +632,13 @@ public class EditProperty extends presenter.Window {
 			check++;
 		if (!address.getText().equals(""))
 			check++;
-		if (!description.getText().equals(""))
+		if (!description.getText().equals("")
+				&& description.getText().length() <= 65535)
+			check++;
+		if (!deposit.getText().equals("") && CheckNumber(deposit.getText()))
 			check++;
 
-		if (check == 7) {
+		if (check == 8) {
 			return true;
 		} else
 			return false;
@@ -631,7 +647,10 @@ public class EditProperty extends presenter.Window {
 	public boolean CheckNumber(String input) {
 
 		try {
-			Integer.parseInt(input);
+			int check = Integer.parseInt(input);
+			if (check >= 2048) {
+				return false;
+			}
 		} catch (Exception e) {
 			return false;
 		}
@@ -641,9 +660,17 @@ public class EditProperty extends presenter.Window {
 	public void UpdateTabLabels() {
 
 		if (CheckInfoPage()) {
-			infoStatus.setImage(tick);
-		} else
+			if (hid == 0) {
+				infoStatus.setImage(tick);
+			} else {
+				buttonSave.setDisable(false);
+			}
+
+		} else if (hid == 0) {
 			infoStatus.setImage(cross);
+		} else {
+			buttonSave.setDisable(true);
+		}
 
 		if (imagePaths.size() > 0) {
 			picStatus.setImage(tick);
@@ -669,6 +696,7 @@ public class EditProperty extends presenter.Window {
 		}
 
 		public void handle(ActionEvent arg0) {
+			video = null;
 			grid.getChildren().clear();
 			page = page + direction;
 			createEditPage();
@@ -720,7 +748,7 @@ public class EditProperty extends presenter.Window {
 				break;
 			case PICS:
 				// Set title of file chooser
-				uploadChooser.setTitle("Choose Property Image to Upload");
+				uploadChooser.setTitle(Translate.translateText(languageIndex, "Choose Property Image to Upload"));
 				// Set file types displayed in the file chooser as png and jpg
 				uploadChooser.getExtensionFilters().addAll(
 						new FileChooser.ExtensionFilter("JPG, PNG", "*.jpg",
@@ -729,7 +757,7 @@ public class EditProperty extends presenter.Window {
 				break;
 			case VIDEO:
 				// Set title of file chooser
-				uploadChooser.setTitle("Choose Video to Upload");
+				uploadChooser.setTitle(Translate.translateText(languageIndex, "Choose Video to Upload"));
 				// Set file types displayed in the file chooser as mp4
 				uploadChooser.getExtensionFilters().add(
 						new FileChooser.ExtensionFilter("MP4", "*.mp4"));
@@ -768,7 +796,9 @@ public class EditProperty extends presenter.Window {
 				if (page == PICS) {
 					check = Database.insertHouseImage(filePath, house, owner);
 				} else if (page == VIDEO) {
-
+					videoPath = filePath;
+					SetupVideoPlayer(videoPath);
+					SetupRoomMarkers();
 				}
 
 				if (check) {
@@ -866,9 +896,9 @@ public class EditProperty extends presenter.Window {
 
 		@Override
 		public void handle(ActionEvent event) {
-			int index = markerList.getSelectionModel().getSelectedIndex();
+			if (markerList.getSelectionModel().getSelectedIndex() >= 0) {
+				int index = markerList.getSelectionModel().getSelectedIndex();
 
-			if (index >= 0) {
 				for (int i = index; i < items.size() - 1; i++) {
 					items.set(i, items.get(i + 1));
 				}
