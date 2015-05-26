@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<java version="1.7.0_51" class="java.beans.XMLDecoder">
+ <object class="java.util.TreeMap">
+  <void method="put">
+   <string>Add a New Image:</string>
+   <string>Fügen Sie ein Neues Bildnis hinzu: </string>
+  </void>
+  <void method="put">
+   <string>Address:</string>
+   <string>Adresse: </string>
+  </void>
+  <void method="put">
+   <string>Bathrooms:</string>
+   <string>Badezimmer: </string>
+  </void>
+  <void method="put">
+   <string>Bedrooms</string>
+   <string>Schlafzimmer</string>
+  </void>
+  <void method="put">
+   <string>Bedrooms:</string>
+   <string>Schlafzimmer: </string>
+  </void>
+  <void method="put">
+   <string>Bedrooms: </string>
+   <string>Schlafzimmer: </string>
+  </void>
+  <void method="put">
+   <string>Browse</string>
+   <string>Suchen Sie durch</string>
+  </void>
+  <void method="put">
+   <string>Cancel</string>
+   <string>Heben Sie auf</string>
+  </void>
+  <void method="put">
+   <string>Date Available:</string>
+   <string>Datieren Sie Verfügbar: </string>
+  </void>
+  <void method="put">
+   <string>Delete</string>
+   <string>Löschen Sie</string>
+  </void>
+  <void method="put">
+   <string>Deposit (£):</string>
+   <string>Einzahlung (£) : </string>
+  </void>
+  <void method="put">
+   <string>Description</string>
+   <string>Beschreibung</string>
+  </void>
+  <void method="put">
+   <string>Edit</string>
+   <string>Änderung</string>
+  </void>
+  <void method="put">
+   <string>Finish</string>
+   <string>Ende</string>
+  </void>
+  <void method="put">
+   <string>Furnished:</string>
+   <string>Ausgestattet: </string>
+  </void>
+  <void method="put">
+   <string>House Information</string>
+   <string>Bringen Sie Informationen unter</string>
+  </void>
+  <void method="put">
+   <string>House Pictures</string>
+   <string>Haus Stellt Dar</string>
+  </void>
+  <void method="put">
+   <string>House Videos</string>
+   <string>Haus Nimmt Auf</string>
+  </void>
+  <void method="put">
+   <string>Information</string>
+   <string>Informationen</string>
+  </void>
+  <void method="put">
+   <string>Landlord</string>
+   <string>Hauswirt</string>
+  </void>
+  <void method="put">
+   <string>Log Out</string>
+   <string>Melden Sie ab</string>
+  </void>
+  <void method="put">
+   <string>Login</string>
+   <string>Anmeldung</string>
+  </void>
+  <void method="put">
+   <string>Manage Properties</string>
+   <string>Verwalten Sie Eigentümer</string>
+  </void>
+  <void method="put">
+   <string>Map</string>
+   <string>Karte</string>
+  </void>
+  <void method="put">
+   <string>My Properties</string>
+   <string>Meine Eigentümer</string>
+  </void>
+  <void method="put">
+   <string>New</string>
+   <string>Neu</string>
+  </void>
+  <void method="put">
+   <string>Next</string>
+   <string>Nächst</string>
+  </void>
+  <void method="put">
+   <string>Postcode:</string>
+   <string>Postleitzahl: </string>
+  </void>
+  <void method="put">
+   <string>Prev</string>
+   <string>Prev</string>
+  </void>
+  <void method="put">
+   <string>Price (£pppw):</string>
+   <string>Bewerten Sie (£pppw) : </string>
+  </void>
+  <void method="put">
+   <string>Price:</string>
+   <string>Preis: </string>
+  </void>
+  <void method="put">
+   <string>Profile</string>
+   <string>Profil</string>
+  </void>
+  <void method="put">
+   <string>Register</string>
+   <string>Register</string>
+  </void>
+  <void method="put">
+   <string>Reviews</string>
+   <string>Nachprüfungen</string>
+  </void>
+  <void method="put">
+   <string>Saved Properties</string>
+   <string>Gesparte Eigentümer</string>
+  </void>
+  <void method="put">
+   <string>Upload</string>
+   <string>Upload</string>
+  </void>
+  <void method="put">
+   <string>Video Tour</string>
+   <string>Nehmen Sie Reise auf</string>
+  </void>
+  <void method="put">
+   <string>View</string>
+   <string>Blick</string>
+  </void>
+ </object>
+</java>
