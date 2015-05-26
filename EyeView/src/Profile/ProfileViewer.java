@@ -14,12 +14,16 @@ import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
+
 import Button.ButtonType;
 import Button.SetupButton;
 import presenter.SlideContent;
 import database.Database;
 import database.User;
 import database.UserReview;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -43,6 +47,8 @@ import javafx.scene.shape.Polyline;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
+import language.BadWordCheck;
+import language.Translate;
 
 public class ProfileViewer extends presenter.Window {
 
@@ -64,7 +70,9 @@ public class ProfileViewer extends presenter.Window {
 	private Button[] buttonStar;
 	private Image reviewStarFull;
 	private Image reviewStarOutline;
-
+	static Label labelEmail = new Label("");
+//	static Label labelEmail = new Label(Translate.translateText(languageIndex, "Hello"));
+	
 	// Arrays of stars to allow multiple stars to be added to grid
 	Polygon[] star = new Polygon[5];
 	Polyline[] starOutline = new Polyline[5];
@@ -111,7 +119,7 @@ public class ProfileViewer extends presenter.Window {
 	 */
 	private void SetupUserInfo() {
 		Label labelType;
-
+		//System.out.println(languageIndex + "gibbersish");
 		// Instantiates a VBox to contain the user information
 		VBox vBoxUserText = new VBox(30);
 		VBox vBoxUserPicture = new VBox(30);
@@ -143,10 +151,12 @@ public class ProfileViewer extends presenter.Window {
 		// Setup labels with information of current user
 		Label labelName = new Label(profileUser.first_name + "\t("
 				+ profileUser.username + ")");
-
+		//Translate.translateText(languageIndex, " Email ") + (": ") 
 		labelName.setFont(fontTitle);
-		Label labelEmail = new Label("Email: " + profileUser.email);
-		labelEmail.setFont(fontMain);
+		//String email = Translate.translateText(languageIndex, "Email ")
+		labelEmail.setText(("Email: ") + profileUser.email);
+//		labelEmail.setText(Translate.translateText(languageIndex, "Hello"));
+//		labelEmail.setFont(fontMain);
 		Label labelDoB = new Label("Date of Birth: "
 				+ profileUser.DOB.substring(8, 10) + "/"
 				+ profileUser.DOB.substring(5, 7) + "/"
@@ -253,9 +263,7 @@ public class ProfileViewer extends presenter.Window {
 						e.printStackTrace();
 					}
 				}
-
 			}
-
 		});
 	}
 
@@ -300,12 +308,13 @@ public class ProfileViewer extends presenter.Window {
 		// Add star HBox to grid
 		profileGrid.addRow(1, hBoxStars);
 	}
+	
 	/*
 	 * Setup profile and appendable review text areas
 	 */
 	private void SetupProfileReview() {
 
-		TextArea textProfile = new TextArea();
+		Label textProfile; //= new TextArea();
 		reviewList = new ListView<HBox>();
 		final TextArea textNewReview = new TextArea();
 		Label labelProfile, labelReview, labelNewReview, labelNewRating;
@@ -333,8 +342,10 @@ public class ProfileViewer extends presenter.Window {
 			// Create "Submit" Review button
 			ButtonType button2 = new ButtonType("150,150,150", null, "Submit",
 					100, 30);
-			Button buttonReview = new SetupButton().CreateButton(button2);
-
+			final Button buttonReview = new SetupButton().CreateButton(button2);
+			buttonReview.setDisable(true);
+			
+			
 			// VBox to contain Add Review label and text area
 			VBox vBoxNewReview = new VBox(5);
 
@@ -343,12 +354,33 @@ public class ProfileViewer extends presenter.Window {
 			labelNewRating = new Label("Add Rating:");
 			labelNewReview.setFont(fontMain);
 			labelNewRating.setFont(fontMain);
+			
 			// Limit height of new review text area
 			textNewReview.setMaxHeight(50);
-
+			textNewReview.setWrapText(true);
+					
+			textNewReview.textProperty().addListener(new ChangeListener<String>() {
+			    @Override
+			    public void changed(final ObservableValue<? extends String> observable, final String oldValue, final String newValue) {
+			    	if(textNewReview.getText().equals("")){
+			    		buttonReview.setDisable(true);
+			    	} else {
+			    		buttonReview.setDisable(false);
+			    	}   	
+			    }
+			});
+			
 			// Setup add review button event
 			buttonReview.setOnAction(new EventHandler<ActionEvent>(){
-							public void handle(ActionEvent event) {
+						public void handle(ActionEvent event) {
+							
+							BadWordCheck bwd = new BadWordCheck();
+							if(bwd.containsBlackListedWords(textNewReview.getText())){
+								textNewReview.setText(bwd.highlightBlackListedWords(textNewReview.getText()));
+								JOptionPane.showMessageDialog(null,
+										"Inappropriate Language", "",
+										JOptionPane.WARNING_MESSAGE);
+							} else {
 								// Add new review to new line of review text area
 								UserReview newReview = new UserReview(profileUser.uid);
 								newReview.uid_reviewer(Database.getUser(currentUsername).uid);
@@ -359,8 +391,10 @@ public class ProfileViewer extends presenter.Window {
 								Database.insertUserReview(newReview);
 
 								reloadProfile();
-							}
-						});
+							}				
+						}
+					});
+			
 			// Add new review and rating label and text area
 			vBoxNewReview.getChildren().addAll(labelNewReview, textNewReview,
 					labelNewRating);
@@ -368,12 +402,13 @@ public class ProfileViewer extends presenter.Window {
 
 			// Setup review star images
 			reviewStarFull = new Image(
-					"file:resources/images/stars/starFull_28.png");
+					"file:resources/images/stars/starFullButton_28.png");
 			reviewStarOutline = new Image(
-					"file:resources/images/stars/starOutline_28.png");
+					"file:resources/images/stars/starOutlineButton_28.png");
 
 			// Create star buttons
 			ButtonType button3 = new ButtonType("20,00,00", null, null, 28, 28);
+			
 			// Declare array of review star buttons
 			buttonStar = new Button[5];
 
@@ -418,24 +453,27 @@ public class ProfileViewer extends presenter.Window {
 		VBox vBoxReview = new VBox(10);
 
 		// Setup labels
-		labelProfile = new Label("Profile");
+		labelProfile = new Label("Biography");
 		labelProfile.setFont(fontMain);
 		labelReview = new Label("Reviews");
 		labelReview.setFont(fontMain);
 
 		// Setup text areas with text wrapping
-		textProfile.setText(profileUser.bio);
-		textProfile.setEditable(false);
+		textProfile = new Label(profileUser.bio);
 		textProfile.setWrapText(true);
+		textProfile.setMaxHeight(300);
 
 		reviewList.setPrefHeight(200);
+		reviewList.setMinWidth(425);
+		
 		ArrayList<UserReview> userReviews = Database
 				.getUserReviewList(profileUser.uid);
 		
 		Image thumbsUp = new Image("file:resources/images/stars/thumbs_up.png");
 		Image thumbsDown = new Image("file:resources/images/stars/thumbs_down.png");
 		
-		for (int i = 0; i < userReviews.size(); i++) {
+
+		for (int i = userReviews.size()-1; 0 < i+1; i=i-1) {
 
 			HBox reviewItem = new HBox(10);
 			VBox reviewLeft = new VBox(10);
@@ -446,7 +484,7 @@ public class ProfileViewer extends presenter.Window {
 					+ "Likes: " + userReviews.get(i).like + "  Dislikes: "
 					+ userReviews.get(i).dislike);
 			reviewText.setWrapText(true);
-			reviewText.setPrefWidth(200);
+			reviewText.setPrefWidth(350);
 			
 			ImageView like = new ImageView(thumbsUp);
 			ImageView dislike = new ImageView(thumbsDown);
@@ -493,7 +531,7 @@ public class ProfileViewer extends presenter.Window {
 
 	public class starButtonHandler implements EventHandler<ActionEvent> {
 		private int buttonNumber;
-
+		
 		public starButtonHandler(int number) {
 			this.buttonNumber = number;
 		}
