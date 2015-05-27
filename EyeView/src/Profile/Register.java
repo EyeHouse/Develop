@@ -215,55 +215,55 @@ public class Register extends presenter.Window {
 					userEmail = "";
 					createWarningPopup("Invalid Email.");
 					dialogStage.show();
-				}
-
-				// Check if the entered passwords address is valid
-				// If valid, it is encrypted and stored
-				if (DataHandler.passwordChecker(password.getText(),
-						repeatPassword.getText()) == false) {
-					System.out.println("Password check failed");
-					createWarningPopup(" Incorrect Password. Try Again");
-					dialogStage.show();
 				} else {
-					encryptedPassword = DataHandler.crypt(password.getText());
-					user.password(encryptedPassword);
+					// Check if the entered passwords address is valid
+					// If valid, it is encrypted and stored
+					if (DataHandler.passwordChecker(password.getText(),
+							repeatPassword.getText()) == false) {
+						System.out.println("Password check failed");
+						createWarningPopup(" Incorrect Password. Try Again");
+						dialogStage.show();
+					} else {
+						encryptedPassword = DataHandler.crypt(password
+								.getText());
+						user.password(encryptedPassword);
 
-					// Initialize user
-					user.DOB(dateOfBirth);
-					user.firstName(firstname.getText());
-					user.secondName(lastname.getText());
-					user.email(userEmail);
+						// Initialize user
+						user.DOB(dateOfBirth);
+						user.firstName(firstname.getText());
+						user.secondName(lastname.getText());
+						user.email(userEmail);
 
-					// If there is a skype ID
-					if (!skypeID.getText().equals("")) {
-						user.skype(skypeID.getText());
+						// If there is a skype ID
+						if (!skypeID.getText().equals("")) {
+							user.skype(skypeID.getText());
+						}
+						// no privileges
+						user.admin(false);
+
+						user.landlord(buttonLandlord.isSelected());
+
+						// register user
+						regSuccess = Database.userRegister(user);
+
+						// If the registration is successful log the user in
+						if (regSuccess == true) {
+							// log the new user in
+							User user = Database.getUser(username.getText());
+
+							// go to users new profile
+							firstLogin = true;
+							currentUsername = user.username;
+							viewedUsername = user.username;
+							loadSlide(PROFILE);
+
+							System.out.println("User: " + user.username
+									+ " created successfully");
+						} else {
+							System.out.println("Registration failed.");
+						}
 					}
-					// no privileges
-					user.admin(false);
-
-					user.landlord(buttonLandlord.isSelected());
-				
-				// register user
-				regSuccess = Database.userRegister(user);
 				}
-			
-
-			// If the registration is successful log the user in
-			if (regSuccess == true) {
-				// log the new user in
-				User user = Database.getUser(username.getText());
-
-				// go to users new profile
-				firstLogin = true;
-				currentUsername = user.username;
-				viewedUsername = user.username;
-				loadSlide(PROFILE);
-
-				System.out.println("User: " + user.username
-						+ " created successfully");
-			} else {
-				System.out.println("Registration failed.");
-			}
 			}
 		}
 	}
