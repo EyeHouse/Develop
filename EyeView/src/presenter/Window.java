@@ -12,9 +12,16 @@ import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBoxBuilder;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -52,6 +59,8 @@ public class Window extends Application {
 	public static boolean firstLogin = false;
 	public static int languageIndex = 0;
 	
+
+	public static Stage dialogStage;
 	public static Group root;
 	private static SlideContent sc;
 	public static Timeline advertTimer;
@@ -70,6 +79,7 @@ public class Window extends Application {
 		primaryStage.setHeight(yResolution);
 		primaryStage.setResizable(false);
 
+		dialogStage = new Stage();
 		root = new Group();
 		primaryStage.setScene(new Scene(root));
 		if (groupID.matches("5")) {
@@ -107,8 +117,40 @@ public class Window extends Application {
 		} else {
 			System.out.println("Slideshow Finished!");
 		}
-
+		
 	}
+	
+	public static void createWarningPopup(String message) { 
+		 
+ 		Text dialogText = new Text(message); 
+ 		dialogText.setFont(new Font(14)); 
+ 		 
+ 		Button okButton = new Button("OK"); 
+ 		okButton.setPrefSize(80, 30); 
+ 		okButton.setOnAction(new EventHandler<ActionEvent>() { 
+ 			public void handle(ActionEvent event) { 
+ 				dialogStage.close(); 
+ 			} 
+ 		}); 
+ 		 
+ 		Image icon = new Image("file:./resources/images/warning.png");
+		ImageView iconView = new ImageView(icon);
+		
+		
+ 		dialogStage.setResizable(false); 
+ 		dialogStage.getIcons().add(new Image("file:./resources/icons/xxxhdpi.png")); 
+ 		dialogStage.setWidth(300); 
+ 		dialogStage.setHeight(150); 
+ 		HBox hbox = new HBox(10);
+ 		hbox.setAlignment(Pos.CENTER);
+ 		hbox.getChildren().addAll(iconView,dialogText);
+ 		
+ 		dialogStage.setScene(new Scene(VBoxBuilder.create() 
+ 				.children(hbox, okButton) 
+ 				.alignment(Pos.CENTER) 
+ 				.spacing(5) 
+ 				.build())); 
+ 	} 
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -121,3 +163,4 @@ public class Window extends Application {
 		launch(args);
 	}
 }
+

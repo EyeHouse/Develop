@@ -5,7 +5,7 @@ import java.sql.SQLException;
 
 public class HouseVideo {
 
-	int vid;
+	public int vid;
 	int hid;
 	String videoLocation;
 
@@ -28,8 +28,8 @@ public class HouseVideo {
 		}
 	}
 
-	public void vid(int imageID) {
-		this.vid = imageID;
+	public void vid(int videoID) {
+		this.vid = videoID;
 	}
 
 	public void hid(int houseID) {

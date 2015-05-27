@@ -15,6 +15,8 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
+import javafx.scene.Group;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -26,8 +28,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-
-import javax.swing.JOptionPane;
+import javafx.stage.Stage;
 
 import landlord.EditProperty;
 import landlord.LandlordProperties;
@@ -271,12 +272,15 @@ public class SlideContent extends Window {
 			labelSavedProperties = new Label(Translate.translateText(languageIndex,
 					"Saved Properties"));
 			labelSavedProperties.setFont(new Font(16));
+			labelSavedProperties.setMaxWidth(150);
+			labelSavedProperties.setWrapText(true);
 			labelSavedProperties
 					.setOnMouseClicked(new EventHandler<MouseEvent>() {
 						public void handle(MouseEvent arg0) {
 							loadSlide(SAVEDPROPERTIES);
 						}
 					});
+			
 			labelLandlordProperties = new Label(Translate.translateText(languageIndex,
 					"My Properties"));
 			labelLandlordProperties.setFont(new Font(16));
@@ -403,9 +407,7 @@ public class SlideContent extends Window {
 		if (slideID == INDEX) {
 			buttonRow.setOnMouseClicked(new EventHandler<MouseEvent>() {
 				public void handle(MouseEvent t) {
-					JOptionPane.showMessageDialog(null,
-							"Login for full features.", "",
-							JOptionPane.PLAIN_MESSAGE);
+					createLoginWarning();
 				}
 			});
 			videoButton.setDisable(true);
@@ -516,5 +518,30 @@ public class SlideContent extends Window {
 						"Log Out"));
 			}
 		}
+	}
+	
+	public void createLoginWarning() {
+
+		Stage warningStage = new Stage();
+		Group root = new Group();
+		Image icon = new Image("file:./resources/images/warning.png");
+		
+		/* Initialises the warning stage */
+		warningStage.setWidth(255);
+		warningStage.setHeight(110);
+		warningStage.setResizable(false);
+		warningStage.getIcons().add(icon);
+		warningStage.setTitle("Warning");
+		
+		/* Create warning message*/
+		ImageView iconView = new ImageView(icon);
+		iconView.relocate(15, 15);
+		Label warning = new Label("Login for full features.");
+		warning.setFont(Font.font(null, 17));	
+		warning.relocate(75, 30);
+		root.getChildren().addAll(iconView, warning);
+				
+		warningStage.setScene(new Scene(root));
+		warningStage.show();
 	}
 }
