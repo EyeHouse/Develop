@@ -28,6 +28,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import language.Translate;
 import presenter.SlideContent;
 
 public class SavedProperties extends presenter.Window {
@@ -44,6 +45,7 @@ public class SavedProperties extends presenter.Window {
 		setupButtons();
 		setupPropertyList();
 
+		//add BackButton
 		SlideContent.setupBackButton();
 
 		root.getChildren().add(grid);
@@ -64,7 +66,8 @@ public class SavedProperties extends presenter.Window {
 
 	private void setupTitle() {
 
-		Label labelTitle = new Label("Saved Properties");
+		//Label labelTitle = new Label("Saved Properties");
+		Label labelTitle = new Label(Translate.translateText(languageIndex, "Saved Properties") + ": ");
 		labelTitle.setTextFill(Color.web("#162252FF"));
 		labelTitle.setFont(new Font(35));
 		grid.add(labelTitle, 0, 0);
@@ -75,8 +78,11 @@ public class SavedProperties extends presenter.Window {
 	private void setupButtons() {
 		VBox buttons = new VBox(30);
 		
-		ButtonType button1 = new ButtonType("150,150,150",null,"View",100,30);
-		ButtonType button2 = new ButtonType("150,150,150",null,"Remove",100,30);
+		//View button//
+		ButtonType button1 = new ButtonType("150,150,150",null,Translate.translateText(languageIndex, "View") + ": ",100,30);
+		
+		//Remove button//
+		ButtonType button2 = new ButtonType("150,150,150",null,Translate.translateText(languageIndex, "Remove") + ": ",100,30);
 		
 		Button buttonView = new SetupButton().CreateButton(button1);
 		Button buttonRemove = new SetupButton().CreateButton(button2);
@@ -113,6 +119,8 @@ public class SavedProperties extends presenter.Window {
 		buttons.getChildren().addAll(buttonView, buttonRemove);
 		buttons.setAlignment(Pos.CENTER);
 		grid.add(buttons, 1, 1);
+		
+		
 	}
 
 	private void setupPropertyList() {
@@ -153,20 +161,8 @@ public class SavedProperties extends presenter.Window {
 	}
 	
 	public static void setupPropertyBackButton(){
-		ButtonType button1 = new ButtonType("150,150,150",null,"Back",100,30);
-		Button buttonBack = new SetupButton().CreateButton(button1);
-		buttonBack.relocate(195, 20);
-		
-		buttonBack.setCursor(Cursor.HAND);
-		buttonBack.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent ae) {
-				root.getChildren().clear();
-				slideID = prevSlideID;
-				SlideContent sc  = new SlideContent();
-				sc.createSlide();
-			}
-		});
-		
-		root.getChildren().add(buttonBack);
+
+		//add BackButton
+		SlideContent.setupBackButton();
 	}
 }
