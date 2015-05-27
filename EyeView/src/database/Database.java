@@ -120,7 +120,7 @@ public class Database {
 			insertUser.setBoolean(landlord, userDetails.landlord);
 			insertUser.setString(DOB, userDetails.DOB);
 			insertUser.setBoolean(admin, userDetails.admin);
-			
+
 			try {
 				picture = FileManager
 						.readFile("eyehouse/defaults/default_profpic.jpg");
@@ -204,8 +204,7 @@ public class Database {
 				}
 			}
 			if (!title.next()) {
-				System.out
-						.println("\nHouse doesnt exist");
+				System.out.println("\nHouse doesnt exist");
 				return false;
 			}
 		} catch (SQLException e) {
@@ -450,7 +449,7 @@ public class Database {
 		else
 			return user;
 	}
-	
+
 	/**
 	 * To be used if the user has been confirmed to exist in the login stage if
 	 * they do exist then the username and password is correct this gets all the
@@ -472,7 +471,7 @@ public class Database {
 			// execute
 			userDetails = getUsername.executeQuery();
 			// take all the users details and put them in an instance of user
-			if(userDetails.next()) {
+			if (userDetails.next()) {
 				// construct an instance using the logged on users details
 				username = userDetails.getString("username");
 			}
@@ -516,7 +515,7 @@ public class Database {
 		else
 			return house;
 	}
-	
+
 	public static ArrayList<House> getLandlordProperties(int uid) {
 		ResultSet houses;
 		ArrayList<House> list = new ArrayList<House>();
@@ -1537,11 +1536,41 @@ public class Database {
 		}
 		return true;
 	}
+	/**
+	 * Selects all houses
+	 * @return ArrayList of house id's
+	 */
+	public static ArrayList<Integer> selectAllHouses() {
+		
+		ArrayList<Integer> list = new ArrayList<Integer>();
+		ResultSet houses = null;
+		try {
+			PreparedStatement allHouses = con.prepareStatement("SELECT * FROM houses;");
+			
+			houses = allHouses.executeQuery();
+			// if houses do exist loop through all of them
+			while (houses.next()) {
+				// store all hid's in an arraylist
+				list.add(houses.getInt("hid"));
+			}
+			// if no houses exist
+			if(!houses.next()) {
+				list = null;
+				System.out.println("\nNo houses available. Business is not going Well.");
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			list = null;
+			System.out.println("\nSelect all houses failed.");
+		}
+		return list;
+	}
 
 	public static void main(String[] args) throws Exception {
 		// Connect to the Database
 		dbConnect();
-		
+
 		boolean check;
 		User insert = null;
 		// User checkUse = null
@@ -1551,9 +1580,9 @@ public class Database {
 
 		String email = "DefProfTest3@york.ac.uk";
 
-		String title = "Testing Date Available";
+		String title = "Example";
 
-		int mode = 2;
+		int mode = 11;
 		boolean insertSuccess;
 		boolean houseDeleted;
 		boolean updateSuccess;
@@ -1563,6 +1592,31 @@ public class Database {
 
 		// testing switch
 		switch (mode) {
+		case 11:
+			// insert the houses basic info
+			House eyehouseHQ = null;
+			int pricepermonth = 56;
+			boolean house;
+			
+			String brc = "M:/Distributed Computer Systems/DNSTex.pdf";
+			String enrg = "M:/Distributed Computer Systems/ddos.jpg";
+			eyehouseHQ = new House(title);
+			eyehouseHQ.postcode("YO1 7HP");
+			eyehouseHQ.address("Testing Date");
+			eyehouseHQ.price(pricepermonth);
+			eyehouseHQ.deposit(pricepermonth);
+			eyehouseHQ.rooms(pricepermonth);
+			eyehouseHQ.bathrooms(pricepermonth);
+			eyehouseHQ.dateAvailable("2015-04-24");
+			eyehouseHQ.furnished(true);
+			eyehouseHQ.description("Test");
+			User temp = getUser("MVPTom");
+			if (!checkHouseExists(temp, eyehouseHQ)) {
+				house = houseInsert(eyehouseHQ, brc, enrg, temp);
+				eyehouseHQ.printHouse();
+				System.out.println(house);
+			}
+			break;
 		case 14:
 			int tempPrc = 9001;
 			// for a date string
@@ -1603,7 +1657,7 @@ public class Database {
 			insert.DOB("0000-01-01");
 			String encryptedPassword = DataHandler.crypt(password);
 			insert.password(encryptedPassword);
-			
+
 			// insert
 			insertSuccess = userInsert(insert);
 			if (insertSuccess == false) {
@@ -1635,30 +1689,6 @@ public class Database {
 			// Update image
 			updateImage(tablename, filepath, fieldSelect, id);
 
-			break;
-		case 11:
-			// insert the houses basic info
-			House eyehouseHQ = null;
-			int pricepermonth = 56;
-			boolean house;
-			String brc = "D:/EE course/SWEng/Java/testbrochure.pdf";
-			String enrg = "D:/EE course/SWEng/Java/energy-rating-card.jpg";
-			eyehouseHQ = new House(title);
-			eyehouseHQ.postcode("YO1 7HP");
-			eyehouseHQ.address("Testing Date");
-			eyehouseHQ.price(pricepermonth);
-			eyehouseHQ.deposit(pricepermonth);
-			eyehouseHQ.rooms(pricepermonth);
-			eyehouseHQ.bathrooms(pricepermonth);
-			eyehouseHQ.dateAvailable("2015-04-24");
-			eyehouseHQ.furnished(true);
-			eyehouseHQ.description("Test");
-			User temp = getUser("MVPTom");
-			if (!checkHouseExists(temp, eyehouseHQ)) {
-				house = houseInsert(eyehouseHQ, brc, enrg, temp);
-				eyehouseHQ.printHouse();
-				System.out.println(house);
-			}
 			break;
 		case 12:
 			// a lot of cases!
@@ -1705,7 +1735,7 @@ public class Database {
 
 			break;
 		case 16:
-			
+
 			// int hid5 = getID(tempu5, temph5, 2);
 			ArrayList<HouseImage> list = new ArrayList<HouseImage>();
 			list = getHouseImageSet(10);

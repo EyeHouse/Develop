@@ -21,8 +21,6 @@ public class Search {
 	private static final String GEO_CODE_SERVER = "http://maps.googleapis.com/maps/api/geocode/json?";
 	public static final double R = 6372.8; // In kilometers
 
-	
-	
 	public static String url = "10.10.0.1";
 
 	public static ArrayList<Double> getLongLat(String address) {
@@ -151,21 +149,62 @@ public class Search {
 
 	}
 
+	public static ArrayList<House> rooms(int rooms, boolean filterType) {
+
+		ArrayList<House> list = new ArrayList<House>();
+
+		ResultSet roomRS1 = null;
+		ResultSet roomRS2 = null;
+
+		try {
+			// if filter is true then search where room number is greater
+			if (filterType) {
+				PreparedStatement roomQuery = Database.con
+						.prepareStatement("SELECT * FROM houses WHERE rooms > ? ORDER BY rooms ASC LIMIT 50");
+				roomQuery.setInt(1, rooms);
+				roomRS1 = roomQuery.executeQuery();
+
+				while (roomRS1.next()) {
+					list.add(new House(roomRS1));
+				}
+			}
+			// < entered rooms
+			if (!filterType) {
+				PreparedStatement roomQuery = Database.con
+						.prepareStatement("SELECT * FROM houses WHERE rooms < ? ORDER BY rooms ASC LIMIT 50");
+
+				roomQuery.setInt(1, rooms);
+				roomRS2 = roomQuery.executeQuery();
+
+				while (roomRS2.next()) {
+					list.add(new House(roomRS2));
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("Error Rooms Search: " + e.getErrorCode());
+		}
+		return list;
+	}
+	
+	
+
 	public static ArrayList<House> price(int price, boolean filterType) {
 
 		ArrayList<House> list = new ArrayList<House>();
-		
+
 		ResultSet priceRS1 = null;
 		ResultSet priceRS2 = null;
-		
+
 		try {
 			// if filter is true then search where price is greater
 			if (filterType) {
 				PreparedStatement priceQuery = Database.con
-						.prepareStatement("SELECT * FROM houses WHERE price > " + price +  " ORDER BY price ASC LIMIT 50");
-				//priceQuery.setInt(1, price);
+						.prepareStatement("SELECT * FROM houses WHERE price > ? ORDER BY price ASC LIMIT 50");
+				priceQuery.setInt(1, price);
 				priceRS1 = priceQuery.executeQuery();
-				
+
 				while (priceRS1.next()) {
 					list.add(new House(priceRS1));
 				}
@@ -174,10 +213,10 @@ public class Search {
 			if (!filterType) {
 				PreparedStatement priceQuery = Database.con
 						.prepareStatement("SELECT * FROM houses WHERE price < ? ORDER BY price ASC LIMIT 50");
-				
+
 				priceQuery.setInt(1, price);
 				priceRS2 = priceQuery.executeQuery();
-				
+
 				while (priceRS2.next()) {
 					list.add(new House(priceRS2));
 				}
@@ -189,25 +228,29 @@ public class Search {
 		}
 		return list;
 	}
+	
+	
 
 	public static void main(String[] args) throws Exception {
 
 		Database.dbConnect();
 
-//		String address = "YO23 1JZ";
-//
-//		ArrayList<Double> longLat = new ArrayList<Double>();
-//
-//		longLat = getLongLat(address);
-//
-//		System.out.println("Latitude: " + longLat.get(0));
-//		System.out.println("Longitude: " + longLat.get(1));
-		
+		// String address = "YO23 1JZ";
+		//
+		// ArrayList<Double> longLat = new ArrayList<Double>();
+		//
+		// longLat = getLongLat(address);
+		//
+		// System.out.println("Latitude: " + longLat.get(0));
+		// System.out.println("Longitude: " + longLat.get(1));
+
 		ArrayList<House> list = new ArrayList<House>();
-		
-		list = price(5000, false);
+
+		// list = price(5000, false);
+		list = rooms(4, false);
+
 		int i;
-		for(i = 0; i < list.size(); i++) {
+		for (i = 0; i < list.size(); i++) {
 			House temp = list.get(i);
 			temp.printHouse();
 		}
