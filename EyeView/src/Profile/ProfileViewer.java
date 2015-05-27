@@ -340,7 +340,7 @@ public class ProfileViewer extends presenter.Window {
 
 		} else {
 			// Create "Submit" Review button
-			ButtonType button2 = new ButtonType("150,150,150", null, "Submit",
+			ButtonType button2 = new ButtonType("166,208,255", null, "Submit",
 					100, 30);
 			final Button buttonReview = new SetupButton().CreateButton(button2);
 			buttonReview.setDisable(true);
