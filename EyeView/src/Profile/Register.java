@@ -96,8 +96,7 @@ public class Register extends presenter.Window {
 
 	public void setupTitle() {
 
-		topTitle = new Label(Translate.translateText(
-				languageIndex, "Register"));
+		topTitle = new Label(Translate.translateText(languageIndex, "Register"));
 		topTitle.setTextFill(Color.web("#162252FF"));
 		topTitle.setFont(new Font(35));
 		topTitle.relocate(470, 90);
@@ -112,19 +111,19 @@ public class Register extends presenter.Window {
 		username = new TextField();
 		username.setPromptText("Username");
 		username.setPrefColumnCount(10);
-		registerGrid.addRow(1, new Label("*Choose a username") , username);
+		registerGrid.addRow(1, new Label("*Choose a username"), username);
 
 		// First Name field
 		firstname = new TextField();
 		firstname.setPromptText("Joe");
 		firstname.setPrefColumnCount(10);
-		registerGrid.addRow(2, new Label("*First name:"), firstname);
+		registerGrid.addRow(2, new Label("First name:"), firstname);
 
 		// Last Name fieldzz
 		lastname = new TextField();
 		lastname.setPromptText("Bloggs");
 		lastname.setPrefColumnCount(10);
-		registerGrid.addRow(3, new Label("*Last name:"), lastname);
+		registerGrid.addRow(3, new Label("Last name:"), lastname);
 
 		setupPasswordFields(registerGrid);
 
@@ -174,7 +173,8 @@ public class Register extends presenter.Window {
 	public void setupButtons() {
 
 		// Add button to grid
-		ButtonType button1 = new ButtonType("150,150,150",null,Translate.translateText(languageIndex, "Register"),100,30);
+		ButtonType button1 = new ButtonType("166,208,255", null,
+				Translate.translateText(languageIndex, "Register"), 100, 30);
 		Button registerButton = new SetupButton().CreateButton(button1);
 		registerGrid.add(registerButton, 0, 10);
 		GridPane.setConstraints(registerButton, 0, 10, 2, 1, HPos.CENTER,
@@ -191,64 +191,79 @@ public class Register extends presenter.Window {
 
 		public void handle(ActionEvent arg0) {
 
-			boolean regSuccess;
+			boolean regSuccess = false;
 
-			user = new User(username.getText());
-
-			dateOfBirth = dateOfBirthCombo.get(2).getValue() + "-"
-					+ dateOfBirthCombo.get(1).getValue() + "-"
-					+ dateOfBirthCombo.get(0).getValue();
-
-			String userEmail = email.getText();
-			// Check if the entered email address is valid
-			if (DataHandler.isValidEmailAddress(email.getText()) == false) {
-				userEmail = "";
+			// Check username
+			if ((bwc.containsBlackListedWords(username.getText()) == true)
+					|| (bwc.containsBlackListedWords(firstname.getText()) == true)
+					|| (bwc.containsBlackListedWords(lastname.getText()) == true)) {
+				createWarningPopup("Rude Word Detected.");
+				dialogStage.show();
+				System.out.println("Rude word detected.");
 			}
 
-			// Check if the entered passwords address is valid
-			// If valid, it is encrypted and stored
-			if (bwc.containsBlackListedWords(password.getText()) == true){
-				
-			}
-			if (DataHandler.passwordChecker(password.getText(),
-					repeatPassword.getText()) == false)  {
-				System.out.println("Password check failed");
-			} else {
-				encryptedPassword = DataHandler.crypt(password.getText());
-				user.password(encryptedPassword);
+			else {
+				user = new User(username.getText());
+				// Get date of birth
+				dateOfBirth = dateOfBirthCombo.get(2).getValue() + "-"
+						+ dateOfBirthCombo.get(1).getValue() + "-"
+						+ dateOfBirthCombo.get(0).getValue();
 
-				// Initialize user
-				user.DOB(dateOfBirth);
-				user.firstName(firstname.getText());
-				user.secondName(lastname.getText());
-				user.email(userEmail);
-				if (!skypeID.getText().equals("")) {
-					user.skype(skypeID.getText());
+				String userEmail = email.getText();
+				// Check if the entered email address is valid
+				if (DataHandler.isValidEmailAddress(email.getText()) == false) {
+					userEmail = "";
+					createWarningPopup("Invalid Email.");
+					dialogStage.show();
 				}
 
-				// no priviledges
-				user.admin(false);
+				// Check if the entered passwords address is valid
+				// If valid, it is encrypted and stored
+				if (DataHandler.passwordChecker(password.getText(),
+						repeatPassword.getText()) == false) {
+					System.out.println("Password check failed");
+					createWarningPopup(" Incorrect Password. Try Again");
+					dialogStage.show();
+				} else {
+					encryptedPassword = DataHandler.crypt(password.getText());
+					user.password(encryptedPassword);
 
-				user.landlord(buttonLandlord.isSelected());
+					// Initialize user
+					user.DOB(dateOfBirth);
+					user.firstName(firstname.getText());
+					user.secondName(lastname.getText());
+					user.email(userEmail);
 
+					// If there is a skype ID
+					if (!skypeID.getText().equals("")) {
+						user.skype(skypeID.getText());
+					}
+					// no privileges
+					user.admin(false);
+
+					user.landlord(buttonLandlord.isSelected());
+				
 				// register user
 				regSuccess = Database.userRegister(user);
-
-				if (regSuccess == true) {
-					// log the new user in
-					User user = Database.getUser(username.getText());
-
-					// go to users new profile
-					firstLogin = true;
-					currentUsername = user.username;
-					viewedUsername = user.username;
-					loadSlide(PROFILE);
-
-					System.out.println("User: " + user.username
-							+ " created successfully");
-				} else {
-					System.out.println("Registration failed.");
 				}
+			
+
+			// If the registration is successful log the user in
+			if (regSuccess == true) {
+				// log the new user in
+				User user = Database.getUser(username.getText());
+
+				// go to users new profile
+				firstLogin = true;
+				currentUsername = user.username;
+				viewedUsername = user.username;
+				loadSlide(PROFILE);
+
+				System.out.println("User: " + user.username
+						+ " created successfully");
+			} else {
+				System.out.println("Registration failed.");
+			}
 			}
 		}
 	}

@@ -97,7 +97,7 @@ public class Login extends presenter.Window {
 	public void setupButtons() {
 
 		// Add buttons to grid
-		ButtonType button1 = new ButtonType("104,158,239", null,
+		ButtonType button1 = new ButtonType("166,208,255", null,
 				(Translate.translateText(languageIndex, "Login")), 100, 30);
 		Button loginButton = new SetupButton().CreateButton(button1);
 		loginGrid.add(loginButton, 0, 3);
