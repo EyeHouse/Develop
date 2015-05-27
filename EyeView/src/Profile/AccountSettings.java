@@ -45,14 +45,14 @@ public class AccountSettings extends presenter.Window{
 
 	/* Account Settings Global Variables */
 	private GridPane grid = new GridPane();
-	private TextField fieldFName, fieldLName, fieldUsername, fieldEmail;
+	private TextField fieldFName, fieldLName, fieldUsername, fieldEmail, fieldSkypeUsername;
 	private PasswordField fieldPassword = new PasswordField();
 	private PasswordField fieldNewPassword = new PasswordField();
 	private PasswordField fieldConfNewPassword = new PasswordField();
 	private TextArea profileText = new TextArea();
-	private RadioButton buttonStudent = new RadioButton("Student");
-	private RadioButton buttonLandlord = new RadioButton("Landlord");
-	private Label labelPasswordIncorrect, labelNewPasswordInvalid;
+	//private RadioButton buttonStudent = new RadioButton("Student");
+	//private RadioButton buttonLandlord = new RadioButton("Landlord");
+	private Label labelPasswordIncorrect, labelNewPasswordInvalid, labelPasswordMismatch;
 	private Label labelUsernameError, labelBadLanguage;
 	private User currentUser;
 	ArrayList<ComboBox<String>> dateComboArray;
@@ -90,9 +90,6 @@ public class AccountSettings extends presenter.Window{
 
 	/* Add existing account information to grid */
 	public void setupInfo() {
-		
-		HBox hBoxAccountType = new HBox(30);
-		ToggleGroup group = new ToggleGroup();
 
 		// Setup row labels
 		Label labelFName = new Label("First Name");
@@ -100,7 +97,7 @@ public class AccountSettings extends presenter.Window{
 		Label labelUsername = new Label("User Name");
 		Label labelEmail = new Label("Email");
 		Label labelDoB = new Label("Date of Birth");
-		Label labelAccountType = new Label("Account Type");
+		Label labelSkypeUsername = new Label("Skype Username");
 
 		// Setup username error label
 		labelUsernameError = new Label();
@@ -111,28 +108,17 @@ public class AccountSettings extends presenter.Window{
 		fieldLName = new TextField(currentUser.second_name);
 		fieldUsername = new TextField(currentUser.username);
 		fieldEmail = new TextField(currentUser.email);
-
-		// Group radio buttons
-		buttonStudent.setToggleGroup(group);
-		buttonLandlord.setToggleGroup(group);
-
-		// Setup radio buttons with current account type
-		if (currentUser.landlord)
-			buttonLandlord.setSelected(true);
-		else
-			buttonStudent.setSelected(true);
+		fieldSkypeUsername = new TextField(currentUser.skype);
 
 		dateComboArray = EditProperty.setupDate(currentUser.DOB);
 		HBox hBoxDoB = new HBox(10);
 		hBoxDoB.getChildren().addAll(dateComboArray.get(0),
 				dateComboArray.get(1), dateComboArray.get(2));
 
-		hBoxAccountType.getChildren().addAll(buttonStudent, buttonLandlord);
-
 		grid.addColumn(0, labelFName, labelLName, labelUsername, labelEmail,
-				labelDoB, labelAccountType);
+				labelDoB, labelSkypeUsername);
 		grid.addColumn(1, fieldFName, fieldLName, fieldUsername, fieldEmail,
-				hBoxDoB, hBoxAccountType);
+				hBoxDoB, fieldSkypeUsername);
 		grid.add(labelUsernameError, 2, 2);
 	}
 
@@ -147,15 +133,18 @@ public class AccountSettings extends presenter.Window{
 		// Setup password errors
 		labelPasswordIncorrect = new Label("Incorrect Password");
 		labelNewPasswordInvalid = new Label("New Password Invalid");
+		labelPasswordMismatch = new Label("New Passwords don't match");
 		labelPasswordIncorrect.setVisible(false);
 		labelNewPasswordInvalid.setVisible(false);
+		labelPasswordMismatch.setVisible(false);
 
 		// Add objects to grid
 		grid.addRow(6, labelCurrentPassword, fieldPassword,
 				labelPasswordIncorrect);
 		grid.addRow(7, labelNewPassword, fieldNewPassword,
 				labelNewPasswordInvalid);
-		grid.addRow(8, labelConfNewPassword, fieldConfNewPassword);
+		grid.addRow(8, labelConfNewPassword, fieldConfNewPassword,
+				labelPasswordMismatch);
 	}
 
 	/* Add profile label and text area to grid */
@@ -173,7 +162,7 @@ public class AccountSettings extends presenter.Window{
 		profileText.setPrefWidth(200);
 
 		// Add profile label and text area to grid
-		grid.addRow(9, labelProfileText, profileText,labelBadLanguage);
+		grid.addRow(9, labelProfileText, profileText, labelBadLanguage);
 	}
 
 	/* Add apply and cancel buttons to grid */
@@ -195,8 +184,15 @@ public class AccountSettings extends presenter.Window{
 			@Override
 			public void handle(ActionEvent event) {
 
-				// Save changes and return to profile if valid
-				ApplyChanges();
+				if(fieldNewPassword.getText().equals(fieldConfNewPassword.getText())){
+					// Save changes and return to profile if valid
+					ApplyChanges();
+					labelPasswordMismatch.setVisible(false);
+					labelPasswordIncorrect.setVisible(false);
+					labelNewPasswordInvalid.setVisible(false); 
+				} else {
+					labelPasswordMismatch.setVisible(true);
+				}				
 			}
 		});
 
@@ -248,8 +244,7 @@ public class AccountSettings extends presenter.Window{
 		Database.userUpdate(currentUser,"email",null,fieldEmail.getText());
 		Database.userUpdate(currentUser,"DOB",null,doB);
 		Database.userUpdate(currentUser,"first_name",null,fieldFName.getText());
-		Database.userUpdate(currentUser,"landlord",buttonLandlord.isSelected(),null);
-		
+		Database.userUpdate(currentUser,"skype",null,fieldSkypeUsername.getText());		
 
 		CheckBio();
 		

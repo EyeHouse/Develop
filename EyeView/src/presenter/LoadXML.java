@@ -21,15 +21,19 @@ import parser.TextData;
 import parser.VideoData;
 
 public class LoadXML extends Window {
-
+	
 	public LoadXML() throws IOException {
+		loadXMLBackGround();
 		loadXMLText();
 		loadXMLGraphics();
 		loadXMLImages();
 		loadXMLVideos();
 		loadXMLAudio();
 	}
-
+	
+	/**
+	 * loads the text for the slide onto the screen. Refers to defaults if settings have not been set.
+	 */
 	public void loadXMLText() throws IOException {
 
 		List<TextData> textList = slideData.getTextList();
@@ -63,7 +67,21 @@ public class LoadXML extends Window {
 			root.getChildren().add(textPane);
 		}
 	}
+	
+	/**
+	 * loads the background colour from the XML.
+	 */
+	public void loadXMLBackGround() {
+		GraphicHandler gh = new GraphicHandler();
+		//System.out.println(defaultData.getBackgroundColor());
+		//System.out.println(slideshow.getDefaults().getFont()+"dasdasdsadasd");
+		//GraphicElement graphic = new GraphicElement("rectangle", 0, 0, (float)xResolution, (float)yResolution, 0, true, slideshow.getDefaults().getBackgroundColor(), "");
+		//gh.addShapeToCanvas(graphic);
+	}
 
+	/**
+	 * loads all the shapes and other graphics data from the XML.
+	 */
 	public void loadXMLGraphics() {
 
 		GraphicHandler gh = new GraphicHandler();
@@ -80,6 +98,9 @@ public class LoadXML extends Window {
 		}
 	}
 
+	/**
+	 * loads all the images data from the XML.
+	 */
 	public void loadXMLImages() {
 
 		ImageHandler ih = new ImageHandler();
@@ -94,6 +115,9 @@ public class LoadXML extends Window {
 		}
 	}
 
+	/**
+	 * loads all the videos data from the XML.
+	 */
 	public void loadXMLVideos() {
 
 		List<VideoData> videoList = slideData.getVideoList();
@@ -113,6 +137,9 @@ public class LoadXML extends Window {
 		}
 	}
 
+	/**
+	 * loads all the audio data from the XML.
+	 */
 	public void loadXMLAudio() {
 
 		List<AudioData> audioList = slideData.getAudioList();
