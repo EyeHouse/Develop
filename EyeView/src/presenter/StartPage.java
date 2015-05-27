@@ -37,10 +37,10 @@ import Button.SetupButton;
 public class StartPage extends Window {
 
 	private Button buttonStart; 					//Start button
-	private Font fontMain = new Font(18);			//Set font size for labels
+	private Font fontMain = new Font(21);			//Set font size for labels
 	private static ImageView logo;					//ImageView in which logo image is drawn
 	public static Image companyLogo;				//EyeHouse logo
-	private Label welcomeMessage1, welcomeMessage2;	//Labels for welcome message (2 lines)
+	private Label welcomeMessage;					//Label for welcome message
 	private static Timeline scrollTimer;			//Timer to scroll pictures banner
 	private PicturesBanner bannerPictures;
 	
@@ -63,7 +63,7 @@ public class StartPage extends Window {
 	private void createPageElements() {
 		
 		//VBox to group the welcome message labels and the start button
-		VBox elementBox = new VBox(12);
+		VBox elementBox = new VBox(16);
 		
 		//Set background colour by filling the screen with a rectangle
 		Rectangle background = new Rectangle();
@@ -85,12 +85,13 @@ public class StartPage extends Window {
 		centreBox.setHeight(rectangleHeight);
 		
 		//Define start button type
-		ButtonType button1 = new ButtonType("104,158,239", null, "Start", 100,
-				30);
+		ButtonType button1 = new ButtonType("166,208,255", null, "Start", 138,
+				35);
 		
 		//Create start button
 		buttonStart = new SetupButton().CreateButton(button1);
 		buttonStart.setCursor(Cursor.HAND);
+		
 		//Set the action of the start button
 		buttonStart.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent ae) {
@@ -98,24 +99,25 @@ public class StartPage extends Window {
 			}		
 		});
 		
-		//Create welcome message labels (split into two for two lines)
-		welcomeMessage1 = new Label ("Welcome to");
-		welcomeMessage2 = new Label ("EyeView - York");
-		welcomeMessage1.setFont(fontMain);
-		welcomeMessage2.setFont(fontMain);
+		//Create welcome message label
+		welcomeMessage = new Label ("  Welcome to EyeView - York");
+		welcomeMessage.setFont(fontMain);
+
+		welcomeMessage.setMaxWidth(180);
+		welcomeMessage.setWrapText(true);
 		
 		//EyeHouse logo
-		companyLogo = new Image("file:resources/images/EyeHouse-Logo.png");
+		companyLogo = new Image("file:resources/start_page_images/StartPageLOGO.png");
 		logo = new ImageView(companyLogo);
 		logo.setPreserveRatio(true);
-		logo.setFitWidth(250);	
+		logo.setFitWidth(320);	
 		logo.relocate(30, 30);
 		
 		//Create VBox containing the welcome message and the start button
-		elementBox.setAlignment(Pos.CENTER);
-		double elementsPosition = ((xResolution/2) - 65);
+		elementBox.setAlignment(Pos.CENTER_LEFT);
+		double elementsPosition = ((xResolution/2) - 67);
 		elementBox.relocate(elementsPosition, 210);
-		elementBox.getChildren().addAll(welcomeMessage1, welcomeMessage2, buttonStart);
+		elementBox.getChildren().addAll(welcomeMessage, buttonStart);
 		
 		//Create an arraylist of pictures for the pictures banner
 		ArrayList<Image> gallery = new ArrayList<Image>();
