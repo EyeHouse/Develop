@@ -67,7 +67,7 @@ public class Database {
 	 */
 	public static String dbConnect() {
 		// Create a connection with db:master_db user:root pw:
-		String url = "127.0.0.1";
+		url = "127.0.0.1";
 		try {
 			System.out.print("Establishing connection via PuTTY... ");
 			con = DriverManager.getConnection("jdbc:mysql://" + url
@@ -1535,6 +1535,108 @@ public class Database {
 			e.printStackTrace();
 		}
 		return true;
+	}
+	
+	/**
+	 * 
+	 * @param vid
+	 * @param room
+	 * @param time
+	 * @return true on success
+	 * @return false on failure
+	 */
+	public static boolean insertVideoMarker(int vid, String room, double time) {
+
+		ResultSet check = null;
+		// Check if video has marker with the same room name already
+		// room names for each video are unique within that video
+		// eg vid=3 cannot have two 'living room' markers
+		try {
+			PreparedStatement checkVideoMarkers = con
+					.prepareStatement("SELECT * FROM markers WHERE vid=? AND room=?");
+			checkVideoMarkers.setInt(1, vid);
+			checkVideoMarkers.setString(2, room);
+
+			check = checkVideoMarkers.executeQuery();
+
+			if (check.next()) {
+				System.out
+						.println("\nThis room marker already exists.\nDelete or enter different room name.");
+				return false;
+			}
+
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+			System.out.println("\nInsert Marker Error: " + e1.getErrorCode());
+			return false;
+		}
+
+		try {
+			PreparedStatement insertMarker = con
+					.prepareStatement("INSERT INTO markers "
+							+ "VALUES (?,?,?,?)");
+			insertMarker.setInt(1, 0);
+			insertMarker.setInt(2, vid);
+			insertMarker.setString(3, room);
+			insertMarker.setDouble(4, time);
+
+			insertMarker.executeUpdate();
+
+			System.out.println("\nMarker Inserted");
+
+			return true;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("\nInsert Marker Error: " + e.getErrorCode());
+			return false;
+		}
+	}
+
+	public static boolean deleteVideoMarker(Marker videoMarker) {
+
+		// Trys to drop the marker with the relevant marker id (mid)
+		try {
+			PreparedStatement dropMarker = con
+					.prepareStatement("DELETE FROM markers WHERE mid=?");
+			dropMarker.setInt(1, videoMarker.mid);
+			dropMarker.executeUpdate();
+			System.out.println("\nMarker Deleted");
+			return true;
+		} catch (SQLException e) {
+			System.out.println("\nDelete Marker Error: " + e.getErrorCode());
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	public static ArrayList<Marker> getVideoMarkers(int vid) {
+
+		ResultSet markers;
+		ArrayList<Marker> list = new ArrayList<Marker>();
+
+		try {
+			PreparedStatement getVideoMarkers = con
+					.prepareStatement("SELECT * FROM markers WHERE vid=?");
+
+			getVideoMarkers.setInt(1, vid);
+
+			markers = getVideoMarkers.executeQuery();
+
+			// loop through markers for the vid
+			// Enter them into an array list
+			while (markers.next()) {
+				list.add(new Marker(markers));
+			}
+
+			return list;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("\nGet Markers Error: " + e.getErrorCode());
+
+			return list;
+		}
 	}
 
 	/**
