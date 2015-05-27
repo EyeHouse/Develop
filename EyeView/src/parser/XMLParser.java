@@ -294,8 +294,8 @@ public class XMLParser extends DefaultHandler {
 		case "text":
 			if (currentText.getSource() == "") {
 				currentText.setSource(elementBuffer.toString().trim());
-				elementBuffer = null;
 			}
+			elementBuffer = null;
 			currentSlide.addText(currentText);
 			break;
 		case "image":
