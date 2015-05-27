@@ -1,16 +1,25 @@
 package Profile;
 
-//import java.security.MessageDigest;
-//import java.security.NoSuchAlgorithmException;
-//import java.text.SimpleDateFormat;
-//import java.util.Locale;
-
+/**
+ * This class implements the EyeView Register Page
+ * 
+ * @version 2.2 20.04.15
+ * @author EyeHouse
+ * 
+ * Copyright 2015 EyeHouse
+ */
+import java.awt.Insets;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
+import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
@@ -22,9 +31,12 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import landlord.EditProperty;
+import language.BadWordCheck;
+import language.Translate;
 import presenter.SlideContent;
 import Button.ButtonType;
 import Button.SetupButton;
@@ -36,16 +48,16 @@ public class Register extends presenter.Window {
 
 	public String encryptedPassword, dateOfBirth;
 	public User user = null;
-	// private static MessageDigest digester;
 
 	private TextField username, firstname, lastname, email, skypeID;
 	private PasswordField password;
 	private PasswordField repeatPassword;
 	private GridPane registerGrid = new GridPane();
+	Label topTitle;
 
 	private RadioButton buttonStudent = new RadioButton("Student");
 	private RadioButton buttonLandlord = new RadioButton("Landlord");
-
+	BadWordCheck bwc;
 	ArrayList<ComboBox<String>> dateOfBirthCombo = new ArrayList<ComboBox<String>>();
 
 	public static void main(String[] args) {
@@ -55,13 +67,23 @@ public class Register extends presenter.Window {
 
 	public Register() {
 
+		bwc = new BadWordCheck();
 		setupGrid();
 		setupTitle();
 		setupTextFields(registerGrid);
-		setupPasswordFields(registerGrid);
 		setupButtons();
 
-		root.getChildren().add(registerGrid);
+		Label required = new Label("*Required field.");
+		Label passwordRequirements = new Label(
+				"**Password should contain at least an upper case letter, a lower case letter and a digit. "
+						+ " It should have between 6 and 20 characters.");
+		passwordRequirements.setWrapText(true);
+		VBox vbox = new VBox(0);
+		vbox.setPrefWidth(400);
+		vbox.relocate(370, 685);
+		vbox.setAlignment(Pos.CENTER);
+		vbox.getChildren().addAll(required, passwordRequirements);
+		root.getChildren().addAll(topTitle, registerGrid, vbox);
 
 	}
 
@@ -69,16 +91,16 @@ public class Register extends presenter.Window {
 
 		registerGrid.setVgap(30);
 		registerGrid.setHgap(30);
-		registerGrid.relocate(250, 90);
+		registerGrid.relocate(375, 130);
 	}
 
 	public void setupTitle() {
 
-		final Label topTitle = new Label("Register");
+		topTitle = new Label(Translate.translateText(
+				languageIndex, "Register"));
 		topTitle.setTextFill(Color.web("#162252FF"));
 		topTitle.setFont(new Font(35));
-		registerGrid.add(topTitle, 0, 0);
-		GridPane.setConstraints(topTitle, 0, 0, 2, 1, HPos.CENTER, VPos.CENTER);
+		topTitle.relocate(470, 90);
 
 	}
 
@@ -90,66 +112,69 @@ public class Register extends presenter.Window {
 		username = new TextField();
 		username.setPromptText("Username");
 		username.setPrefColumnCount(10);
-		registerGrid.addRow(1, new Label("Enter your username:"), username);
+		registerGrid.addRow(1, new Label("*Choose a username") , username);
 
 		// First Name field
 		firstname = new TextField();
 		firstname.setPromptText("Joe");
 		firstname.setPrefColumnCount(10);
-		registerGrid.addRow(2, new Label("First name:"), firstname);
+		registerGrid.addRow(2, new Label("*First name:"), firstname);
 
-		// Last Name field
+		// Last Name fieldzz
 		lastname = new TextField();
 		lastname.setPromptText("Bloggs");
 		lastname.setPrefColumnCount(10);
-		registerGrid.addRow(3, new Label("Last name:"), lastname);
+		registerGrid.addRow(3, new Label("*Last name:"), lastname);
+
+		setupPasswordFields(registerGrid);
+
+		// Date of birth field
+		dateOfBirthCombo = EditProperty.setupDate("2015-01-01");
+		HBox comboBoxes = new HBox(30);
+		comboBoxes.getChildren().addAll(dateOfBirthCombo.get(0),
+				dateOfBirthCombo.get(1), dateOfBirthCombo.get(2));
+		registerGrid.addRow(6, new Label("*Date of Birth:"), comboBoxes);
 
 		// Account Type radio buttons
 		buttonStudent.setToggleGroup(group);
 		buttonLandlord.setToggleGroup(group);
 		hBoxAccountType.getChildren().addAll(buttonStudent, buttonLandlord);
-		registerGrid.addRow(5, new Label("Account Type:"), hBoxAccountType);
+		registerGrid.addRow(7, new Label("*Account Type:"), hBoxAccountType);
 
 		// Email field
 		email = new TextField();
 		email.setPromptText("example@mail.com");
 		email.setPrefColumnCount(10);
-		registerGrid.addRow(6, new Label("Email:"), email);
+		registerGrid.addRow(8, new Label("*Email:"), email);
 
+		// Skype field
 		skypeID = new TextField();
 		skypeID.setPromptText("jBloggs1");
 		skypeID.setPrefColumnCount(10);
-		registerGrid.addRow(7, new Label("Skype Username:"), skypeID);
-
-		dateOfBirthCombo = EditProperty.setupDate("2015-01-01");
-		HBox comboBoxes = new HBox(30);
-		comboBoxes.getChildren().addAll(dateOfBirthCombo.get(0),
-				dateOfBirthCombo.get(1), dateOfBirthCombo.get(2));
-		registerGrid.add(comboBoxes, 1, 4);
+		registerGrid.addRow(9, new Label("Skype Username:"), skypeID);
 	}
 
 	public void setupPasswordFields(GridPane grid) {
 
 		// Password field
 		password = new PasswordField();
-		registerGrid.add(new Label("Password: "), 0, 8);
+		registerGrid.add(new Label("*Create Password: "), 0, 4);
 		password.setPromptText("Your Password");
 		password.setPrefColumnCount(10);
-		registerGrid.add(password, 1, 8);
+		registerGrid.add(password, 1, 4);
 
 		// Repeat Password field
 		repeatPassword = new PasswordField();
-		registerGrid.add(new Label("Confirm Password: "), 0, 9);
+		registerGrid.add(new Label("*Confirm Password: "), 0, 5);
 		repeatPassword.setPromptText("Your Password");
 		repeatPassword.setPrefColumnCount(10);
-		registerGrid.add(repeatPassword, 1, 9);
+		registerGrid.add(repeatPassword, 1, 5);
 	}
 
 	public void setupButtons() {
 
 		// Add button to grid
-		ButtonType button1 = new ButtonType("150,150,150", null, "Register",
-				100, 30);
+		ButtonType button1 = new ButtonType("150,150,150",null,Translate.translateText(languageIndex, "Register"),100,30);
 		Button registerButton = new SetupButton().CreateButton(button1);
 		registerGrid.add(registerButton, 0, 10);
 		GridPane.setConstraints(registerButton, 0, 10, 2, 1, HPos.CENTER,
@@ -182,14 +207,17 @@ public class Register extends presenter.Window {
 
 			// Check if the entered passwords address is valid
 			// If valid, it is encrypted and stored
+			if (bwc.containsBlackListedWords(password.getText()) == true){
+				
+			}
 			if (DataHandler.passwordChecker(password.getText(),
-					repeatPassword.getText()) == false) {
+					repeatPassword.getText()) == false)  {
 				System.out.println("Password check failed");
 			} else {
 				encryptedPassword = DataHandler.crypt(password.getText());
 				user.password(encryptedPassword);
 
-				// initialize user
+				// Initialize user
 				user.DOB(dateOfBirth);
 				user.firstName(firstname.getText());
 				user.secondName(lastname.getText());
