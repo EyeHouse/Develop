@@ -81,12 +81,12 @@ public class LandlordProperties extends presenter.Window {
 	private void setupLandlordButtons() {
 		VBox buttons = new VBox(30);
 
-		ButtonType button1 = new ButtonType("150,150,150", null, Translate.translateText(languageIndex, "Edit"), 100,
+		ButtonType button1 = new ButtonType("166,208,255", null, Translate.translateText(languageIndex, "Edit"), 100,
 				30);
-		ButtonType button2 = new ButtonType("150,150,150", null, Translate.translateText(languageIndex, "Delete"), 100,
+		ButtonType button2 = new ButtonType("166,208,255", null, Translate.translateText(languageIndex, "Delete"), 100,
 				30);
-		ButtonType button3 = new ButtonType("150,150,150", null, Translate.translateText(languageIndex, "New"), 100, 30);
-		ButtonType button4 = new ButtonType("150,150,150", null, Translate.translateText(languageIndex, "View"), 100,
+		ButtonType button3 = new ButtonType("166,208,255", null, Translate.translateText(languageIndex, "New"), 100, 30);
+		ButtonType button4 = new ButtonType("166,208,255", null, Translate.translateText(languageIndex, "View"), 100,
 				30);
 
 		Button buttonEdit = new SetupButton().CreateButton(button1);
