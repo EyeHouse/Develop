@@ -23,6 +23,8 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -61,22 +63,30 @@ public class Register extends presenter.Window {
 
 		bwc = new BadWordCheck();
 		Login.setBackground();
-		Login.setWhiteBox(350, 400);
+		Login.setWhiteBox(410, 530);
 		setupGrid();
 		setupTitle();
 		setupTextFields(registerGrid);
 		setupButtons();
-
-		Label required = new Label("*Required field.");
+		
+		//Insert EyeHouse icon
+		Image icon = new Image("file:./resources/icons/xxhdpi.png");
+		ImageView iconView = new ImageView(icon);
+		iconView.relocate(220, 260);
+		root.getChildren().add(iconView);
+		
+		//Extra information for the user
+		Label requiredField = new Label("*Required field.");
 		Label passwordRequirements = new Label(
 				"**Password should contain at least one upper case letter, one lower case letter and one digit. "
 						+ " It should have between 6 and 20 characters.");
 		passwordRequirements.setWrapText(true);
+		//Create box to contain the previous labels
 		VBox vbox = new VBox(0);
 		vbox.setPrefWidth(400);
-		vbox.relocate(370, 685);
+		vbox.relocate(380, 665);
 		vbox.setAlignment(Pos.CENTER);
-		vbox.getChildren().addAll(required, passwordRequirements);
+		vbox.getChildren().addAll(requiredField, passwordRequirements);
 		root.getChildren().addAll(topTitle, registerGrid, vbox);
 
 	}
@@ -88,7 +98,7 @@ public class Register extends presenter.Window {
 
 		registerGrid.setVgap(30);
 		registerGrid.setHgap(30);
-		registerGrid.relocate(375, 130);
+		registerGrid.relocate(390, 110);
 	}
 	
 	/**
@@ -99,7 +109,7 @@ public class Register extends presenter.Window {
 		topTitle = new Label(Translate.translateText(languageIndex, "Register"));
 		topTitle.setTextFill(Color.web("#162252FF"));
 		topTitle.setFont(new Font(35));
-		topTitle.relocate(470, 90);
+		topTitle.relocate(505, 65);
 	}
 
 	/**

@@ -67,7 +67,7 @@ public class BadWordCheck {
 				break;
 			}
 			try {
-				badWordDectected = regexMatcher.group().trim().replace("ing", "").replace("er", "").equals(badWord);
+				badWordDectected = regexMatcher.group().trim().replace("ing", "").replace("er", "").toLowerCase().equals(badWord);
 				if (badWordDectected == true){
 					break;			
 				}
