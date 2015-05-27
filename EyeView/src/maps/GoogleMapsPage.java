@@ -15,6 +15,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+import language.Translate;
 import presenter.SlideContent;
 
 public class GoogleMapsPage extends presenter.Window {
@@ -46,16 +47,15 @@ public class GoogleMapsPage extends presenter.Window {
 		grid.setHgap(10);
 	}
 
+
 	public void setupTitle() {
 
-		final Label topTitle = new Label("Property Map");
+		Label topTitle = new Label(Translate.translateText(languageIndex,"Property Map"));
 		topTitle.setTextFill(Color.web("#162252FF"));
-		topTitle.setFont(new Font(35));
-		grid.add(topTitle, 1, 1);
-		// GridPane.setConstraints(topTitle, 0, 0, 2, 1, HPos.CENTER,
-		// VPos.CENTER);
-
-	}
+		topTitle.setFont(new Font(28));
+		topTitle.relocate(450, 60);
+		root.getChildren().add(topTitle);
+	}	
 
 	public void setupButtons() {
 

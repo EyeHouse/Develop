@@ -6,14 +6,23 @@ import handlers.VideoElement;
 import database.Database;
 import database.House;
 import database.HouseVideo;
+import javafx.event.EventHandler;
+import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import language.Translate;
 
 public class VideoPage extends Window {
-
+	public Label topTitle = new Label();
+	
 	public VideoPage() {
-
+		setupTitle();
 		setupVideoPlayer();
 		SlideContent.setupBackButton();
+
 	}
 
 	private void setupVideoPlayer() {
@@ -32,4 +41,15 @@ public class VideoPage extends Window {
 		
 		root.getChildren().add(videoPane);
 	}
+	
+
+	public void setupTitle() {
+
+		topTitle = new Label(Translate.translateText(languageIndex,"Property Video Tour"));
+		topTitle.setTextFill(Color.web("#162252FF"));
+		topTitle.setFont(new Font(28));
+		topTitle.relocate(450, 60);
+		root.getChildren().add(topTitle);
+	}	
+	
 }
