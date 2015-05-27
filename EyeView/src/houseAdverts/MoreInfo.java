@@ -1,11 +1,9 @@
 package houseAdverts;
 
-import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -17,17 +15,21 @@ import database.House;
 
 public class MoreInfo extends presenter.Window {
 
-	private static Label labelAddress;
-	private static Label labelPostcode;
-	private static Label labelPrice;
-	private static Label labelBeds;
-	private static Label labelBaths;
-	private static Label labelFurnished;
-	private static Label labelDate;
-	private static Label labelDeposit;
-	private static Label labelDesc;
-	private static Label furnishedField;
+	private static Label furnishedField = new Label("");
+//	static TextArea description = new TextArea("");
+	private static Label description = new Label("");
 	private static House house = Database.getHouse(currentPropertyID);
+	
+	private static Label labelTitle = new Label(Translate.translateText(languageIndex, "More Information"));
+	private static Label labelAddress = new Label(Translate.translateText(languageIndex, "Address: "));
+	private static Label labelPostcode = new Label(Translate.translateText(languageIndex, "Postcode:"));
+	private static Label labelPrice = new Label(Translate.translateText(languageIndex, "Price (£pppw):"));
+	private static Label labelBeds = new Label(Translate.translateText(languageIndex, "Bedrooms:"));
+	private static Label labelBaths = new Label(Translate.translateText(languageIndex, "Bathrooms:"));
+	private static Label labelFurnished = new Label(Translate.translateText(languageIndex, "Furnished:"));
+	private static Label labelDate = new Label(Translate.translateText(languageIndex, "Date Available:"));
+	private static Label labelDeposit = new Label(Translate.translateText(languageIndex, "Deposit:"));
+	private static Label labelDesc = new Label(Translate.translateText(languageIndex, "Description"));
 		
 	private GridPane grid = new GridPane();
 
@@ -52,21 +54,14 @@ public class MoreInfo extends presenter.Window {
 				+ house.dateAvailable.substring(5, 7) + "/"
 				+ house.dateAvailable.substring(0, 4));
 		Label deposit = new Label("£" + Integer.toString(house.deposit));
-		TextArea description = new TextArea(house.description);
-		description.setWrapText(true);
-		description.setEditable(false);
 		
-//		Label labelAddress = new Label("Address: ");
-		labelAddress = new Label(Translate.translateText(languageIndex, "Address: "));
-		labelPostcode = new Label(Translate.translateText(languageIndex, "Postcode:"));
-		labelPrice = new Label(Translate.translateText(languageIndex, "Price (£pppw):"));
-		labelBeds = new Label(Translate.translateText(languageIndex, "Bedrooms:"));
-		labelBaths = new Label(Translate.translateText(languageIndex, "Bathrooms:"));
-		labelFurnished = new Label(Translate.translateText(languageIndex, "Furnished:"));
-		labelDate = new Label(Translate.translateText(languageIndex, "Date Available:"));
-		labelDeposit = new Label(Translate.translateText(languageIndex, "Deposit:"));
-		labelDesc = new Label(Translate.translateText(languageIndex, "Description"));
+//		description.setText(Translate.translateText(languageIndex, house.description));
+		description.setText(house.description);
+		description.setWrapText(true);
+		description.setPrefWidth(500);
+//		description.setEditable(false);
 
+		labelTitle.setFont(new Font(32));
 		labelAddress.setFont(Font.font(null, FontWeight.BOLD, 14));
 		labelPostcode.setFont(Font.font(null, FontWeight.BOLD, 14));
 		labelPrice.setFont(Font.font(null, FontWeight.BOLD, 14));
@@ -83,10 +78,12 @@ public class MoreInfo extends presenter.Window {
 		beds.setFont(new Font(14));
 		baths.setFont(new Font(14));
 		furnishedField.setFont(new Font(14));
+		dateAvailable.setFont(new Font(14));
 		deposit.setFont(new Font(14));
 		
 		vBoxDesc.getChildren().addAll(labelDesc, description);
 		
+		grid.addRow(0, labelTitle);
 		grid.addRow(2, labelAddress, address);
 		grid.addRow(3, labelPostcode, postcode);
 		grid.addRow(4, labelPrice, price);
@@ -97,21 +94,28 @@ public class MoreInfo extends presenter.Window {
 		grid.addRow(9, labelDeposit, deposit);
 		grid.addRow(10, vBoxDesc);
 		
-		GridPane.setConstraints(address, 1, 2, 2, 1, HPos.CENTER, VPos.CENTER);
+//		GridPane.setConstraints(address, 1, 2, 2, 1, HPos.CENTER, VPos.CENTER);
+		GridPane.setConstraints(labelTitle, 0, 0, 3, 1, HPos.CENTER, VPos.CENTER);
 		GridPane.setConstraints(vBoxDesc, 0, 10, 3, 1, HPos.CENTER, VPos.CENTER);
 	}
 
 	private void setupGrid() {
 		// Set grid size and spacing in group.
-		grid.setHgap(50);
-		grid.setVgap(30);
-		grid.relocate(250, 80);
+		grid.setHgap(40);
+		grid.setVgap(20);
+		grid.relocate(315, 80);
 
 		grid.setMaxWidth(650);
 		grid.setMinWidth(650);
 	}
 	
+	
+	/**
+	 * Updates labels with translation based on selected language
+	 */
 	public static void UpdateLanguage() {
+		labelTitle.setText(Translate.translateText(
+				languageIndex, "More Information"));
 		labelAddress.setText(Translate.translateText(
 				languageIndex, "Address") + ": ");
 		labelPostcode.setText(Translate.translateText(
@@ -137,6 +141,8 @@ public class MoreInfo extends presenter.Window {
 		else{
 			furnishedField.setText(Translate.translateText(languageIndex, "No"));
 		}
+		
+//		description.setText(Translate.translateText(languageIndex, house.description));
 		
 	}
 }
