@@ -320,7 +320,7 @@ public class ProfileViewer extends presenter.Window {
 		Label labelProfile, labelReview, labelNewReview, labelNewRating;
 
 		if (profileUser.username.equals(currentUsername)) {
-			ButtonType button1 = new ButtonType("150,150,150", null,
+			ButtonType button1 = new ButtonType("166,208,255", null,
 					"Edit Profile", 100, 30);
 			Button buttonEditProfile = new SetupButton().CreateButton(button1);
 
