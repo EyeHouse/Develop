@@ -34,7 +34,7 @@ public class VideoPage extends Window {
 		VideoElement video = new VideoElement("resources/videos/avengers-featurehp.mp4");
 		video.setStylesheet("resources/videoStyle.css");
 		video.setWidth(500);
-		video.setAutoplay(true);
+		video.setAutoplay(false);
 		video.display(videoPane);
 		
 		videoPane.relocate(300, 100);
