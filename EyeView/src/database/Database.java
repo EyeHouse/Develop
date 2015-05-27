@@ -1536,29 +1536,28 @@ public class Database {
 		}
 		return true;
 	}
+
 	/**
 	 * Selects all houses
+	 * 
 	 * @return ArrayList of house id's
 	 */
 	public static ArrayList<Integer> selectAllHouses() {
-		
+
 		ArrayList<Integer> list = new ArrayList<Integer>();
 		ResultSet houses = null;
 		try {
-			PreparedStatement allHouses = con.prepareStatement("SELECT * FROM houses;");
-			
+			PreparedStatement allHouses = con
+					.prepareStatement("SELECT * FROM houses");
+
 			houses = allHouses.executeQuery();
 			// if houses do exist loop through all of them
+
 			while (houses.next()) {
 				// store all hid's in an arraylist
 				list.add(houses.getInt("hid"));
 			}
-			// if no houses exist
-			if(!houses.next()) {
-				list = null;
-				System.out.println("\nNo houses available. Business is not going Well.");
-			}
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			list = null;
@@ -1597,7 +1596,7 @@ public class Database {
 			House eyehouseHQ = null;
 			int pricepermonth = 56;
 			boolean house;
-			
+
 			String brc = "M:/Distributed Computer Systems/DNSTex.pdf";
 			String enrg = "M:/Distributed Computer Systems/ddos.jpg";
 			eyehouseHQ = new House(title);
