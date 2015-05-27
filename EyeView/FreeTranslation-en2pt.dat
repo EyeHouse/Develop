@@ -34,6 +34,10 @@
    <string>Cancele</string>
   </void>
   <void method="put">
+   <string>Choose Property Image to Upload</string>
+   <string>Escolha Imagem de Propriedade para Carregar</string>
+  </void>
+  <void method="put">
    <string>Date Available:</string>
    <string>Date Disponível: </string>
   </void>

@@ -34,6 +34,10 @@
    <string>È¡Ïû</string>
   </void>
   <void method="put">
+   <string>Choose Property Image to Upload</string>
+   <string>Ñ¡Ôñ²Æ²úÍ¼ÏñÉÏ´«</string>
+  </void>
+  <void method="put">
    <string>Date Available:</string>
    <string>¿ÉÌá¹©µÄÈÕÆÚ£º</string>
   </void>

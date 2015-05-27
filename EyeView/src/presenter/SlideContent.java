@@ -128,26 +128,22 @@ public class SlideContent extends Window {
 	
 	private void createLoggedOutSlide() {
 
-		House test = Database.getHouse(8);
-		ArrayList<House> testArray = new ArrayList<House>();
-		testArray.add(test);
-		test = Database.getHouse(10);
-		testArray.add(test);
-
-		houseAdverts = new HouseOverview(false, testArray);
+		ArrayList<Integer> houseIDs = new ArrayList<Integer>();
+		houseIDs = Database.selectAllHouses();
+		ArrayList<House> houses = getDisplayHouses(houseIDs);
+		
+		houseAdverts = new HouseOverview(false, houses);
 		createSidebar();
 		createMenuBar();
 	}
 
 	private void createHomeSlide() {
 
-		House test = Database.getHouse(8);
-		ArrayList<House> testArray = new ArrayList<House>();
-		testArray.add(test);
-		test = Database.getHouse(10);
-		testArray.add(test);
-
-		houseAdverts = new HouseOverview(false, testArray);
+		ArrayList<Integer> houseIDs = new ArrayList<Integer>();
+		houseIDs = Database.selectAllHouses();
+		ArrayList<House> houses = getDisplayHouses(houseIDs);
+		
+		houseAdverts = new HouseOverview(false, houses);
 		createSidebar();
 		createMenuBar();
 	}
@@ -518,6 +514,24 @@ public class SlideContent extends Window {
 						"Log Out"));
 			}
 		}
+	}
+	
+	public ArrayList<House> getDisplayHouses(ArrayList<Integer> houseIDs){
+		
+		ArrayList<House> houses = new ArrayList<House>();
+		
+		if(houseIDs.size()<10){
+			for(int i  = 0 ; i < houseIDs.size() ; i++){
+				houses.add(Database.getHouse(houseIDs.get(i)));
+			}
+		}
+		else{
+			for(int i = 0 ; i < 10 ; i++){
+				houses.add(Database.getHouse(houseIDs.get(i)));
+			}
+		}
+		
+		return houses;
 	}
 	
 	public void createLoginWarning() {

@@ -86,7 +86,7 @@ public class EditProperty extends presenter.Window {
 
 	private String videoPath;
 	private HouseVideo currentVideo = null;
- 	private VideoElement video;
+	private VideoElement video;
 	ListView<HBox> markerList = new ListView<HBox>();
 	ObservableList<HBox> items = FXCollections.observableArrayList();
 
@@ -148,9 +148,12 @@ public class EditProperty extends presenter.Window {
 		HBox pics = new HBox(5);
 		HBox vids = new HBox(5);
 		HBox tabs = new HBox(100);
-		Label labelInfoTab = new Label("1. " + Translate.translateText(languageIndex, "House Information"));
-		Label labelPictureTab = new Label("2. "+ Translate.translateText(languageIndex, "House Pictures"));
-		Label labelVideoTab = new Label("3. " + Translate.translateText(languageIndex, "House Videos"));
+		Label labelInfoTab = new Label("1. "
+				+ Translate.translateText(languageIndex, "House Information"));
+		Label labelPictureTab = new Label("2. "
+				+ Translate.translateText(languageIndex, "House Pictures"));
+		Label labelVideoTab = new Label("3. "
+				+ Translate.translateText(languageIndex, "House Videos"));
 		labelInfoTab.setFont(new Font(14));
 		labelPictureTab.setFont(new Font(14));
 		labelVideoTab.setFont(new Font(14));
@@ -198,33 +201,35 @@ public class EditProperty extends presenter.Window {
 
 		backButtons = new VBox(10);
 		pageChangeButtons = new HBox(400);
-		
-		ImageView buttonNext = new ImageView(new Image("file:resources/icons/Forward-button.png"));
+
+		ImageView buttonNext = new ImageView(new Image(
+				"file:resources/icons/Forward-button.png"));
 		buttonNext.setPreserveRatio(true);
 		buttonNext.setFitWidth(60);
 		buttonNext.setCursor(Cursor.HAND);
 		buttonNext.setOnMouseClicked(new ChangePage(1));
-		
-		ImageView buttonPrev = new ImageView(new Image("file:resources/icons/Previous-button.png"));
+
+		ImageView buttonPrev = new ImageView(new Image(
+				"file:resources/icons/Previous-button.png"));
 		buttonPrev.setPreserveRatio(true);
 		buttonPrev.setFitWidth(60);
 		buttonPrev.setCursor(Cursor.HAND);
 		buttonPrev.setOnMouseClicked(new ChangePage(-1));
 
-		ButtonType button3 = new ButtonType("166,208,255", null, Translate.translateText(languageIndex, "Finish"), 110,
-				30);
+		ButtonType button3 = new ButtonType("166,208,255", null,
+				Translate.translateText(languageIndex, "Finish"), 110, 30);
 		Button buttonFinish = new SetupButton().CreateButton(button3);
 		buttonFinish.setCursor(Cursor.HAND);
 		buttonFinish.setOnAction(new CreateHouse());
 
-		ButtonType button4 = new ButtonType("166,208,255", null, Translate.translateText(languageIndex, "Cancel"), 110,
-				30);
+		ButtonType button4 = new ButtonType("166,208,255", null,
+				Translate.translateText(languageIndex, "Cancel"), 110, 30);
 		Button buttonCancel = new SetupButton().CreateButton(button4);
 		buttonCancel.setCursor(Cursor.HAND);
 		buttonCancel.setOnAction(new Cancel());
 
 		pageChangeButtons.getChildren().addAll(buttonPrev, buttonNext);
-		
+
 		if (hid == 0) {
 			backButtons.getChildren().add(buttonFinish);
 		}
@@ -236,22 +241,31 @@ public class EditProperty extends presenter.Window {
 			buttonNext.setVisible(false);
 
 		backButtons.relocate(828, 17);
-		pageChangeButtons.relocate(220,  700);
+		pageChangeButtons.relocate(220, 700);
 		root.getChildren().addAll(backButtons, pageChangeButtons);
 	}
 
 	private void setupHouseInfo() {
 
 		VBox vBoxDesc = new VBox(10);
-		Label labelAddress = new Label(Translate.translateText(languageIndex, "Address:"));
-		Label labelPostcode = new Label(Translate.translateText(languageIndex, "Postcode:"));
-		Label labelPrice = new Label(Translate.translateText(languageIndex, "Price (£pppw):"));
-		Label labelBeds = new Label(Translate.translateText(languageIndex, "Bedrooms:"));
-		Label labelBaths = new Label(Translate.translateText(languageIndex, "Bathrooms:"));
-		Label labelFurnished = new Label(Translate.translateText(languageIndex, "Furnished:"));
-		Label labelDate = new Label(Translate.translateText(languageIndex, "Date Available:"));
-		Label labelDeposit = new Label(Translate.translateText(languageIndex, "Deposit (£):"));
-		Label labelDesc = new Label(Translate.translateText(languageIndex, "Description"));
+		Label labelAddress = new Label(Translate.translateText(languageIndex,
+				"Address:"));
+		Label labelPostcode = new Label(Translate.translateText(languageIndex,
+				"Postcode:"));
+		Label labelPrice = new Label(Translate.translateText(languageIndex,
+				"Price (£pppw):"));
+		Label labelBeds = new Label(Translate.translateText(languageIndex,
+				"Bedrooms:"));
+		Label labelBaths = new Label(Translate.translateText(languageIndex,
+				"Bathrooms:"));
+		Label labelFurnished = new Label(Translate.translateText(languageIndex,
+				"Furnished:"));
+		Label labelDate = new Label(Translate.translateText(languageIndex,
+				"Date Available:"));
+		Label labelDeposit = new Label(Translate.translateText(languageIndex,
+				"Deposit (£):"));
+		Label labelDesc = new Label(Translate.translateText(languageIndex,
+				"Description"));
 
 		labelAddress.setFont(Font.font(null, FontWeight.BOLD, 14));
 		labelPostcode.setFont(Font.font(null, FontWeight.BOLD, 14));
@@ -338,25 +352,26 @@ public class EditProperty extends presenter.Window {
 		imageWindow.setMinSize(545, 480);
 		imageWindow.setMaxSize(545, 480);
 
-		Label labelUpload = new Label(Translate.translateText(languageIndex, "Add a New Image:"));
+		Label labelUpload = new Label(Translate.translateText(languageIndex,
+				"Add a New Image:"));
 		labelUpload.setFont(Font.font(null, FontWeight.BOLD, 14));
 		uploadPathImage = new TextField();
 		uploadPathImage.setEditable(false);
 
-		ButtonType button1 = new ButtonType("166,208,255", null, Translate.translateText(languageIndex, "Browse"), 70,
-				30);
+		ButtonType button1 = new ButtonType("166,208,255", null,
+				Translate.translateText(languageIndex, "Browse"), 70, 30);
 		Button buttonBrowse = new SetupButton().CreateButton(button1);
 		buttonBrowse.setCursor(Cursor.HAND);
 		buttonBrowse.setOnAction(new Browse());
 
-		ButtonType button2 = new ButtonType("166,208,255", null, Translate.translateText(languageIndex, "Upload"), 70,
-				30);
+		ButtonType button2 = new ButtonType("166,208,255", null,
+				Translate.translateText(languageIndex, "Upload"), 70, 30);
 		buttonUpload = new SetupButton().CreateButton(button2);
 		buttonUpload.setDisable(true);
 		buttonUpload.setOnAction(new Upload());
 
-		ButtonType button3 = new ButtonType("166,208,255", null, Translate.translateText(languageIndex, "Delete"), 70,
-				30);
+		ButtonType button3 = new ButtonType("166,208,255", null,
+				Translate.translateText(languageIndex, "Delete"), 70, 30);
 		Button buttonDelete = new SetupButton().CreateButton(button3);
 		buttonDelete.setOnAction(new DeleteImage());
 
@@ -405,13 +420,13 @@ public class EditProperty extends presenter.Window {
 
 		imageWindow.setContent(imageTiles);
 		grid.add(imageWindow, 0, 2);
-//		grid.add(buttonDelete, 3, 2);
+		// grid.add(buttonDelete, 3, 2);
 		grid.add(buttonDelete, 0, 3);
 		GridPane.setConstraints(buttonDelete, 0, 3, 3, 1, HPos.CENTER,
 				VPos.CENTER);
 		GridPane.setConstraints(imageWindow, 0, 2, 3, 1, HPos.CENTER,
 				VPos.CENTER);
-		//grid.setGridLinesVisible(true);
+		// grid.setGridLinesVisible(true);
 	}
 
 	/**
@@ -427,33 +442,36 @@ public class EditProperty extends presenter.Window {
 		uploadPathVideo.setPrefWidth(250);
 
 		// Add FileChooser button
-		ButtonType button1 = new ButtonType("166,208,255", null, Translate.translateText(languageIndex, "Browse"), 100,
-				30);
+		ButtonType button1 = new ButtonType("166,208,255", null,
+				Translate.translateText(languageIndex, "Browse"), 100, 30);
 		Button fileChooserButton = new SetupButton().CreateButton(button1);
 
 		// Add Upload Video button
-		ButtonType button2 = new ButtonType("166,208,255", null, Translate.translateText(languageIndex, "Upload"),
-					100, 30);
+		ButtonType button2 = new ButtonType("166,208,255", null,
+				Translate.translateText(languageIndex, "Upload"), 100, 30);
 		uploadVideoButton = new SetupButton().CreateButton(button2);
 		uploadVideoButton.setDisable(true);
 
 		// Setup Upload video button event
 		uploadVideoButton.setOnAction(new Upload());
-		
-		// Listen for TextField text changes
-		uploadPathVideo.textProperty().addListener(new ChangeListener<String>() {
-		    @Override
-		    public void changed(ObservableValue<? extends String> observable,
-		            String oldValue, String newValue) {
 
-		    	if (uploadPathVideo.getText() != null && !uploadPathVideo.getText().trim().isEmpty()) {
-		    		uploadVideoButton.setDisable(false);
-				} else {
-					uploadVideoButton.setDisable(true);	
-				}
-		    }
-		});
-		
+		// Listen for TextField text changes
+		uploadPathVideo.textProperty().addListener(
+				new ChangeListener<String>() {
+					@Override
+					public void changed(
+							ObservableValue<? extends String> observable,
+							String oldValue, String newValue) {
+
+						if (uploadPathVideo.getText() != null
+								&& !uploadPathVideo.getText().trim().isEmpty()) {
+							uploadVideoButton.setDisable(false);
+						} else {
+							uploadVideoButton.setDisable(true);
+						}
+					}
+				});
+
 		// Setup FileChooser (browse) button event
 		fileChooserButton.setOnAction(new Browse());
 
@@ -482,9 +500,9 @@ public class EditProperty extends presenter.Window {
 
 		House house = Database.getHouse(currentPropertyID);
 		currentVideo = Database.getVideoInfo(owner, house, videoPath);
-		
+
 		System.out.println("Current Video id : " + currentVideo.vid);
-		
+
 		video = new VideoElement(newVideoFileString);
 		video.setStylesheet("resources/videoStyle.css");
 		video.setWidth(500);
@@ -494,13 +512,14 @@ public class EditProperty extends presenter.Window {
 		// Add video player to GridPane
 		grid.add(videoPane, 0, 2);
 		GridPane.setConstraints(videoPane, 0, 2, 3, 1, HPos.CENTER, VPos.CENTER);
-		
-		ButtonType button3 = new ButtonType("166,208,255", null, Translate.translateText(languageIndex, "Remove Video"), 70,
-				30);
+
+		ButtonType button3 = new ButtonType("166,208,255", null,
+				Translate.translateText(languageIndex, "Remove Video"), 70, 30);
 		Button videoRemove = new SetupButton().CreateButton(button3);
 		videoRemove.setOnAction(new RemoveVideo());
 		grid.add(videoRemove, 0, 2);
-		GridPane.setConstraints(videoRemove, 1, 2, 1, 1, HPos.CENTER, VPos.CENTER);
+		GridPane.setConstraints(videoRemove, 1, 2, 1, 1, HPos.CENTER,
+				VPos.CENTER);
 	}
 
 	private void SetupRoomMarkers() {
@@ -513,55 +532,63 @@ public class EditProperty extends presenter.Window {
 		markerListHeader.setMaxWidth(300);
 
 		/* Add room name label and textfield */
-		Label addNewRoomLabel = new Label(Translate.translateText(languageIndex, "Add New Room: "));
+		Label addNewRoomLabel = new Label(Translate.translateText(
+				languageIndex, "Add New Room: "));
 		newRoomField = new TextField();
 
 		/* Add Set Marker Button */
-		ButtonType button1 = new ButtonType("166,208,255", null, Translate.translateText(languageIndex, "Set Marker"),
-				100, 30);
+		ButtonType button1 = new ButtonType("166,208,255", null,
+				Translate.translateText(languageIndex, "Set Marker"), 100, 30);
 		setMarkerButton = new SetupButton().CreateButton(button1);
 		setMarkerButton.setOnAction(new AddMarker());
 		setMarkerButton.setDisable(true);
-		
+
 		// Listen for TextField text changes
 		newRoomField.textProperty().addListener(new ChangeListener<String>() {
-		    @Override
-		    public void changed(ObservableValue<? extends String> observable,
-		            String oldValue, String newValue) {
+			@Override
+			public void changed(ObservableValue<? extends String> observable,
+					String oldValue, String newValue) {
 
-		    	if (newRoomField.getText() != null && !newRoomField.getText().trim().isEmpty()) {
-		    		setMarkerButton.setDisable(false);
+				if (newRoomField.getText() != null
+						&& !newRoomField.getText().trim().isEmpty()) {
+					setMarkerButton.setDisable(false);
 				} else {
-					setMarkerButton.setDisable(true);	
+					setMarkerButton.setDisable(true);
 				}
-		    }
+			}
 		});
 
 		/* Add Delete Marker Button */
-		ButtonType button2 = new ButtonType("166,208,255", null, Translate.translateText(languageIndex, "Delete"), 100,
-				30);
+		ButtonType button2 = new ButtonType("166,208,255", null,
+				Translate.translateText(languageIndex, "Delete"), 100, 30);
 		deleteMarker = new SetupButton().CreateButton(button2);
 		deleteMarker.setOnAction(new deleteMarker());
 		deleteMarker.setDisable(true);
 
-		markerList.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
-		    @Override
-		    public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-		    	markersIndex = markerList.getSelectionModel().getSelectedIndex();
-		    	
-				System.out.println(markersIndex);
-		    	if (markersIndex >= 0){
-					deleteMarker.setDisable(false);
-				} else {
-					deleteMarker.setDisable(true);	
-				}
-		    }
-		});
-		
-		Label roomNamesHeader = new Label(Translate.translateText(languageIndex, "Rooms"));
+		markerList.getSelectionModel().selectedIndexProperty()
+				.addListener(new ChangeListener<Number>() {
+					@Override
+					public void changed(
+							ObservableValue<? extends Number> observable,
+							Number oldValue, Number newValue) {
+						markersIndex = markerList.getSelectionModel()
+								.getSelectedIndex();
+
+						System.out.println(markersIndex);
+						if (markersIndex >= 0) {
+							deleteMarker.setDisable(false);
+						} else {
+							deleteMarker.setDisable(true);
+						}
+					}
+				});
+
+		Label roomNamesHeader = new Label(Translate.translateText(
+				languageIndex, "Rooms"));
 		roomNamesHeader.setStyle("-fx-font-weight: bold");
 		roomNamesHeader.setPrefWidth(190);
-		Label videoTimesHeader = new Label(Translate.translateText(languageIndex, "Times in Video"));
+		Label videoTimesHeader = new Label(Translate.translateText(
+				languageIndex, "Times in Video"));
 		videoTimesHeader.setStyle("-fx-font-weight: bold");
 
 		// Add marker setup to HBox
@@ -590,7 +617,6 @@ public class EditProperty extends presenter.Window {
 	public class ApplyChanges implements EventHandler<ActionEvent> {
 
 		public void handle(ActionEvent arg0) {
-			
 
 			String dateAvailableString = dateComboArray.get(2).getValue() + "-"
 					+ dateComboArray.get(1).getValue() + "-"
@@ -627,7 +653,7 @@ public class EditProperty extends presenter.Window {
 					+ dateComboArray.get(1).getValue() + "-"
 					+ dateComboArray.get(0).getValue();
 
-			if (CheckInfoPage() && imagePaths.size() > 0) {
+			if (CheckInfoPage() && imagePaths.size() >= 3) {
 				House newHouse = new House(address.getText());
 				newHouse.address(address.getText());
 				newHouse.bathrooms(Integer.parseInt(baths.getText()));
@@ -738,7 +764,7 @@ public class EditProperty extends presenter.Window {
 			buttonSave.setDisable(true);
 		}
 
-		if (imagePaths.size() > 0) {
+		if (imagePaths.size() >= 3) {
 			picStatus.setImage(tick);
 		} else
 			picStatus.setImage(cross);
@@ -815,7 +841,8 @@ public class EditProperty extends presenter.Window {
 				break;
 			case PICS:
 				// Set title of file chooser
-				uploadChooser.setTitle(Translate.translateText(languageIndex, "Choose Property Image to Upload"));
+				uploadChooser.setTitle(Translate.translateText(languageIndex,
+						"Choose Property Image to Upload"));
 				// Set file types displayed in the file chooser as png and jpg
 				uploadChooser.getExtensionFilters().addAll(
 						new FileChooser.ExtensionFilter("JPG, PNG", "*.jpg",
@@ -824,7 +851,8 @@ public class EditProperty extends presenter.Window {
 				break;
 			case VIDEO:
 				// Set title of file chooser
-				uploadChooser.setTitle(Translate.translateText(languageIndex, "Choose Video to Upload"));
+				uploadChooser.setTitle(Translate.translateText(languageIndex,
+						"Choose Video to Upload"));
 				// Set file types displayed in the file chooser as mp4
 				uploadChooser.getExtensionFilters().add(
 						new FileChooser.ExtensionFilter("MP4", "*.mp4"));
@@ -838,9 +866,11 @@ public class EditProperty extends presenter.Window {
 
 		public void handle(ActionEvent arg0) {
 
-			uploadVideoButton.setDisable(true);
-			uploadPathVideo.clear();
-			
+			if (page == VIDEO) {
+				uploadVideoButton.setDisable(true);
+				uploadPathVideo.clear();
+			}
+
 			if (hid == 0) {
 				UpdateTabLabels();
 				switch (page) {
@@ -853,7 +883,9 @@ public class EditProperty extends presenter.Window {
 					break;
 				case VIDEO:
 					videoPath = filePath;
-					Database.insertHouseVideo(owner, house, videoFile.getName(), videoFile.getParentFile().getAbsolutePath());
+					Database.insertHouseVideo(owner, house,
+							videoFile.getName(), videoFile.getParentFile()
+									.getAbsolutePath());
 					SetupVideoPlayer(videoPath);
 					SetupRoomMarkers();
 					break;
@@ -884,20 +916,17 @@ public class EditProperty extends presenter.Window {
 	public class RemoveVideo implements EventHandler<ActionEvent> {
 
 		public void handle(ActionEvent arg0) {
-			
-			
-			
+
 			Database.deleteVideo(owner, currentVideo);
-			
+
 			videoPath = null;
-			
-			video.mediaPlayer.stop();
-			
+			video = null;
+
 			grid.getChildren().clear();
 			createEditPage();
 		}
 	}
-	
+
 	public class DeleteImage implements EventHandler<ActionEvent> {
 
 		public void handle(ActionEvent arg0) {
@@ -905,8 +934,9 @@ public class EditProperty extends presenter.Window {
 			if (hid == 0) {
 				for (int i = 0; i < imagePaths.size(); i++) {
 					if (deleteImage.get(i).isSelected()) {
-						UpdateTabLabels();
 						imagePaths.remove(i);
+						deleteImage.remove(i);
+						UpdateTabLabels();
 					}
 				}
 			}
@@ -966,7 +996,7 @@ public class EditProperty extends presenter.Window {
 		public void handle(ActionEvent event) {
 			if (markerList.getSelectionModel().getSelectedIndex() >= 0) {
 				int index = markerList.getSelectionModel().getSelectedIndex();
-			
+
 				for (int i = index; i < items.size() - 1; i++) {
 					items.set(i, items.get(i + 1));
 				}

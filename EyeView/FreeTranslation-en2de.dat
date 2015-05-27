@@ -34,6 +34,10 @@
    <string>Heben Sie auf</string>
   </void>
   <void method="put">
+   <string>Choose Property Image to Upload</string>
+   <string>Wählen Sie Eigentumsbildnis, Zu Laden</string>
+  </void>
+  <void method="put">
    <string>Date Available:</string>
    <string>Datieren Sie Verfügbar: </string>
   </void>

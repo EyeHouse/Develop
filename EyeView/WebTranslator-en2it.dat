@@ -34,6 +34,10 @@
    <string>Annullare</string>
   </void>
   <void method="put">
+   <string>Choose Property Image to Upload</string>
+   <string>Scegliere l&apos;Immagine di Proprietà di Caricare</string>
+  </void>
+  <void method="put">
    <string>Date Available:</string>
    <string>Datare Disponibile: </string>
   </void>

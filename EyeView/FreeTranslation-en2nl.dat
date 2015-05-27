@@ -34,6 +34,10 @@
    <string>Annuleer</string>
   </void>
   <void method="put">
+   <string>Choose Property Image to Upload</string>
+   <string>Kies Eigendom Beeld om Te Laden</string>
+  </void>
+  <void method="put">
    <string>Date Available:</string>
    <string>Dateer Verkrijgbaar: </string>
   </void>
