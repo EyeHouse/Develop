@@ -37,6 +37,8 @@ public class SavedProperties extends presenter.Window {
 	ArrayList<String> properties = new ArrayList<String>();
 	ListView<HBox> propertyList = new ListView<HBox>();
 	ObservableList<HBox> items = FXCollections.observableArrayList();
+	
+	public Label labelTitle = new Label();
 
 	public SavedProperties() {
 
@@ -66,8 +68,7 @@ public class SavedProperties extends presenter.Window {
 
 	private void setupTitle() {
 
-		//Label labelTitle = new Label("Saved Properties");
-		Label labelTitle = new Label(Translate.translateText(languageIndex, "Saved Properties") + ": ");
+		labelTitle = new Label(Translate.translateText(languageIndex, "Saved Properties"));
 		labelTitle.setTextFill(Color.web("#162252FF"));
 		labelTitle.setFont(new Font(35));
 		grid.add(labelTitle, 0, 0);
@@ -79,10 +80,10 @@ public class SavedProperties extends presenter.Window {
 		VBox buttons = new VBox(30);
 		
 		//View button//
-		ButtonType button1 = new ButtonType("150,150,150",null,Translate.translateText(languageIndex, "View") + ": ",100,30);
+		ButtonType button1 = new ButtonType("150,150,150",null,Translate.translateText(languageIndex, "View") ,100,30);
 		
 		//Remove button//
-		ButtonType button2 = new ButtonType("150,150,150",null,Translate.translateText(languageIndex, "Remove") + ": ",100,30);
+		ButtonType button2 = new ButtonType("150,150,150",null,Translate.translateText(languageIndex, "Remove"),100,30);
 		
 		Button buttonView = new SetupButton().CreateButton(button1);
 		Button buttonRemove = new SetupButton().CreateButton(button2);
@@ -164,5 +165,10 @@ public class SavedProperties extends presenter.Window {
 
 		//add BackButton
 		SlideContent.setupBackButton();
+	}
+	
+	public void UpdateLanguage(){
+	    labelTitle.setText(Translate.translateText(
+				languageIndex, "Saved Properties") + ": ");
 	}
 }
