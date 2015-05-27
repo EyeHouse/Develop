@@ -14,7 +14,6 @@ import Button.SetupButton;
 import presenter.SlideContent;
 import database.DataHandler;
 import database.Database;
-import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -24,10 +23,14 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.RectangleBuilder;
 import javafx.scene.text.Font;
 import language.Translate;
 
@@ -36,28 +39,99 @@ public class Login extends presenter.Window {
 	TextField username;
 	TextField password;
 
-	Label topTitle;
 	GridPane loginGrid = new GridPane();
-
+	static double sideBarWidth = 180.5;
+	int xBox = 350;
+	int yBox = 250;
 	public Label labelLogin = new Label();
 
+	/**
+	 * This method creates the login slide and calls the methods that will create the slide's elements
+	 */
 	public Login() {
+		setLayout();
 		setupGrid();
 		setupTextFields();
 		setupPasswordFields();
 		setupButtons();
 		setupTitle();
-		createWarningPopup("Password incorrect. Please try again.");
-		root.getChildren().addAll(topTitle, loginGrid);
+		createWarningPopup("Login Failed. Please try again.");
+		root.getChildren().add(loginGrid);
 	}
 
+	/**
+	 * This method creates the background of the login page
+	 */
+	public void setLayout() {
+		setBackground();
+		setWhiteBox(xBox,yBox);
+		Image icon = new Image("file:./resources/icons/xxhdpi.png");
+		ImageView iconView = new ImageView(icon);
+		iconView.relocate(200, 250);
+		root.getChildren().add(iconView);
+	}
+	
+	/**
+	 * This method creates a white box of a specified size with a border and rounded edges 
+	 * 
+	 * @param boxWidth desired width of the white box containing the data
+	 * @param boxHeight desired height of the white box containing the data
+	 */
+	public static void setWhiteBox(int boxWidth, int boxHeight){
+		Rectangle centreBox = RectangleBuilder
+				.create()
+				.arcWidth(30)
+				// Curved edges
+				.arcHeight(30)
+				.fill(Color.WHITE)
+				.x(sideBarWidth + ((xResolution - sideBarWidth) / 2)
+						- (boxWidth / 2))
+				.y(((yResolution) / 2) - (boxHeight / 2) - 15).strokeWidth(2)
+				.stroke(Color.rgb(33, 51, 76)).build();
+		centreBox.setWidth(boxWidth);
+		centreBox.setHeight(boxHeight);
+		root.getChildren().addAll(centreBox);
+	}
+	
+	/**
+	 * This method creates the two rectangles for the background and gives them the
+	 *  appropriate size
+	 */
+	public static void setBackground() {
+
+		// Set top half rectangle
+		Rectangle topRectangle = new Rectangle();
+		topRectangle.setWidth(xResolution - sideBarWidth);
+		topRectangle.setHeight(yResolution);
+		topRectangle.relocate(sideBarWidth, 0); // Width of sidebar
+		topRectangle.setFill(Color.rgb(104, 158, 239, 0.3));
+
+		// Set bottom half rectangle
+		Rectangle bottomRectangle = new Rectangle();
+		bottomRectangle.setWidth(xResolution - sideBarWidth);
+		bottomRectangle.setHeight(yResolution / 2);
+		bottomRectangle.relocate(sideBarWidth, (yResolution / 2) - 15);
+		bottomRectangle.setFill(Color.rgb(91, 138, 209, 0.3));
+
+		root.getChildren().addAll(topRectangle, bottomRectangle);
+	}
+
+	/**
+	 * This method sets up the spacing between the elements in rows and in columns 
+	 */
 	public void setupGrid() {
 
 		loginGrid.setVgap(30);
 		loginGrid.setHgap(30);
-		loginGrid.relocate(435, 130);
+		//Set position of the grid
+		loginGrid.relocate((sideBarWidth + ((xResolution - sideBarWidth) / 2)
+				- (xBox / 2) + 67),
+				((yResolution) / 2) - (yBox / 2) + 15);
 	}
-
+	
+	/**
+	 * This method sets up the username field for the user to fill in
+	 */
 	public void setupTextFields() {
 
 		// Username field
@@ -73,6 +147,10 @@ public class Login extends presenter.Window {
 
 	}
 
+	/**
+	 * This method sets up the password field for the user to fill in and used an event handler to login when 
+	 * enter is pressed
+	 */
 	public void setupPasswordFields() {
 
 		// Password field
@@ -94,6 +172,9 @@ public class Login extends presenter.Window {
 		GridPane.setConstraints(password, 1, 2);
 	}
 
+	/**
+	 * This method sets up the buttons on the side menu and the save button, which calls the function to login the user
+	 */
 	public void setupButtons() {
 
 		// Add buttons to grid
@@ -115,15 +196,22 @@ public class Login extends presenter.Window {
 		SlideContent.setupBackButton();
 	}
 
+	/**
+	 * This method creates and places the title of the page
+	 */
 	public void setupTitle() {
 
-		topTitle = new Label(Translate.translateText(languageIndex, "Login"));
+		Label topTitle = new Label(Translate.translateText(languageIndex, "Login"));
 		topTitle.setTextFill(Color.web("#162252FF"));
 		topTitle.setFont(new Font(35));
-		topTitle.relocate(470, 90);
-
+		topTitle.relocate(520, 200);
+		root.getChildren().add(topTitle);
 	}
 
+	/**
+	 * This method checks if the provided details correspond to an existing user. If they do the user is 
+	 * logged in, otherwise it displays a warning message. 
+	 */
 	public boolean login() {
 
 		boolean userExists;
@@ -142,9 +230,6 @@ public class Login extends presenter.Window {
 		return userExists;
 	}
 
-	public static void main(String[] args) {
-		Database.dbConnect();
-		Application.launch(args);
-	}
-
 }
+
+

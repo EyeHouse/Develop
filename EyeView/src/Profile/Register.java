@@ -8,14 +8,8 @@ package Profile;
  * 
  * Copyright 2015 EyeHouse
  */
-import java.awt.Insets;
-import java.io.IOException;
+
 import java.util.ArrayList;
-
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -60,14 +54,14 @@ public class Register extends presenter.Window {
 	BadWordCheck bwc;
 	ArrayList<ComboBox<String>> dateOfBirthCombo = new ArrayList<ComboBox<String>>();
 
-	public static void main(String[] args) {
-		Database.dbConnect();
-		launch(args);
-	}
-
+	/**
+	 * This method creates the register slide and calls the methods that will create it's elements
+	 */
 	public Register() {
 
 		bwc = new BadWordCheck();
+		Login.setBackground();
+		Login.setWhiteBox(350, 400);
 		setupGrid();
 		setupTitle();
 		setupTextFields(registerGrid);
@@ -75,7 +69,7 @@ public class Register extends presenter.Window {
 
 		Label required = new Label("*Required field.");
 		Label passwordRequirements = new Label(
-				"**Password should contain at least an upper case letter, a lower case letter and a digit. "
+				"**Password should contain at least one upper case letter, one lower case letter and one digit. "
 						+ " It should have between 6 and 20 characters.");
 		passwordRequirements.setWrapText(true);
 		VBox vbox = new VBox(0);
@@ -86,23 +80,31 @@ public class Register extends presenter.Window {
 		root.getChildren().addAll(topTitle, registerGrid, vbox);
 
 	}
-
+	
+	/**
+	 * This method sets up the spacing between the elements in rows and in columns 
+	 */
 	public void setupGrid() {
 
 		registerGrid.setVgap(30);
 		registerGrid.setHgap(30);
 		registerGrid.relocate(375, 130);
 	}
-
+	
+	/**
+	 * This method creates and places the title of the page
+	 */
 	public void setupTitle() {
 
 		topTitle = new Label(Translate.translateText(languageIndex, "Register"));
 		topTitle.setTextFill(Color.web("#162252FF"));
 		topTitle.setFont(new Font(35));
 		topTitle.relocate(470, 90);
-
 	}
 
+	/**
+	 * This method sets up the text fields, the boxes for the date of birth and the buttons for account type
+	 */
 	public void setupTextFields(GridPane grid) {
 		HBox hBoxAccountType = new HBox(10);
 		ToggleGroup group = new ToggleGroup();
@@ -152,7 +154,10 @@ public class Register extends presenter.Window {
 		skypeID.setPrefColumnCount(10);
 		registerGrid.addRow(9, new Label("Skype Username:"), skypeID);
 	}
-
+	
+	/**
+	 * This method sets up the password field and the confirm you password field for the user to fill
+	 */
 	public void setupPasswordFields(GridPane grid) {
 
 		// Password field
@@ -169,7 +174,10 @@ public class Register extends presenter.Window {
 		repeatPassword.setPrefColumnCount(10);
 		registerGrid.add(repeatPassword, 1, 5);
 	}
-
+	
+	/**
+	 * This method sets up the buttons on the side menu and the save button, which calls the function to login the user
+	 */
 	public void setupButtons() {
 
 		// Add button to grid
@@ -187,13 +195,17 @@ public class Register extends presenter.Window {
 		SlideContent.setupBackButton();
 	}
 
+	/**
+	 * This method saves the changes and checks if the information entered in each field is valid. If they all are 
+	 * the user is registered and their profile page is displayed 
+	 */
 	public class saveChanges implements EventHandler<ActionEvent> {
 
 		public void handle(ActionEvent arg0) {
 
 			boolean regSuccess = false;
 
-			// Check username
+			// Check there is no rude words in the text fields
 			if ((bwc.containsBlackListedWords(username.getText()) == true)
 					|| (bwc.containsBlackListedWords(firstname.getText()) == true)
 					|| (bwc.containsBlackListedWords(lastname.getText()) == true)) {
@@ -201,7 +213,8 @@ public class Register extends presenter.Window {
 				dialogStage.show();
 				System.out.println("Rude word detected.");
 			}
-
+			
+			// If there are no rude words in the text field it checks all the information is correct
 			else {
 				user = new User(username.getText());
 				// Get date of birth
@@ -215,53 +228,53 @@ public class Register extends presenter.Window {
 					userEmail = "";
 					createWarningPopup("Invalid Email.");
 					dialogStage.show();
+				}
+				else{
+				// Check if the entered passwords address is valid
+				// If valid, it is encrypted and stored
+				if (DataHandler.passwordChecker(password.getText(),
+						repeatPassword.getText()) == false) {
+					System.out.println("Password check failed");
+					createWarningPopup(" Incorrect Password. Try Again");
+					dialogStage.show();
 				} else {
-					// Check if the entered passwords address is valid
-					// If valid, it is encrypted and stored
-					if (DataHandler.passwordChecker(password.getText(),
-							repeatPassword.getText()) == false) {
-						System.out.println("Password check failed");
-						createWarningPopup(" Incorrect Password. Try Again");
-						dialogStage.show();
+					encryptedPassword = DataHandler.crypt(password.getText());
+					user.password(encryptedPassword);
+
+					// Initialize user
+					user.DOB(dateOfBirth);
+					user.firstName(firstname.getText());
+					user.secondName(lastname.getText());
+					user.email(userEmail);
+
+					// If there is a skype ID
+					if (!skypeID.getText().equals("")) {
+						user.skype(skypeID.getText());
+					}
+					// No privileges
+					user.admin(false);
+
+					user.landlord(buttonLandlord.isSelected());
+
+					// Register user
+					regSuccess = Database.userRegister(user);
+
+					// If the registration is successful log the user in
+					if (regSuccess == true) {
+						// log the new user in
+						User user = Database.getUser(username.getText());
+
+						// Go to users new profile
+						firstLogin = true;
+						currentUsername = user.username;
+						viewedUsername = user.username;
+						loadSlide(PROFILE);
+
+						System.out.println("User: " + user.username
+								+ " created successfully");
 					} else {
-						encryptedPassword = DataHandler.crypt(password
-								.getText());
-						user.password(encryptedPassword);
-
-						// Initialize user
-						user.DOB(dateOfBirth);
-						user.firstName(firstname.getText());
-						user.secondName(lastname.getText());
-						user.email(userEmail);
-
-						// If there is a skype ID
-						if (!skypeID.getText().equals("")) {
-							user.skype(skypeID.getText());
-						}
-						// no privileges
-						user.admin(false);
-
-						user.landlord(buttonLandlord.isSelected());
-
-						// register user
-						regSuccess = Database.userRegister(user);
-
-						// If the registration is successful log the user in
-						if (regSuccess == true) {
-							// log the new user in
-							User user = Database.getUser(username.getText());
-
-							// go to users new profile
-							firstLogin = true;
-							currentUsername = user.username;
-							viewedUsername = user.username;
-							loadSlide(PROFILE);
-
-							System.out.println("User: " + user.username
-									+ " created successfully");
-						} else {
-							System.out.println("Registration failed.");
-						}
+						System.out.println("Registration failed.");
+					}
 					}
 				}
 			}
