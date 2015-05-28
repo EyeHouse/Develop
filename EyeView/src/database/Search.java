@@ -15,8 +15,8 @@ import java.sql.SQLException;
  * @author Tom
  * 
  */
-public class Search{
-
+public class Search {
+	
 	private static final String GEO_CODE_SERVER = "http://maps.googleapis.com/maps/api/geocode/json?";
 	public static final double R = 6372.8; // In kilometers
 
@@ -26,12 +26,17 @@ public class Search{
 		String code = address;
 
 		String response = getLocation(code);
-
+		
 		String[] result = parseLocation(response);
-
+		
 		int i = 0;
 		for (i = 0; i < result.length; i++) {
+			System.out.println("Parsing : " + result[i]);
+			if(result[i] == null){
+				break;
+			}
 			list.add(Double.parseDouble(result[i]));
+
 		}
 
 		return list;
@@ -55,10 +60,10 @@ public class Search{
 				break;
 			}
 		}
-
+		
 		return new String[] { lat, lng };
 	}
-
+	
 	private static String getOrdinate(String s) {
 		String[] split = s.trim().split(" ");
 
@@ -77,7 +82,7 @@ public class Search{
 
 		return ord;
 	}
-
+	
 	private static String buildUrl(String code) {
 		StringBuilder builder = new StringBuilder();
 
@@ -104,22 +109,22 @@ public class Search{
 
 			try {
 				int available = stream.available();
-
+				
 				byte[] bytes = new byte[available];
-
+				
 				stream.read(bytes);
 
 				content = new String(bytes);
 			} finally {
 				stream.close();
 			}
-
+			
 			return (String) content.toString();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
-
+	
 	/**
 	 * From http://rosettacode.org/wiki/Haversine_formula#Java
 	 * 
@@ -134,7 +139,7 @@ public class Search{
 		// Conver Lat Long to radians and calculate differences
 		double dLat = Math.toRadians(lat2 - lat1);
 		double dLon = Math.toRadians(lon2 - lon1);
-
+		
 		lat1 = Math.toRadians(lat1);
 		lat2 = Math.toRadians(lat2);
 		// Calculate the distance between ll's using haversine function maths
@@ -285,26 +290,35 @@ public class Search{
 
 		ResultSet postcodes = null;
 		ArrayList<Integer> validHouseID = new ArrayList<Integer>();
+		
+		ArrayList<Double> longLat2 = new ArrayList<Double>();
 
 		String tempPC = null;
 		double distanceCheck;
 
 		// get all post codes and house ids
 		postcodes = getPostcodes();
+		
+		// The user input post code
+		longLat2 = getLongLat(postcode);
 
 		try {
-			do {
+			while (postcodes.next()) {
 
 				// Gets the post code
 				tempPC = postcodes.getString("postcode");
 
+				System.out.println("\n" + tempPC);
+				
+				if (tempPC == null) {
+					break;
+				}
+
 				// Get the long lat of both post codes
 				ArrayList<Double> longLat1 = new ArrayList<Double>();
-				ArrayList<Double> longLat2 = new ArrayList<Double>();
+			
 				// The post code being checked
 				longLat1 = getLongLat(tempPC);
-				// The user input post code
-				longLat2 = getLongLat(postcode);
 
 				// find distance between two post codes
 				distanceCheck = haversine(longLat1.get(0), longLat1.get(1),
@@ -320,11 +334,9 @@ public class Search{
 				if (distanceCheck < 0) {
 					System.out.println("\nError : negative distance");
 				}
-
-			} while (postcodes.next());
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			System.out.println("\nFailed Proximity Search");
 		}
 
 		// Print valid houses array
