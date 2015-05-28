@@ -54,6 +54,10 @@
    <string>Beskrivelse</string>
   </void>
   <void method="put">
+   <string>Distance to University</string>
+   <string>Avstand til Universitet</string>
+  </void>
+  <void method="put">
    <string>Edit</string>
    <string>Rediger</string>
   </void>
@@ -102,6 +106,14 @@
    <string>Kart</string>
   </void>
   <void method="put">
+   <string>Max</string>
+   <string>Max</string>
+  </void>
+  <void method="put">
+   <string>Min</string>
+   <string>Minimum</string>
+  </void>
+  <void method="put">
    <string>My Properties</string>
    <string>Mine Eiendomer</string>
   </void>
@@ -130,6 +142,10 @@
    <string>Pris : </string>
   </void>
   <void method="put">
+   <string>Price: </string>
+   <string>Pris : </string>
+  </void>
+  <void method="put">
    <string>Profile</string>
    <string>Profil</string>
   </void>
@@ -144,6 +160,10 @@
   <void method="put">
    <string>Saved Properties</string>
    <string>Spart Eiendomer</string>
+  </void>
+  <void method="put">
+   <string>Search</string>
+   <string>Leting</string>
   </void>
   <void method="put">
    <string>Upload</string>

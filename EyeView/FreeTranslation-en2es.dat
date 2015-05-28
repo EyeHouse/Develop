@@ -54,6 +54,10 @@
    <string>Descripción</string>
   </void>
   <void method="put">
+   <string>Distance to University</string>
+   <string>Desvincúlese a la Universidad</string>
+  </void>
+  <void method="put">
    <string>Edit</string>
    <string>Redacte</string>
   </void>
@@ -102,6 +106,14 @@
    <string>Mapa</string>
   </void>
   <void method="put">
+   <string>Max</string>
+   <string>Max</string>
+  </void>
+  <void method="put">
+   <string>Min</string>
+   <string>Min</string>
+  </void>
+  <void method="put">
    <string>My Properties</string>
    <string>Mis Propiedades</string>
   </void>
@@ -130,6 +142,10 @@
    <string>El precio: </string>
   </void>
   <void method="put">
+   <string>Price: </string>
+   <string>El precio: </string>
+  </void>
+  <void method="put">
    <string>Profile</string>
    <string>Perfil</string>
   </void>
@@ -144,6 +160,10 @@
   <void method="put">
    <string>Saved Properties</string>
    <string>Propiedades guardadas</string>
+  </void>
+  <void method="put">
+   <string>Search</string>
+   <string>Búsqueda</string>
   </void>
   <void method="put">
    <string>Upload</string>

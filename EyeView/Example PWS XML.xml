@@ -19,10 +19,10 @@
 		<text sourcefile="" xstart="0.1" ystart="0.2">
 			slide ONE in default setting
 		</text>
-		<text sourcefile="info.txt" xstart="0.1" ystart="0.3">
+		<text sourcefile="" xstart="0.1" ystart="0.3">
 			it shouldnt display this. in default settings
 		</text>
-		<text sourcefile="info.txt" xstart="0.1" ystart="0.4" font="impact" fontsize="40" fontcolor="#ff0000ff" duration="2">
+		<text sourcefile="" xstart="0.1" ystart="0.4" font="impact" fontsize="40" fontcolor="#ff0000ff" duration="2">
 			it shouldnt display this. 
 		</text>
 		<image sourcefile="file:./resources/images/profile.png" xstart="0.2" ystart="0.1" scale="0.5" duration="2" starttime="2"/>

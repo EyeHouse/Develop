@@ -54,6 +54,10 @@
    <string>Beschrijving</string>
   </void>
   <void method="put">
+   <string>Distance to University</string>
+   <string>Verwijder naar Universiteit</string>
+  </void>
+  <void method="put">
    <string>Edit</string>
    <string>Bewerking</string>
   </void>
@@ -102,6 +106,14 @@
    <string>Kaart</string>
   </void>
   <void method="put">
+   <string>Max</string>
+   <string>Max.</string>
+  </void>
+  <void method="put">
+   <string>Min</string>
+   <string>Min</string>
+  </void>
+  <void method="put">
    <string>My Properties</string>
    <string>Mijn Eigendommen</string>
   </void>
@@ -130,6 +142,10 @@
    <string>Prijs: </string>
   </void>
   <void method="put">
+   <string>Price: </string>
+   <string>Prijs: </string>
+  </void>
+  <void method="put">
    <string>Profile</string>
    <string>Profiel</string>
   </void>
@@ -144,6 +160,10 @@
   <void method="put">
    <string>Saved Properties</string>
    <string>Geredde Eigendommen</string>
+  </void>
+  <void method="put">
+   <string>Search</string>
+   <string>Zoektocht</string>
   </void>
   <void method="put">
    <string>Upload</string>
