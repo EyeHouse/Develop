@@ -1,4 +1,4 @@
-package houseAdverts;
+package houses;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

@@ -1,4 +1,4 @@
-package houseAdverts;
+package houses;
 
 import presenter.SlideContent;
 import presenter.Window;

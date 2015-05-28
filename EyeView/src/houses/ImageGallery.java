@@ -1,4 +1,4 @@
-package houseAdverts;
+package houses;
 
 
 import java.util.ArrayList;
