@@ -7,7 +7,7 @@
 		<groupid>5</groupid>
 	</documentinfo>
 	<defaultsettings>
-		<backgroundcolor>#ff00ff00</backgroundcolor>
+		<backgroundcolor>#00000000</backgroundcolor>
 		<font>Calibri</font>
 		<fontsize>12</fontsize>
 		<fontcolor>#ffcccc00</fontcolor>

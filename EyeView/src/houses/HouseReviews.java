@@ -41,6 +41,10 @@ public class HouseReviews extends presenter.Window {
 
 	private Button[] buttonStar;
 	private ImageView[] reviewStar;
+	private Image reviewStarFullButton = new Image(
+			"file:resources/images/stars/starFull_28Button.png");
+	private Image reviewStarOutlineButton = new Image(
+			"file:resources/images/stars/starOutlineButton_28.png");
 	private Image reviewStarFull = new Image(
 			"file:resources/images/stars/starFull_28.png");
 	private Image reviewStarOutline = new Image(
@@ -159,7 +163,7 @@ public class HouseReviews extends presenter.Window {
 		for (int i = 0; i < 5; i++) {
 			buttonStar[i] = new SetupButton().CreateButton(button1);
 			buttonStar[i] = new SetupButton().setButtonImage(buttonStar[i],
-					reviewStarOutline);
+					reviewStarOutlineButton);
 			buttonStar[i].setStyle("-fx-focus-color: transparent;");
 		}
 
@@ -259,9 +263,10 @@ public class HouseReviews extends presenter.Window {
 
 			for (int i = 0; i < 5; i++) {
 				if (i <= newRating - 1) {
-					buttonStar[i].setGraphic(new ImageView(reviewStarFull));
+					buttonStar[i].setGraphic(new ImageView(reviewStarFullButton));
+					System.out.println(reviewStarFullButton.toString());
 				} else {
-					buttonStar[i].setGraphic(new ImageView(reviewStarOutline));
+					buttonStar[i].setGraphic(new ImageView(reviewStarOutlineButton));
 				}
 			}
 		}

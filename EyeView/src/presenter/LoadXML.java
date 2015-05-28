@@ -73,10 +73,11 @@ public class LoadXML extends Window {
 	 */
 	public void loadXMLBackGround() {
 		GraphicHandler gh = new GraphicHandler();
-		//System.out.println(defaultData.getBackgroundColor());
+		//slideshow.getDefaults().getBackgroundColor();
+		System.out.println(slideshow.getDefaults().getBackgroundColor());
 		//System.out.println(slideshow.getDefaults().getFont()+"dasdasdsadasd");
-		//GraphicElement graphic = new GraphicElement("rectangle", 0, 0, (float)xResolution, (float)yResolution, 0, true, slideshow.getDefaults().getBackgroundColor(), "");
-		//gh.addShapeToCanvas(graphic);
+		GraphicElement graphic = new GraphicElement("rectangle", 0, 0, (float)xResolution, (float)yResolution, 0, true, slideshow.getDefaults().getBackgroundColor(), null);
+		gh.addShapeToCanvas(graphic);
 	}
 
 	/**
@@ -126,7 +127,7 @@ public class LoadXML extends Window {
 			StackPane videoPane = new StackPane();
 			videoPane.relocate(0, 0);
 			videoPane.resize(xResolution, yResolution);
-			VideoElement video = new VideoElement(currentVideo.getSource());
+			VideoElement video = new VideoElement(currentVideo.getSource(), false);
 			video.setWidth(500);
 			video.setAutoplay(true);
 			video.setXpos(currentVideo.getXstart());
