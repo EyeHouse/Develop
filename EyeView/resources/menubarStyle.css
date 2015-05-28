@@ -15,6 +15,7 @@
 	-fx-font-size: 15;
     -fx-label-padding: 0;
     -fx-wrap-text: true;
+    -fx-cursor: hand;
 }
 
 .button:hover {
