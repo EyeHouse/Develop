@@ -15,12 +15,10 @@ import java.sql.SQLException;
  * @author Tom
  * 
  */
-public class Search {
+public class Search{
 
 	private static final String GEO_CODE_SERVER = "http://maps.googleapis.com/maps/api/geocode/json?";
 	public static final double R = 6372.8; // In kilometers
-
-	public static String url = "10.10.0.1";
 
 	public static ArrayList<Double> getLongLat(String address) {
 
@@ -246,30 +244,30 @@ public class Search {
 	}
 
 	public static ArrayList<Integer> searchString(String userinput) {
-		
+
 		ArrayList<Integer> validHouses = new ArrayList<Integer>();
 		ResultSet houses = null;
-		
+
 		try {
-			
+
 			// Query for a string userinput in postcode address or title
 			PreparedStatement selectPostcodes = Database.con
 					.prepareStatement("SELECT * FROM houses WHERE MATCH(`postcode`,`address`,`title`) AGAINST (?)");
-			
+
 			selectPostcodes.setString(1, userinput);
-			
+
 			houses = selectPostcodes.executeQuery();
-			
+
 			while (houses.next()) {
-				// return results that matched 
+				// return results that matched
 				validHouses.add(houses.getInt("hid"));
 			}
-			
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return validHouses;
 	}
 
@@ -344,7 +342,7 @@ public class Search {
 		case "string":
 			ArrayList<Integer> validHouses = new ArrayList<Integer>();
 			validHouses = searchString("link");
-			
+
 			System.out.println("Contains : " + validHouses);
 			break;
 		// this case is the prototype of the searchProximity method

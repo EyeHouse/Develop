@@ -58,4 +58,7 @@
 	<slide id="14" title="Edit Property Slide" duration="0">
 		<graphic type="rectangle" xstart="0.0" ystart="0.0" xend="0.19" yend="1.0" solid="true" graphiccolor="#FF7AA9DD" duration="0" />
 	</slide>
+	<slide id="15" title="Search Results Slide" duration="0">
+		<graphic type="rectangle" xstart="0.0" ystart="0.0" xend="0.19" yend="1.0" solid="true" graphiccolor="#FF7AA9DD" duration="0" />
+	</slide>
 </slideshow>
