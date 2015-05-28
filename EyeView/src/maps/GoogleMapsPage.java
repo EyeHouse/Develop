@@ -15,6 +15,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+import language.Translate;
 import presenter.SlideContent;
 
 public class GoogleMapsPage extends presenter.Window {
@@ -22,6 +23,7 @@ public class GoogleMapsPage extends presenter.Window {
 	MyBrowser myBrowser;
 
 	GridPane grid = new GridPane();
+	private static Label topTitle = new Label();
 
 	public GoogleMapsPage() {
 
@@ -30,12 +32,13 @@ public class GoogleMapsPage extends presenter.Window {
 		setupGrid();
 		setupButtons();
 		setupTitle();
+		UpdateLanguage();
 		Pane pane = new Pane();
 
 		pane.getChildren().add(myBrowser);
 
 		pane.resize(600, 600);
-		pane.relocate(200, 100);
+		pane.relocate(200, 120);
 
 		root.getChildren().add(pane);
 	}
@@ -46,15 +49,18 @@ public class GoogleMapsPage extends presenter.Window {
 		grid.setHgap(10);
 	}
 
+
 	public void setupTitle() {
 
-		final Label topTitle = new Label("Property Map");
+		Label topTitle = new Label(Translate.translateText(languageIndex,"Map and Route"));
 		topTitle.setTextFill(Color.web("#162252FF"));
-		topTitle.setFont(new Font(35));
-		grid.add(topTitle, 1, 1);
-		// GridPane.setConstraints(topTitle, 0, 0, 2, 1, HPos.CENTER,
-		// VPos.CENTER);
-
+		topTitle.setFont(new Font(32));
+		topTitle.relocate(440, 80);
+		root.getChildren().add(topTitle);
+	}	
+	
+	public void UpdateLanguage() {
+		topTitle.setText(Translate.translateText(languageIndex, "Map and Route"));
 	}
 
 	public void setupButtons() {

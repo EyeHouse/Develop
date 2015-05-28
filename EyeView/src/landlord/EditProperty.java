@@ -1,7 +1,6 @@
 package landlord;
 
 import handlers.VideoElement;
-import houseAdverts.HouseOverview;
 
 import java.io.File;
 import java.io.IOException;
@@ -200,19 +199,19 @@ public class EditProperty extends presenter.Window {
 		root.getChildren().removeAll(pageChangeButtons);
 
 		backButtons = new VBox(10);
-		pageChangeButtons = new HBox(400);
+		pageChangeButtons = new HBox(500);
 
 		ImageView buttonNext = new ImageView(new Image(
 				"file:resources/icons/Forward-button.png"));
 		buttonNext.setPreserveRatio(true);
-		buttonNext.setFitWidth(60);
+		buttonNext.setFitWidth(70);
 		buttonNext.setCursor(Cursor.HAND);
 		buttonNext.setOnMouseClicked(new ChangePage(1));
 
 		ImageView buttonPrev = new ImageView(new Image(
 				"file:resources/icons/Previous-button.png"));
 		buttonPrev.setPreserveRatio(true);
-		buttonPrev.setFitWidth(60);
+		buttonPrev.setFitWidth(70);
 		buttonPrev.setCursor(Cursor.HAND);
 		buttonPrev.setOnMouseClicked(new ChangePage(-1));
 
@@ -241,7 +240,7 @@ public class EditProperty extends presenter.Window {
 			buttonNext.setVisible(false);
 
 		backButtons.relocate(828, 17);
-		pageChangeButtons.relocate(220, 700);
+		pageChangeButtons.relocate(260, 710);
 		root.getChildren().addAll(backButtons, pageChangeButtons);
 	}
 
