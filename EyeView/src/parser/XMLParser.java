@@ -350,7 +350,7 @@ public class XMLParser extends DefaultHandler {
 	 */
 	public void endDocument() throws SAXException {
 
-		System.out.println("\nFinished processing document.");
+		System.out.println("\nFinished processing document.\n");
 	}
 
 	/**
