@@ -689,16 +689,20 @@ public class Database {
 		// boolean success = true / failure = false
 		boolean insertCheck = false;
 		// Check user email && username aren't already in database
-		try {
-			insertCheck = userInsert(newUser);
-		} catch (Exception e) {
-			e.printStackTrace();
-			if (insertCheck == false) {
-				System.out.println("Failure to insert. Please Try Again.");
+		if (!twoFieldCheck("username", newUser.username, "email", newUser.email)) {
+			try {
+				insertCheck = userInsert(newUser);
+				return true;
+			} catch (Exception e) {
+				e.printStackTrace();
 				return false;
 			}
 		}
-		return true;
+		if (twoFieldCheck("username", newUser.username, "email", newUser.email)) {
+			System.out
+					.println("\nAn account with the same username or Email already exists.\n");
+		}
+		return false;
 	}
 
 	public static boolean updateImage(String tablename, String filepath,
@@ -1536,7 +1540,7 @@ public class Database {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * 
 	 * @param vid
@@ -1683,7 +1687,7 @@ public class Database {
 
 		String title = "Example";
 
-		int mode = 11;
+		int mode = 2;
 		boolean insertSuccess;
 		boolean houseDeleted;
 		boolean updateSuccess;
@@ -1759,12 +1763,13 @@ public class Database {
 			String encryptedPassword = DataHandler.crypt(password);
 			insert.password(encryptedPassword);
 
-			// insert
-			insertSuccess = userInsert(insert);
-			if (insertSuccess == false) {
-				System.out.println("Failure to insert user");
+			// Register user
+			insertSuccess = userRegister(insert);
+
+			if (!insertSuccess) {
+				System.out.println("Failure to register user");
 			} else
-				System.out.println("User inserted into database");
+				System.out.println("User Registered");
 
 			break;
 		case 4: // edit details
