@@ -179,6 +179,8 @@ public class SavedProperties extends presenter.Window {
 				loadSlide(prevSlideID);
 			}
 		});
+		
+		root.getChildren().add(buttonBack);
 	}
 
 	public void UpdateLanguage() {
