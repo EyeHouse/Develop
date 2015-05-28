@@ -14,7 +14,7 @@ import org.xml.sax.SAXException;
 /**
  * Validates the minimum requirements of the PWS for a given example XML file
  * against a valid XML Schema.
- *
+ * 
  * @version 1.3
  * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
  */
@@ -28,6 +28,14 @@ public class XMLValidation {
 		validateXML(xsdFile, xmlFile);
 	}
 
+	/**
+	 * Validates the XML file and prints any invalidities to the console.
+	 * 
+	 * @param xsdPath
+	 *            File path for XSD Schema file.
+	 * @param xmlPath
+	 *            File path for XML file.
+	 */
 	public static void validateXML(String xsdPath, String xmlPath) {
 
 		try {

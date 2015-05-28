@@ -1,4 +1,4 @@
-package houseAdverts;
+package houses;
 
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;

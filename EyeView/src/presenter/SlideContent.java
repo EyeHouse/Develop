@@ -1,9 +1,9 @@
 package presenter;
 
-import houseAdverts.HouseOverview;
-import houseAdverts.HouseReviews;
-import houseAdverts.MoreInfo;
-import houseAdverts.VideoPage;
+import houses.HouseOverview;
+import houses.HouseReviews;
+import houses.MoreInfo;
+import houses.VideoPage;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,8 +30,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.LineBuilder;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.RectangleBuilder;
 import javafx.scene.text.Font;
@@ -517,7 +515,7 @@ public class SlideContent extends Window {
 					.getSelectedIndex();
 
 			if (slideID == INDEX || slideID == HOUSES) {
-				houseAdverts.UpdateLanguage();
+				houseAdverts.updateLanguage();
 
 				videoButton.setText(Translate.translateText(languageIndex,
 						"Video Tour"));

@@ -154,6 +154,10 @@
    <string>µÇ¼Ç</string>
   </void>
   <void method="put">
+   <string>Remove</string>
+   <string>ÒÆ¶¯</string>
+  </void>
+  <void method="put">
    <string>Reviews</string>
    <string>ÉóºË</string>
   </void>

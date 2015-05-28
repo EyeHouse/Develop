@@ -14,7 +14,7 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * This class calls the SAX parser to process the input XML file and parse the
  * information into objects of their respective appropriate types.
- *
+ * 
  * @version 2.1
  * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
  */
@@ -51,10 +51,10 @@ public class XMLParser extends DefaultHandler {
 	public SlideshowData loadSlideshow(String inputFile) {
 
 		try {
-			// use the default parser
+			// Use the default parser
 			SAXParserFactory factory = SAXParserFactory.newInstance();
 			SAXParser saxParser = factory.newSAXParser();
-			// parse the input
+			// Parse the input
 			saxParser.parse(inputFile, this);
 		} catch (ParserConfigurationException pce) {
 			pce.printStackTrace();
@@ -80,12 +80,13 @@ public class XMLParser extends DefaultHandler {
 	public void startElement(String uri, String localName, String qName,
 			Attributes attributes) throws SAXException {
 
-		// sort out element name if (no) namespace in use
+		// Sort out element name if namespace in use
 		String elementName = localName;
 		if ("".equals(elementName)) {
 			elementName = qName;
 		}
 
+		// Create new data objects for storing parsed data
 		switch (elementName) {
 
 		case "slideshow":
@@ -93,14 +94,17 @@ public class XMLParser extends DefaultHandler {
 			slideshow.setTitle(attributes.getValue("title"));
 			System.out.println("Found slideshow...");
 			break;
+
 		case "documentinfo":
 			info = new DocumentInfo();
 			System.out.println("\tFound document info...");
 			break;
+
 		case "defaultsettings":
 			defaults = new DefaultSettings();
 			System.out.println("\tFound default settings...");
 			break;
+
 		case "slide":
 			currentSlide = new SlideData();
 			currentSlide.setTitle(attributes.getValue("title"));
@@ -112,6 +116,7 @@ public class XMLParser extends DefaultHandler {
 			}
 			System.out.println("\tFound a slide...");
 			break;
+
 		case "text":
 			currentText = new TextData();
 			currentText.setSource(attributes.getValue("sourcefile"));
@@ -143,6 +148,7 @@ public class XMLParser extends DefaultHandler {
 			}
 			System.out.println("\t\tFound some text...");
 			break;
+
 		case "image":
 			currentImage = new ImageData();
 			currentImage.setSource(attributes.getValue("sourcefile"));
@@ -170,6 +176,7 @@ public class XMLParser extends DefaultHandler {
 			}
 			System.out.println("\t\tFound an image...");
 			break;
+
 		case "audio":
 			currentAudio = new AudioData();
 			currentAudio.setSource(attributes.getValue("sourcefile"));
@@ -181,6 +188,7 @@ public class XMLParser extends DefaultHandler {
 			}
 			System.out.println("\t\tFound a sound...");
 			break;
+
 		case "video":
 			currentVideo = new VideoData();
 			currentVideo.setSource(attributes.getValue("sourcefile"));
@@ -190,6 +198,7 @@ public class XMLParser extends DefaultHandler {
 					.getValue("ystart")));
 			System.out.println("\t\tFound a video...");
 			break;
+
 		case "graphic":
 			currentGraphic = new GraphicData();
 			currentGraphic.setType(attributes.getValue("type"));
@@ -212,10 +221,12 @@ public class XMLParser extends DefaultHandler {
 			}
 			System.out.println("\t\tFound a graphic...");
 			break;
+
 		case "cyclicshading":
 			currentGraphic.setShadingColor(attributes.getValue("shadingcolor"));
 			System.out.println("\t\t\tGraphic contains shading...");
 			break;
+
 		default:
 			break;
 		}
@@ -228,6 +239,7 @@ public class XMLParser extends DefaultHandler {
 	public void characters(char[] ch, int start, int length)
 			throws SAXException {
 
+		// Creates a string buffer and stores characters found in an element
 		String elementString = new String(ch, start, length);
 		if (elementBuffer == null) {
 			elementBuffer = new StringBuffer(elementString);
@@ -242,55 +254,68 @@ public class XMLParser extends DefaultHandler {
 	public void endElement(String uri, String localName, String qName)
 			throws SAXException {
 
-		// sort out element name if (no) namespace in use
+		// Sort out element name if namespace in use
 		String elementName = localName;
 		if ("".equals(elementName)) {
 			elementName = qName;
 		}
 
+		// Stores parsed data in the relevant data object
 		switch (elementName) {
+
 		case "slide":
 			slideshow.addSlide(currentSlide);
 			break;
+
 		case "documentinfo":
 			slideshow.setInfo(info);
 			break;
-		case "defaults":
+
+		case "defaultsettings":
 			slideshow.setDefaults(defaults);
 			break;
+
 		case "author":
 			info.setAuthor(elementBuffer.toString().trim());
 			elementBuffer = null;
 			break;
+
 		case "version":
 			info.setVersion(elementBuffer.toString().trim());
 			elementBuffer = null;
 			break;
+
 		case "comment":
 			info.setComment(elementBuffer.toString().trim());
 			elementBuffer = null;
 			break;
+
 		case "groupid":
 			info.setGroupID(elementBuffer.toString().trim());
 			elementBuffer = null;
 			break;
+
 		case "backgroundcolor":
 			defaults.setBackgroundColor(elementBuffer.toString().trim());
 			elementBuffer = null;
 			break;
+
 		case "font":
 			defaults.setFont(elementBuffer.toString().trim());
 			elementBuffer = null;
 			break;
+
 		case "fontsize":
 			defaults.setFontSize(Integer.parseInt(elementBuffer.toString()
 					.trim()));
 			elementBuffer = null;
 			break;
+
 		case "fontcolor":
 			defaults.setFontColor(elementBuffer.toString().trim());
 			elementBuffer = null;
 			break;
+
 		case "text":
 			if (currentText.getSource() == "") {
 				currentText.setSource(elementBuffer.toString().trim());
@@ -298,18 +323,23 @@ public class XMLParser extends DefaultHandler {
 			elementBuffer = null;
 			currentSlide.addText(currentText);
 			break;
+
 		case "image":
 			currentSlide.addImage(currentImage);
 			break;
+
 		case "audio":
 			currentSlide.addAudio(currentAudio);
 			break;
+
 		case "video":
 			currentSlide.addVideo(currentVideo);
 			break;
+
 		case "graphic":
 			currentSlide.addGraphic(currentGraphic);
 			break;
+
 		default:
 			break;
 		}
@@ -319,7 +349,8 @@ public class XMLParser extends DefaultHandler {
 	 * Called by the parser when it encounters the end of the XML file.
 	 */
 	public void endDocument() throws SAXException {
-		System.out.println("\nFinished processing document.");
+
+		System.out.println("\nFinished processing document.\n");
 	}
 
 	/**
@@ -327,6 +358,7 @@ public class XMLParser extends DefaultHandler {
 	 * file by printing out all the values to the console window.
 	 */
 	public void printLists() {
+
 		System.out.println("\n\nSlideshow Title: " + slideshow.getTitle());
 		System.out.println("\tDocument Information");
 		System.out.println("\t\tAuthor: " + info.getAuthor());

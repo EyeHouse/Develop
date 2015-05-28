@@ -154,6 +154,10 @@
    <string>Register</string>
   </void>
   <void method="put">
+   <string>Remove</string>
+   <string>Fjern</string>
+  </void>
+  <void method="put">
    <string>Reviews</string>
    <string>Anmeldelser</string>
   </void>
