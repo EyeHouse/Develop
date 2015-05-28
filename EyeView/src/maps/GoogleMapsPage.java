@@ -23,6 +23,7 @@ public class GoogleMapsPage extends presenter.Window {
 	MyBrowser myBrowser;
 
 	GridPane grid = new GridPane();
+	private static Label topTitle = new Label();
 
 	public GoogleMapsPage() {
 
@@ -31,12 +32,13 @@ public class GoogleMapsPage extends presenter.Window {
 		setupGrid();
 		setupButtons();
 		setupTitle();
+		UpdateLanguage();
 		Pane pane = new Pane();
 
 		pane.getChildren().add(myBrowser);
 
 		pane.resize(600, 600);
-		pane.relocate(200, 100);
+		pane.relocate(200, 120);
 
 		root.getChildren().add(pane);
 	}
@@ -50,12 +52,16 @@ public class GoogleMapsPage extends presenter.Window {
 
 	public void setupTitle() {
 
-		Label topTitle = new Label(Translate.translateText(languageIndex,"Property Map"));
+		Label topTitle = new Label(Translate.translateText(languageIndex,"Map and Route"));
 		topTitle.setTextFill(Color.web("#162252FF"));
-		topTitle.setFont(new Font(28));
-		topTitle.relocate(450, 60);
+		topTitle.setFont(new Font(32));
+		topTitle.relocate(440, 80);
 		root.getChildren().add(topTitle);
 	}	
+	
+	public void UpdateLanguage() {
+		topTitle.setText(Translate.translateText(languageIndex, "Map and Route"));
+	}
 
 	public void setupButtons() {
 
