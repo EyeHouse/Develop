@@ -67,7 +67,7 @@ public class Login extends presenter.Window {
 		setWhiteBox(xBox,yBox);
 		Image icon = new Image("file:./resources/icons/xxhdpi.png");
 		ImageView iconView = new ImageView(icon);
-		iconView.relocate(200, 250);
+		iconView.relocate(250, 260);
 		root.getChildren().add(iconView);
 	}
 	
