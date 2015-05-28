@@ -93,7 +93,7 @@ public class HouseOverview extends Window {
 		VBox propertyInfo = new VBox(20);
 
 		Pane galleryPane = new Pane();
-		galleryPane.setPrefSize(750, 550);
+		galleryPane.setPrefSize(750, 520);
 		galleryPane.getChildren().clear();
 
 		gallery = new ImageGallery(galleries.get(pageIndex), 20, 80);
@@ -210,8 +210,8 @@ public class HouseOverview extends Window {
 
 		playpauseButton = new ImageView(pause);
 		playpauseButton.setPreserveRatio(true);
-		playpauseButton.setFitWidth(32);
-		playpauseButton.relocate(800, 680);
+		playpauseButton.setFitWidth(30);
+		playpauseButton.relocate(554, 670);
 		playpauseButton.setCursor(Cursor.HAND);
 		playpauseButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent ae) {
