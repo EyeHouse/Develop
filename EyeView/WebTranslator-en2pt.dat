@@ -154,6 +154,10 @@
    <string>Registro</string>
   </void>
   <void method="put">
+   <string>Remove</string>
+   <string>Retire</string>
+  </void>
+  <void method="put">
    <string>Reviews</string>
    <string>Revisões</string>
   </void>

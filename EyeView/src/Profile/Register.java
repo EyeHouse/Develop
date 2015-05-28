@@ -62,8 +62,8 @@ public class Register extends presenter.Window {
 	public Register() {
 
 		bwc = new BadWordCheck();
-		Login.setBackground();
-		Login.setWhiteBox(410, 530);
+		Login.setBackground(true);
+		Login.setWhiteBox(410, 530,true);
 		setupGrid();
 		setupTitle();
 		setupTextFields(registerGrid);

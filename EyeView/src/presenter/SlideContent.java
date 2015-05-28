@@ -1,9 +1,9 @@
 package presenter;
 
-import houseAdverts.HouseOverview;
-import houseAdverts.HouseReviews;
-import houseAdverts.MoreInfo;
-import houseAdverts.VideoPage;
+import houses.HouseOverview;
+import houses.HouseReviews;
+import houses.MoreInfo;
+import houses.VideoPage;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,6 +30,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.RectangleBuilder;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
@@ -56,9 +58,9 @@ public class SlideContent extends Window {
 	public static ComboBox<ImageView> languageComboBox = new ComboBox<ImageView>();
 	public static HouseOverview houseAdverts;
 	public static Label labelLogin, labelRegister, labelLogOut, labelProfile,
-			labelSavedProperties, labelLandlordProperties, labelBedSearch,
-			labelBedMin, labelBedMax, labelPriceSearch, labelPriceMin,
-			labelPriceMax, labelDistanceSearch;
+			labelSavedProperties, labelLandlordProperties, labelFilter,
+			labelBedSearch, labelBedMin, labelBedMax, labelPriceSearch,
+			labelPriceMin, labelPriceMax, labelDistanceSearch;
 	public static Button videoButton, mapButton, infoButton, reviewsButton,
 			buttonBack;
 	public final ComboBox<Integer> minBeds = new ComboBox<Integer>();
@@ -338,7 +340,7 @@ public class SlideContent extends Window {
 			sidebar.getChildren().addAll(labelLogOut);
 
 			if (slideID == HOUSES || slideID == HOUSE || slideID == RESULTS)
-				sidebar.getChildren().add(createSearchBar());
+				createSearchBar();
 		} else {
 			labelLogin = new Label(Translate.translateText(languageIndex,
 					"Login"));
@@ -380,7 +382,7 @@ public class SlideContent extends Window {
 
 	public void createMenuBar() {
 		HBox buttonRow = new HBox(5);
-		ButtonType button1 = new ButtonType(null, null, "Video Tour", 140, 60);
+		ButtonType button1 = new ButtonType(null, null, "Video Tour", 140, 50);
 		videoButton = new SetupButton().CreateButton(button1);
 		videoButton.setFocusTraversable(false);
 		videoButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -389,7 +391,7 @@ public class SlideContent extends Window {
 			}
 		});
 
-		ButtonType button2 = new ButtonType(null, null, "Map", 140, 60);
+		ButtonType button2 = new ButtonType(null, null, "Map", 140, 50);
 		mapButton = new SetupButton().CreateButton(button2);
 		mapButton.setFocusTraversable(false);
 		mapButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -401,7 +403,7 @@ public class SlideContent extends Window {
 			}
 		});
 
-		ButtonType button3 = new ButtonType(null, null, "Information", 140, 60);
+		ButtonType button3 = new ButtonType(null, null, "Information", 140, 50);
 		infoButton = new SetupButton().CreateButton(button3);
 		infoButton.setFocusTraversable(false);
 		infoButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -414,7 +416,7 @@ public class SlideContent extends Window {
 			}
 		});
 
-		ButtonType button4 = new ButtonType(null, null, "Reviews", 140, 60);
+		ButtonType button4 = new ButtonType(null, null, "Reviews", 140, 50);
 		reviewsButton = new SetupButton().CreateButton(button4);
 		reviewsButton.setFocusTraversable(false);
 		reviewsButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -441,9 +443,9 @@ public class SlideContent extends Window {
 
 		setupTranslate();
 		buttonRow.relocate(280, 0);
-		buttonRow.getChildren()
-				.addAll(videoButton, mapButton, infoButton, reviewsButton,
-						new Label(" "), languageComboBox, new Label(" "));
+		buttonRow.getChildren().addAll(videoButton, mapButton, infoButton,
+				reviewsButton, new Label(" "), languageComboBox,
+				new Label("              "));
 		buttonRow.setId("menubar");
 		buttonRow.getStylesheets().add(
 				new File("resources/menubarStyle.css").toURI().toString());
@@ -513,7 +515,7 @@ public class SlideContent extends Window {
 					.getSelectedIndex();
 
 			if (slideID == INDEX || slideID == HOUSES) {
-				houseAdverts.UpdateLanguage();
+				houseAdverts.updateLanguage();
 
 				videoButton.setText(Translate.translateText(languageIndex,
 						"Video Tour"));
@@ -523,8 +525,27 @@ public class SlideContent extends Window {
 						"Information"));
 				reviewsButton.setText(Translate.translateText(languageIndex,
 						"Reviews"));
+			}
+
+			if (slideID == LOGIN || slideID == REGISTER || slideID == INDEX) {
+				labelLogin.setText(Translate.translateText(languageIndex,
+						"Login"));
+				labelRegister.setText(Translate.translateText(languageIndex,
+						"Register"));
+			}
+
+			if (slideID != INDEX && slideID != LOGIN && slideID != REGISTER) {
+
+				labelProfile.setText(Translate.translateText(languageIndex,
+						"Price    "));
+				labelSavedProperties.setText(Translate.translateText(
+						languageIndex, "Saved Properties"));
+				labelLogOut.setText(Translate.translateText(languageIndex,
+						"Log Out"));
+			}
+			if (slideID == HOUSES && slideID == HOUSE && slideID == RESULTS) {
 				labelBedSearch.setText(Translate.translateText(languageIndex,
-						"Bedrooms: "));
+						"Bedrooms  "));
 				labelBedMin.setText(Translate.translateText(languageIndex,
 						"Min"));
 				labelBedMax.setText(Translate.translateText(languageIndex,
@@ -538,24 +559,7 @@ public class SlideContent extends Window {
 						"Max") + " (£)");
 
 				labelDistanceSearch.setText(Translate.translateText(
-						languageIndex, "Distance to University") + ": (km)");
-			}
-
-			if (slideID == LOGIN || slideID == REGISTER || slideID == INDEX) {
-				labelLogin.setText(Translate.translateText(languageIndex,
-						"Login"));
-				labelRegister.setText(Translate.translateText(languageIndex,
-						"Register"));
-			}
-
-			if (slideID != INDEX && slideID != LOGIN && slideID != REGISTER) {
-
-				labelProfile.setText(Translate.translateText(languageIndex,
-						"Profile"));
-				labelSavedProperties.setText(Translate.translateText(
-						languageIndex, "Saved Properties"));
-				labelLogOut.setText(Translate.translateText(languageIndex,
-						"Log Out"));
+						languageIndex, "Distance to University") + " (km):");
 			}
 		}
 	}
@@ -602,33 +606,48 @@ public class SlideContent extends Window {
 		warningStage.show();
 	}
 
-	public GridPane createSearchBar() {
+	public void createSearchBar() {
 
 		GridPane searchFields = new GridPane();
-		searchFields.setVgap(10);
+		searchFields.setVgap(5);
 		searchFields.setHgap(5);
-		VBox minBedsColumn = new VBox(10);
-		VBox maxBedsColumn = new VBox(10);
-		VBox minPriceColumn = new VBox(10);
-		VBox maxPriceColumn = new VBox(10);
-		HBox beds = new HBox(10);
-		HBox prices = new HBox(10);
+		VBox minBedsColumn = new VBox(5);
+		VBox maxBedsColumn = new VBox(5);
+		VBox minPriceColumn = new VBox(5);
+		VBox maxPriceColumn = new VBox(5);
+
+		labelFilter = new Label(Translate.translateText(languageIndex,
+				"Filter by: "));
+		labelFilter.setFont(new Font(16));
 
 		labelBedSearch = new Label(Translate.translateText(languageIndex,
-				"Bedrooms: "));
+				"Bedrooms  "));
+		labelBedSearch.setFont(Font.font(null, FontWeight.BOLD, 12));
 		labelBedMin = new Label(Translate.translateText(languageIndex, "Min"));
 		labelBedMax = new Label(Translate.translateText(languageIndex, "Max"));
 
 		labelPriceSearch = new Label(Translate.translateText(languageIndex,
-				"Price: "));
+				"Price    "));
+		labelPriceSearch.setFont(Font.font(null, FontWeight.BOLD, 12));
 		labelPriceMin = new Label(Translate.translateText(languageIndex, "Min")
 				+ " (£)");
 		labelPriceMax = new Label(Translate.translateText(languageIndex, "Max")
 				+ " (£)");
 
 		labelDistanceSearch = new Label(Translate.translateText(languageIndex,
-				"Distance to University") + ": (km)");
+				"Distance to University") + " (km)");
 
+		labelDistanceSearch.setFont(Font.font(null, FontWeight.BOLD, 12));
+		labelDistanceSearch.setMaxWidth(110);
+		labelDistanceSearch.setWrapText(true);
+
+		// Button setup
+		ButtonType button1 = new ButtonType("166,208,255", null,
+				Translate.translateText(languageIndex, "Search"), 75, 25);
+		Button goButton = new SetupButton().CreateButton(button1);
+		goButton.setOnAction(new searchHandler());
+
+		// Combobox for
 		minBeds.getItems().addAll(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 		maxBeds.getItems().addAll(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 		minBeds.getSelectionModel().select(0);
@@ -660,7 +679,6 @@ public class SlideContent extends Window {
 				}
 			}
 		});
-
 		minPrice.valueProperty().addListener(new ChangeListener<Integer>() {
 			@Override
 			public void changed(ObservableValue<? extends Integer> arg0,
@@ -683,27 +701,38 @@ public class SlideContent extends Window {
 		maxBedsColumn.getChildren().addAll(labelBedMax, maxBeds);
 		minBedsColumn.getChildren().addAll(labelBedMin, minBeds);
 
-		beds.getChildren().addAll(minBedsColumn, maxBedsColumn);
-
 		maxPriceColumn.getChildren().addAll(labelPriceMax, maxPrice);
 		minPriceColumn.getChildren().addAll(labelPriceMin, minPrice);
 
-		prices.getChildren().addAll(minPriceColumn, maxPriceColumn);
+		Rectangle centreBox = RectangleBuilder.create().arcWidth(30)
+				// Curved edges
+				.arcHeight(30).x(15).y(420).fill(Color.TRANSPARENT)
+				.strokeWidth(1).stroke(Color.rgb(33, 51, 76)).build();
+		centreBox.setWidth(155);
+		centreBox.setHeight(285);
 
-		ButtonType button1 = new ButtonType("166,208,255", null,
-				Translate.translateText(languageIndex, "Search"), 100, 30);
-		Button searchButton = new SetupButton().CreateButton(button1);
-		searchButton.setOnAction(new searchHandler());
-		searchFields.addRow(0, labelBedSearch);
-		searchFields.addRow(1, beds);
-		searchFields.addRow(2, labelPriceSearch);
-		searchFields.addRow(3, prices);
-		searchFields.addRow(4, labelDistanceSearch);
-		searchFields.addRow(5, distance);
-		searchFields.addRow(6, searchButton);
-		GridPane.setConstraints(labelDistanceSearch, 0, 4, 2, 1, HPos.LEFT,
+		// Include content on each row and column
+		searchFields.addRow(0, labelFilter);
+		searchFields.addRow(2, labelBedSearch);
+		GridPane.setConstraints(labelBedSearch, 0, 2, 2, 1, HPos.CENTER,
 				VPos.CENTER);
-		return searchFields;
+		searchFields.add(minBedsColumn, 0, 3);
+		searchFields.add(maxBedsColumn, 1, 3);
+		searchFields.addRow(5, labelPriceSearch);
+		GridPane.setConstraints(labelPriceSearch, 0, 5, 2, 1, HPos.CENTER,
+				VPos.CENTER);
+		searchFields.add(minPriceColumn, 0, 6);
+		searchFields.add(maxPriceColumn, 1, 6);
+		searchFields.addRow(8, labelDistanceSearch);
+		GridPane.setConstraints(labelDistanceSearch, 0, 8, 2, 1, HPos.CENTER,
+				VPos.CENTER);
+		searchFields.addRow(9, distance);
+		GridPane.setConstraints(distance, 0, 9, 2, 1, HPos.CENTER, VPos.TOP);
+		searchFields.addRow(12, goButton);
+		GridPane.setConstraints(goButton, 0, 12, 2, 1, HPos.CENTER, VPos.BOTTOM);
+
+		searchFields.relocate(30, 390);
+		root.getChildren().addAll(searchFields, centreBox);
 	}
 
 	public class searchHandler implements EventHandler<ActionEvent> {

@@ -154,6 +154,10 @@
    <string>µn°O</string>
   </void>
   <void method="put">
+   <string>Remove</string>
+   <string>²¾¶}</string>
+  </void>
+  <void method="put">
    <string>Reviews</string>
    <string>¼f®Ö</string>
   </void>
