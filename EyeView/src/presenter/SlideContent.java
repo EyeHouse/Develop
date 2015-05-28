@@ -706,16 +706,12 @@ public class SlideContent extends Window {
 		maxPriceColumn.getChildren().addAll(labelPriceMax, maxPrice);
 		minPriceColumn.getChildren().addAll(labelPriceMin, minPrice);
 
-		Line line = LineBuilder.create().startX(30).startY(380).endX(165)
-				.endY(380).build();
-
 		Rectangle centreBox = RectangleBuilder.create().arcWidth(30)
 				// Curved edges
 				.arcHeight(30).x(15).y(420).fill(Color.TRANSPARENT)
 				.strokeWidth(1).stroke(Color.rgb(33, 51, 76)).build();
 		centreBox.setWidth(155);
 		centreBox.setHeight(285);
-		root.getChildren().addAll(centreBox,line);
 
 		// Include content on each row and column
 		searchFields.addRow(0, labelFilter);
@@ -738,7 +734,7 @@ public class SlideContent extends Window {
 		GridPane.setConstraints(goButton, 0, 12, 2, 1, HPos.CENTER, VPos.BOTTOM);
 
 		searchFields.relocate(30, 390);
-		root.getChildren().add(searchFields);
+		root.getChildren().addAll(searchFields, centreBox);
 	}
 
 	public class searchHandler implements EventHandler<ActionEvent> {
