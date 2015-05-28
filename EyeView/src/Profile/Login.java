@@ -63,8 +63,8 @@ public class Login extends presenter.Window {
 	 * This method creates the background of the login page
 	 */
 	public void setLayout() {
-		setBackground();
-		setWhiteBox(xBox,yBox);
+		setBackground(true);
+		setWhiteBox(xBox,yBox,true);
 		Image icon = new Image("file:./resources/icons/xxhdpi.png");
 		ImageView iconView = new ImageView(icon);
 		iconView.relocate(250, 260);
@@ -77,17 +77,33 @@ public class Login extends presenter.Window {
 	 * @param boxWidth desired width of the white box containing the data
 	 * @param boxHeight desired height of the white box containing the data
 	 */
-	public static void setWhiteBox(int boxWidth, int boxHeight){
-		Rectangle centreBox = RectangleBuilder
-				.create()
-				.arcWidth(30)
-				// Curved edges
-				.arcHeight(30)
-				.fill(Color.WHITE)
-				.x(sideBarWidth + ((xResolution - sideBarWidth) / 2)
-						- (boxWidth / 2))
-				.y(((yResolution) / 2) - (boxHeight / 2) - 15).strokeWidth(2)
-				.stroke(Color.rgb(33, 51, 76)).build();
+	public static void setWhiteBox(int boxWidth, int boxHeight, boolean sidebar){
+		
+		Rectangle centreBox;
+		if(sidebar){
+			centreBox = RectangleBuilder
+					.create()
+					.arcWidth(30)
+					// Curved edges
+					.arcHeight(30)
+					.fill(Color.WHITE)
+					.x(sideBarWidth + ((xResolution - sideBarWidth) / 2)
+							- (boxWidth / 2))
+					.y(((yResolution) / 2) - (boxHeight / 2) - 15).strokeWidth(2)
+					.stroke(Color.rgb(33, 51, 76)).build();
+		}else{
+			centreBox = RectangleBuilder
+					.create()
+					.arcWidth(30)
+					// Curved edges
+					.arcHeight(30)
+					.fill(Color.WHITE)
+					.x((xResolution / 2)
+							- (boxWidth / 2))
+					.y(((yResolution) / 2) - (boxHeight / 2) - 15).strokeWidth(2)
+					.stroke(Color.rgb(33, 51, 76)).build();
+		}
+		
 		centreBox.setWidth(boxWidth);
 		centreBox.setHeight(boxHeight);
 		root.getChildren().addAll(centreBox);
@@ -97,21 +113,30 @@ public class Login extends presenter.Window {
 	 * This method creates the two rectangles for the background and gives them the
 	 *  appropriate size
 	 */
-	public static void setBackground() {
+	public static void setBackground(boolean sidebar) {
 
 		// Set top half rectangle
 		Rectangle topRectangle = new Rectangle();
-		topRectangle.setWidth(xResolution - sideBarWidth);
 		topRectangle.setHeight(yResolution);
-		topRectangle.relocate(sideBarWidth, 0); // Width of sidebar
 		topRectangle.setFill(Color.rgb(104, 158, 239, 0.3));
 
 		// Set bottom half rectangle
 		Rectangle bottomRectangle = new Rectangle();
-		bottomRectangle.setWidth(xResolution - sideBarWidth);
 		bottomRectangle.setHeight(yResolution / 2);
-		bottomRectangle.relocate(sideBarWidth, (yResolution / 2) - 15);
 		bottomRectangle.setFill(Color.rgb(91, 138, 209, 0.3));
+		
+		if(sidebar){
+			topRectangle.setWidth(xResolution - sideBarWidth);
+			topRectangle.relocate(sideBarWidth, 0); // Width of sidebar
+			bottomRectangle.setWidth(xResolution - sideBarWidth);
+			bottomRectangle.relocate(sideBarWidth, (yResolution / 2) - 15);
+		}
+		else{
+			topRectangle.setWidth(xResolution);
+			topRectangle.relocate(0, 0); // Width of sidebar
+			bottomRectangle.setWidth(xResolution);
+			bottomRectangle.relocate(0, (yResolution / 2) - 15);
+		}
 
 		root.getChildren().addAll(topRectangle, bottomRectangle);
 	}
