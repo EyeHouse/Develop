@@ -44,6 +44,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Window;
 import language.Translate;
 import database.Database;
+import database.FileManager;
 import database.House;
 import database.HouseImage;
 import database.HouseVideo;
@@ -84,7 +85,6 @@ public class EditProperty extends presenter.Window {
 	private int markersIndex;
 
 	private String videoPath;
-	private HouseVideo currentVideo = null;
 	private VideoElement video;
 	ListView<HBox> markerList = new ListView<HBox>();
 	ObservableList<HBox> items = FXCollections.observableArrayList();
@@ -432,6 +432,17 @@ public class EditProperty extends presenter.Window {
 	 * Setup text field and browse button to select video file to upload
 	 */
 	private void setupHouseVideo() {
+
+		if (hid != 0) {
+			HouseVideo video = Database.checkHouseVideo(owner, hid);
+
+			if (video != null) {
+
+				File file = FileManager.readVideo(Database.getUser(currentUsername),video);
+				videoPath = file.getAbsolutePath();
+			}
+		}
+
 		// Create HBox to contain file browser
 		HBox fileHBox = new HBox(10);
 		// fileHBox.setAlignment(VPos.CENTER);
@@ -497,11 +508,6 @@ public class EditProperty extends presenter.Window {
 
 		StackPane videoPane = new StackPane();
 
-		House house = Database.getHouse(currentPropertyID);
-		currentVideo = Database.getVideoInfo(owner, house, videoPath);
-
-		System.out.println("Current Video id : " + currentVideo.vid);
-
 		video = new VideoElement(newVideoFileString);
 		video.setStylesheet("resources/videoStyle.css");
 		video.setWidth(500);
@@ -513,7 +519,7 @@ public class EditProperty extends presenter.Window {
 		GridPane.setConstraints(videoPane, 0, 2, 3, 1, HPos.CENTER, VPos.CENTER);
 
 		ButtonType button3 = new ButtonType("166,208,255", null,
-				Translate.translateText(languageIndex, "Remove Video"), 70, 30);
+				Translate.translateText(languageIndex, "Remove Video"), 90, 30);
 		Button videoRemove = new SetupButton().CreateButton(button3);
 		videoRemove.setOnAction(new RemoveVideo());
 		grid.add(videoRemove, 0, 2);
@@ -678,6 +684,13 @@ public class EditProperty extends presenter.Window {
 										house, owner);
 							} catch (SQLException e) {
 								System.out.println("Failed to add image");
+							}
+							if (videoPath != null) {
+								// insert the video if a video was selected
+								Database.insertHouseVideo(owner, house,
+										videoFile.getName(), videoFile
+												.getParentFile()
+												.getAbsolutePath());
 							}
 						}
 
@@ -882,9 +895,6 @@ public class EditProperty extends presenter.Window {
 					break;
 				case VIDEO:
 					videoPath = filePath;
-					Database.insertHouseVideo(owner, house,
-							videoFile.getName(), videoFile.getParentFile()
-									.getAbsolutePath());
 					SetupVideoPlayer(videoPath);
 					SetupRoomMarkers();
 					break;
@@ -898,6 +908,11 @@ public class EditProperty extends presenter.Window {
 					check = Database.insertHouseImage(filePath, house, owner);
 				} else if (page == VIDEO) {
 					videoPath = filePath;
+					// insert new video
+					Database.insertHouseVideo(owner, house,
+							videoFile.getName(), videoFile.getParentFile()
+									.getAbsolutePath());
+
 					SetupVideoPlayer(videoPath);
 					SetupRoomMarkers();
 				}
@@ -916,6 +931,7 @@ public class EditProperty extends presenter.Window {
 
 		public void handle(ActionEvent arg0) {
 
+			HouseVideo currentVideo = Database.checkHouseVideo(owner, currentPropertyID);
 			Database.deleteVideo(owner, currentVideo);
 
 			videoPath = null;

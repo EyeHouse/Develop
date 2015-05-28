@@ -6,8 +6,8 @@ import java.sql.SQLException;
 public class HouseVideo {
 
 	public int vid;
-	int hid;
-	String videoLocation;
+	public int hid;
+	public String videoLocation;
 
 	private final static int VID = 1;
 	private final static int HID = 2;

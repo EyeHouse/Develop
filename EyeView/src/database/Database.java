@@ -217,45 +217,6 @@ public class Database {
 		return false;
 	}
 
-	/**
-	 * 
-	 * @param userDetails
-	 * @param videoDetails
-	 * @return true if exists
-	 * @return false if does not exist
-	 */
-	public static boolean checkHouseVideoExists(User userDetails,
-			HouseVideo videoDetails) {
-		int id = getID(userDetails, null, 1);
-		ResultSet title;
-		String videoStr;
-		try {
-			PreparedStatement checkTitle = con
-					.prepareStatement("SELECT video_loc FROM house_videos WHERE vid=?");
-			checkTitle.setInt(1, id);
-			title = checkTitle.executeQuery();
-			while (title.next()) {
-				videoStr = title.getString("video_loc");
-				if (!videoDetails.videoLocation.equals(videoStr)) {
-					System.out.println("\nVideo doesn't Exist for this user");
-					return false;
-				} else {
-					System.out
-							.println("\nVideo with same title already exists for this user");
-					return true;
-				}
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.out.println("\nSQL error in house check");
-			return false;
-		}
-		System.out
-				.println("\nVideo with same location already exists for this user");
-		return true;
-	}
-
 	public static boolean houseInsert(House houseDetails, String brochurefp,
 			String energyratingfp, User userDetails) throws IOException {
 		int hid = 2;
@@ -784,6 +745,68 @@ public class Database {
 			return null;
 		}
 		return list;
+	}
+
+	/**
+	 * 
+	 * @param userDetails
+	 * @param videoDetails
+	 * @return true if exists
+	 * @return false if does not exist
+	 */
+	public static boolean checkHouseVideoExists(User userDetails,
+			HouseVideo videoDetails) {
+		int id = getID(userDetails, null, 1);
+		ResultSet title;
+		String videoStr;
+		try {
+			PreparedStatement checkTitle = con
+					.prepareStatement("SELECT video_loc FROM house_videos WHERE vid=?");
+			checkTitle.setInt(1, id);
+			title = checkTitle.executeQuery();
+			while (title.next()) {
+				videoStr = title.getString("video_loc");
+				if (!videoDetails.videoLocation.equals(videoStr)) {
+					System.out.println("\nVideo doesn't Exist for this user");
+					return false;
+				} else {
+					System.out
+							.println("\nVideo with same title already exists for this user");
+					return true;
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("\nSQL error in house check");
+			return false;
+		}
+		System.out
+				.println("\nVideo with same location already exists for this user");
+		return true;
+	}
+
+	public static HouseVideo checkHouseVideo(User userDetails, int hid) {
+
+		ResultSet videoExists = null;
+		HouseVideo video = null;
+
+		try {
+			PreparedStatement checkTitle = con
+					.prepareStatement("SELECT * FROM house_videos WHERE hid=?");
+
+			checkTitle.setInt(1, hid);
+
+			videoExists = checkTitle.executeQuery();
+
+			if (videoExists.next()) {
+				video = new HouseVideo(videoExists);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return video;
 	}
 
 	/**
@@ -1687,7 +1710,7 @@ public class Database {
 
 		String title = "Example";
 
-		int mode = 2;
+		int mode = 101;
 		boolean insertSuccess;
 		boolean houseDeleted;
 		boolean updateSuccess;
@@ -1697,6 +1720,17 @@ public class Database {
 
 		// testing switch
 		switch (mode) {
+
+		case 101:
+			
+			// logged in user
+			User tempu89 = getUser("MVPTom");
+			
+			HouseVideo video = checkHouseVideo(tempu89, 9);
+			System.out.println("\nVideo exists" + video.videoLocation);
+			
+			
+			break;
 		case 11:
 			// insert the houses basic info
 			House eyehouseHQ = null;
