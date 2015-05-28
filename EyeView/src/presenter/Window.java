@@ -1,8 +1,10 @@
 package presenter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import database.Database;
+import database.House;
 
 import parser.XMLParser;
 import parser.SlideshowData;
@@ -44,6 +46,7 @@ public class Window extends Application {
 	public static final int MAP = 12;
 	public static final int LANDLORDPROPERTIES = 13;
 	public static final int EDITPROPERTY = 14;
+	public static final int RESULTS = 15;
 	
 
 	public static SlideshowData slideshow;
@@ -58,6 +61,7 @@ public class Window extends Application {
 	public static int currentPropertyID = 0;
 	public static boolean firstLogin = false;
 	public static int languageIndex = 0;
+	public static ArrayList<House> searchResults = new ArrayList<House>();
 	
 
 	public static Stage dialogStage;
