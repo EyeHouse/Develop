@@ -1,4 +1,4 @@
-package maps;
+package houses;
 
 import java.io.*;
 import java.net.*;
@@ -17,8 +17,9 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import language.Translate;
 import presenter.SlideContent;
+import presenter.Window;
 
-public class GoogleMapsPage extends presenter.Window {
+public class GoogleMapsPage extends Window {
 
 	MyBrowser myBrowser;
 

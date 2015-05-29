@@ -21,10 +21,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import language.Translate;
 import presenter.SlideContent;
+import presenter.Window;
 import Button.ButtonType;
 import Button.SetupButton;
 
-public class HouseReviews extends presenter.Window {
+public class HouseReviews extends Window {
 
 	private static Label pageTitle = new Label("");
 	private static Label ratingLabel = new Label("Rating:    ");
