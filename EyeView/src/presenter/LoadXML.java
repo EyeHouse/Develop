@@ -21,8 +21,9 @@ import parser.TextData;
 import parser.VideoData;
 
 public class LoadXML extends Window {
-	
+
 	public LoadXML() throws IOException {
+		
 		loadXMLBackGround();
 		loadXMLText();
 		loadXMLGraphics();
@@ -30,9 +31,10 @@ public class LoadXML extends Window {
 		loadXMLVideos();
 		loadXMLAudio();
 	}
-	
+
 	/**
-	 * loads the text for the slide onto the screen. Refers to defaults if settings have not been set.
+	 * Loads the text for the slide onto the screen. Refers to defaults if
+	 * settings have not been set.
 	 */
 	public void loadXMLText() throws IOException {
 
@@ -67,21 +69,21 @@ public class LoadXML extends Window {
 			root.getChildren().add(textPane);
 		}
 	}
-	
+
 	/**
-	 * loads the background colour from the XML.
+	 * Loads the background colour from the XML.
 	 */
 	public void loadXMLBackGround() {
+		
 		GraphicHandler gh = new GraphicHandler();
-		//slideshow.getDefaults().getBackgroundColor();
-		System.out.println(slideshow.getDefaults().getBackgroundColor());
-		//System.out.println(slideshow.getDefaults().getFont()+"dasdasdsadasd");
-		GraphicElement graphic = new GraphicElement("rectangle", 0, 0, (float)xResolution, (float)yResolution, 0, true, slideshow.getDefaults().getBackgroundColor(), null);
+		GraphicElement graphic = new GraphicElement("rectangle", 0, 0,
+				(float) xResolution, (float) yResolution, 0, true, slideshow
+						.getDefaults().getBackgroundColor(), null);
 		gh.addShapeToCanvas(graphic);
 	}
 
 	/**
-	 * loads all the shapes and other graphics data from the XML.
+	 * Loads all the shapes and other graphics data from the XML.
 	 */
 	public void loadXMLGraphics() {
 
@@ -100,7 +102,7 @@ public class LoadXML extends Window {
 	}
 
 	/**
-	 * loads all the images data from the XML.
+	 * Loads all the images data from the XML.
 	 */
 	public void loadXMLImages() {
 
@@ -117,7 +119,7 @@ public class LoadXML extends Window {
 	}
 
 	/**
-	 * loads all the videos data from the XML.
+	 * Loads all the videos data from the XML.
 	 */
 	public void loadXMLVideos() {
 
@@ -127,7 +129,8 @@ public class LoadXML extends Window {
 			StackPane videoPane = new StackPane();
 			videoPane.relocate(0, 0);
 			videoPane.resize(xResolution, yResolution);
-			VideoElement video = new VideoElement(currentVideo.getSource(), false);
+			VideoElement video = new VideoElement(currentVideo.getSource(),
+					false);
 			video.setWidth(500);
 			video.setAutoplay(true);
 			video.setXpos(currentVideo.getXstart());
@@ -139,7 +142,7 @@ public class LoadXML extends Window {
 	}
 
 	/**
-	 * loads all the audio data from the XML.
+	 * Loads all the audio data from the XML.
 	 */
 	public void loadXMLAudio() {
 

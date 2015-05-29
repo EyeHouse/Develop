@@ -16,10 +16,9 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
+import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Cursor;
-import javafx.scene.Group;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -34,6 +33,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.RectangleBuilder;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 import landlord.EditProperty;
@@ -80,9 +80,11 @@ public class SlideContent extends Window {
 
 		// Checks if the XML belongs to group 5 (EyeHouse)
 		if (groupID.matches("5")) {
+
 			// Cancel Advert timer if it is running
 			if (advertTimer != null)
 				advertTimer.stop();
+
 			// Loads objects not within the XML for a given slide
 			switch (slideID) {
 			case STARTPAGE:
@@ -253,7 +255,9 @@ public class SlideContent extends Window {
 	}
 
 	public void createSidebar() {
-		VBox sidebar = new VBox(20);
+
+		VBox sidebar = new VBox(18);
+
 		if (currentUsername != null) {
 
 			User currentUser = Database.getUser(currentUsername);
@@ -275,11 +279,17 @@ public class SlideContent extends Window {
 			Label labelName = new Label(currentUser.first_name);
 			labelName.setWrapText(true);
 			labelName.setFont(Font.font(null, FontWeight.BOLD, 20));
+			labelName.setMinHeight(40);
+			labelName.setAlignment(Pos.TOP_CENTER);
 			labelName.setTextFill(Color.web("#162252FF"));
 
 			labelProfile = new Label(Translate.translateText(languageIndex,
 					"Profile"));
 			labelProfile.setFont(new Font(16));
+			labelProfile.setMaxWidth(140);
+			labelProfile.setAlignment(Pos.CENTER);
+			labelProfile.setTextAlignment(TextAlignment.CENTER);
+			labelProfile.setWrapText(true);
 			labelProfile.setOnMouseClicked(new EventHandler<MouseEvent>() {
 				public void handle(MouseEvent arg0) {
 					viewedUsername = currentUsername;
@@ -290,7 +300,9 @@ public class SlideContent extends Window {
 			labelSavedProperties = new Label(Translate.translateText(
 					languageIndex, "Saved Properties"));
 			labelSavedProperties.setFont(new Font(16));
-			labelSavedProperties.setMaxWidth(150);
+			labelSavedProperties.setMaxWidth(140);
+			labelSavedProperties.setAlignment(Pos.CENTER);
+			labelSavedProperties.setTextAlignment(TextAlignment.CENTER);
 			labelSavedProperties.setWrapText(true);
 			labelSavedProperties
 					.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -302,6 +314,10 @@ public class SlideContent extends Window {
 			labelLandlordProperties = new Label(Translate.translateText(
 					languageIndex, "My Properties"));
 			labelLandlordProperties.setFont(new Font(16));
+			labelLandlordProperties.setMaxWidth(140);
+			labelLandlordProperties.setAlignment(Pos.CENTER);
+			labelLandlordProperties.setTextAlignment(TextAlignment.CENTER);
+			labelLandlordProperties.setWrapText(true);
 			labelLandlordProperties
 					.setOnMouseClicked(new EventHandler<MouseEvent>() {
 						public void handle(MouseEvent arg0) {
@@ -311,6 +327,10 @@ public class SlideContent extends Window {
 			labelLogOut = new Label(Translate.translateText(languageIndex,
 					"Log Out"));
 			labelLogOut.setFont(new Font(16));
+			labelLogOut.setMaxWidth(140);
+			labelLogOut.setAlignment(Pos.CENTER);
+			labelLogOut.setTextAlignment(TextAlignment.CENTER);
+			labelLogOut.setWrapText(true);
 			labelLogOut.setOnMouseClicked(new EventHandler<MouseEvent>() {
 				public void handle(MouseEvent arg0) {
 					currentUsername = null;
@@ -375,13 +395,17 @@ public class SlideContent extends Window {
 			sidebar.getChildren().addAll(labelLogin, labelRegister);
 		}
 
-		sidebar.relocate(30, 30);
+		sidebar.relocate(15, 30);
+		sidebar.setMinWidth(150);
+		sidebar.setAlignment(Pos.CENTER);
 
 		root.getChildren().add(sidebar);
 	}
 
 	public void createMenuBar() {
+
 		HBox buttonRow = new HBox(5);
+
 		ButtonType button1 = new ButtonType(null, null, "Video Tour", 140, 50);
 		videoButton = new SetupButton().CreateButton(button1);
 		videoButton.setFocusTraversable(false);
@@ -395,10 +419,7 @@ public class SlideContent extends Window {
 		mapButton = new SetupButton().CreateButton(button2);
 		mapButton.setFocusTraversable(false);
 		mapButton.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent ae) { /*
-												 * root.getChildren().clear();
-												 * slideID = MAP; createSlide();
-												 */
+			public void handle(ActionEvent ae) {
 				loadSlide(MAP);
 			}
 		});
@@ -407,11 +428,7 @@ public class SlideContent extends Window {
 		infoButton = new SetupButton().CreateButton(button3);
 		infoButton.setFocusTraversable(false);
 		infoButton.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent ae) { /*
-												 * root.getChildren().clear();
-												 * slideID = MOREINFO;
-												 * createSlide();
-												 */
+			public void handle(ActionEvent ae) {
 				loadSlide(MOREINFO);
 			}
 		});
@@ -420,19 +437,16 @@ public class SlideContent extends Window {
 		reviewsButton = new SetupButton().CreateButton(button4);
 		reviewsButton.setFocusTraversable(false);
 		reviewsButton.setOnAction(new EventHandler<ActionEvent>() {
-			public void handle(ActionEvent ae) { /*
-												 * root.getChildren().clear();
-												 * slideID = REVIEWS;
-												 * createSlide();
-												 */
+			public void handle(ActionEvent ae) {
 				loadSlide(REVIEWS);
 			}
 		});
 
 		if (slideID == INDEX) {
+			createWarningPopup("Please login for full features.");
 			buttonRow.setOnMouseClicked(new EventHandler<MouseEvent>() {
 				public void handle(MouseEvent t) {
-					createLoginWarning();
+					dialogStage.show();
 				}
 			});
 			videoButton.setDisable(true);
@@ -444,8 +458,8 @@ public class SlideContent extends Window {
 		setupTranslate();
 		buttonRow.relocate(280, 0);
 		buttonRow.getChildren().addAll(videoButton, mapButton, infoButton,
-				reviewsButton, new Label(" "), languageComboBox,
-				new Label("              "));
+				reviewsButton, new Label("    "), languageComboBox,
+				new Label("        "));
 		buttonRow.setId("menubar");
 		buttonRow.getStylesheets().add(
 				new File("resources/menubarStyle.css").toURI().toString());
@@ -502,8 +516,11 @@ public class SlideContent extends Window {
 	}
 
 	public void setupTranslate() {
+
 		Translate.translateBox();
 		languageComboBox.valueProperty().addListener(new LanguageChange());
+		languageComboBox.getStylesheets().add(
+				new File("resources/languageStyle.css").toURI().toString());
 	}
 
 	public class LanguageChange implements ChangeListener<ImageView> {
@@ -537,15 +554,17 @@ public class SlideContent extends Window {
 			if (slideID != INDEX && slideID != LOGIN && slideID != REGISTER) {
 
 				labelProfile.setText(Translate.translateText(languageIndex,
-						"Price    "));
+						"Profile"));
 				labelSavedProperties.setText(Translate.translateText(
 						languageIndex, "Saved Properties"));
+				labelLandlordProperties.setText(Translate.translateText(
+						languageIndex, "My Properties"));
 				labelLogOut.setText(Translate.translateText(languageIndex,
 						"Log Out"));
 			}
-			if (slideID == HOUSES && slideID == HOUSE && slideID == RESULTS) {
+			if (slideID == HOUSES || slideID == HOUSE || slideID == RESULTS) {
 				labelBedSearch.setText(Translate.translateText(languageIndex,
-						"Bedrooms  "));
+						"Bedrooms"));
 				labelBedMin.setText(Translate.translateText(languageIndex,
 						"Min"));
 				labelBedMax.setText(Translate.translateText(languageIndex,
@@ -559,7 +578,7 @@ public class SlideContent extends Window {
 						"Max") + " (£)");
 
 				labelDistanceSearch.setText(Translate.translateText(
-						languageIndex, "Distance to University") + " (km):");
+						languageIndex, "Distance to University") + " (km)");
 			}
 		}
 	}
@@ -581,31 +600,6 @@ public class SlideContent extends Window {
 		return houses;
 	}
 
-	public void createLoginWarning() {
-
-		Stage warningStage = new Stage();
-		Group root = new Group();
-		Image icon = new Image("file:./resources/images/warning.png");
-
-		/* Initialises the warning stage */
-		warningStage.setWidth(255);
-		warningStage.setHeight(110);
-		warningStage.setResizable(false);
-		warningStage.getIcons().add(icon);
-		warningStage.setTitle("Warning");
-
-		/* Create warning message */
-		ImageView iconView = new ImageView(icon);
-		iconView.relocate(15, 15);
-		Label warning = new Label("Login for full features.");
-		warning.setFont(Font.font(null, 17));
-		warning.relocate(75, 30);
-		root.getChildren().addAll(iconView, warning);
-
-		warningStage.setScene(new Scene(root));
-		warningStage.show();
-	}
-
 	public void createSearchBar() {
 
 		GridPane searchFields = new GridPane();
@@ -617,17 +611,17 @@ public class SlideContent extends Window {
 		VBox maxPriceColumn = new VBox(5);
 
 		labelFilter = new Label(Translate.translateText(languageIndex,
-				"Filter by: "));
-		labelFilter.setFont(new Font(16));
+				"Filter results") + ":");
+		labelFilter.setFont(new Font(15));
 
 		labelBedSearch = new Label(Translate.translateText(languageIndex,
-				"Bedrooms  "));
+				"Bedrooms"));
 		labelBedSearch.setFont(Font.font(null, FontWeight.BOLD, 12));
 		labelBedMin = new Label(Translate.translateText(languageIndex, "Min"));
 		labelBedMax = new Label(Translate.translateText(languageIndex, "Max"));
 
 		labelPriceSearch = new Label(Translate.translateText(languageIndex,
-				"Price    "));
+				"Price"));
 		labelPriceSearch.setFont(Font.font(null, FontWeight.BOLD, 12));
 		labelPriceMin = new Label(Translate.translateText(languageIndex, "Min")
 				+ " (£)");
