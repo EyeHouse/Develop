@@ -48,6 +48,7 @@ import database.FileManager;
 import database.House;
 import database.HouseImage;
 import database.HouseVideo;
+import database.Marker;
 import database.User;
 
 public class EditProperty extends presenter.Window {
@@ -86,8 +87,10 @@ public class EditProperty extends presenter.Window {
 
 	private String videoPath;
 	private VideoElement video;
+	private HouseVideo videoInfo = null;
 	ListView<HBox> markerList = new ListView<HBox>();
 	ObservableList<HBox> items = FXCollections.observableArrayList();
+	private ArrayList<Marker> videoMarkers;
 
 	private ArrayList<HouseImage> houseImages;
 	private ArrayList<CheckBox> deleteImage = new ArrayList<CheckBox>();
@@ -109,6 +112,7 @@ public class EditProperty extends presenter.Window {
 	}
 
 	public void createEditPage() {
+		setupButtons();
 		setupGrid();
 		setupTabLabels(page);
 		switch (page) {
@@ -122,8 +126,6 @@ public class EditProperty extends presenter.Window {
 			setupHouseVideo();
 			break;
 		}
-		setupButtons();
-
 	}
 
 	private void setupGrid() {
@@ -222,7 +224,7 @@ public class EditProperty extends presenter.Window {
 		buttonFinish.setOnAction(new CreateHouse());
 
 		ButtonType button4 = new ButtonType("166,208,255", null,
-				Translate.translateText(languageIndex, "Cancel"), 110, 30);
+				Translate.translateText(languageIndex, "Save"), 110, 30);
 		Button buttonCancel = new SetupButton().CreateButton(button4);
 		buttonCancel.setCursor(Cursor.HAND);
 		buttonCancel.setOnAction(new Cancel());
@@ -434,11 +436,11 @@ public class EditProperty extends presenter.Window {
 	private void setupHouseVideo() {
 
 		if (hid != 0) {
-			HouseVideo video = Database.checkHouseVideo(owner, hid);
+			videoInfo = Database.checkHouseVideo(owner, hid);
 
-			if (video != null) {
+			if (videoInfo != null) {
 
-				File file = FileManager.readVideo(Database.getUser(currentUsername),video);
+				File file = FileManager.readVideo(Database.getUser(currentUsername),videoInfo);
 				videoPath = file.getAbsolutePath();
 			}
 		}
@@ -508,7 +510,7 @@ public class EditProperty extends presenter.Window {
 
 		StackPane videoPane = new StackPane();
 
-		video = new VideoElement(newVideoFileString);
+		video = new VideoElement(newVideoFileString,true);
 		video.setStylesheet("resources/videoStyle.css");
 		video.setWidth(500);
 		video.setAutoplay(true);
@@ -517,20 +519,35 @@ public class EditProperty extends presenter.Window {
 		// Add video player to GridPane
 		grid.add(videoPane, 0, 2);
 		GridPane.setConstraints(videoPane, 0, 2, 3, 1, HPos.CENTER, VPos.CENTER);
-
-		ButtonType button3 = new ButtonType("166,208,255", null,
-				Translate.translateText(languageIndex, "Remove Video"), 90, 30);
-		Button videoRemove = new SetupButton().CreateButton(button3);
-		videoRemove.setOnAction(new RemoveVideo());
-		grid.add(videoRemove, 0, 2);
-		GridPane.setConstraints(videoRemove, 1, 2, 1, 1, HPos.CENTER,
-				VPos.CENTER);
 	}
 
 	private void SetupRoomMarkers() {
 
+		if (hid != 0){
+			
+			videoMarkers = Database.getVideoMarkers(videoInfo.vid);
+			
+			for (int i = 0; i < videoMarkers.size(); i++){
+				
+				HBox currentMarker = new HBox(0);
+				Marker markers = videoMarkers.get(i);
+				
+				Label currentRoomLabel = new Label(markers.room);
+				currentRoomLabel.setPrefWidth(200);
+				Label currentVideoTimeLabel = new Label(
+						Double.toString(markers.markerTime));
+				currentVideoTimeLabel .setPrefWidth(80);
+				currentMarker.getChildren().addAll(currentRoomLabel, currentVideoTimeLabel);
+
+				currentMarker.setAlignment(Pos.CENTER_LEFT);
+				
+				items.add(currentMarker);
+			}
+			
+		}
+		
 		HBox markerSetup = new HBox(10);
-		markerList.setPrefHeight(220);
+		markerList.setPrefHeight(180);
 		markerList.setMaxWidth(300);
 
 		HBox markerListHeader = new HBox(10);
@@ -547,6 +564,11 @@ public class EditProperty extends presenter.Window {
 		setMarkerButton = new SetupButton().CreateButton(button1);
 		setMarkerButton.setOnAction(new AddMarker());
 		setMarkerButton.setDisable(true);
+		
+		ButtonType button3 = new ButtonType("166,208,255", null,
+				Translate.translateText(languageIndex, "Remove Video"), 120, 30);
+		Button videoRemove = new SetupButton().CreateButton(button3);
+		videoRemove.setOnAction(new RemoveVideo());
 
 		// Listen for TextField text changes
 		newRoomField.textProperty().addListener(new ChangeListener<String>() {
@@ -567,7 +589,7 @@ public class EditProperty extends presenter.Window {
 		ButtonType button2 = new ButtonType("166,208,255", null,
 				Translate.translateText(languageIndex, "Delete"), 100, 30);
 		deleteMarker = new SetupButton().CreateButton(button2);
-		deleteMarker.setOnAction(new deleteMarker());
+		deleteMarker.setOnAction(new DeleteMarker());
 		deleteMarker.setDisable(true);
 
 		markerList.getSelectionModel().selectedIndexProperty()
@@ -580,6 +602,7 @@ public class EditProperty extends presenter.Window {
 								.getSelectedIndex();
 
 						System.out.println(markersIndex);
+						
 						if (markersIndex >= 0) {
 							deleteMarker.setDisable(false);
 						} else {
@@ -598,7 +621,7 @@ public class EditProperty extends presenter.Window {
 
 		// Add marker setup to HBox
 		markerSetup.getChildren().addAll(addNewRoomLabel, newRoomField,
-				setMarkerButton);
+				setMarkerButton,videoRemove);
 		markerSetup.setAlignment(Pos.CENTER);
 		markerListHeader.getChildren()
 				.addAll(roomNamesHeader, videoTimesHeader);
@@ -610,7 +633,7 @@ public class EditProperty extends presenter.Window {
 				VPos.CENTER);
 		grid.add(markerListHeader, 0, 4);
 		GridPane.setConstraints(markerListHeader, 0, 4, 3, 1, HPos.CENTER,
-				VPos.CENTER);
+				VPos.BOTTOM);
 		grid.add(markerList, 0, 5);
 		GridPane.setConstraints(markerList, 0, 5, 3, 1, HPos.CENTER,
 				VPos.CENTER);
@@ -912,7 +935,8 @@ public class EditProperty extends presenter.Window {
 					Database.insertHouseVideo(owner, house,
 							videoFile.getName(), videoFile.getParentFile()
 									.getAbsolutePath());
-
+					videoInfo = Database.getVideoInfo(owner, house, videoFile.getParentFile()
+							.getAbsolutePath());
 					SetupVideoPlayer(videoPath);
 					SetupRoomMarkers();
 				}
@@ -931,8 +955,10 @@ public class EditProperty extends presenter.Window {
 
 		public void handle(ActionEvent arg0) {
 
-			HouseVideo currentVideo = Database.checkHouseVideo(owner, currentPropertyID);
-			Database.deleteVideo(owner, currentVideo);
+			if(hid != 0){
+				HouseVideo currentVideo = Database.checkHouseVideo(owner, currentPropertyID);
+				Database.deleteVideo(owner, currentVideo);
+			}
 
 			videoPath = null;
 			video = null;
@@ -991,7 +1017,15 @@ public class EditProperty extends presenter.Window {
 				newMarker.getChildren().addAll(newRoomLabel, newVideoTimeLabel);
 
 				newMarker.setAlignment(Pos.CENTER_LEFT);
-
+				
+				String[] times = video.printCurrentVideoTime().split(":");
+				double seconds = Double.parseDouble(times[1]);
+				double minutes = Double.parseDouble(times[0]);
+				double videoTime = (minutes*60) + seconds;
+				String roomMarker = newRoomField.getText();
+			
+				Database.insertVideoMarker(videoInfo.vid, roomMarker, videoTime);
+				
 				items.add(newMarker);
 				newRoomField.clear();
 				setMarkerButton.setDisable(true);
@@ -1005,22 +1039,31 @@ public class EditProperty extends presenter.Window {
 	 * 
 	 * @author hcw515
 	 */
-	public class deleteMarker implements EventHandler<ActionEvent> {
-
+	public class DeleteMarker implements EventHandler<ActionEvent> {
+		
 		@Override
 		public void handle(ActionEvent event) {
 			if (markerList.getSelectionModel().getSelectedIndex() >= 0) {
 				int index = markerList.getSelectionModel().getSelectedIndex();
+				
+				System.out.println(index);
 
 				for (int i = index; i < items.size() - 1; i++) {
 					items.set(i, items.get(i + 1));
 				}
 
 				items.remove(items.size() - 1);
-
+				
+				
+				Database.deleteVideoMarker(videoMarkers.get(index));
+				videoMarkers.remove(index);
 				deleteMarker.setDisable(true);
 				markerList.getSelectionModel().clearSelection();
 			}
+		}
+		
+		public void deleteFromDatabase(ArrayList<Marker> videoMarkers){
+
 		}
 	}
 
@@ -1095,3 +1138,4 @@ public class EditProperty extends presenter.Window {
 		return date;
 	}
 }
+

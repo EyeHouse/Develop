@@ -544,5 +544,22 @@ public class VideoElement {
 	public void setAutoplay(boolean autoplay) {
 		this.autoplay = autoplay;
 	}
-
+	
+	/**
+	 * Changes the time of the video element to the input duration.
+	 * 
+	 * @param videoTime
+	 * 			Duration into video to display.
+	 */
+	public void setVideoTime(Duration videoTime){
+		
+		mediaPlayer.seek(videoTime);
+	}
+	
+	/**
+	 * Play the video element.
+	 */
+	public void playVideo(){
+		mediaPlayer.play();
+	}
 }
