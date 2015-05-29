@@ -34,12 +34,11 @@ import javafx.scene.shape.RectangleBuilder;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
-import javafx.stage.Stage;
 
 import landlord.EditProperty;
 import landlord.LandlordProperties;
 import language.Translate;
-import maps.GoogleMapsPage;
+import houses.GoogleMapsPage;
 import Button.ButtonType;
 import Button.SetupButton;
 import Profile.AccountSettings;
