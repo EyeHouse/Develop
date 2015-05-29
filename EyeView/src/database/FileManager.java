@@ -161,7 +161,7 @@ public class FileManager {
 			}
 
 			String sftpUri = "sftp://" + USERNAME + ":" + PASSWORD + "@"
-					+ Database.dbConnect() + port + "/group/eyeHouse.net/"
+					+ Database.url + port + "/group/eyeHouse.net/"
 					+ filepath;
 
 			remoteFile = manager.resolveFile(sftpUri, opts);
@@ -257,14 +257,14 @@ public class FileManager {
 			}
 
 			String sftpUri = "sftp://" + USERNAME + ":" + PASSWORD + "@"
-					+ Database.dbConnect() + port
+					+ Database.url + port
 					+ "/group/eyeHouse.net/eyehouse/" + userDetails.username
 					+ "/" + hid + "/" + filename;
 
 			// upload a default image
 
 			// String sftpUri = "sftp://" + USERNAME + ":" + PASSWORD + "@"
-			// + Database.dbConnect() + ":8080//"
+			// + Database.url + ":8080//"
 			// + "home/ehfile1004/group/eyeHouse.net/eyehouse/defaults/" +
 			// filename;
 
@@ -292,8 +292,6 @@ public class FileManager {
 
 		StandardFileSystemManager manager = new StandardFileSystemManager();
 
-		String url = Database.dbConnect();
-
 		try {
 			// Initializes the file manager
 			manager.init();
@@ -315,7 +313,7 @@ public class FileManager {
 				port = ":8022/";
 			}
 
-			String sftpUri = "sftp://" + USERNAME + ":" + PASSWORD + "@" + url
+			String sftpUri = "sftp://" + USERNAME + ":" + PASSWORD + "@" + Database.url
 					+ port + "/group/eyeHouse.net/"
 					+ videoDetails.videoLocation;
 

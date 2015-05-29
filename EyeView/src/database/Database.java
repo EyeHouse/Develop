@@ -65,36 +65,49 @@ public class Database {
 	/**
 	 * A void function used to open the database connection
 	 */
-	public static String dbConnect() {
+	public static boolean dbConnect() {
 		// Create a connection with db:master_db user:root pw:
 		url = "127.0.0.1";
 		try {
+			
 			System.out.print("Establishing connection via PuTTY... ");
+			
 			con = DriverManager.getConnection("jdbc:mysql://" + url
 					+ ":3306/eyehouse", "eyehouseuser", "Toothbrush50");
 			System.out.print("Success");
+			
+			// Print url
+			System.out.println("\n" + url);
+			
+			return true;
 		} catch (SQLException ex1) {
+			
 			System.out.print("Fail\nEstablishing connection via OpenVPN... ");
+			
 			url = "10.10.0.1";
+			
 			try {
 				con = DriverManager.getConnection("jdbc:mysql://" + url
 						+ ":3306/eyehouse", "eyehouseuser", "Toothbrush50");
+				
 				System.out.print("Success\n");
+				
+				// Print url
+				System.out.println("\n" + url);
+				
+				return true;
+			
 			} catch (SQLException ex) {
 				ex.printStackTrace();
 				// handle any errors
 				System.out.println("SQLException: " + ex.getMessage());
 				System.out.println("SQLState: " + ex.getSQLState());
 				System.out.println("VendorError: " + ex.getErrorCode());
+				return false;
 			}
-		}
-		// Print url
-		System.out.println("\n" + url);
-
-		return url;
+		}	
 	}
 
-	// different
 	/**
 	 * A basic function that take an instance of User.java, and enters it into
 	 * the database you're connected to.
@@ -1078,6 +1091,7 @@ public class Database {
 	public static boolean deleteVideo(User userDetails, HouseVideo videoDetails) {
 
 		Boolean exists;
+		ArrayList<Marker> deleteMarkers = new ArrayList<Marker>();
 
 		exists = checkHouseVideoExists(userDetails, videoDetails);
 
@@ -1101,7 +1115,6 @@ public class Database {
 				dropVideo.executeUpdate();
 
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -1109,6 +1122,26 @@ public class Database {
 		// Delete file on server
 		FileManager.deleteVideo(videoDetails);
 
+		// Check video has been deleted
+		exists = checkHouseVideoExists(userDetails, videoDetails);
+
+		if (!exists) {
+			// Get markers
+			deleteMarkers = getVideoMarkers(videoDetails.hid);
+
+			int i;
+			for (i = 0; i < deleteMarkers.size(); i++) {
+				// Delete markers
+				deleteVideoMarker(deleteMarkers.get(i));
+
+				// Free marker objects
+				deleteMarkers.remove(0);
+			}
+		}
+		
+		// Suggest free memory
+		System.gc();
+		
 		return true;
 	}
 
