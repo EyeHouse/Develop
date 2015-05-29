@@ -10,10 +10,11 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import language.Translate;
 import presenter.SlideContent;
+import presenter.Window;
 import database.Database;
 import database.House;
 
-public class MoreInfo extends presenter.Window {
+public class MoreInfo extends Window {
 
 	private static Label furnishedField = new Label("");
 //	static TextArea description = new TextArea("");

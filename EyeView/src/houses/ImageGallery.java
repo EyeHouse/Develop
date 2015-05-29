@@ -1,6 +1,5 @@
 package houses;
 
-
 import java.util.ArrayList;
 
 import presenter.Window;
@@ -25,46 +24,58 @@ import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
 public class ImageGallery extends Window {
-	
+
 	private static Group galleryGroup;
 	public static ImageView mainHouseImage; // ImageView in which Image is drawn
 	public static ArrayList<Image> galleryImages;
-	private static final double fitWidth = 410; // Make dependent on input image.
+	private static final double fitWidth = 410; // Make dependent on input
+												// image.
 	public static final double smallHouseHeight = 80;
 	public static final double smallHouseWidth = 130;
-	private static final double fitHeight = 300; // Make dependent on input image.
+	private static final double fitHeight = 300; // Make dependent on input
+													// image.
 	public static Image mainImage;
 
-	public ImageGallery(ArrayList<Image> galleryList, float xPosition, float yPosition) {
-		
+	public ImageGallery(ArrayList<Image> galleryList, float xPosition,
+			float yPosition) {
+
 		galleryImages = galleryList;
-		
+
 		mainImage = galleryImages.get(0);
 		mainHouseImage = new ImageView(mainImage);
-		
+
 		mainHouseImage.setFitWidth(fitWidth);
 		mainHouseImage.setFitHeight(fitHeight);
 		mainHouseImage.setPreserveRatio(false);
-		
+
+		Rectangle blackrect = new Rectangle();
+		blackrect.setX(0);
+		blackrect.setY(fitHeight + 15);
+		blackrect.setWidth(fitWidth);
+		blackrect.setHeight(smallHouseHeight);
+		blackrect.setFill(Color.web("#080808"));
+
 		Rectangle rect1 = new Rectangle();
 		rect1.setX(fitWidth);
-		rect1.setY(fitHeight+15);
+		rect1.setY(fitHeight + 15);
 		rect1.setWidth(xResolution - (fitWidth + xPosition));
 		rect1.setHeight(smallHouseHeight);
 		rect1.setFill(Color.WHITE);
-		
+
 		Rectangle rect2 = new Rectangle();
 		rect2.setX(-xPosition);
-		rect2.setY(fitHeight+15);
+		rect2.setY(fitHeight + 15);
 		rect2.setWidth(xPosition);
 		rect2.setHeight(smallHouseHeight);
 		rect2.setFill(Color.WHITE);
-		
+
 		// create display shelf
-		GalleryPictures galleryPictures = new GalleryPictures(galleryImages, mainImage);
-		
+		GalleryPictures galleryPictures = new GalleryPictures(galleryImages,
+				mainImage);
+
 		galleryGroup = new Group();
 		galleryGroup.getChildren().clear();
+		galleryGroup.getChildren().add(blackrect);
 		galleryGroup.getChildren().add(galleryPictures);
 		galleryGroup.getChildren().add(rect1);
 		galleryGroup.getChildren().add(rect2);
@@ -72,13 +83,13 @@ public class ImageGallery extends Window {
 		galleryGroup.setLayoutX(xPosition);
 		galleryGroup.setLayoutY(yPosition);
 	}
-	
+
 	public Node getGallery() {
 		return galleryGroup;
 	}
 
 	public static void setYPosition(float yPosition) {
-		
+
 	}
 
 	/**
@@ -107,7 +118,8 @@ public class ImageGallery extends Window {
 		private float yPosition;
 		private int currentIndex = 1;
 
-		public GalleryPictures(final ArrayList<Image> galleryImages, final Image mainImage) {
+		public GalleryPictures(final ArrayList<Image> galleryImages,
+				final Image mainImage) {
 
 			// style scroll bar color
 			scrollBar.setStyle("-fx-base: #202020; -fx-background: #202020;");
@@ -123,7 +135,7 @@ public class ImageGallery extends Window {
 				items[i].setOnMouseClicked(new EventHandler<MouseEvent>() {
 					public void handle(MouseEvent me) {
 						HouseOverview.setTimerState("PAUSE");
-						
+
 						localChange = true;
 						scrollBar.setValue(index - 1);
 						localChange = false;
@@ -150,10 +162,10 @@ public class ImageGallery extends Window {
 			scrollBar.valueProperty().addListener(new InvalidationListener() {
 				public void invalidated(Observable ov) {
 					HouseOverview.setTimerState("PAUSE");
-					if (!localChange && (currentIndex != 0)){
+					if (!localChange && (currentIndex != 0)) {
 						shiftToCenter(items[(int) (scrollBar.getValue() + 1.5)]);
 					}
-					if (!localChange && (currentIndex == 0)){
+					if (!localChange && (currentIndex == 0)) {
 						shiftToCenter(items[(int) (scrollBar.getValue() + 0.5)]);
 					}
 				}
@@ -173,7 +185,7 @@ public class ImageGallery extends Window {
 
 			mainImage = galleryImages.get(i);
 			mainHouseImage.setImage(mainImage);
-			
+
 			mainHouseImage.setX(xPosition);
 			mainHouseImage.setY(yPosition);
 
@@ -204,7 +216,7 @@ public class ImageGallery extends Window {
 
 			// centered.setLayoutX(fitWidth/2);
 			// Change to main image + amount
-			centered.setLayoutY(fitHeight + yPosition + scrollbarHeight); 
+			centered.setLayoutY(fitHeight + yPosition + scrollbarHeight);
 
 			// position scroll bar at bottom
 			scrollBar.setLayoutX(xPosition); // change to main image start x
