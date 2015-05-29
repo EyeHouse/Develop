@@ -115,6 +115,9 @@ public class HouseOverview extends Window {
 			}
 
 			galleries.add(galleryList);
+			
+			galleryList = null;
+			houseImages = null;
 		}
 	}
 
@@ -341,5 +344,34 @@ public class HouseOverview extends Window {
 				.translateText(languageIndex, "Bedrooms") + ":  ");
 		labelLandlord.setText(Translate
 				.translateText(languageIndex, "Landlord") + ":  ");
+	}
+	
+	/**
+	 * Disposes of all of the house objects
+	 */
+	public void dispose(){
+		
+		for(int i = 0 ; i < houses.size() ; i++){
+			houses.remove(0);
+		}
+		houses = null;
+		
+		gallery = null;
+		pagination = null;
+		
+		for(int i = 0 ; i < galleries.size() ; i++){
+			galleries.remove(0);
+		}
+		galleries = null;
+		
+		for(int i = 0 ; i < savedProperties.size() ; i++){
+			savedProperties.remove(0);
+		}
+		savedProperties = null;
+		
+		play = null;
+		pause = null;
+		save = null;
+		saved = null;
 	}
 }
