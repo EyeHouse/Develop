@@ -1,5 +1,5 @@
 /*
- * 
+ *	@author Tom Butts
  * 
  */
 package database;
@@ -65,36 +65,49 @@ public class Database {
 	/**
 	 * A void function used to open the database connection
 	 */
-	public static String dbConnect() {
+	public static boolean dbConnect() {
 		// Create a connection with db:master_db user:root pw:
 		url = "127.0.0.1";
 		try {
+
 			System.out.print("Establishing connection via PuTTY... ");
+
 			con = DriverManager.getConnection("jdbc:mysql://" + url
 					+ ":3306/eyehouse", "eyehouseuser", "Toothbrush50");
 			System.out.print("Success");
+
+			// Print url
+			System.out.println("\n" + url);
+
+			return true;
 		} catch (SQLException ex1) {
+
 			System.out.print("Fail\nEstablishing connection via OpenVPN... ");
+
 			url = "10.10.0.1";
+
 			try {
 				con = DriverManager.getConnection("jdbc:mysql://" + url
 						+ ":3306/eyehouse", "eyehouseuser", "Toothbrush50");
+
 				System.out.print("Success\n");
+
+				// Print url
+				System.out.println("\n" + url);
+
+				return true;
+
 			} catch (SQLException ex) {
 				ex.printStackTrace();
 				// handle any errors
 				System.out.println("SQLException: " + ex.getMessage());
 				System.out.println("SQLState: " + ex.getSQLState());
 				System.out.println("VendorError: " + ex.getErrorCode());
+				return false;
 			}
 		}
-		// Print url
-		System.out.println("\n" + url);
-
-		return url;
 	}
 
-	// different
 	/**
 	 * A basic function that take an instance of User.java, and enters it into
 	 * the database you're connected to.
@@ -317,10 +330,72 @@ public class Database {
 		return true;
 	}
 
+	/**
+	 * Deletes the house and all information attributed to that house.
+	 * 
+	 * @param houseDetails
+	 * @param userDetails
+	 * @return true if success
+	 * @return false if failure
+	 */
 	public static boolean houseDelete(House houseDetails, User userDetails) {
 		int uid;
 		int hid;
 		try {
+
+			// ArrayList of markers for deletion and House Reviews
+			ArrayList<Marker> deleteMarkers = new ArrayList<Marker>();
+			ArrayList<HouseReview> deleteHouseReviews = new ArrayList<HouseReview>();
+
+			// Check video exists delete videos of house and markers
+			HouseVideo deleteVideo = checkHouseVideo(userDetails,
+					houseDetails.hid);
+
+			// Free memory
+			deleteVideo = null;
+
+			// Get video markers
+			deleteMarkers = getVideoMarkers(houseDetails.hid);
+
+			// remove the ArrayList from memory and delete from database
+			int i;
+
+			// Getting the runtime reference from system
+			Runtime runtime = Runtime.getRuntime();
+
+			System.out.println("\nMemory Before deletion : "
+					+ runtime.totalMemory());
+
+			// Delete markers
+			for (i = 0; i < deleteMarkers.size(); i++) {
+				// Delete from database
+				deleteVideoMarker(deleteMarkers.get(i));
+
+				// Remove info from memory
+				deleteMarkers.remove(0);
+			}
+
+			deleteVideo(userDetails, deleteVideo);
+
+			// Delete images associated with house
+			System.out.println("\nDeleting Image data...");
+
+			deleteAllHouseImage(houseDetails.hid);
+
+			// Find and delete reviews
+			deleteHouseReviews = getHouseReviews(houseDetails.hid);
+			for (i = 0; i < deleteHouseReviews.size(); i++) {
+				boolean delete = checkHouseReviewExists(deleteHouseReviews
+						.get(i));
+				if (delete) {
+					// Delete house review
+					deleteHouseReview(deleteHouseReviews.get(i));
+
+					// Free object
+					deleteHouseReviews.remove(0);
+				}
+			}
+
 			// Takes a unique field (username) and deletes the users details
 			PreparedStatement dropHouse = con
 					.prepareStatement("DELETE FROM houses WHERE uid=? AND hid=?");
@@ -332,6 +407,13 @@ public class Database {
 			dropHouse.setInt(2, hid);
 			// Execute SQL drop statement
 			dropHouse.executeUpdate();
+
+			System.out.println("\nMemory After deletion : "
+					+ runtime.totalMemory());
+
+			// Suggest garbage collection
+			System.gc();
+
 			return true;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -405,10 +487,7 @@ public class Database {
 			e.printStackTrace();
 			e.getMessage();
 		}
-		if (user == null)
-			throw new NullPointerException();
-		else
-			return user;
+		return user;
 	}
 
 	/**
@@ -446,6 +525,12 @@ public class Database {
 			return username;
 	}
 
+	/**
+	 * Gets a house and puts it into a object type: House
+	 * 
+	 * @param hid
+	 * @return House
+	 */
 	public static House getHouse(int hid) {
 		House house = null;
 		ResultSet houseDetails = null;
@@ -491,7 +576,6 @@ public class Database {
 			}
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}
@@ -509,7 +593,7 @@ public class Database {
 
 	/**
 	 * Takes a unique detail from the user who is logged on and deletes their
-	 * account information.
+	 * account information and information belonging to them.
 	 * 
 	 * @param username
 	 * @return 1 if success
@@ -517,6 +601,43 @@ public class Database {
 	 */
 	public static boolean userDelete(String username) {
 		try {
+
+			// Get user
+			User deleteUser = getUser(username);
+
+			// Getting the runtime reference from system
+			Runtime runtime = Runtime.getRuntime();
+
+			// Find all user houses and reviews and delete them
+			ArrayList<House> deleteHouses = new ArrayList<House>();
+			ArrayList<UserReview> deleteReviews = new ArrayList<UserReview>();
+
+			// Get all houses uploaded by user
+			deleteHouses = getLandlordProperties(deleteUser.uid);
+
+			int i;
+			for (i = 0; i < deleteHouses.size(); i++) {
+				// Delete houses that belong to user
+				deleteHouse(deleteHouses.get(i));
+
+				// Free house objects
+				deleteHouses.remove(0);
+			}
+
+			// Find all user reviews associated with the user
+			deleteReviews = getUserReviewList(deleteUser.uid);
+
+			for (i = 0; i < deleteReviews.size(); i++) {
+				// Delete user reviews
+				deleteUserReview(deleteReviews.get(i));
+
+				// Free review objects
+				deleteReviews.remove(0);
+			}
+
+			// Free user object
+			deleteUser = null;
+
 			// Takes a unique field (username) and deletes the users details
 			PreparedStatement dropUser = con
 					.prepareStatement("DELETE FROM users WHERE username=?");
@@ -524,12 +645,25 @@ public class Database {
 			dropUser.setString(1, username);
 			// Execute SQL drop statement
 			dropUser.executeUpdate();
+
+			System.out.println("\nMemory Before gc : " + runtime.totalMemory());
+
+			// Suggest garbage collection
+			System.gc();
+
+			System.out.println("\nMemory After gc : " + runtime.totalMemory());
+
 			return true;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			e.getMessage();
 			return false;
 		}
+	}
+
+	private static void deleteHouse(House house) {
+		// TODO Auto-generated method stub
+
 	}
 
 	/**
@@ -648,11 +782,10 @@ public class Database {
 	 */
 	public static boolean userRegister(User newUser) {
 		// boolean success = true / failure = false
-		boolean insertCheck = false;
 		// Check user email && username aren't already in database
 		if (!twoFieldCheck("username", newUser.username, "email", newUser.email)) {
 			try {
-				insertCheck = userInsert(newUser);
+				userInsert(newUser);
 				return true;
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -832,8 +965,24 @@ public class Database {
 		}
 	}
 
+	public static boolean deleteAllHouseImage(int hid) {
+		try {
+			PreparedStatement dropUser = con
+					.prepareStatement("DELETE FROM house_images WHERE hid=?");
+			// Parameterise inputs
+			dropUser.setInt(1, hid);
+			// Execute SQL drop statement
+			dropUser.executeUpdate();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			e.getMessage();
+			return false;
+		}
+	}
+
 	/**
-	 * Checks the database for the automatic filepath based on logon details,
+	 * Checks the database for the automatic file path based on login details,
 	 * house and filename. If auto generated location doesn't exist inserts
 	 * location pointer into video_locs table and uploads the file to the
 	 * server.
@@ -945,6 +1094,7 @@ public class Database {
 	public static boolean deleteVideo(User userDetails, HouseVideo videoDetails) {
 
 		Boolean exists;
+		ArrayList<Marker> deleteMarkers = new ArrayList<Marker>();
 
 		exists = checkHouseVideoExists(userDetails, videoDetails);
 
@@ -968,13 +1118,32 @@ public class Database {
 				dropVideo.executeUpdate();
 
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 
 		// Delete file on server
 		FileManager.deleteVideo(videoDetails);
+
+		// Check video has been deleted
+		exists = checkHouseVideoExists(userDetails, videoDetails);
+
+		if (!exists) {
+			// Get markers
+			deleteMarkers = getVideoMarkers(videoDetails.hid);
+
+			int i;
+			for (i = 0; i < deleteMarkers.size(); i++) {
+				// Delete markers
+				deleteVideoMarker(deleteMarkers.get(i));
+
+				// Free marker objects
+				deleteMarkers.remove(0);
+			}
+		}
+
+		// Suggest free memory
+		System.gc();
 
 		return true;
 	}
@@ -1160,31 +1329,27 @@ public class Database {
 		return true;
 	}
 
-	public static HouseReview getHouseReview(int hrid) {
+	public static ArrayList<HouseReview> getHouseReviews(int hid) {
 
+		ArrayList<HouseReview> list = new ArrayList<HouseReview>();
 		ResultSet houseReview;
-		HouseReview newReview;
+
 		try {
 			PreparedStatement getUserReview = con
-					.prepareStatement("SELECT * FROM house_reviews WHERE hrid=?");
+					.prepareStatement("SELECT * FROM house_reviews WHERE hid=?");
 
-			getUserReview.setInt(1, hrid);
+			getUserReview.setInt(1, hid);
 
 			houseReview = getUserReview.executeQuery();
-			if (houseReview.next()) {
-				newReview = new HouseReview(houseReview);
-				System.out.println("\nReview id: " + newReview.hrid);
-				return newReview;
-			} else {
-				System.out.println("\nNo house review with that ID exists");
-				return null;
+			while (houseReview.next()) {
+				list.add(new HouseReview(houseReview));
 			}
 
 		} catch (SQLException e) {
 			System.out.println("\nNo house review with that ID exists");
 			e.printStackTrace();
-			return null;
 		}
+		return list;
 	}
 
 	public static boolean checkHouseReviewExists(HouseReview reviewDetails) {
@@ -1637,6 +1802,13 @@ public class Database {
 		}
 	}
 
+	/**
+	 * Gets all video markers associated with vid and returns them in an
+	 * ArrayList of type Marker
+	 * 
+	 * @param vid
+	 * @return ArrayList<Marker>
+	 */
 	public static ArrayList<Marker> getVideoMarkers(int vid) {
 
 		ResultSet markers;
@@ -1722,14 +1894,13 @@ public class Database {
 		switch (mode) {
 
 		case 101:
-			
+
 			// logged in user
 			User tempu89 = getUser("MVPTom");
-			
+
 			HouseVideo video = checkHouseVideo(tempu89, 9);
 			System.out.println("\nVideo exists" + video.videoLocation);
-			
-			
+
 			break;
 		case 11:
 			// insert the houses basic info
@@ -1776,12 +1947,14 @@ public class Database {
 			// MVPTom review on
 			// HouseReview one = getHouseReview(2);
 
-			HouseReview test1 = getHouseReview(2);
+			ArrayList<HouseReview> test1 = new ArrayList<HouseReview>();
+
+			test1 = getHouseReviews(0);
 			UserReview test2 = getUserReview(2);
 
 			// likeReview(tempu14, test1, test2, 2);
 
-			dislikeReview(tempu14, test1, test2, 2);
+			dislikeReview(tempu14, test1.get(1), test2, 2);
 
 			break;
 		case 2: // insert User
@@ -1992,15 +2165,17 @@ public class Database {
 
 			// check = insertHouseReview(hreviewDetails);
 
-			HouseReview newHouseReview = getHouseReview(2);
+			ArrayList<HouseReview> list5 = new ArrayList<HouseReview>();
+
+			list5 = getHouseReviews(3);
 
 			// checkHouseReviewExists(newHouseReview);
 
-			System.out.println("\nNew review: " + newHouseReview.review);
+			System.out.println("\nNew review: " + list5.get(0).review);
 
 			// check = deleteHouseReview(newHouseReview);
 
-			checkHouseReviewExists(newHouseReview);
+			checkHouseReviewExists(list5.get(0));
 
 			// if (check == true)
 			// System.out.println("\nSuccessful");
