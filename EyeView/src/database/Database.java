@@ -525,6 +525,12 @@ public class Database {
 			return username;
 	}
 
+	/**
+	 * Gets a house and puts it into a object type: House
+	 * 
+	 * @param hid
+	 * @return House
+	 */
 	public static House getHouse(int hid) {
 		House house = null;
 		ResultSet houseDetails = null;
@@ -1796,6 +1802,13 @@ public class Database {
 		}
 	}
 
+	/**
+	 * Gets all video markers associated with vid and returns them in an
+	 * ArrayList of type Marker
+	 * 
+	 * @param vid
+	 * @return ArrayList<Marker>
+	 */
 	public static ArrayList<Marker> getVideoMarkers(int vid) {
 
 		ResultSet markers;
