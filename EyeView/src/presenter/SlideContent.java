@@ -11,6 +11,15 @@ import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import profile.AccountSettings;
+import profile.Login;
+import profile.ProfileViewer;
+import profile.Register;
+import profile.SavedProperties;
+
+import button.ButtonType;
+import button.SetupButton;
+
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -39,13 +48,6 @@ import landlord.EditProperty;
 import landlord.LandlordProperties;
 import language.Translate;
 import houses.GoogleMapsPage;
-import Button.ButtonType;
-import Button.SetupButton;
-import Profile.AccountSettings;
-import Profile.Login;
-import Profile.ProfileViewer;
-import Profile.Register;
-import Profile.SavedProperties;
 import database.Database;
 import database.House;
 import database.Search;

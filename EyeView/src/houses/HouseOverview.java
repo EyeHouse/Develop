@@ -26,7 +26,7 @@ import javafx.util.Callback;
 import javafx.util.Duration;
 import language.Translate;
 import presenter.Window;
-import Profile.SavedProperties;
+import profile.SavedProperties;
 import database.Database;
 import database.House;
 import database.HouseImage;

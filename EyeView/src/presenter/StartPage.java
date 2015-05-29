@@ -1,6 +1,9 @@
 package presenter;
 
 import java.util.ArrayList;
+
+import button.ButtonType;
+import button.SetupButton;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -24,8 +27,6 @@ import javafx.scene.shape.RectangleBuilder;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.util.Duration;
-import Button.ButtonType;
-import Button.SetupButton;
 
 /**
  * This class implements the EyeView Start Page

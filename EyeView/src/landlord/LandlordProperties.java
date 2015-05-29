@@ -2,8 +2,9 @@ package landlord;
 
 import java.util.ArrayList;
 
-import Button.ButtonType;
-import Button.SetupButton;
+import button.ButtonType;
+import button.SetupButton;
+
 import database.Database;
 import database.House;
 import database.HouseImage;
@@ -69,7 +70,8 @@ public class LandlordProperties extends presenter.Window {
 
 	private void setupTitle() {
 
-		Label labelTitle = new Label(Translate.translateText(languageIndex, "Manage Properties"));
+		Label labelTitle = new Label(Translate.translateText(languageIndex,
+				"Manage Properties"));
 
 		labelTitle.setTextFill(Color.web("#162252FF"));
 		labelTitle.setFont(new Font(35));
@@ -81,13 +83,14 @@ public class LandlordProperties extends presenter.Window {
 	private void setupLandlordButtons() {
 		VBox buttons = new VBox(30);
 
-		ButtonType button1 = new ButtonType("166,208,255", null, Translate.translateText(languageIndex, "Edit"), 100,
-				30);
-		ButtonType button2 = new ButtonType("166,208,255", null, Translate.translateText(languageIndex, "Delete"), 100,
-				30);
-		ButtonType button3 = new ButtonType("166,208,255", null, Translate.translateText(languageIndex, "New"), 100, 30);
-		ButtonType button4 = new ButtonType("166,208,255", null, Translate.translateText(languageIndex, "View"), 100,
-				30);
+		ButtonType button1 = new ButtonType("166,208,255", null,
+				Translate.translateText(languageIndex, "Edit"), 100, 30);
+		ButtonType button2 = new ButtonType("166,208,255", null,
+				Translate.translateText(languageIndex, "Delete"), 100, 30);
+		ButtonType button3 = new ButtonType("166,208,255", null,
+				Translate.translateText(languageIndex, "New"), 100, 30);
+		ButtonType button4 = new ButtonType("166,208,255", null,
+				Translate.translateText(languageIndex, "View"), 100, 30);
 
 		Button buttonEdit = new SetupButton().CreateButton(button1);
 		Button buttonDelete = new SetupButton().CreateButton(button2);
@@ -106,10 +109,7 @@ public class LandlordProperties extends presenter.Window {
 							.getSelectedIndex();
 					currentPropertyID = properties.get(index).hid;
 
-					root.getChildren().clear();
-					slideID = EDITPROPERTY;
-					SlideContent sc = new SlideContent();
-					sc.createSlide();
+					loadSlide(EDITPROPERTY);
 				}
 			}
 		});
@@ -135,11 +135,13 @@ public class LandlordProperties extends presenter.Window {
 		buttonView.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				if (propertyList.getSelectionModel().getSelectedIndex() >= 0) {
-					int index = propertyList.getSelectionModel()
-							.getSelectedIndex();
-					currentPropertyID = properties.get(index).hid;
-					loadSlide(HOUSE);
-					// Open single property advert of selection
+					if (propertyList.getSelectionModel().getSelectedIndex() >= 0) {
+						int index = propertyList.getSelectionModel()
+								.getSelectedIndex();
+						currentPropertyID = properties.get(index).hid;
+						loadSlide(HOUSE);
+					}
+
 				}
 			}
 		});
@@ -148,10 +150,7 @@ public class LandlordProperties extends presenter.Window {
 			public void handle(ActionEvent event) {
 				currentPropertyID = 0;
 
-				root.getChildren().clear();
-				slideID = EDITPROPERTY;
-				SlideContent sc = new SlideContent();
-				sc.createSlide();
+				loadSlide(EDITPROPERTY);
 			}
 		});
 
@@ -182,8 +181,13 @@ public class LandlordProperties extends presenter.Window {
 
 			House house = properties.get(i);
 			Label propertyAddress = new Label(house.address);
-			Label propertyDetails = new Label(Translate.translateText(languageIndex, "Bedrooms: ") + house.rooms
-					+ "\n" + Translate.translateText(languageIndex, "Price:") + " £" + house.price + " pppw");
+			Label propertyDetails = new Label(Translate.translateText(
+					languageIndex, "Bedrooms: ")
+					+ house.rooms
+					+ "\n"
+					+ Translate.translateText(languageIndex, "Price:")
+					+ " £"
+					+ house.price + " pppw");
 
 			propertyAddress.setFont(Font.font(null, FontWeight.BOLD, 20));
 

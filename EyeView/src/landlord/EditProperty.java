@@ -7,10 +7,11 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import button.ButtonType;
+import button.SetupButton;
+
 import presenter.SlideContent;
 
-import Button.ButtonType;
-import Button.SetupButton;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -105,16 +106,17 @@ public class EditProperty extends presenter.Window {
 		picStatus = new ImageView();
 		tick = new Image("file:resources/images/Status/Tick.png");
 		cross = new Image("file:resources/images/Status/Cross.png");
-
-		createEditPage();
-
+		
 		root.getChildren().add(grid);
+		
+		createEditPage();
 	}
 
 	public void createEditPage() {
-		setupButtons();
+		
 		setupGrid();
 		setupTabLabels(page);
+		setupButtons();
 		switch (page) {
 		case INFO:
 			setupHouseInfo();

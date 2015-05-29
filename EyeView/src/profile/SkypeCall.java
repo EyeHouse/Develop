@@ -1,4 +1,4 @@
-package Profile;
+package profile;
 
 import java.awt.Desktop;
 import java.io.IOException;

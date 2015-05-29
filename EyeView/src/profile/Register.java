@@ -1,4 +1,4 @@
-package Profile;
+package profile;
 
 /**
  * This class implements the EyeView Register Page
@@ -10,6 +10,9 @@ package Profile;
  */
 
 import java.util.ArrayList;
+
+import button.ButtonType;
+import button.SetupButton;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -34,8 +37,6 @@ import landlord.EditProperty;
 import language.BadWordCheck;
 import language.Translate;
 import presenter.SlideContent;
-import Button.ButtonType;
-import Button.SetupButton;
 import database.DataHandler;
 import database.Database;
 import database.User;

@@ -1,4 +1,4 @@
-package Button;
+package button;
 
 /**
  * This class implements button element functions

@@ -5,6 +5,9 @@ import handlers.VideoElement;
 import java.io.File;
 import java.util.ArrayList;
 
+import button.ButtonType;
+import button.SetupButton;
+
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -24,8 +27,6 @@ import javafx.util.Duration;
 import language.Translate;
 import presenter.SlideContent;
 import presenter.Window;
-import Button.ButtonType;
-import Button.SetupButton;
 import database.Database;
 import database.FileManager;
 import database.House;

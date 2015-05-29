@@ -1,4 +1,4 @@
-package Button;
+package button;
 
 public class ButtonType {
 	public String colourRGB;

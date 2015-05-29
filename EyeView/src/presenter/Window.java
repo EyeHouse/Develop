@@ -4,9 +4,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import Button.ButtonType;
-import Button.SetupButton;
-import Profile.Login;
+import button.ButtonType;
+import button.SetupButton;
+
 
 import database.Database;
 import database.House;
@@ -14,6 +14,7 @@ import database.House;
 import parser.XMLParser;
 import parser.SlideshowData;
 import parser.SlideData;
+import profile.Login;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;

@@ -1,4 +1,4 @@
-package Profile;
+package profile;
 
 /*
  * AccountSettings.java
@@ -29,11 +29,12 @@ import javafx.scene.layout.HBox;
 
 import javax.swing.JOptionPane;
 
+import button.ButtonType;
+import button.SetupButton;
+
 import landlord.EditProperty;
 import language.BadWordCheck;
 import presenter.SlideContent;
-import Button.ButtonType;
-import Button.SetupButton;
 import database.Database;
 import database.User;
 

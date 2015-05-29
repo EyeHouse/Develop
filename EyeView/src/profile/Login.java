@@ -1,4 +1,4 @@
-package Profile;
+package profile;
 
 /**
  * This class implements the EyeView Login Page
@@ -9,8 +9,8 @@ package Profile;
  * Copyright 2015 EyeHouse
  */
 
-import Button.ButtonType;
-import Button.SetupButton;
+import button.ButtonType;
+import button.SetupButton;
 import presenter.SlideContent;
 import database.DataHandler;
 import database.Database;

@@ -1,4 +1,4 @@
-package testing;
+package parser;
 
 import static org.junit.Assert.*;
 
@@ -7,9 +7,6 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import parser.SlideData;
-import parser.SlideshowData;
-import parser.XMLParser;
 
 
 /**

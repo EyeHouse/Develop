@@ -1,4 +1,4 @@
-package Profile;
+package profile;
 
 /**
  * ProfileViewer Contains all information displayed on the Profile page
@@ -16,8 +16,9 @@ import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
-import Button.ButtonType;
-import Button.SetupButton;
+import button.ButtonType;
+import button.SetupButton;
+
 import presenter.SlideContent;
 import database.Database;
 import database.User;

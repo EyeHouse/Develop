@@ -1,13 +1,14 @@
-package Profile;
+package profile;
 
 import java.util.ArrayList;
+
+import button.ButtonType;
+import button.SetupButton;
 
 import database.Database;
 import database.House;
 import database.HouseImage;
 import database.User;
-import Button.ButtonType;
-import Button.SetupButton;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -96,28 +97,31 @@ public class SavedProperties extends presenter.Window {
 		buttonRemove.setCursor(Cursor.HAND);
 		buttonRemove.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
-				int index = propertyList.getSelectionModel().getSelectedIndex();
+				if (propertyList.getSelectionModel().getSelectedIndex() >= 0) {
+					int index = propertyList.getSelectionModel()
+							.getSelectedIndex();
 
-				for (int i = index; i < items.size() - 1; i++) {
-					items.set(i, items.get(i + 1));
+					for (int i = index; i < items.size() - 1; i++) {
+						items.set(i, items.get(i + 1));
+					}
+
+					items.remove(items.size() - 1);
+
+					properties.remove(index); // update database of current user
+					User.updateSavedProperties(currentUsername, properties);
 				}
 
-				items.remove(items.size() - 1);
-
-				properties.remove(index); // update database of current user
-				User.updateSavedProperties(currentUsername, properties);
 			}
 		});
 
 		buttonView.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
-				int index = propertyList.getSelectionModel().getSelectedIndex();
-				currentPropertyID = Integer.parseInt(properties.get(index));
-				root.getChildren().clear();
-				slideID = HOUSE;
-				SlideContent sc = new SlideContent();
-				sc.createSlide();
-				// Open single property advert of selection
+				if (propertyList.getSelectionModel().getSelectedIndex() >= 0) {
+					int index = propertyList.getSelectionModel()
+							.getSelectedIndex();
+					currentPropertyID = Integer.parseInt(properties.get(index));
+					loadSlide(HOUSE);
+				}
 			}
 		});
 
@@ -168,8 +172,9 @@ public class SavedProperties extends presenter.Window {
 	}
 
 	public static void setupPropertyBackButton() {
-		
-		ImageView buttonBack = new ImageView(new Image("file:resources/advert_icons/back.png"));
+
+		ImageView buttonBack = new ImageView(new Image(
+				"file:resources/advert_icons/back.png"));
 		buttonBack.relocate(200, 20);
 		buttonBack.setPreserveRatio(true);
 		buttonBack.setFitWidth(80);
@@ -179,7 +184,7 @@ public class SavedProperties extends presenter.Window {
 				loadSlide(prevSlideID);
 			}
 		});
-		
+
 		root.getChildren().add(buttonBack);
 	}
 
@@ -187,8 +192,8 @@ public class SavedProperties extends presenter.Window {
 		labelTitle.setText(Translate.translateText(languageIndex,
 				"Saved Properties") + ": ");
 	}
-	
-	public void dispose(){
+
+	public void dispose() {
 		properties = null;
 		propertyList = null;
 		items = null;

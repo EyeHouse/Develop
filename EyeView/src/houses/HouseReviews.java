@@ -1,5 +1,7 @@
 package houses;
 
+import button.ButtonType;
+import button.SetupButton;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -22,8 +24,6 @@ import javafx.scene.text.Font;
 import language.Translate;
 import presenter.SlideContent;
 import presenter.Window;
-import Button.ButtonType;
-import Button.SetupButton;
 
 public class HouseReviews extends Window {
 
