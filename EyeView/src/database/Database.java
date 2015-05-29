@@ -69,34 +69,34 @@ public class Database {
 		// Create a connection with db:master_db user:root pw:
 		url = "127.0.0.1";
 		try {
-			
+
 			System.out.print("Establishing connection via PuTTY... ");
-			
+
 			con = DriverManager.getConnection("jdbc:mysql://" + url
 					+ ":3306/eyehouse", "eyehouseuser", "Toothbrush50");
 			System.out.print("Success");
-			
+
 			// Print url
 			System.out.println("\n" + url);
-			
+
 			return true;
 		} catch (SQLException ex1) {
-			
+
 			System.out.print("Fail\nEstablishing connection via OpenVPN... ");
-			
+
 			url = "10.10.0.1";
-			
+
 			try {
 				con = DriverManager.getConnection("jdbc:mysql://" + url
 						+ ":3306/eyehouse", "eyehouseuser", "Toothbrush50");
-				
+
 				System.out.print("Success\n");
-				
+
 				// Print url
 				System.out.println("\n" + url);
-				
+
 				return true;
-			
+
 			} catch (SQLException ex) {
 				ex.printStackTrace();
 				// handle any errors
@@ -105,7 +105,7 @@ public class Database {
 				System.out.println("VendorError: " + ex.getErrorCode());
 				return false;
 			}
-		}	
+		}
 	}
 
 	/**
@@ -487,10 +487,7 @@ public class Database {
 			e.printStackTrace();
 			e.getMessage();
 		}
-		if (user == null)
-			throw new NullPointerException();
-		else
-			return user;
+		return user;
 	}
 
 	/**
@@ -1138,10 +1135,10 @@ public class Database {
 				deleteMarkers.remove(0);
 			}
 		}
-		
+
 		// Suggest free memory
 		System.gc();
-		
+
 		return true;
 	}
 
