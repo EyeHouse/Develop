@@ -187,4 +187,10 @@ public class SavedProperties extends presenter.Window {
 		labelTitle.setText(Translate.translateText(languageIndex,
 				"Saved Properties") + ": ");
 	}
+	
+	public void dispose(){
+		properties = null;
+		propertyList = null;
+		items = null;
+	}
 }

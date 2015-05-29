@@ -57,6 +57,18 @@ public class SlideContent extends Window {
 	public ImageView profilePictureView;
 	public static ComboBox<ImageView> languageComboBox = new ComboBox<ImageView>();
 	public static HouseOverview houseAdverts;
+	public static StartPage startPage;
+	public static Login login;
+	public static Register register;
+	public static ProfileViewer profile;
+	public static AccountSettings accountSettings;
+	public static SavedProperties savedProperties;
+	public static MoreInfo moreInfo;
+	public static VideoPage videoPage;
+	public static GoogleMapsPage mapPage;
+	public static HouseReviews houseReviews;
+	public static LandlordProperties landlordProperties;
+	public static EditProperty editProperty;
 	public static Label labelLogin, labelRegister, labelLogOut, labelProfile,
 			labelSavedProperties, labelLandlordProperties, labelFilter,
 			labelBedSearch, labelBedMin, labelBedMax, labelPriceSearch,
@@ -84,7 +96,7 @@ public class SlideContent extends Window {
 			// Cancel Advert timer if it is running
 			if (advertTimer != null)
 				advertTimer.stop();
-
+			clearSlideData();
 			// Loads objects not within the XML for a given slide
 			switch (slideID) {
 			case STARTPAGE:
@@ -142,7 +154,7 @@ public class SlideContent extends Window {
 	}
 
 	private void createStartSlide() {
-		new StartPage();
+		startPage = new StartPage();
 	}
 
 	private void createLoggedOutSlide() {
@@ -169,33 +181,32 @@ public class SlideContent extends Window {
 
 	private void createLoginSlide() {
 
-		new Login();
+		login = new Login();
 		createSidebar();
 	}
 
 	private void createRegisterSlide() {
 
-		new Register();
+		register = new Register();
 		createSidebar();
 	}
 
 	private void createProfileSlide() {
 
-		new ProfileViewer(viewedUsername);
+		profile = new ProfileViewer(viewedUsername);
 		createSidebar();
 	}
 
 	private void createAccountSettingsSlide() {
 
-		new AccountSettings();
+		accountSettings = new AccountSettings();
 		createSidebar();
 	}
 
 	private void createSavedPropertySlide() {
 
-		new SavedProperties();
+		savedProperties = new SavedProperties();
 		createSidebar();
-		prevSlideID = slideID;
 	}
 
 	private void createPropertySlide() {
@@ -211,40 +222,39 @@ public class SlideContent extends Window {
 
 	public void createMoreInfoSlide() {
 
-		new MoreInfo();
+		moreInfo = new MoreInfo();
 		createSidebar();
 		createMenuBar();
 	}
 
 	public void createReviewsSlide() {
 
-		new HouseReviews();
+		houseReviews = new HouseReviews();
 		createSidebar();
 		createMenuBar();
 	}
 
 	public void createMapSlide() {
 
-		new GoogleMapsPage();
+		mapPage = new GoogleMapsPage();
 		createSidebar();
 		createMenuBar();
 	}
 
 	public void createVideoSlide() {
 
-		new VideoPage();
+		videoPage = new VideoPage();
 		createSidebar();
 		createMenuBar();
 	}
 
 	public void createLandlordPropertiesSlide() {
-		new LandlordProperties(currentUsername);
+		landlordProperties = new LandlordProperties(currentUsername);
 		createSidebar();
-		prevSlideID = slideID;
 	}
 
 	public void createEditPropertySlide() {
-		new EditProperty(0, currentPropertyID);
+		editProperty = new EditProperty(0, currentPropertyID);
 		createSidebar();
 	}
 
@@ -702,7 +712,7 @@ public class SlideContent extends Window {
 				// Curved edges
 				.arcHeight(30).x(15).y(420).fill(Color.TRANSPARENT)
 				.strokeWidth(1).stroke(Color.rgb(33, 51, 76)).build();
-		centreBox.setWidth(155);
+		centreBox.setWidth(163);
 		centreBox.setHeight(285);
 
 		// Include content on each row and column
@@ -726,7 +736,7 @@ public class SlideContent extends Window {
 		GridPane.setConstraints(goButton, 0, 12, 2, 1, HPos.CENTER, VPos.BOTTOM);
 
 		searchFields.relocate(30, 390);
-		root.getChildren().addAll(searchFields, centreBox);
+		root.getChildren().addAll(centreBox, searchFields);
 	}
 
 	public class searchHandler implements EventHandler<ActionEvent> {
@@ -791,5 +801,58 @@ public class SlideContent extends Window {
 				loadSlide(RESULTS);
 			}
 		}
+	}
+	
+	private void clearSlideData(){
+		
+		switch (prevSlideID) {
+		case STARTPAGE:
+			startPage = null;
+			break;
+		case RESULTS:
+		case INDEX:
+		case HOUSE:	
+		case HOUSES:
+			houseAdverts.dispose();
+			houseAdverts = null;
+			break;
+		case LOGIN:
+			login = null;
+			break;
+		case REGISTER:
+			register = null;
+			break;
+		case PROFILE:
+			profile = null;
+			break;
+		case ACCOUNTSETTINGS:
+			accountSettings = null;
+			break;
+		case SAVEDPROPERTIES:
+			savedProperties.dispose();
+			savedProperties = null;
+			break;
+		case MOREINFO:
+			moreInfo = null;
+			break;
+		case REVIEWS:
+			houseReviews = null;
+			break;
+		case MAP:
+			mapPage = null;
+			break;
+		case VIDEO:
+			videoPage = null;
+			break;
+		case LANDLORDPROPERTIES:
+			landlordProperties = null;
+			break;
+		case EDITPROPERTY:
+			editProperty = null;
+			break;
+		default:
+			break;
+		}
+		System.gc();
 	}
 }

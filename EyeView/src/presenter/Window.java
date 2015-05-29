@@ -93,6 +93,7 @@ public class Window extends Application {
 
 	public static void loadSlide(int id) {
 
+		prevSlideID = slideID;
 		slideID = id;
 		if (slideID < (slideList.size())) {
 
