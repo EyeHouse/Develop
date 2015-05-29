@@ -831,6 +831,22 @@ public class Database {
 			return false;
 		}
 	}
+	
+	public static boolean deleteAllHouseImage(int hid) {
+		try {
+			PreparedStatement dropUser = con
+					.prepareStatement("DELETE FROM house_images WHERE hid=?");
+			// Parameterise inputs
+			dropUser.setInt(1, hid);
+			// Execute SQL drop statement
+			dropUser.executeUpdate();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			e.getMessage();
+			return false;
+		}
+	}
 
 	/**
 	 * Checks the database for the automatic filepath based on logon details,
