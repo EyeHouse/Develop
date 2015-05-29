@@ -19,11 +19,13 @@ import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -31,6 +33,7 @@ import javafx.scene.layout.VBoxBuilder;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -76,11 +79,12 @@ public class Window extends Application {
 
 	public void init(Stage primaryStage) {
 
-		/* Initialises primary stage */
+		// Initialises primary stage
 		primaryStage.setWidth(xResolution);
 		primaryStage.setHeight(yResolution);
 		primaryStage.setResizable(false);
 		primaryStage.setTitle("EyeHouse");
+		
 		root = new Group();
 		primaryStage.setScene(new Scene(root));
 
@@ -122,10 +126,10 @@ public class Window extends Application {
 		ImageView logo = new ImageView(companyLogo);
 		logo.setPreserveRatio(true);
 		logo.setFitWidth(300);
-		logo.relocate(xResolution/2 - logo.getFitWidth()/2, 150);
-		
-		Login.setWhiteBox(350, 80,false);
-		
+		logo.relocate(xResolution / 2 - logo.getFitWidth() / 2, 150);
+
+		Login.setWhiteBox(350, 80, false);
+
 		ButtonType button1 = new ButtonType("166,208,255", null, "Import XML",
 				110, 30);
 		Button buttonImport = new SetupButton().CreateButton(button1);
@@ -140,13 +144,15 @@ public class Window extends Application {
 
 		HBox buttons = new HBox(50);
 		buttons.getChildren().addAll(buttonImport, buttonEyeView);
-		buttons.relocate(xResolution/2 - ((buttonEyeView.getMaxWidth()) + buttons.getSpacing()/2), yResolution / 2 - buttonEyeView.getMaxHeight());
+		buttons.relocate(xResolution / 2
+				- ((buttonEyeView.getMaxWidth()) + buttons.getSpacing() / 2),
+				yResolution / 2 - buttonEyeView.getMaxHeight());
 		root.getChildren().addAll(buttons, logo);
 	}
 
 	public static void openXML(Stage primaryStage, String xmlPath) {
-		/* Runs the XML parser */
 
+		// Run the XML parser
 		XMLParser parser = new XMLParser();
 		slideshow = parser.loadSlideshow(xmlPath);
 		slideList = slideshow.getSlides();
@@ -168,6 +174,7 @@ public class Window extends Application {
 	public class importHandler implements EventHandler<ActionEvent> {
 
 		public void handle(ActionEvent arg0) {
+			
 			File newFile;
 
 			// Open file chooser window
@@ -200,16 +207,19 @@ public class Window extends Application {
 			Stage stage = (Stage) root.getScene().getWindow();
 			openXML(stage, "EyeView.xml");
 		}
-
 	}
 
 	public static void createWarningPopup(String message) {
-
-		Text dialogText = new Text(message);
+		
+		Label dialogText = new Label(message);
 		dialogText.setFont(new Font(14));
+		dialogText.setAlignment(Pos.CENTER);
+		dialogText.setPrefWidth(200);
+		dialogText.setWrapText(true);
 
 		Button okButton = new Button("OK");
 		okButton.setPrefSize(80, 30);
+		okButton.setFocusTraversable(false);
 		okButton.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				dialogStage.close();
@@ -218,13 +228,15 @@ public class Window extends Application {
 
 		Image icon = new Image("file:./resources/images/warning.png");
 		ImageView iconView = new ImageView(icon);
-
+		
 		dialogStage.setResizable(false);
+		dialogStage.setTitle("Warning");
 		dialogStage.getIcons().add(
 				new Image("file:./resources/icons/xxxhdpi.png"));
 		dialogStage.setWidth(300);
 		dialogStage.setHeight(150);
 		HBox hbox = new HBox(10);
+		hbox.setSpacing(5);
 		hbox.setAlignment(Pos.CENTER);
 		hbox.getChildren().addAll(iconView, dialogText);
 

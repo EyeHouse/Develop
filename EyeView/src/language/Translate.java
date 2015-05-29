@@ -80,13 +80,13 @@ public class Translate extends presenter.Window {
 		portugueseImage.setPreserveRatio(true);
 		dutchImage.setPreserveRatio(true);
 
-		englishImage.setFitHeight(35);
-		spanishImage.setFitHeight(35);
-		frenchImage.setFitHeight(35);
+		/*englishImage.setFitHeight(40);
+		spanishImage.setFitHeight(40);
+		frenchImage.setFitHeight(40);
 		italianImage.setFitHeight(35);
 		germanImage.setFitHeight(35);
-		portugueseImage.setFitHeight(35);
-		dutchImage.setFitHeight(35);
+		portugueseImage.setFitHeight(40);
+		dutchImage.setFitHeight(35);*/
 
 		SlideContent.languageComboBox.setVisibleRowCount(5);
 		SlideContent.languageComboBox.getItems().clear();
