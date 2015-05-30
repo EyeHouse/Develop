@@ -65,7 +65,7 @@ public class VideoPage extends Window {
 			video = new VideoElement(videoPath,true);
 			video.setStylesheet("resources/videoStyle.css");
 			video.setWidth(600);
-			video.setAutoplay(false);
+			video.setAutoplay(true);
 			video.display(videoPane);
 			
 			setupMarkerButtons();
