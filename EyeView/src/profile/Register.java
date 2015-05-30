@@ -11,6 +11,8 @@ package profile;
 
 import java.util.ArrayList;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -182,6 +184,72 @@ public class Register extends presenter.Window {
 		Label skypeLabel = new Label(Translator.translateText(languageIndex, "Skype Username:"));
 		GridPane.setHalignment(skypeLabel, HPos.RIGHT);
 		registerGrid.addRow(9, skypeLabel, skypeID);
+		
+		username.textProperty().addListener(
+				new ChangeListener<String>() {
+					@Override
+					public void changed(
+							final ObservableValue<? extends String> observable,
+							String oldValue, String newValue) {
+						if (newValue.length() >= 15) {
+							newValue = oldValue;
+							username.setText(newValue);
+						} 
+					}
+				});
+		
+		firstname.textProperty().addListener(
+				new ChangeListener<String>() {
+					@Override
+					public void changed(
+							final ObservableValue<? extends String> observable,
+							String oldValue, String newValue) {
+						if (newValue.length() >= 21) {
+							newValue = oldValue;
+							firstname.setText(newValue);
+						} 
+					}
+				});
+		
+		lastname.textProperty().addListener(
+				new ChangeListener<String>() {
+					@Override
+					public void changed(
+							final ObservableValue<? extends String> observable,
+							String oldValue, String newValue) {
+						if (newValue.length() >= 21) {
+							newValue = oldValue;
+							lastname.setText(newValue);
+						} 
+					}
+				});
+		
+		email.textProperty().addListener(
+				new ChangeListener<String>() {
+					@Override
+					public void changed(
+							final ObservableValue<? extends String> observable,
+							String oldValue, String newValue) {
+						if (newValue.length() >= 41) {
+							newValue = oldValue;
+							email.setText(newValue);
+						} 
+					}
+				});
+				
+		skypeID.textProperty().addListener(
+				new ChangeListener<String>() {
+					@Override
+					public void changed(
+							final ObservableValue<? extends String> observable,
+							String oldValue, String newValue) {
+						if (newValue.length() >= 21) {
+							newValue = oldValue;
+							skypeID.setText(newValue);
+						} 
+					}
+				});
+		
 	}
 	
 	/**
@@ -229,8 +297,8 @@ public class Register extends presenter.Window {
 	}
 
 	/**
-	 * This method saves the changes and checks if the information entered in each field is valid. If they all are 
-	 * the user is registered and their profile page is displayed 
+	 * This method saves the changes and checks if the information entered in each field is valid. 
+	 * If they all are the user is registered and their profile page is displayed 
 	 */
 	public class saveChanges implements EventHandler<ActionEvent> {
 
@@ -244,8 +312,13 @@ public class Register extends presenter.Window {
 					|| (bwc.containsBlackListedWords(lastname.getText()) == true)) {
 				createWarningPopup("Inappropiate Language");
 				dialogStage.show();
-			}
-			
+			} else if ((!buttonStudent.isSelected()) && (!buttonLandlord.isSelected())) {
+				createWarningPopup("Select an account type");
+				dialogStage.show();
+			} else if (Database.getUser(username.getText()) != null) {
+				createWarningPopup("Username is already registered");
+				dialogStage.show();
+			} 			
 			// If there are no rude words in the text field it checks all the information is correct
 			else {
 				user = new User(username.getText());
