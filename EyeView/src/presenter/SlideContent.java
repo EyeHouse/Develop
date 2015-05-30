@@ -574,7 +574,6 @@ public class SlideContent extends Window {
 						"Register"));
 				break;
 			case HOUSES:
-				createHomeSlide();
 				break;
 			case LOGIN:
 				labelLogin.setText(Translator.translateText(languageIndex,
@@ -601,31 +600,22 @@ public class SlideContent extends Window {
 				
 				break;
 			case ACCOUNTSETTINGS:
-				createAccountSettingsSlide();
 				break;
 			case SAVEDPROPERTIES:
-				createSavedPropertySlide();
 				break;
 			case HOUSE:
-				createPropertySlide();
 				break;
 			case MOREINFO:
-				createMoreInfoSlide();
 				break;
 			case REVIEWS:
-				createReviewsSlide();
 				break;
 			case MAP:
-				createMapSlide();
 				break;
 			case VIDEO:
-				createVideoSlide();
 				break;
 			case LANDLORDPROPERTIES:
-				createLandlordPropertiesSlide();
 				break;
 			case EDITPROPERTY:
-				createEditPropertySlide();
 				break;
 			case RESULTS:
 				break;
