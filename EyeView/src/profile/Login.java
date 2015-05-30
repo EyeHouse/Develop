@@ -34,6 +34,7 @@ import button.ButtonType;
 import button.SetupButton;
 import database.DataHandler;
 import database.Database;
+import database.User;
 
 public class Login extends presenter.Window {
 
@@ -174,6 +175,14 @@ public class Login extends presenter.Window {
 		username.setPromptText(Translator.translateText(languageIndex,
 				"Username"));
 		username.setPrefColumnCount(10);
+		username.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent ke) {
+				if (ke.getCode().equals(KeyCode.ENTER)) {
+					login();
+				}
+			}
+		});
 		loginGrid.getChildren().add(username);
 		GridPane.setConstraints(username, 1, 1);
 	}
@@ -259,7 +268,8 @@ public class Login extends presenter.Window {
 		// if exists create user object
 		System.out.println("User:" + (String) username.getText());
 		if (userExists == true) {
-			currentUsername = username.getText();
+			User loggedIn = Database.getUser(username.getText());
+			currentUsername = loggedIn.username;
 			loadSlide(HOUSES);
 		} else {
 			dialogStage.show();

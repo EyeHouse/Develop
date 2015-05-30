@@ -154,12 +154,16 @@ public class ProfileViewer extends presenter.Window {
 		// Translate.translateText(languageIndex, " Email ") + (": ")
 		labelName.setFont(fontTitle);
 		// String email = Translate.translateText(languageIndex, "Email ")
-		labelEmail.setText((Translator.translateText(languageIndex,"Email: ")) + profileUser.email);
+		labelEmail.setText((Translator.translateText(languageIndex, "Email: "))
+				+ profileUser.email);
 		// labelEmail.setText(Translate.translateText(languageIndex, "Hello"));
 		// labelEmail.setFont(fontMain);
-		Label labelDoB = new Label(Translator.translateText(languageIndex, "Date of birth: ")
-				+ profileUser.DOB.substring(8, 10) + "/"
-				+ profileUser.DOB.substring(5, 7) + "/"
+		Label labelDoB = new Label(Translator.translateText(languageIndex,
+				"Date of birth: ")
+				+ profileUser.DOB.substring(8, 10)
+				+ "/"
+				+ profileUser.DOB.substring(5, 7)
+				+ "/"
 				+ profileUser.DOB.substring(0, 4));
 		labelDoB.setFont(fontMain);
 
@@ -168,7 +172,8 @@ public class ProfileViewer extends presenter.Window {
 				&& !profileUser.username.equals(currentUsername)) {
 			SkypeCall skype = new SkypeCall();
 			ImageView skypeButton = skype.addCallButton(profileUser.skype, 50);
-			Label labelSkype = new Label(Translator.translateText(languageIndex, "Available on Skype:"));
+			Label labelSkype = new Label(Translator.translateText(
+					languageIndex, "Available on Skype:"));
 			labelSkype.setFont(fontMain);
 			skypeBox.getChildren().addAll(labelSkype, skypeButton);
 		}
@@ -248,7 +253,8 @@ public class ProfileViewer extends presenter.Window {
 				// Replace profile picture with new one from selected file
 				newProfilePictureFile = profilePictureChooser
 						.showOpenDialog(fileChooserStage);
-				if (newProfilePictureFile != null) {
+				if (newProfilePictureFile != null
+						&& !newProfilePictureFile.getName().contains(".url")) {
 					profilePicture = new Image(newProfilePictureFile.toURI()
 							.toString());
 					try {
@@ -264,6 +270,9 @@ public class ProfileViewer extends presenter.Window {
 								.println("Failed to upload new profile picture");
 						e.printStackTrace();
 					}
+				} else {
+					createWarningPopup("Invalid File Type.");
+					dialogStage.show();
 				}
 			}
 		});

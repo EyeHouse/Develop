@@ -32,6 +32,7 @@ import language.BadWordCheck;
 import presenter.SlideContent;
 import button.ButtonType;
 import button.SetupButton;
+import database.DataHandler;
 import database.Database;
 import database.User;
 
@@ -143,6 +144,9 @@ public class AccountSettings extends presenter.Window{
 				labelNewPasswordInvalid);
 		grid.addRow(8, labelConfNewPassword, fieldConfNewPassword,
 				labelPasswordMismatch);
+		GridPane.setHalignment(labelPasswordIncorrect, HPos.LEFT);
+		GridPane.setHalignment(labelNewPasswordInvalid, HPos.LEFT);
+		GridPane.setHalignment(labelPasswordMismatch, HPos.LEFT);
 	}
 
 	/* Add profile label and text area to grid */
@@ -185,9 +189,6 @@ public class AccountSettings extends presenter.Window{
 				if(fieldNewPassword.getText().equals(fieldConfNewPassword.getText())){
 					// Save changes and return to profile if valid
 					ApplyChanges();
-					labelPasswordMismatch.setVisible(false);
-					labelPasswordIncorrect.setVisible(false);
-					labelNewPasswordInvalid.setVisible(false); 
 				} else {
 					labelPasswordMismatch.setVisible(true);
 				}				
@@ -308,6 +309,10 @@ public class AccountSettings extends presenter.Window{
 
 		// Return to profile if password is not entered and there is
 		// no username error
+		String hashPass = DataHandler.crypt((String) fieldPassword.getText());
+		
+		boolean passwordCorrect = Database.login((String) currentUsername, hashPass);
+		
 		if (fieldPassword.getText().equals("")) {
 			if (!labelUsernameError.isVisible() && !labelBadLanguage.isVisible()) {
 				loadSlide(PROFILE);
@@ -315,19 +320,21 @@ public class AccountSettings extends presenter.Window{
 
 			// Show password incorrect error if current password does not match
 			// stored user password.
-		} else if (!fieldPassword.getText().equals(currentUser.password)) {
+		} else if (!passwordCorrect) {
 			labelPasswordIncorrect.setVisible(true);
 
 			// Check new password validity if current password is correct
-		} else if (fieldPassword.getText().equals(currentUser.password)) {
+		} else if (passwordCorrect) {
+			
 			labelPasswordIncorrect.setVisible(false);
 
-			// If new password is not null and matches the confirm password
+			// If new password is not empty and matches the confirm password
 			// field, store new password in database
 			if ((!fieldNewPassword.getText().equals(""))
 					&& (fieldNewPassword.getText().equals(fieldConfNewPassword
 							.getText()))) {
-				Database.userUpdate(currentUser,"password",null,fieldPassword.getText());
+				String newHash = DataHandler.crypt((String) fieldNewPassword.getText());
+				Database.userUpdate(currentUser,"password",null,newHash);
 
 				// Return to profile if there is no username error
 				if (!labelUsernameError.isVisible() && !labelBadLanguage.isVisible()) {
