@@ -9,16 +9,10 @@ package profile;
  * Copyright 2015 EyeHouse
  */
 
-import button.ButtonType;
-import button.SetupButton;
-import presenter.SlideContent;
-import database.DataHandler;
-import database.Database;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
-import javafx.geometry.VPos;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -34,8 +28,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.RectangleBuilder;
 import javafx.scene.text.Font;
-import javafx.scene.text.TextAlignment;
 import language.Translator;
+import presenter.SlideContent;
+import button.ButtonType;
+import button.SetupButton;
+import database.DataHandler;
+import database.Database;
 
 public class Login extends presenter.Window {
 

@@ -4,24 +4,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.memetix.mst.translate.Translate;
-
-import button.ButtonType;
-import button.SetupButton;
-
-import database.Database;
-import database.House;
-
-import parser.XMLParser;
-import parser.SlideshowData;
-import parser.SlideData;
-import profile.Login;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
@@ -33,11 +20,20 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBoxBuilder;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import parser.SlideData;
+import parser.SlideshowData;
+import parser.XMLParser;
+import profile.Login;
+import button.ButtonType;
+import button.SetupButton;
+
+import com.memetix.mst.translate.Translate;
+
+import database.Database;
+import database.House;
 
 public class Window extends Application {
 

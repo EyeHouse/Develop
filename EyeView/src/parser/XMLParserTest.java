@@ -2,8 +2,6 @@ package parser;
 
 import static org.junit.Assert.*;
 
-import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,7 +13,6 @@ import org.junit.Test;
 public class XMLParserTest {
 
 	private XMLParser parser;
-	private List<SlideData> slides;
 	private SlideshowData slideshow;
 	
 	@Before

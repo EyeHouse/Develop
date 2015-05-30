@@ -10,5 +10,6 @@
 	<classpathentry kind="lib" path="resources/jsch-0.1.50.jar"/>
 	<classpathentry kind="lib" path="resources/mysql_connector_java_5.1.34_bin.jar"/>
 	<classpathentry kind="lib" path="resources/org.apache.commons.io.jar"/>
+	<classpathentry kind="lib" path="resources/microsoft-translator-java-api-0.6.2-jar-with-dependencies.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

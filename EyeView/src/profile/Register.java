@@ -11,8 +11,6 @@ package profile;
 
 import java.util.ArrayList;
 
-import button.ButtonType;
-import button.SetupButton;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -34,11 +32,12 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.TextAlignment;
 import landlord.EditProperty;
 import language.BadWordCheck;
 import language.Translator;
 import presenter.SlideContent;
+import button.ButtonType;
+import button.SetupButton;
 import database.DataHandler;
 import database.Database;
 import database.User;

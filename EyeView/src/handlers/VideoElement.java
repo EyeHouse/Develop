@@ -60,7 +60,6 @@ import javafx.util.Duration;
  * @author Joel Fergusson
  *
  */
-@SuppressWarnings("deprecation")
 public class VideoElement {
 	/**
 	 * Relative x position (0.0 - 1.0 as a fraction of the width of the parent 
