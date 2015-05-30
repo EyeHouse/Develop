@@ -98,7 +98,7 @@ public class Database {
 				return true;
 
 			} catch (SQLException ex) {
-				ex.printStackTrace();
+				// ex.printStackTrace();
 				// handle any errors
 				System.out.println("SQLException: " + ex.getMessage());
 				System.out.println("SQLState: " + ex.getSQLState());
@@ -341,6 +341,8 @@ public class Database {
 	public static boolean houseDelete(House houseDetails, User userDetails) {
 		int uid;
 		int hid;
+		int i;
+
 		try {
 
 			// ArrayList of markers for deletion and House Reviews
@@ -351,31 +353,23 @@ public class Database {
 			HouseVideo deleteVideo = checkHouseVideo(userDetails,
 					houseDetails.hid);
 
-			// Free memory
-			deleteVideo = null;
+			if (deleteVideo != null) {
+				// Delete video
+				deleteVideo(userDetails, deleteVideo);
 
-			// Get video markers
-			deleteMarkers = getVideoMarkers(houseDetails.hid);
+				// Get video markers
+				deleteMarkers = getVideoMarkers(houseDetails.hid);
 
-			// remove the ArrayList from memory and delete from database
-			int i;
+				// remove the ArrayList from memory and delete from database
+				// Delete markers
+				for (i = 0; i < deleteMarkers.size(); i++) {
+					// Delete from database
+					deleteVideoMarker(deleteMarkers.get(i));
 
-			// Getting the runtime reference from system
-			Runtime runtime = Runtime.getRuntime();
-
-			System.out.println("\nMemory Before deletion : "
-					+ runtime.totalMemory());
-
-			// Delete markers
-			for (i = 0; i < deleteMarkers.size(); i++) {
-				// Delete from database
-				deleteVideoMarker(deleteMarkers.get(i));
-
-				// Remove info from memory
-				deleteMarkers.remove(0);
+					// Remove info from memory
+					deleteMarkers.remove(0);
+				}
 			}
-
-			deleteVideo(userDetails, deleteVideo);
 
 			// Delete images associated with house
 			System.out.println("\nDeleting Image data...");
@@ -401,15 +395,14 @@ public class Database {
 					.prepareStatement("DELETE FROM houses WHERE uid=? AND hid=?");
 			// get user ID
 			uid = getID(userDetails, null, 1);
+
 			// get hid
 			hid = getID(userDetails, houseDetails, 2);
 			dropHouse.setInt(1, uid);
 			dropHouse.setInt(2, hid);
+
 			// Execute SQL drop statement
 			dropHouse.executeUpdate();
-
-			System.out.println("\nMemory After deletion : "
-					+ runtime.totalMemory());
 
 			// Suggest garbage collection
 			System.gc();
@@ -556,10 +549,8 @@ public class Database {
 			e.printStackTrace();
 			e.getMessage();
 		}
-		if (house == null)
-			throw new NullPointerException();
-		else
-			return house;
+		
+		return house;
 	}
 
 	public static ArrayList<House> getLandlordProperties(int uid) {
@@ -618,7 +609,7 @@ public class Database {
 			int i;
 			for (i = 0; i < deleteHouses.size(); i++) {
 				// Delete houses that belong to user
-				deleteHouse(deleteHouses.get(i));
+				houseDelete(deleteHouses.get(i), deleteUser);
 
 				// Free house objects
 				deleteHouses.remove(0);
@@ -659,11 +650,6 @@ public class Database {
 			e.getMessage();
 			return false;
 		}
-	}
-
-	private static void deleteHouse(House house) {
-		// TODO Auto-generated method stub
-
 	}
 
 	/**
@@ -889,34 +875,39 @@ public class Database {
 	 */
 	public static boolean checkHouseVideoExists(User userDetails,
 			HouseVideo videoDetails) {
-		int id = getID(userDetails, null, 1);
+
 		ResultSet title;
 		String videoStr;
+
 		try {
+
 			PreparedStatement checkTitle = con
 					.prepareStatement("SELECT video_loc FROM house_videos WHERE vid=?");
-			checkTitle.setInt(1, id);
+
+			checkTitle.setInt(1, videoDetails.vid);
+
 			title = checkTitle.executeQuery();
+
 			while (title.next()) {
+
 				videoStr = title.getString("video_loc");
+
 				if (!videoDetails.videoLocation.equals(videoStr)) {
+
 					System.out.println("\nVideo doesn't Exist for this user");
+
 					return false;
-				} else {
-					System.out
-							.println("\nVideo with same title already exists for this user");
-					return true;
 				}
 			}
+
+			return true;
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.out.println("\nSQL error in house check");
 			return false;
 		}
-		System.out
-				.println("\nVideo with same location already exists for this user");
-		return true;
 	}
 
 	public static HouseVideo checkHouseVideo(User userDetails, int hid) {
@@ -1058,23 +1049,18 @@ public class Database {
 		return true;
 	}
 
-	public static HouseVideo getVideoInfo(User userDetails, House houseDetails,
-			String filename) {
+	public static HouseVideo getVideoInfo(User userDetails, House houseDetails) {
 
-		// Find video_loc field with the same filename + path
-		int hid = getID(userDetails, houseDetails, 2);
-		String vidLocation = "/eyehouse/" + userDetails.username + "/" + hid
-				+ "/" + filename;
 		ResultSet videoRS;
 		HouseVideo video = null;
 
 		try {
 			// Check if video path already exists in the database
 			PreparedStatement checkExists = con
-					.prepareStatement("SELECT * FROM house_videos WHERE video_loc=?");
+					.prepareStatement("SELECT * FROM house_videos WHERE hid=?");
 
 			// Enter field data
-			checkExists.setString(1, vidLocation);
+			checkExists.setInt(1, houseDetails.hid);
 
 			// Execute query
 			videoRS = checkExists.executeQuery();
@@ -1102,7 +1088,7 @@ public class Database {
 			System.out.println("\nVideo does not exist");
 			return false;
 		} else {
-
+			System.out.println("\n\n" + videoDetails.hid);
 			// Delete the video
 			try {
 				// if the video location exists
@@ -1125,21 +1111,20 @@ public class Database {
 		// Delete file on server
 		FileManager.deleteVideo(videoDetails);
 
-		// Check video has been deleted
-		exists = checkHouseVideoExists(userDetails, videoDetails);
+		// Get markers
+		deleteMarkers = getVideoMarkers(videoDetails.hid);
 
-		if (!exists) {
-			// Get markers
-			deleteMarkers = getVideoMarkers(videoDetails.hid);
+		System.out.println(deleteMarkers);
 
-			int i;
-			for (i = 0; i < deleteMarkers.size(); i++) {
-				// Delete markers
-				deleteVideoMarker(deleteMarkers.get(i));
+		int i;
+		for (i = 0; i < deleteMarkers.size(); i++) {
+			// Delete markers
+			System.out.println(deleteMarkers.get(i).vid);
 
-				// Free marker objects
-				deleteMarkers.remove(0);
-			}
+			deleteVideoMarker(deleteMarkers.get(i));
+
+			// Free marker objects
+			deleteMarkers.remove(0);
 		}
 
 		// Suggest free memory
@@ -1790,8 +1775,8 @@ public class Database {
 		// Trys to drop the marker with the relevant marker id (mid)
 		try {
 			PreparedStatement dropMarker = con
-					.prepareStatement("DELETE FROM markers WHERE mid=?");
-			dropMarker.setInt(1, videoMarker.mid);
+					.prepareStatement("DELETE FROM markers WHERE vid=?");
+			dropMarker.setInt(1, videoMarker.vid);
 			dropMarker.executeUpdate();
 			System.out.println("\nMarker Deleted");
 			return true;
@@ -1882,7 +1867,7 @@ public class Database {
 
 		String title = "Example";
 
-		int mode = 101;
+		int mode = 18;
 		boolean insertSuccess;
 		boolean houseDeleted;
 		boolean updateSuccess;
@@ -1892,7 +1877,11 @@ public class Database {
 
 		// testing switch
 		switch (mode) {
+		case 201:
 
+			userDelete(username);
+
+			break;
 		case 101:
 
 			// logged in user
@@ -1920,7 +1909,7 @@ public class Database {
 			eyehouseHQ.dateAvailable("2015-04-24");
 			eyehouseHQ.furnished(true);
 			eyehouseHQ.description("Test");
-			User temp = getUser("MVPTom");
+			User temp = getUser(username);
 			if (!checkHouseExists(temp, eyehouseHQ)) {
 				house = houseInsert(eyehouseHQ, brc, enrg, temp);
 				eyehouseHQ.printHouse();
@@ -2015,7 +2004,8 @@ public class Database {
 			break;
 		case 13:
 			User tempu2 = getUser("MVPTom");
-			House temph2 = getHouse(8);
+			House temph2 = getHouse(42);
+
 			try {
 				houseDeleted = houseDelete(temph2, tempu2);
 				if (!houseDeleted)
@@ -2023,12 +2013,10 @@ public class Database {
 				else
 					System.out.println("\nHouse succesfully deleted");
 			} catch (NullPointerException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				System.out.println("House not Deleted");
 			}
 			break;
-
 		case 15:
 
 			User tempu4 = getUser("MVPTom");
@@ -2093,14 +2081,12 @@ public class Database {
 			break;
 		case 18:
 
-			User tempu7 = getUser("MVPTom");
-			House temph7 = getHouse(8);
-
-			String filename1 = "example_clip.mp4";
+			User tempu7 = getUser("RickMc");
+			House temph7 = getHouse(51);
 
 			HouseVideo house1;
 
-			house1 = getVideoInfo(tempu7, temph7, filename1);
+			house1 = getVideoInfo(tempu7, temph7);
 
 			house1.printHouseInfo();
 
@@ -2114,17 +2100,17 @@ public class Database {
 
 		case 19:
 			// logged in user
-			User tempu12 = getUser("Alxandir");
+			User tempu12 = getUser(username);
 
 			// fill in target ID
-			UserReview reviewDetails = new UserReview(targetID);
-			reviewDetails.uid_reviewer = tempu12.uid;
+			UserReview reviewDetails = new UserReview(tempu12.uid);
+			reviewDetails.uid_reviewer = targetID;
 			reviewDetails.review = "Hes such a dick. Thank god hes not in charge of anything important";
 			reviewDetails.rating(1);
 			reviewDetails.like(1000);
 			reviewDetails.dislike(0);
 
-			// check = insertUserReview(reviewDetails);
+			check = insertUserReview(reviewDetails);
 
 			checkReviewExists(reviewDetails);
 
