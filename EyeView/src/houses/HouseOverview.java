@@ -74,6 +74,8 @@ public class HouseOverview extends Window {
 	 */
 	public HouseOverview(boolean singlePropertyView, ArrayList<House> houses) {
 
+		
+		
 		this.houses = houses;
 
 		createGalleryLists();
@@ -232,6 +234,8 @@ public class HouseOverview extends Window {
 		final Label saveLabel = new Label("Save for later");
 		saveLabel.setFont(Font.font(null, FontWeight.BOLD, 14));
 		saveLabel.relocate(520, 415);
+		save = new Image("file:resources/advert_icons/save.png");
+		
 
 		// Save button with no border and graphic only
 		final Button buttonSave = new Button("", new ImageView(save));
@@ -254,10 +258,12 @@ public class HouseOverview extends Window {
 		});
 		buttonSave.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent ae) {
+				saved = new Image("file:resources/advert_icons/saved.png");
 				buttonSave.setDisable(true);
 				buttonSave.setGraphic(new ImageView(saved));
 				savedProperties.add(String.format("%03d", currentPropertyID));
 				User.updateSavedProperties(currentUsername, savedProperties);
+				saved = null;
 			}
 		});
 
@@ -265,6 +271,7 @@ public class HouseOverview extends Window {
 		if (slideID != INDEX && slideID != HOUSE) {
 			galleryPane.getChildren().add(buttonSave);
 		}
+		save = null;
 	}
 
 	/**
@@ -294,6 +301,9 @@ public class HouseOverview extends Window {
 	 */
 	private void setupTimerControl() {
 
+		pause = new Image(
+				"file:resources/advert_icons/pause.png");
+		
 		playpauseButton = new ImageView(pause);
 		playpauseButton.setPreserveRatio(true);
 		playpauseButton.setFitWidth(30);
@@ -310,6 +320,7 @@ public class HouseOverview extends Window {
 		});
 
 		root.getChildren().addAll(playpauseButton);
+		pause = null;
 	}
 
 	/**
@@ -341,6 +352,11 @@ public class HouseOverview extends Window {
 	 */
 	public static void setTimerState(String newState) {
 
+		play = new Image(
+				"file:resources/advert_icons/play.png");
+		pause = new Image(
+				"file:resources/advert_icons/pause.png");
+		
 		switch (newState) {
 		case "PLAY":
 			playpauseButton.setImage(pause);
@@ -351,6 +367,9 @@ public class HouseOverview extends Window {
 			advertTimer.pause();
 			break;
 		}
+		
+		play = null;
+		pause = null;
 	}
 
 	/**
@@ -383,8 +402,8 @@ public class HouseOverview extends Window {
 		savedProperties = null;
 		
 		playpauseButton = null;
-		play = null;
-		pause = null;
+		//play = null;
+		//pause = null;
 		save = null;
 		saved = null;
 	}
