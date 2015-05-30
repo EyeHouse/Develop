@@ -30,9 +30,11 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 import landlord.EditProperty;
 import language.BadWordCheck;
 import language.Translator;
@@ -50,7 +52,7 @@ public class Register extends presenter.Window {
 	private PasswordField password;
 	private PasswordField repeatPassword;
 	private GridPane registerGrid = new GridPane();
-	Label topTitle;
+	Label topTitle, labelPassword, labelConfirm;
 
 	private RadioButton buttonStudent = new RadioButton("Student");
 	private RadioButton buttonLandlord = new RadioButton("Landlord");
@@ -64,7 +66,7 @@ public class Register extends presenter.Window {
 
 		bwc = new BadWordCheck();
 		Login.setBackground(true);
-		Login.setWhiteBox(410, 530,true);
+		Login.setWhiteBox(440, 530,true);
 		setupGrid();
 		setupTitle();
 		setupTextFields(registerGrid);
@@ -73,17 +75,17 @@ public class Register extends presenter.Window {
 		//Insert EyeHouse icon
 		Image icon = new Image("file:./resources/icons/xxhdpi.png");
 		ImageView iconView = new ImageView(icon);
-		iconView.relocate(220, 260);
+		iconView.relocate(200, 260);
 		root.getChildren().add(iconView);
 		
 		//Extra information for the user
-		Label requiredField = new Label("*Required field.");
+		Label requiredField = new Label(Translator.translateText(languageIndex,"*Required field."));
 		Label passwordRequirements = new Label(
-				"**Password should contain at least one upper case letter, one lower case letter and one digit. "
-						+ " It should have between 6 and 20 characters.");
+				Translator.translateText(languageIndex,"**Password should contain at least one upper case letter, one lower case letter and one digit. "
+						+ " It should have between 6 and 20 characters."));
 		passwordRequirements.setWrapText(true);
 		//Create box to contain the previous labels
-		VBox vbox = new VBox(0);
+		VBox vbox = new VBox(5);
 		vbox.setPrefWidth(400);
 		vbox.relocate(380, 665);
 		vbox.setAlignment(Pos.CENTER);
@@ -99,7 +101,9 @@ public class Register extends presenter.Window {
 
 		registerGrid.setVgap(30);
 		registerGrid.setHgap(30);
-		registerGrid.relocate(390, 110);
+		registerGrid.setMinWidth(390);
+		registerGrid.setMaxWidth(390);
+		registerGrid.relocate(375, 110);
 	}
 	
 	/**
@@ -122,48 +126,63 @@ public class Register extends presenter.Window {
 
 		// username field
 		username = new TextField();
-		username.setPromptText("Username");
+		username.setPromptText(Translator.translateText(languageIndex, "Username"));
 		username.setPrefColumnCount(10);
-		registerGrid.addRow(1, new Label("*Choose a username"), username);
+		Label chooseNameLabel = new Label(Translator.translateText(languageIndex, "*Choose a username:"));
+		GridPane.setHalignment(chooseNameLabel, HPos.RIGHT);
+		registerGrid.addRow(1, chooseNameLabel, username);
+		GridPane.setHgrow(username, Priority.ALWAYS);
 
 		// First Name field
 		firstname = new TextField();
 		firstname.setPromptText("Joe");
 		firstname.setPrefColumnCount(10);
-		registerGrid.addRow(2, new Label("First name:"), firstname);
+		Label nameLabel = new Label(Translator.translateText(languageIndex, "*First name:"));
+		GridPane.setHalignment(nameLabel, HPos.RIGHT);
+		registerGrid.addRow(2, nameLabel, firstname);
 
-		// Last Name fieldzz
+		// Last Name field
 		lastname = new TextField();
 		lastname.setPromptText("Bloggs");
 		lastname.setPrefColumnCount(10);
-		registerGrid.addRow(3, new Label("Last name:"), lastname);
+		Label lastNameLabel = new Label (Translator.translateText(languageIndex, "*Last name:"));
+		GridPane.setHalignment(lastNameLabel, HPos.RIGHT);
+		registerGrid.addRow(3, lastNameLabel, lastname);
 
 		setupPasswordFields(registerGrid);
 
 		// Date of birth field
 		dateOfBirthCombo = EditProperty.setupDate("2015-01-01");
-		HBox comboBoxes = new HBox(30);
+		HBox comboBoxes = new HBox(10);
+		Label birthLabel = new Label(Translator.translateText(languageIndex, "*Date of Birth:"));
+		GridPane.setHalignment(birthLabel, HPos.RIGHT);
 		comboBoxes.getChildren().addAll(dateOfBirthCombo.get(0),
 				dateOfBirthCombo.get(1), dateOfBirthCombo.get(2));
-		registerGrid.addRow(6, new Label("*Date of Birth:"), comboBoxes);
+		registerGrid.addRow(6, birthLabel, comboBoxes);
 
 		// Account Type radio buttons
 		buttonStudent.setToggleGroup(group);
 		buttonLandlord.setToggleGroup(group);
+		Label accountLabel = new Label(Translator.translateText(languageIndex, "*Account Type:"));
+		GridPane.setHalignment(accountLabel, HPos.RIGHT);
 		hBoxAccountType.getChildren().addAll(buttonStudent, buttonLandlord);
-		registerGrid.addRow(7, new Label("*Account Type:"), hBoxAccountType);
+		registerGrid.addRow(7, accountLabel, hBoxAccountType);
 
 		// Email field
 		email = new TextField();
 		email.setPromptText("example@mail.com");
 		email.setPrefColumnCount(10);
-		registerGrid.addRow(8, new Label("*Email:"), email);
+		Label emailLabel = new Label(Translator.translateText(languageIndex, "*Email:"));
+		GridPane.setHalignment(emailLabel, HPos.RIGHT);
+		registerGrid.addRow(8, emailLabel, email);
 
 		// Skype field
 		skypeID = new TextField();
 		skypeID.setPromptText("jBloggs1");
 		skypeID.setPrefColumnCount(10);
-		registerGrid.addRow(9, new Label("Skype Username:"), skypeID);
+		Label skypeLabel = new Label(Translator.translateText(languageIndex, "Skype Username:"));
+		GridPane.setHalignment(skypeLabel, HPos.RIGHT);
+		registerGrid.addRow(9, skypeLabel, skypeID);
 	}
 	
 	/**
@@ -173,15 +192,19 @@ public class Register extends presenter.Window {
 
 		// Password field
 		password = new PasswordField();
-		registerGrid.add(new Label("*Create Password: "), 0, 4);
-		password.setPromptText("Your Password");
+		Label passwordLabel = new Label(Translator.translateText(languageIndex, "*Create Password :"));
+		GridPane.setHalignment(passwordLabel, HPos.RIGHT);
+		registerGrid.add(passwordLabel, 0, 4);
+		password.setPromptText(Translator.translateText(languageIndex,"Your Password"));
 		password.setPrefColumnCount(10);
 		registerGrid.add(password, 1, 4);
 
 		// Repeat Password field
 		repeatPassword = new PasswordField();
-		registerGrid.add(new Label("*Confirm Password: "), 0, 5);
-		repeatPassword.setPromptText("Your Password");
+		Label confirmPasswordLabel = new Label(Translator.translateText(languageIndex, "*Confirm Password :"));
+		GridPane.setHalignment(confirmPasswordLabel, HPos.RIGHT);
+		registerGrid.add(confirmPasswordLabel, 0, 5);
+		repeatPassword.setPromptText(Translator.translateText(languageIndex,"Your Password"));
 		repeatPassword.setPrefColumnCount(10);
 		registerGrid.add(repeatPassword, 1, 5);
 	}
@@ -193,7 +216,7 @@ public class Register extends presenter.Window {
 
 		// Add button to grid
 		ButtonType button1 = new ButtonType("166,208,255", null,
-				Translator.translateText(languageIndex, "Register"), 100, 30);
+				Translator.translateText(languageIndex, Translator.translateText(languageIndex,"Register")), 100, 30);
 		Button registerButton = new SetupButton().CreateButton(button1);
 		registerGrid.add(registerButton, 0, 10);
 		GridPane.setConstraints(registerButton, 0, 10, 2, 1, HPos.CENTER,
@@ -220,9 +243,8 @@ public class Register extends presenter.Window {
 			if ((bwc.containsBlackListedWords(username.getText()) == true)
 					|| (bwc.containsBlackListedWords(firstname.getText()) == true)
 					|| (bwc.containsBlackListedWords(lastname.getText()) == true)) {
-				createWarningPopup("Rude Word Detected.");
+				createWarningPopup("Inappropiate Language");
 				dialogStage.show();
-				System.out.println("Rude word detected.");
 			}
 			
 			// If there are no rude words in the text field it checks all the information is correct
@@ -245,8 +267,8 @@ public class Register extends presenter.Window {
 				// If valid, it is encrypted and stored
 				if (DataHandler.passwordChecker(password.getText(),
 						repeatPassword.getText()) == false) {
-					System.out.println("Password check failed");
-					createWarningPopup(" Incorrect Password. Try Again");
+					System.out.println(Translator.translateText(languageIndex,"Password check failed"));
+					createWarningPopup(Translator.translateText(languageIndex,"Incorrect Password. Try Again"));
 					dialogStage.show();
 				} else {
 					encryptedPassword = DataHandler.crypt(password.getText());

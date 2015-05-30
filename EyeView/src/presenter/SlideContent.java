@@ -167,7 +167,7 @@ public class SlideContent extends Window {
 		houseAdverts = new HouseOverview(false, houses);
 		createSidebar();
 		createMenuBar();
-		
+
 		houseIDs.clear();
 		houseIDs = null;
 		houses = null;
@@ -182,7 +182,7 @@ public class SlideContent extends Window {
 		houseAdverts = new HouseOverview(false, houses);
 		createSidebar();
 		createMenuBar();
-		
+
 		houseIDs.clear();
 		houseIDs = null;
 	}
@@ -280,9 +280,11 @@ public class SlideContent extends Window {
 
 			User currentUser = Database.getUser(currentUsername);
 			try {
-				//InputStream binaryStream = currentUser.profimg.getBinaryStream(
-						//1, currentUser.profimg.length());
-				Image profilePicture = new Image(currentUser.profimg.getBinaryStream());
+				// InputStream binaryStream =
+				// currentUser.profimg.getBinaryStream(
+				// 1, currentUser.profimg.length());
+				Image profilePicture = new Image(
+						currentUser.profimg.getBinaryStream());
 
 				profilePictureView = new ImageView(profilePicture);
 				// Set maximum dimensions for profile picture
@@ -416,7 +418,6 @@ public class SlideContent extends Window {
 		sidebar.setMinWidth(150);
 		sidebar.setAlignment(Pos.CENTER);
 
-		
 		root.getChildren().add(sidebar);
 	}
 
@@ -424,7 +425,8 @@ public class SlideContent extends Window {
 
 		HBox buttonRow = new HBox(5);
 
-		ButtonType button1 = new ButtonType(null, null, Translator.translateText(languageIndex, "Video Tour"), 140, 50);
+		ButtonType button1 = new ButtonType(null, null,
+				Translator.translateText(languageIndex, "Video Tour"), 140, 50);
 		videoButton = new SetupButton().CreateButton(button1);
 		videoButton.setFocusTraversable(false);
 		videoButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -433,7 +435,8 @@ public class SlideContent extends Window {
 			}
 		});
 
-		ButtonType button2 = new ButtonType(null, null, Translator.translateText(languageIndex, "Map"), 140, 50);
+		ButtonType button2 = new ButtonType(null, null,
+				Translator.translateText(languageIndex, "Map"), 140, 50);
 		mapButton = new SetupButton().CreateButton(button2);
 		mapButton.setFocusTraversable(false);
 		mapButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -442,7 +445,8 @@ public class SlideContent extends Window {
 			}
 		});
 
-		ButtonType button3 = new ButtonType(null, null, Translator.translateText(languageIndex, "Information"), 140, 50);
+		ButtonType button3 = new ButtonType(null, null,
+				Translator.translateText(languageIndex, "Information"), 140, 50);
 		infoButton = new SetupButton().CreateButton(button3);
 		infoButton.setFocusTraversable(false);
 		infoButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -451,7 +455,8 @@ public class SlideContent extends Window {
 			}
 		});
 
-		ButtonType button4 = new ButtonType(null, null, Translator.translateText(languageIndex, "Reviews"), 140, 50);
+		ButtonType button4 = new ButtonType(null, null,
+				Translator.translateText(languageIndex, "Reviews"), 140, 50);
 		reviewsButton = new SetupButton().CreateButton(button4);
 		reviewsButton.setFocusTraversable(false);
 		reviewsButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -550,28 +555,41 @@ public class SlideContent extends Window {
 			languageIndex = languageComboBox.getSelectionModel()
 					.getSelectedIndex();
 
-			if (slideID == INDEX || slideID == HOUSES) {
-				houseAdverts.updateLanguage();
+			switch (slideID) {
 
+			case INDEX:
+
+				houseAdverts.updateLanguage();
 				videoButton.setText(Translator.translateText(languageIndex,
 						"Video Tour"));
-				mapButton
-						.setText(Translator.translateText(languageIndex, "Map"));
+				mapButton.setText(Translator
+						.translateText(languageIndex, "Map"));
 				infoButton.setText(Translator.translateText(languageIndex,
 						"Information"));
 				reviewsButton.setText(Translator.translateText(languageIndex,
 						"Reviews"));
-			}
-
-			if (slideID == LOGIN || slideID == REGISTER || slideID == INDEX) {
 				labelLogin.setText(Translator.translateText(languageIndex,
 						"Login"));
 				labelRegister.setText(Translator.translateText(languageIndex,
 						"Register"));
-			}
-
-			if (slideID != INDEX && slideID != LOGIN && slideID != REGISTER) {
-
+				break;
+			case HOUSES:
+				createHomeSlide();
+				break;
+			case LOGIN:
+				labelLogin.setText(Translator.translateText(languageIndex,
+						"Login"));
+				labelRegister.setText(Translator.translateText(languageIndex,
+						"Register"));
+				break;
+			case REGISTER:
+				labelLogin.setText(Translator.translateText(languageIndex,
+						"Login"));
+				labelRegister.setText(Translator.translateText(languageIndex,
+						"Register"));
+				break;
+			case PROFILE:
+				
 				labelProfile.setText(Translator.translateText(languageIndex,
 						"Profile"));
 				labelSavedProperties.setText(Translator.translateText(
@@ -580,25 +598,76 @@ public class SlideContent extends Window {
 						languageIndex, "My Properties"));
 				labelLogOut.setText(Translator.translateText(languageIndex,
 						"Log Out"));
+				
+				break;
+			case ACCOUNTSETTINGS:
+				createAccountSettingsSlide();
+				break;
+			case SAVEDPROPERTIES:
+				createSavedPropertySlide();
+				break;
+			case HOUSE:
+				createPropertySlide();
+				break;
+			case MOREINFO:
+				createMoreInfoSlide();
+				break;
+			case REVIEWS:
+				createReviewsSlide();
+				break;
+			case MAP:
+				createMapSlide();
+				break;
+			case VIDEO:
+				createVideoSlide();
+				break;
+			case LANDLORDPROPERTIES:
+				createLandlordPropertiesSlide();
+				break;
+			case EDITPROPERTY:
+				createEditPropertySlide();
+				break;
+			case RESULTS:
+				break;
+			default:
+				break;
 			}
-			if (slideID == HOUSES || slideID == HOUSE || slideID == RESULTS) {
-				labelBedSearch.setText(Translator.translateText(languageIndex,
-						"Bedrooms"));
-				labelBedMin.setText(Translator.translateText(languageIndex,
-						"Min"));
-				labelBedMax.setText(Translator.translateText(languageIndex,
-						"Max"));
 
-				labelPriceSearch.setText(Translator.translateText(languageIndex,
-						"Price: "));
-				labelPriceMin.setText(Translator.translateText(languageIndex,
-						"Min") + " (£)");
-				labelPriceMax.setText(Translator.translateText(languageIndex,
-						"Max") + " (£)");
-
-				labelDistanceSearch.setText(Translator.translateText(
-						languageIndex, "Distance to University") + " (km)");
-			}
+			/*
+			 * if ( || slideID == HOUSES ) { houseAdverts.updateLanguage();
+			 * 
+			 * videoButton.setText(Translator.translateText(languageIndex,
+			 * "Video Tour")); mapButton.setText(Translator
+			 * .translateText(languageIndex, "Map"));
+			 * infoButton.setText(Translator.translateText(languageIndex,
+			 * "Information"));
+			 * reviewsButton.setText(Translator.translateText(languageIndex,
+			 * "Reviews")); }
+			 * 
+			 * if (slideID == LOGIN || slideID == REGISTER || slideID == INDEX)
+			 * { labelLogin.setText(Translator.translateText(languageIndex,
+			 * "Login"));
+			 * labelRegister.setText(Translator.translateText(languageIndex,
+			 * "Register")); }
+			 * 
+			 * if (slideID != INDEX && slideID != LOGIN && slideID != REGISTER)
+			 * {
+			 * 
+			 * labelProfile.setText(Translator.translateText(languageIndex,
+			 * "Profile"));
+			 * labelSavedProperties.setText(Translator.translateText(
+			 * languageIndex, "Saved Properties"));
+			 * labelLandlordProperties.setText(Translator.translateText(
+			 * languageIndex, "My Properties"));
+			 * labelLogOut.setText(Translator.translateText(languageIndex,
+			 * "Log Out")); } if (slideID == HOUSES || slideID == HOUSE ||
+			 * slideID == RESULTS) {
+			 * labelBedSearch.setText(Translator.translateText(languageIndex,
+			 * "Bedrooms")); labelPriceSearch.setText(Translator.translateText(
+			 * languageIndex, "Price"));
+			 * labelDistanceSearch.setText(Translator.translateText(
+			 * languageIndex, "Distance to University") + " (km)"); }
+			 */
 		}
 	}
 
@@ -642,10 +711,10 @@ public class SlideContent extends Window {
 		labelPriceSearch = new Label(Translator.translateText(languageIndex,
 				"Price"));
 		labelPriceSearch.setFont(Font.font(null, FontWeight.BOLD, 12));
-		labelPriceMin = new Label(Translator.translateText(languageIndex, "Min")
-				+ " (£)");
-		labelPriceMax = new Label(Translator.translateText(languageIndex, "Max")
-				+ " (£)");
+		labelPriceMin = new Label(
+				Translator.translateText(languageIndex, "Min") + " (£)");
+		labelPriceMax = new Label(
+				Translator.translateText(languageIndex, "Max") + " (£)");
 
 		labelDistanceSearch = new Label(Translator.translateText(languageIndex,
 				"Distance to University") + " (km)");
@@ -810,22 +879,23 @@ public class SlideContent extends Window {
 			result3.clear();
 			result4.clear();
 			result5.clear();
-			
+
 			result1 = null;
 			result2 = null;
 			result3 = null;
 			result4 = null;
 			result5 = null;
-			
+
 			searchResults = output;
 			if (output.size() > 0) {
 				loadSlide(RESULTS);
 			}
 		}
 	}
-	
-	private void clearSlideData(){
-		System.out.println("\nMemory Free:" + Runtime.getRuntime().freeMemory());
+
+	private void clearSlideData() {
+		System.out
+				.println("\nMemory Free:" + Runtime.getRuntime().freeMemory());
 		switch (prevSlideID) {
 		case STARTPAGE:
 			startPage.displose();
@@ -833,7 +903,7 @@ public class SlideContent extends Window {
 			break;
 		case RESULTS:
 		case INDEX:
-		case HOUSE:	
+		case HOUSE:
 		case HOUSES:
 			languageComboBox.getItems().clear();
 			languageComboBox = null;
@@ -877,9 +947,10 @@ public class SlideContent extends Window {
 		default:
 			break;
 		}
-		
+
 		profilePictureView = null;
 		System.gc();
-		System.out.println("Memory Free After:" + Runtime.getRuntime().freeMemory());
+		System.out.println("Memory Free After:"
+				+ Runtime.getRuntime().freeMemory());
 	}
 }
