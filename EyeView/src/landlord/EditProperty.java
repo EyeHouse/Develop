@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
+
 import button.ButtonType;
 import button.SetupButton;
 
@@ -43,6 +45,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
+import language.BadWordCheck;
 import language.Translate;
 import database.Database;
 import database.FileManager;
@@ -85,14 +88,14 @@ public class EditProperty extends presenter.Window {
 	private Button deleteMarker;
 	private Button setMarkerButton;
 	private int markersIndex;
+	private Button fileChooserButton;
 
 	private String videoPath;
 	private VideoElement video;
 	private HouseVideo videoInfo = null;
 	ListView<HBox> markerList = new ListView<HBox>();
 	ObservableList<HBox> items = FXCollections.observableArrayList();
-	private ArrayList<Marker> videoMarkers;
-	private ArrayList<Marker> currentMarkers = new ArrayList<Marker>(); 
+	private ArrayList<Marker> videoMarkers = new ArrayList<Marker>();
 
 	private ArrayList<HouseImage> houseImages;
 	private ArrayList<CheckBox> deleteImage = new ArrayList<CheckBox>();
@@ -134,10 +137,10 @@ public class EditProperty extends presenter.Window {
 	private void setupGrid() {
 		// Set grid size and spacing in group.
 		grid.setHgap(50);
-		if (page == VIDEO) {
-			grid.setVgap(20);
-		} else {
+		if (page == INFO) {
 			grid.setVgap(30);
+		} else {
+			grid.setVgap(20);
 		}
 
 		grid.relocate(255, 20);
@@ -331,6 +334,7 @@ public class EditProperty extends presenter.Window {
 		buttonSave.setDisable(true);
 		buttonSave.setOnAction(new ApplyChanges());
 
+
 		grid.addRow(2, labelAddress, address);
 		grid.addRow(3, labelPostcode, postcode);
 		grid.addRow(4, labelPrice, price);
@@ -361,14 +365,21 @@ public class EditProperty extends presenter.Window {
 
 		houseImages = new ArrayList<HouseImage>();
 		ScrollPane imageWindow = new ScrollPane();
-		imageWindow.setMinSize(545, 480);
-		imageWindow.setMaxSize(545, 480);
+		imageWindow.setMinSize(545, 500);
+		imageWindow.setMaxSize(545, 500);
 
 		Label labelUpload = new Label(Translate.translateText(languageIndex,
 				"Add a New Image:"));
 		labelUpload.setFont(Font.font(null, FontWeight.BOLD, 14));
 		uploadPathImage = new TextField();
 		uploadPathImage.setEditable(false);
+		
+		Label pictureNumber = new Label (Translate.translateText(languageIndex,
+				"* A Minimum of 3 Pictures is Required"));
+		pictureNumber.setFont(Font.font(null, FontWeight.BOLD, 14));
+		grid.addRow(2, pictureNumber);
+		GridPane.setConstraints(pictureNumber, 0, 2, 3, 1, HPos.CENTER,
+				VPos.CENTER);
 
 		ButtonType button1 = new ButtonType("166,208,255", null,
 				Translate.translateText(languageIndex, "Browse"), 70, 30);
@@ -431,14 +442,12 @@ public class EditProperty extends presenter.Window {
 		}
 
 		imageWindow.setContent(imageTiles);
-		grid.add(imageWindow, 0, 2);
-		// grid.add(buttonDelete, 3, 2);
-		grid.add(buttonDelete, 0, 3);
-		GridPane.setConstraints(buttonDelete, 0, 3, 3, 1, HPos.CENTER,
+		grid.add(imageWindow, 0, 3);
+		grid.add(buttonDelete, 0, 4);
+		GridPane.setConstraints(buttonDelete, 0, 4, 3, 1, HPos.CENTER,
 				VPos.CENTER);
-		GridPane.setConstraints(imageWindow, 0, 2, 3, 1, HPos.CENTER,
+		GridPane.setConstraints(imageWindow, 0, 3, 3, 1, HPos.CENTER,
 				VPos.CENTER);
-		// grid.setGridLinesVisible(true);
 	}
 
 	/**
@@ -467,7 +476,12 @@ public class EditProperty extends presenter.Window {
 		// Add FileChooser button
 		ButtonType button1 = new ButtonType("166,208,255", null,
 				Translate.translateText(languageIndex, "Browse"), 100, 30);
-		Button fileChooserButton = new SetupButton().CreateButton(button1);
+		fileChooserButton = new SetupButton().CreateButton(button1);
+		if (videoPath != null){
+			fileChooserButton.setDisable(true);
+		} else {
+			fileChooserButton.setDisable(false);
+		}
 
 		// Add Upload Video button
 		ButtonType button2 = new ButtonType("166,208,255", null,
@@ -542,7 +556,7 @@ public class EditProperty extends presenter.Window {
 				
 				HBox currentMarker = new HBox(0);
 				Marker markers = videoMarkers.get(i);
-				
+				System.out.println(markers.room);
 				Label currentRoomLabel = new Label(markers.room);
 				currentRoomLabel.setPrefWidth(200);
 				Label currentVideoTimeLabel = new Label(
@@ -657,6 +671,13 @@ public class EditProperty extends presenter.Window {
 
 		public void handle(ActionEvent arg0) {
 
+			BadWordCheck bwd = new BadWordCheck();
+			if(bwd.containsBlackListedWords(description.getText())){
+				description.setText(bwd.highlightBlackListedWords(description.getText()));
+				createWarningPopup("Inappropriate Language");
+				dialogStage.show();
+			} else {
+				
 			String dateAvailableString = dateComboArray.get(2).getValue() + "-"
 					+ dateComboArray.get(1).getValue() + "-"
 					+ dateComboArray.get(0).getValue();
@@ -682,6 +703,7 @@ public class EditProperty extends presenter.Window {
 					dateAvailableString, null, null, 0, 1);
 			grid.getChildren().clear();
 			createEditPage();
+			}
 		}
 	}
 
@@ -731,9 +753,9 @@ public class EditProperty extends presenter.Window {
 							
 							videoInfo = Database.checkHouseVideo(owner, house.hid);
 							
-							for (int i = 0; i < currentMarkers.size(); i++) {
+							for (int i = 0; i < videoMarkers.size(); i++) {
 								
-								Marker marker = currentMarkers.get(i);
+								Marker marker = videoMarkers.get(i);
 								String roomMarker = marker.room;
 								double videoTime = marker.markerTime;
 								
@@ -942,6 +964,7 @@ public class EditProperty extends presenter.Window {
 					break;
 				case VIDEO:
 					videoPath = filePath;
+					fileChooserButton.setDisable(true);
 					SetupVideoPlayer(videoPath);
 					SetupRoomMarkers();
 					break;
@@ -959,8 +982,8 @@ public class EditProperty extends presenter.Window {
 					Database.insertHouseVideo(owner, house,
 							videoFile.getName(), videoFile.getParentFile()
 									.getAbsolutePath());
-					videoInfo = Database.getVideoInfo(owner, house, videoFile.getParentFile()
-							.getAbsolutePath());
+					videoInfo = Database.checkHouseVideo(owner, house.hid);
+					fileChooserButton.setDisable(true);
 					SetupVideoPlayer(videoPath);
 					SetupRoomMarkers();
 				}
@@ -986,7 +1009,7 @@ public class EditProperty extends presenter.Window {
 
 			videoPath = null;
 			video = null;
-
+			fileChooserButton.setDisable(false);
 			grid.getChildren().clear();
 			createEditPage();
 		}
@@ -1056,7 +1079,7 @@ public class EditProperty extends presenter.Window {
 				marker.time(videoTime);
 				
 				items.add(newMarker);
-				currentMarkers.add(marker);  
+				videoMarkers.add(marker);  
 				newRoomField.clear();
 				setMarkerButton.setDisable(true);
 			}
