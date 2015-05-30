@@ -92,6 +92,7 @@ public class EditProperty extends presenter.Window {
 	ListView<HBox> markerList = new ListView<HBox>();
 	ObservableList<HBox> items = FXCollections.observableArrayList();
 	private ArrayList<Marker> videoMarkers;
+	private ArrayList<Marker> currentMarkers = new ArrayList<Marker>(); 
 
 	private ArrayList<HouseImage> houseImages;
 	private ArrayList<CheckBox> deleteImage = new ArrayList<CheckBox>();
@@ -150,7 +151,7 @@ public class EditProperty extends presenter.Window {
 		HBox info = new HBox(5);
 		HBox pics = new HBox(5);
 		HBox vids = new HBox(5);
-		HBox tabs = new HBox(100);
+		HBox tabs = new HBox(60);
 		Label labelInfoTab = new Label("1. "
 				+ Translate.translateText(languageIndex, "House Information"));
 		Label labelPictureTab = new Label("2. "
@@ -188,7 +189,6 @@ public class EditProperty extends presenter.Window {
 
 		if (hid == 0) {
 			tabs.getChildren().addAll(info, pics, vids);
-			grid.addRow(0, info, pics, vids);
 		} else {
 			tabs.getChildren().addAll(labelInfoTab, labelPictureTab,
 					labelVideoTab);
@@ -225,18 +225,27 @@ public class EditProperty extends presenter.Window {
 		buttonFinish.setCursor(Cursor.HAND);
 		buttonFinish.setOnAction(new CreateHouse());
 
-		ButtonType button4 = new ButtonType("166,208,255", null,
-				Translate.translateText(languageIndex, "Save"), 110, 30);
-		Button buttonCancel = new SetupButton().CreateButton(button4);
-		buttonCancel.setCursor(Cursor.HAND);
-		buttonCancel.setOnAction(new Cancel());
+		if (hid == 0){
+			ButtonType button4 = new ButtonType("166,208,255", null,
+					Translate.translateText(languageIndex, "Cancel"), 110, 30);
+			Button buttonCancel = new SetupButton().CreateButton(button4);
+			buttonCancel.setCursor(Cursor.HAND);
+			buttonCancel.setOnAction(new Cancel());
+			
+			backButtons.getChildren().add(buttonCancel);
+			backButtons.getChildren().add(buttonFinish);
+			
+		} else {
+			ButtonType button4 = new ButtonType("166,208,255", null,
+					Translate.translateText(languageIndex, "Save"), 110, 30);
+			Button buttonSaveEdit = new SetupButton().CreateButton(button4);
+			buttonSaveEdit.setCursor(Cursor.HAND);
+			buttonSaveEdit.setOnAction(new Cancel());
+			
+			backButtons.getChildren().add(buttonSaveEdit);
+		}
 
 		pageChangeButtons.getChildren().addAll(buttonPrev, buttonNext);
-
-		if (hid == 0) {
-			backButtons.getChildren().add(buttonFinish);
-		}
-		backButtons.getChildren().add(buttonCancel);
 
 		if (page == 0)
 			buttonPrev.setVisible(false);
@@ -710,12 +719,25 @@ public class EditProperty extends presenter.Window {
 							} catch (SQLException e) {
 								System.out.println("Failed to add image");
 							}
-							if (videoPath != null) {
-								// insert the video if a video was selected
-								Database.insertHouseVideo(owner, house,
-										videoFile.getName(), videoFile
-												.getParentFile()
-												.getAbsolutePath());
+
+						}
+						
+						if (videoPath != null) {
+							// insert the video if a video was selected
+							Database.insertHouseVideo(owner, house,
+									videoFile.getName(), videoFile
+											.getParentFile()
+											.getAbsolutePath());
+							
+							videoInfo = Database.checkHouseVideo(owner, house.hid);
+							
+							for (int i = 0; i < currentMarkers.size(); i++) {
+								
+								Marker marker = currentMarkers.get(i);
+								String roomMarker = marker.room;
+								double videoTime = marker.markerTime;
+								
+								Database.insertVideoMarker(videoInfo.vid, roomMarker, videoTime);
 							}
 						}
 
@@ -1026,9 +1048,15 @@ public class EditProperty extends presenter.Window {
 				double videoTime = (minutes*60) + seconds;
 				String roomMarker = newRoomField.getText();
 			
-				Database.insertVideoMarker(videoInfo.vid, roomMarker, videoTime);
+				if (hid != 0){
+					Database.insertVideoMarker(videoInfo.vid, roomMarker, videoTime);
+				}
+				
+				Marker marker = new Marker(roomMarker);
+				marker.time(videoTime);
 				
 				items.add(newMarker);
+				currentMarkers.add(marker);  
 				newRoomField.clear();
 				setMarkerButton.setDisable(true);
 			}
@@ -1056,16 +1084,11 @@ public class EditProperty extends presenter.Window {
 
 				items.remove(items.size() - 1);
 				
-				
 				Database.deleteVideoMarker(videoMarkers.get(index));
 				videoMarkers.remove(index);
 				deleteMarker.setDisable(true);
 				markerList.getSelectionModel().clearSelection();
 			}
-		}
-		
-		public void deleteFromDatabase(ArrayList<Marker> videoMarkers){
-
 		}
 	}
 
