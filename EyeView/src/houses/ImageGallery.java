@@ -27,6 +27,7 @@ public class ImageGallery extends Window {
 
 	private static Group galleryGroup;
 	public static ImageView mainHouseImage; // ImageView in which Image is drawn
+	private GalleryPictures galleryPictures;
 	public static ArrayList<Image> galleryImages;
 	private static final double fitWidth = 410; // Make dependent on input
 												// image.
@@ -70,7 +71,7 @@ public class ImageGallery extends Window {
 		rect2.setFill(Color.WHITE);
 
 		// create display shelf
-		GalleryPictures galleryPictures = new GalleryPictures(galleryImages,
+		galleryPictures = new GalleryPictures(galleryImages,
 				mainImage);
 
 		galleryGroup = new Group();
@@ -81,9 +82,8 @@ public class ImageGallery extends Window {
 		galleryGroup.getChildren().add(rect2);
 		galleryGroup.getChildren().add(mainHouseImage);
 		galleryGroup.setLayoutX(xPosition);
-		galleryGroup.setLayoutY(yPosition);
-		
-		galleryPictures = null;		
+		galleryGroup.setLayoutY(yPosition);	
+		mainImage = null;
 	}
 
 	public Node getGallery() {
@@ -106,7 +106,7 @@ public class ImageGallery extends Window {
 		public static final double smallHouseHeight = 80;
 		public static final double smallHouseWidth = 130;
 
-		private SmallHouseImages[] items;
+		public static ArrayList<SmallHouseImages> items;
 
 		private Group centered = new Group();
 		private Group left = new Group();
@@ -127,14 +127,15 @@ public class ImageGallery extends Window {
 			scrollBar.setStyle("-fx-base: #202020; -fx-background: #202020;");
 
 			// create items
-			items = new SmallHouseImages[galleryImages.size()];
+			items = new ArrayList<SmallHouseImages>();
 
 			for (int i = 0; i < galleryImages.size(); i++) {
 
-				items[i] = new SmallHouseImages(galleryImages.get(i));
+				SmallHouseImages smallHouse = new SmallHouseImages(galleryImages.get(i));
+				items.add(smallHouse);
 				final int index = i;
 
-				items[i].setOnMouseClicked(new EventHandler<MouseEvent>() {
+				items.get(i).setOnMouseClicked(new EventHandler<MouseEvent>() {
 					public void handle(MouseEvent me) {
 						HouseOverview.setTimerState("PAUSE");
 
@@ -145,19 +146,20 @@ public class ImageGallery extends Window {
 
 						if ((index == galleryImages.size() - 1)
 								|| (index == galleryImages.size() - 2)) {
-							items[galleryImages.size() - 3].setVisible(true);
+							items.get(galleryImages.size() - 3).setVisible(true);
 						}
 
 						if (index != 0 && index != (galleryImages.size() - 1)) {
-							shiftToCenter(items[index]);
+							shiftToCenter(items.get(index));
 							currentIndex = index;
 						}
 					}
 				});
+				smallHouse = null;
 			}
 
 			// setup scroll bar
-			scrollBar.setMax(items.length - 3);
+			scrollBar.setMax(items.size() - 3);
 			scrollBar.setVisibleAmount(1);
 			scrollBar.setUnitIncrement(1);
 			scrollBar.setBlockIncrement(1);
@@ -165,10 +167,10 @@ public class ImageGallery extends Window {
 				public void invalidated(Observable ov) {
 					HouseOverview.setTimerState("PAUSE");
 					if (!localChange && (currentIndex != 0)) {
-						shiftToCenter(items[(int) (scrollBar.getValue() + 1.5)]);
+						shiftToCenter(items.get((int) (scrollBar.getValue() + 1.5)));
 					}
 					if (!localChange && (currentIndex == 0)) {
-						shiftToCenter(items[(int) (scrollBar.getValue() + 0.5)]);
+						shiftToCenter(items.get((int) (scrollBar.getValue() + 0.5)));
 					}
 				}
 			});
@@ -197,6 +199,7 @@ public class ImageGallery extends Window {
 			mainHouseImage.setPreserveRatio(false);
 
 			galleryGroup.getChildren().add(mainHouseImage);
+			mainImage = null;
 		}
 
 		@Override
@@ -235,12 +238,12 @@ public class ImageGallery extends Window {
 			center.getChildren().clear();
 			right.getChildren().clear();
 			for (int i = 0; i < centerIndex; i++) {
-				left.getChildren().add(items[i]);
+				left.getChildren().add(items.get(i));
 			}
 
-			center.getChildren().add(items[centerIndex]);
-			for (int i = items.length - 1; i > centerIndex; i--) {
-				right.getChildren().add(items[i]);
+			center.getChildren().add(items.get(centerIndex));
+			for (int i = items.size() - 1; i > centerIndex; i--) {
+				right.getChildren().add(items.get(i));
 			}
 
 			// stop old timeline if there is one running
@@ -254,7 +257,7 @@ public class ImageGallery extends Window {
 			final ObservableList<KeyFrame> keyFrames = timeline.getKeyFrames();
 
 			for (int i = 0; i < left.getChildren().size(); i++) {
-				final SmallHouseImages it = items[i];
+				final SmallHouseImages it = items.get(i);
 				double newX = -left.getChildren().size() * SPACING + SPACING
 						* i;
 				keyFrames.add(new KeyFrame(DURATION, new KeyValue(it
@@ -262,13 +265,13 @@ public class ImageGallery extends Window {
 			}
 
 			// add keyframe for center item
-			final SmallHouseImages centerItem = items[centerIndex];
+			final SmallHouseImages centerItem = items.get(centerIndex);
 			keyFrames.add(new KeyFrame(DURATION, new KeyValue(centerItem
 					.translateXProperty(), 0, INTERPOLATOR)));
 
 			// add keyframes for right items
 			for (int i = 0; i < right.getChildren().size(); i++) {
-				final SmallHouseImages it = items[items.length - i - 1];
+				final SmallHouseImages it = items.get(items.size() - i - 1);
 				final double newX = right.getChildren().size() * SPACING
 						- SPACING * i;
 				keyFrames.add(new KeyFrame(DURATION, new KeyValue(it
@@ -304,7 +307,7 @@ public class ImageGallery extends Window {
 		public void shift(int shiftAmount) {
 			if (centerIndex <= 0 && shiftAmount > 0)
 				return;
-			if (centerIndex >= items.length - 1 && shiftAmount < 0)
+			if (centerIndex >= items.size() - 1 && shiftAmount < 0)
 				return;
 			centerIndex -= shiftAmount;
 			update();
@@ -330,8 +333,15 @@ public class ImageGallery extends Window {
 	
 	public void dispose(){
 		mainImage = null;
+		mainHouseImage = null;
 		galleryImages.clear();
+		galleryImages.trimToSize();
 		galleryImages = null;
+		GalleryPictures.items.clear();
+		GalleryPictures.items.trimToSize();
+		GalleryPictures.items = null;
+		galleryPictures = null;
+		galleryGroup = null;
 	}
 
 }

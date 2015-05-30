@@ -1,5 +1,7 @@
 package presenter;
 
+import java.io.File;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 
 import button.ButtonType;
@@ -123,16 +125,26 @@ public class StartPage extends Window {
 		// Create an arraylist of pictures for the pictures banner
 		ArrayList<Image> gallery = new ArrayList<Image>();
 		for (int i = 1; i < 11; i++) {
-			Image image = new Image("file:resources/start_page_images/House"
+			File file = new File("resources/start_page_images/House"
 					+ i + ".JPG");
+			Image image = null;
+			try {
+				image = new Image(file.toURI().toURL().toString());
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			gallery.add(image);
+			file = null;
 			image = null;
+			System.gc();
 		}
 
 		// Create pictures banner
 		bannerPictures = new PicturesBanner(gallery);
 		bannerPictures.setPrefSize(xResolution, bannerHeight);
 		gallery.clear();
+		gallery.trimToSize();
 		gallery = null;
 		// Add all elements to the page
 		root.getChildren().addAll(background, centreBox, logo, bannerPictures,
@@ -145,14 +157,14 @@ public class StartPage extends Window {
 	public static class PicturesBanner extends Region {
 
 		// ArrayLost of spaces for the picture banner images
-		private ArrayList<BannerPictures> items = new ArrayList<BannerPictures>();
+		public static ArrayList<BannerPictures> items = new ArrayList<BannerPictures>();
 		private static final Interpolator INTERPOLATOR = Interpolator.EASE_BOTH;
 
 		// Groups for each section of the picture banner
-		private Group centred = new Group();
-		private Group left = new Group();
-		private Group centre = new Group();
-		private Group right = new Group();
+		public static Group centred = new Group();
+		public static Group left = new Group();
+		public static Group centre = new Group();
+		public static Group right = new Group();
 
 		// TimeLine for picture banner
 		private Timeline timeline;
@@ -172,14 +184,18 @@ public class StartPage extends Window {
 		 * @param galleryImages
 		 *            An ArrayList of images of the picture banner
 		 */
-		public PicturesBanner(final ArrayList<Image> galleryImages) {
+		public PicturesBanner(ArrayList<Image> galleryImages) {
 
 			// Loop to add images to the spaces in the array
 			for (int i = 0; i < galleryImages.size(); i++) {
 
-				items.add(new BannerPictures(galleryImages.get(i)));
+				BannerPictures banner = new BannerPictures(galleryImages.get(i));
+				items.add(banner);
+				banner = null;
 			}
-
+			galleryImages.clear();
+			galleryImages.trimToSize();
+			galleryImages = null;
 			// Timer sets the delay of the shift from picture to picture
 			scrollTimer = new Timeline(new KeyFrame(
 					Duration.millis(0.4 * 1000),
@@ -197,6 +213,7 @@ public class StartPage extends Window {
 							if (index == items.size() - 3) {
 								items.add(items.get(0));
 								items.remove(0);
+								items.trimToSize();
 								index = 5;
 							} else {
 								index++;
@@ -267,9 +284,10 @@ public class StartPage extends Window {
 			}
 
 			// Add KeyFrame for centre item
-			final BannerPictures centreItem = items.get(centreIndex);
+			BannerPictures centreItem = items.get(centreIndex);
 			keyFrames.add(new KeyFrame(DURATION, new KeyValue(centreItem
 					.translateXProperty(), 0, INTERPOLATOR)));
+			centreItem = null;
 
 			// Add KeyFrames for right items
 			for (int i = 0; i < right.getChildren().size(); i++) {
@@ -345,14 +363,23 @@ public class StartPage extends Window {
 			imageView.setFitWidth(xResolution / 3); // Three images wide
 			imageView.setPreserveRatio(false);
 			getChildren().addAll(imageView);
+			imageView = null;
 			image = null;
 		}
 	}
 	
 	public void displose(){
 		logo = null;
+		PicturesBanner.items.clear();
+		PicturesBanner.items.trimToSize();
+		PicturesBanner.items = null;
+		PicturesBanner.centre = null;
+		PicturesBanner.centred = null;
+		PicturesBanner.left = null;
+		PicturesBanner.right = null;
 		bannerPictures = null;
 		scrollTimer.stop();
 		scrollTimer = null;
+		
 	}
 }
