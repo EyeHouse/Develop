@@ -32,7 +32,7 @@ public class TestVideo extends Application {
 		File file = null;
 
 		// Get video info into HouseVideo
-		house1 = Database.getVideoInfo(tempu7, temph7, filename1);
+		house1 = Database.getVideoInfo(tempu7, temph7);
 
 		house1.printHouseInfo();
 		
