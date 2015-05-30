@@ -35,7 +35,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import landlord.EditProperty;
 import language.BadWordCheck;
-import language.Translate;
+import language.Translator;
 import presenter.SlideContent;
 import database.DataHandler;
 import database.Database;
@@ -107,7 +107,7 @@ public class Register extends presenter.Window {
 	 */
 	public void setupTitle() {
 
-		topTitle = new Label(Translate.translateText(languageIndex, "Register"));
+		topTitle = new Label(Translator.translateText(languageIndex, "Register"));
 		topTitle.setTextFill(Color.web("#162252FF"));
 		topTitle.setFont(new Font(35));
 		topTitle.relocate(505, 65);
@@ -193,7 +193,7 @@ public class Register extends presenter.Window {
 
 		// Add button to grid
 		ButtonType button1 = new ButtonType("166,208,255", null,
-				Translate.translateText(languageIndex, "Register"), 100, 30);
+				Translator.translateText(languageIndex, "Register"), 100, 30);
 		Button registerButton = new SetupButton().CreateButton(button1);
 		registerGrid.add(registerButton, 0, 10);
 		GridPane.setConstraints(registerButton, 0, 10, 2, 1, HPos.CENTER,

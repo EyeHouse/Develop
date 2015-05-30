@@ -24,7 +24,7 @@ import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
-import language.Translate;
+import language.Translator;
 import presenter.SlideContent;
 import presenter.Window;
 import database.Database;
@@ -78,7 +78,7 @@ public class VideoPage extends Window {
 	
 	public void setupTitle() {
 
-		topTitle = new Label(Translate.translateText(languageIndex,"Video Tour"));
+		topTitle = new Label(Translator.translateText(languageIndex,"Video Tour"));
 		topTitle.setTextFill(Color.web("#162252FF"));
 		topTitle.setFont(new Font(32));
 		topTitle.relocate(480, 80);
@@ -86,7 +86,7 @@ public class VideoPage extends Window {
 	}	
 	
 	public void UpdateLanguage() {
-		topTitle.setText(Translate.translateText(languageIndex, "Video Tour"));
+		topTitle.setText(Translator.translateText(languageIndex, "Video Tour"));
 	}
 	
 	public void setupMarkerButtons(){
@@ -111,7 +111,7 @@ public class VideoPage extends Window {
 			Marker marker = videoMarkers.get(i);
 			
 			ButtonType button = new ButtonType("166,208,255", null,
-					Translate.translateText(languageIndex, marker.room), 100, 30);
+					Translator.translateText(languageIndex, marker.room), 100, 30);
 			Button buttonTime = new SetupButton().CreateButton(button);
 			buttonTime.setCursor(Cursor.HAND);
 			buttonTime.setOnAction(new VideoTime(i));

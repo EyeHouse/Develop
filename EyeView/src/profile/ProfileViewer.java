@@ -49,7 +49,7 @@ import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
 import language.BadWordCheck;
-import language.Translate;
+import language.Translator;
 
 public class ProfileViewer extends presenter.Window {
 

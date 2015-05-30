@@ -1,8 +1,7 @@
 package language;
 
-import java.util.*;
-
 import presenter.SlideContent;
+import presenter.Window;
 
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.ListCell;
@@ -10,48 +9,49 @@ import javafx.scene.control.ListView;
 import javafx.scene.image.ImageView;
 import javafx.util.Callback;
 
-import com.javanetworkframework.rb.util.AbstractWebTranslator;
+import com.memetix.mst.language.Language;
+import com.memetix.mst.translate.Translate;
 
-public class Translate extends presenter.Window {
+public class Translator extends Window {
 
 	public static String translateText(int newLanguageIndex, String inText) {
-
-		Locale inLanguage = new Locale("en");
-		Locale outLanguage = new Locale("en");
+	    
+		Language outLanguage = Language.ENGLISH;
 
 		switch (newLanguageIndex) {
 		case 0:
-			outLanguage = new Locale("en");
+			outLanguage = Language.ENGLISH;
 			break;
 		case 1:
-			outLanguage = new Locale("es");
+			outLanguage = Language.SPANISH;
 			break;
 		case 2:
-			outLanguage = new Locale("fr");
+			outLanguage = Language.FRENCH;
 			break;
 		case 3:
-			outLanguage = new Locale("it");
+			outLanguage = Language.ITALIAN;
 			break;
 		case 4:
-			outLanguage = new Locale("de");
+			outLanguage = Language.GERMAN;
 			break;
 		case 5:
-			outLanguage = new Locale("pt");
+			outLanguage = Language.PORTUGUESE;
 			break;
 		case 6:
-			outLanguage = new Locale("nl");
+			outLanguage = Language.DUTCH;
 			break;
-
 		default:
-			outLanguage = new Locale("en");
+			outLanguage = Language.ENGLISH;
 			break;
 		}
 
-		AbstractWebTranslator translate = (AbstractWebTranslator) ResourceBundle
-				.getBundle(
-						"com.javanetworkframework.rb.webtranslator.WebTranslator",
-						outLanguage);
-		String outText = translate.getString(inText, inLanguage);
+		String outText = null;
+		
+		try {
+			outText = Translate.execute(inText, Language.ENGLISH, outLanguage);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		return outText;
 	}
@@ -80,13 +80,12 @@ public class Translate extends presenter.Window {
 		portugueseImage.setPreserveRatio(true);
 		dutchImage.setPreserveRatio(true);
 
-		/*englishImage.setFitHeight(40);
-		spanishImage.setFitHeight(40);
-		frenchImage.setFitHeight(40);
-		italianImage.setFitHeight(35);
-		germanImage.setFitHeight(35);
-		portugueseImage.setFitHeight(40);
-		dutchImage.setFitHeight(35);*/
+		/*
+		 * englishImage.setFitHeight(40); spanishImage.setFitHeight(40);
+		 * frenchImage.setFitHeight(40); italianImage.setFitHeight(35);
+		 * germanImage.setFitHeight(35); portugueseImage.setFitHeight(40);
+		 * dutchImage.setFitHeight(35);
+		 */
 
 		SlideContent.languageComboBox.setVisibleRowCount(5);
 		SlideContent.languageComboBox.getItems().clear();
@@ -118,8 +117,6 @@ public class Translate extends presenter.Window {
 								} else {
 									rectangle.setImage(item.getImage());
 									setGraphic(rectangle);
-									//SlideContent.languageComboBox.setMaxSize(
-											//90, 40);
 								}
 							}
 						};

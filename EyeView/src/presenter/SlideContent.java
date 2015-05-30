@@ -45,7 +45,7 @@ import javafx.scene.text.TextAlignment;
 
 import landlord.EditProperty;
 import landlord.LandlordProperties;
-import language.Translate;
+import language.Translator;
 import houses.GoogleMapsPage;
 import database.Database;
 import database.House;
@@ -303,7 +303,7 @@ public class SlideContent extends Window {
 			labelName.setAlignment(Pos.TOP_CENTER);
 			labelName.setTextFill(Color.web("#162252FF"));
 
-			labelProfile = new Label(Translate.translateText(languageIndex,
+			labelProfile = new Label(Translator.translateText(languageIndex,
 					"Profile"));
 			labelProfile.setFont(new Font(16));
 			labelProfile.setMaxWidth(140);
@@ -317,7 +317,7 @@ public class SlideContent extends Window {
 				}
 			});
 
-			labelSavedProperties = new Label(Translate.translateText(
+			labelSavedProperties = new Label(Translator.translateText(
 					languageIndex, "Saved Properties"));
 			labelSavedProperties.setFont(new Font(16));
 			labelSavedProperties.setMaxWidth(140);
@@ -331,7 +331,7 @@ public class SlideContent extends Window {
 						}
 					});
 
-			labelLandlordProperties = new Label(Translate.translateText(
+			labelLandlordProperties = new Label(Translator.translateText(
 					languageIndex, "My Properties"));
 			labelLandlordProperties.setFont(new Font(16));
 			labelLandlordProperties.setMaxWidth(140);
@@ -344,7 +344,7 @@ public class SlideContent extends Window {
 							loadSlide(LANDLORDPROPERTIES);
 						}
 					});
-			labelLogOut = new Label(Translate.translateText(languageIndex,
+			labelLogOut = new Label(Translator.translateText(languageIndex,
 					"Log Out"));
 			labelLogOut.setFont(new Font(16));
 			labelLogOut.setMaxWidth(140);
@@ -383,7 +383,7 @@ public class SlideContent extends Window {
 				createSearchBar();
 			currentUser = null;
 		} else {
-			labelLogin = new Label(Translate.translateText(languageIndex,
+			labelLogin = new Label(Translator.translateText(languageIndex,
 					"Login"));
 			labelLogin.setFont(new Font(16));
 			labelLogin.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -392,7 +392,7 @@ public class SlideContent extends Window {
 				}
 			});
 
-			labelRegister = new Label(Translate.translateText(languageIndex,
+			labelRegister = new Label(Translator.translateText(languageIndex,
 					"Register"));
 			labelRegister.setFont(new Font(16));
 			labelRegister.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -424,7 +424,7 @@ public class SlideContent extends Window {
 
 		HBox buttonRow = new HBox(5);
 
-		ButtonType button1 = new ButtonType(null, null, "Video Tour", 140, 50);
+		ButtonType button1 = new ButtonType(null, null, Translator.translateText(languageIndex, "Video Tour"), 140, 50);
 		videoButton = new SetupButton().CreateButton(button1);
 		videoButton.setFocusTraversable(false);
 		videoButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -433,7 +433,7 @@ public class SlideContent extends Window {
 			}
 		});
 
-		ButtonType button2 = new ButtonType(null, null, "Map", 140, 50);
+		ButtonType button2 = new ButtonType(null, null, Translator.translateText(languageIndex, "Map"), 140, 50);
 		mapButton = new SetupButton().CreateButton(button2);
 		mapButton.setFocusTraversable(false);
 		mapButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -442,7 +442,7 @@ public class SlideContent extends Window {
 			}
 		});
 
-		ButtonType button3 = new ButtonType(null, null, "Information", 140, 50);
+		ButtonType button3 = new ButtonType(null, null, Translator.translateText(languageIndex, "Information"), 140, 50);
 		infoButton = new SetupButton().CreateButton(button3);
 		infoButton.setFocusTraversable(false);
 		infoButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -451,7 +451,7 @@ public class SlideContent extends Window {
 			}
 		});
 
-		ButtonType button4 = new ButtonType(null, null, "Reviews", 140, 50);
+		ButtonType button4 = new ButtonType(null, null, Translator.translateText(languageIndex, "Reviews"), 140, 50);
 		reviewsButton = new SetupButton().CreateButton(button4);
 		reviewsButton.setFocusTraversable(false);
 		reviewsButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -536,7 +536,7 @@ public class SlideContent extends Window {
 	public void setupTranslate() {
 
 		languageComboBox = new ComboBox<ImageView>();
-		Translate.translateBox();
+		Translator.translateBox();
 		languageComboBox.valueProperty().addListener(new LanguageChange());
 		languageComboBox.getStylesheets().add(
 				new File("resources/languageStyle.css").toURI().toString());
@@ -553,50 +553,50 @@ public class SlideContent extends Window {
 			if (slideID == INDEX || slideID == HOUSES) {
 				houseAdverts.updateLanguage();
 
-				videoButton.setText(Translate.translateText(languageIndex,
+				videoButton.setText(Translator.translateText(languageIndex,
 						"Video Tour"));
 				mapButton
-						.setText(Translate.translateText(languageIndex, "Map"));
-				infoButton.setText(Translate.translateText(languageIndex,
+						.setText(Translator.translateText(languageIndex, "Map"));
+				infoButton.setText(Translator.translateText(languageIndex,
 						"Information"));
-				reviewsButton.setText(Translate.translateText(languageIndex,
+				reviewsButton.setText(Translator.translateText(languageIndex,
 						"Reviews"));
 			}
 
 			if (slideID == LOGIN || slideID == REGISTER || slideID == INDEX) {
-				labelLogin.setText(Translate.translateText(languageIndex,
+				labelLogin.setText(Translator.translateText(languageIndex,
 						"Login"));
-				labelRegister.setText(Translate.translateText(languageIndex,
+				labelRegister.setText(Translator.translateText(languageIndex,
 						"Register"));
 			}
 
 			if (slideID != INDEX && slideID != LOGIN && slideID != REGISTER) {
 
-				labelProfile.setText(Translate.translateText(languageIndex,
+				labelProfile.setText(Translator.translateText(languageIndex,
 						"Profile"));
-				labelSavedProperties.setText(Translate.translateText(
+				labelSavedProperties.setText(Translator.translateText(
 						languageIndex, "Saved Properties"));
-				labelLandlordProperties.setText(Translate.translateText(
+				labelLandlordProperties.setText(Translator.translateText(
 						languageIndex, "My Properties"));
-				labelLogOut.setText(Translate.translateText(languageIndex,
+				labelLogOut.setText(Translator.translateText(languageIndex,
 						"Log Out"));
 			}
 			if (slideID == HOUSES || slideID == HOUSE || slideID == RESULTS) {
-				labelBedSearch.setText(Translate.translateText(languageIndex,
+				labelBedSearch.setText(Translator.translateText(languageIndex,
 						"Bedrooms"));
-				labelBedMin.setText(Translate.translateText(languageIndex,
+				labelBedMin.setText(Translator.translateText(languageIndex,
 						"Min"));
-				labelBedMax.setText(Translate.translateText(languageIndex,
+				labelBedMax.setText(Translator.translateText(languageIndex,
 						"Max"));
 
-				labelPriceSearch.setText(Translate.translateText(languageIndex,
+				labelPriceSearch.setText(Translator.translateText(languageIndex,
 						"Price: "));
-				labelPriceMin.setText(Translate.translateText(languageIndex,
+				labelPriceMin.setText(Translator.translateText(languageIndex,
 						"Min") + " (£)");
-				labelPriceMax.setText(Translate.translateText(languageIndex,
+				labelPriceMax.setText(Translator.translateText(languageIndex,
 						"Max") + " (£)");
 
-				labelDistanceSearch.setText(Translate.translateText(
+				labelDistanceSearch.setText(Translator.translateText(
 						languageIndex, "Distance to University") + " (km)");
 			}
 		}
@@ -629,25 +629,25 @@ public class SlideContent extends Window {
 		VBox minPriceColumn = new VBox(5);
 		VBox maxPriceColumn = new VBox(5);
 
-		labelFilter = new Label(Translate.translateText(languageIndex,
+		labelFilter = new Label(Translator.translateText(languageIndex,
 				"Filter results") + ":");
 		labelFilter.setFont(new Font(15));
 
-		labelBedSearch = new Label(Translate.translateText(languageIndex,
+		labelBedSearch = new Label(Translator.translateText(languageIndex,
 				"Bedrooms"));
 		labelBedSearch.setFont(Font.font(null, FontWeight.BOLD, 12));
-		labelBedMin = new Label(Translate.translateText(languageIndex, "Min"));
-		labelBedMax = new Label(Translate.translateText(languageIndex, "Max"));
+		labelBedMin = new Label(Translator.translateText(languageIndex, "Min"));
+		labelBedMax = new Label(Translator.translateText(languageIndex, "Max"));
 
-		labelPriceSearch = new Label(Translate.translateText(languageIndex,
+		labelPriceSearch = new Label(Translator.translateText(languageIndex,
 				"Price"));
 		labelPriceSearch.setFont(Font.font(null, FontWeight.BOLD, 12));
-		labelPriceMin = new Label(Translate.translateText(languageIndex, "Min")
+		labelPriceMin = new Label(Translator.translateText(languageIndex, "Min")
 				+ " (£)");
-		labelPriceMax = new Label(Translate.translateText(languageIndex, "Max")
+		labelPriceMax = new Label(Translator.translateText(languageIndex, "Max")
 				+ " (£)");
 
-		labelDistanceSearch = new Label(Translate.translateText(languageIndex,
+		labelDistanceSearch = new Label(Translator.translateText(languageIndex,
 				"Distance to University") + " (km)");
 
 		labelDistanceSearch.setFont(Font.font(null, FontWeight.BOLD, 12));
@@ -656,7 +656,7 @@ public class SlideContent extends Window {
 
 		// Button setup
 		ButtonType button1 = new ButtonType("166,208,255", null,
-				Translate.translateText(languageIndex, "Search"), 75, 25);
+				Translator.translateText(languageIndex, "Search"), 75, 25);
 		Button goButton = new SetupButton().CreateButton(button1);
 		goButton.setOnAction(new searchHandler());
 

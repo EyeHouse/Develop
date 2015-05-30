@@ -30,7 +30,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import language.Translate;
+import language.Translator;
 import presenter.SlideContent;
 
 public class LandlordProperties extends presenter.Window {
@@ -70,7 +70,7 @@ public class LandlordProperties extends presenter.Window {
 
 	private void setupTitle() {
 
-		Label labelTitle = new Label(Translate.translateText(languageIndex,
+		Label labelTitle = new Label(Translator.translateText(languageIndex,
 				"Manage Properties"));
 
 		labelTitle.setTextFill(Color.web("#162252FF"));
@@ -84,13 +84,13 @@ public class LandlordProperties extends presenter.Window {
 		VBox buttons = new VBox(30);
 
 		ButtonType button1 = new ButtonType("166,208,255", null,
-				Translate.translateText(languageIndex, "Edit"), 100, 30);
+				Translator.translateText(languageIndex, "Edit"), 100, 30);
 		ButtonType button2 = new ButtonType("166,208,255", null,
-				Translate.translateText(languageIndex, "Delete"), 100, 30);
+				Translator.translateText(languageIndex, "Delete"), 100, 30);
 		ButtonType button3 = new ButtonType("166,208,255", null,
-				Translate.translateText(languageIndex, "New"), 100, 30);
+				Translator.translateText(languageIndex, "New"), 100, 30);
 		ButtonType button4 = new ButtonType("166,208,255", null,
-				Translate.translateText(languageIndex, "View"), 100, 30);
+				Translator.translateText(languageIndex, "View"), 100, 30);
 
 		Button buttonEdit = new SetupButton().CreateButton(button1);
 		Button buttonDelete = new SetupButton().CreateButton(button2);
@@ -181,11 +181,11 @@ public class LandlordProperties extends presenter.Window {
 
 			House house = properties.get(i);
 			Label propertyAddress = new Label(house.address);
-			Label propertyDetails = new Label(Translate.translateText(
+			Label propertyDetails = new Label(Translator.translateText(
 					languageIndex, "Bedrooms: ")
 					+ house.rooms
 					+ "\n"
-					+ Translate.translateText(languageIndex, "Price:")
+					+ Translator.translateText(languageIndex, "Price:")
 					+ " £"
 					+ house.price + " pppw");
 

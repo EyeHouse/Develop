@@ -21,14 +21,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import language.Translate;
+import language.Translator;
 import presenter.SlideContent;
 import presenter.Window;
 
 public class HouseReviews extends Window {
 
 	private static Label pageTitle = new Label("");
-	private static Label ratingLabel = new Label(Translate.translateText(languageIndex, "Rating") + ":    ");
+	private static Label ratingLabel = new Label(Translator.translateText(languageIndex, "Rating") + ":    ");
 	private static Label giveRatingLabel = new Label("");
 	private static ButtonType button2 = new ButtonType("166,208,255", null,
 			"Submit", 70, 30);
@@ -83,7 +83,7 @@ public class HouseReviews extends Window {
 
 	private void setupTitle() {
 
-		pageTitle = new Label(Translate.translateText(languageIndex, "Reviews"));
+		pageTitle = new Label(Translator.translateText(languageIndex, "Reviews"));
 		pageTitle.setFont(new Font(32));
 		pageTitle.setTextFill(Color.web("#162252FF"));
 		pane.add(pageTitle, 0, 0);
@@ -122,7 +122,7 @@ public class HouseReviews extends Window {
 
 	public void displayReviews() {
 
-		Label newReviewLabel = new Label(Translate.translateText(languageIndex,
+		Label newReviewLabel = new Label(Translator.translateText(languageIndex,
 				"Reviews") + ":");
 		newReviewLabel.setFont(new Font(20));
 		pane.add(newReviewLabel, 0, 2);
@@ -139,7 +139,7 @@ public class HouseReviews extends Window {
 	public void setupReviewsTextField() {
 
 		newReviewText = new TextArea();
-		newReviewText.setPromptText(Translate.translateText(languageIndex,
+		newReviewText.setPromptText(Translator.translateText(languageIndex,
 				"Submit a review") + "...");
 		newReviewText.resize(300, 100);
 		newReviewText.setWrapText(true);
@@ -150,7 +150,7 @@ public class HouseReviews extends Window {
 
 	public void setupAddStarRating() {
 
-		giveRatingLabel.setText(Translate.translateText(languageIndex,
+		giveRatingLabel.setText(Translator.translateText(languageIndex,
 				"Give a rating") + ":");
 		giveRatingLabel.setFont(new Font(20));
 
@@ -242,10 +242,10 @@ public class HouseReviews extends Window {
 
 	public static void updateLanguage() {
 
-		pageTitle.setText(Translate.translateText(languageIndex, "Reviews"));
-		ratingLabel.setText(Translate.translateText(languageIndex, "Rating")
+		pageTitle.setText(Translator.translateText(languageIndex, "Reviews"));
+		ratingLabel.setText(Translator.translateText(languageIndex, "Rating")
 				+ ":     ");
-		buttonSubmit.setText(Translate.translateText(languageIndex, "Submit"));
+		buttonSubmit.setText(Translator.translateText(languageIndex, "Submit"));
 	}
 
 	public class starButtonHandler implements EventHandler<ActionEvent> {

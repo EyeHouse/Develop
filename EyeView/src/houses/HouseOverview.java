@@ -24,7 +24,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.util.Callback;
 import javafx.util.Duration;
-import language.Translate;
+import language.Translator;
 import presenter.Window;
 import profile.SavedProperties;
 import database.Database;
@@ -155,7 +155,7 @@ public class HouseOverview extends Window {
 
 		// Labels showing number of bedrooms
 		HBox bedroomsBox = new HBox();
-		labelBedrooms = new Label(Translate.translateText(languageIndex,
+		labelBedrooms = new Label(Translator.translateText(languageIndex,
 				"Bedrooms") + ":  ");
 		labelBedrooms.setFont(new Font(20));
 		Label bedrooms = new Label(
@@ -165,7 +165,7 @@ public class HouseOverview extends Window {
 
 		// Label showing landlord's name
 		HBox landlordBox = new HBox();
-		labelLandlord = new Label(Translate.translateText(languageIndex,
+		labelLandlord = new Label(Translator.translateText(languageIndex,
 				"Landlord") + ":  ");
 		labelLandlord.setFont(new Font(20));
 		User landlordUser = Database.getUser(Database.getUsername(houses
@@ -358,9 +358,9 @@ public class HouseOverview extends Window {
 	 */
 	public void updateLanguage() {
 
-		labelBedrooms.setText(Translate
+		labelBedrooms.setText(Translator
 				.translateText(languageIndex, "Bedrooms") + ":  ");
-		labelLandlord.setText(Translate
+		labelLandlord.setText(Translator
 				.translateText(languageIndex, "Landlord") + ":  ");
 	}
 

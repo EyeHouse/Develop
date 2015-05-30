@@ -43,7 +43,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
-import language.Translate;
+import language.Translator;
 import database.Database;
 import database.FileManager;
 import database.House;
@@ -152,11 +152,11 @@ public class EditProperty extends presenter.Window {
 		HBox vids = new HBox(5);
 		HBox tabs = new HBox(100);
 		Label labelInfoTab = new Label("1. "
-				+ Translate.translateText(languageIndex, "House Information"));
+				+ Translator.translateText(languageIndex, "House Information"));
 		Label labelPictureTab = new Label("2. "
-				+ Translate.translateText(languageIndex, "House Pictures"));
+				+ Translator.translateText(languageIndex, "House Pictures"));
 		Label labelVideoTab = new Label("3. "
-				+ Translate.translateText(languageIndex, "House Videos"));
+				+ Translator.translateText(languageIndex, "House Videos"));
 		labelInfoTab.setFont(new Font(14));
 		labelPictureTab.setFont(new Font(14));
 		labelVideoTab.setFont(new Font(14));
@@ -220,13 +220,13 @@ public class EditProperty extends presenter.Window {
 		buttonPrev.setOnMouseClicked(new ChangePage(-1));
 
 		ButtonType button3 = new ButtonType("166,208,255", null,
-				Translate.translateText(languageIndex, "Finish"), 110, 30);
+				Translator.translateText(languageIndex, "Finish"), 110, 30);
 		Button buttonFinish = new SetupButton().CreateButton(button3);
 		buttonFinish.setCursor(Cursor.HAND);
 		buttonFinish.setOnAction(new CreateHouse());
 
 		ButtonType button4 = new ButtonType("166,208,255", null,
-				Translate.translateText(languageIndex, "Save"), 110, 30);
+				Translator.translateText(languageIndex, "Save"), 110, 30);
 		Button buttonCancel = new SetupButton().CreateButton(button4);
 		buttonCancel.setCursor(Cursor.HAND);
 		buttonCancel.setOnAction(new Cancel());
@@ -251,23 +251,23 @@ public class EditProperty extends presenter.Window {
 	private void setupHouseInfo() {
 
 		VBox vBoxDesc = new VBox(10);
-		Label labelAddress = new Label(Translate.translateText(languageIndex,
+		Label labelAddress = new Label(Translator.translateText(languageIndex,
 				"Address:"));
-		Label labelPostcode = new Label(Translate.translateText(languageIndex,
+		Label labelPostcode = new Label(Translator.translateText(languageIndex,
 				"Postcode:"));
-		Label labelPrice = new Label(Translate.translateText(languageIndex,
+		Label labelPrice = new Label(Translator.translateText(languageIndex,
 				"Price (£pppw):"));
-		Label labelBeds = new Label(Translate.translateText(languageIndex,
+		Label labelBeds = new Label(Translator.translateText(languageIndex,
 				"Bedrooms:"));
-		Label labelBaths = new Label(Translate.translateText(languageIndex,
+		Label labelBaths = new Label(Translator.translateText(languageIndex,
 				"Bathrooms:"));
-		Label labelFurnished = new Label(Translate.translateText(languageIndex,
+		Label labelFurnished = new Label(Translator.translateText(languageIndex,
 				"Furnished:"));
-		Label labelDate = new Label(Translate.translateText(languageIndex,
+		Label labelDate = new Label(Translator.translateText(languageIndex,
 				"Date Available:"));
-		Label labelDeposit = new Label(Translate.translateText(languageIndex,
+		Label labelDeposit = new Label(Translator.translateText(languageIndex,
 				"Deposit (£):"));
-		Label labelDesc = new Label(Translate.translateText(languageIndex,
+		Label labelDesc = new Label(Translator.translateText(languageIndex,
 				"Description"));
 
 		labelAddress.setFont(Font.font(null, FontWeight.BOLD, 14));
@@ -355,26 +355,26 @@ public class EditProperty extends presenter.Window {
 		imageWindow.setMinSize(545, 480);
 		imageWindow.setMaxSize(545, 480);
 
-		Label labelUpload = new Label(Translate.translateText(languageIndex,
+		Label labelUpload = new Label(Translator.translateText(languageIndex,
 				"Add a New Image:"));
 		labelUpload.setFont(Font.font(null, FontWeight.BOLD, 14));
 		uploadPathImage = new TextField();
 		uploadPathImage.setEditable(false);
 
 		ButtonType button1 = new ButtonType("166,208,255", null,
-				Translate.translateText(languageIndex, "Browse"), 70, 30);
+				Translator.translateText(languageIndex, "Browse"), 70, 30);
 		Button buttonBrowse = new SetupButton().CreateButton(button1);
 		buttonBrowse.setCursor(Cursor.HAND);
 		buttonBrowse.setOnAction(new Browse());
 
 		ButtonType button2 = new ButtonType("166,208,255", null,
-				Translate.translateText(languageIndex, "Upload"), 70, 30);
+				Translator.translateText(languageIndex, "Upload"), 70, 30);
 		buttonUpload = new SetupButton().CreateButton(button2);
 		buttonUpload.setDisable(true);
 		buttonUpload.setOnAction(new Upload());
 
 		ButtonType button3 = new ButtonType("166,208,255", null,
-				Translate.translateText(languageIndex, "Delete"), 70, 30);
+				Translator.translateText(languageIndex, "Delete"), 70, 30);
 		Button buttonDelete = new SetupButton().CreateButton(button3);
 		buttonDelete.setOnAction(new DeleteImage());
 
@@ -457,12 +457,12 @@ public class EditProperty extends presenter.Window {
 
 		// Add FileChooser button
 		ButtonType button1 = new ButtonType("166,208,255", null,
-				Translate.translateText(languageIndex, "Browse"), 100, 30);
+				Translator.translateText(languageIndex, "Browse"), 100, 30);
 		Button fileChooserButton = new SetupButton().CreateButton(button1);
 
 		// Add Upload Video button
 		ButtonType button2 = new ButtonType("166,208,255", null,
-				Translate.translateText(languageIndex, "Upload"), 100, 30);
+				Translator.translateText(languageIndex, "Upload"), 100, 30);
 		uploadVideoButton = new SetupButton().CreateButton(button2);
 		uploadVideoButton.setDisable(true);
 
@@ -556,19 +556,19 @@ public class EditProperty extends presenter.Window {
 		markerListHeader.setMaxWidth(300);
 
 		/* Add room name label and textfield */
-		Label addNewRoomLabel = new Label(Translate.translateText(
+		Label addNewRoomLabel = new Label(Translator.translateText(
 				languageIndex, "Add New Room: "));
 		newRoomField = new TextField();
 
 		/* Add Set Marker Button */
 		ButtonType button1 = new ButtonType("166,208,255", null,
-				Translate.translateText(languageIndex, "Set Marker"), 100, 30);
+				Translator.translateText(languageIndex, "Set Marker"), 100, 30);
 		setMarkerButton = new SetupButton().CreateButton(button1);
 		setMarkerButton.setOnAction(new AddMarker());
 		setMarkerButton.setDisable(true);
 		
 		ButtonType button3 = new ButtonType("166,208,255", null,
-				Translate.translateText(languageIndex, "Remove Video"), 120, 30);
+				Translator.translateText(languageIndex, "Remove Video"), 120, 30);
 		Button videoRemove = new SetupButton().CreateButton(button3);
 		videoRemove.setOnAction(new RemoveVideo());
 
@@ -589,7 +589,7 @@ public class EditProperty extends presenter.Window {
 
 		/* Add Delete Marker Button */
 		ButtonType button2 = new ButtonType("166,208,255", null,
-				Translate.translateText(languageIndex, "Delete"), 100, 30);
+				Translator.translateText(languageIndex, "Delete"), 100, 30);
 		deleteMarker = new SetupButton().CreateButton(button2);
 		deleteMarker.setOnAction(new DeleteMarker());
 		deleteMarker.setDisable(true);
@@ -613,11 +613,11 @@ public class EditProperty extends presenter.Window {
 					}
 				});
 
-		Label roomNamesHeader = new Label(Translate.translateText(
+		Label roomNamesHeader = new Label(Translator.translateText(
 				languageIndex, "Rooms"));
 		roomNamesHeader.setStyle("-fx-font-weight: bold");
 		roomNamesHeader.setPrefWidth(190);
-		Label videoTimesHeader = new Label(Translate.translateText(
+		Label videoTimesHeader = new Label(Translator.translateText(
 				languageIndex, "Times in Video"));
 		videoTimesHeader.setStyle("-fx-font-weight: bold");
 
@@ -878,7 +878,7 @@ public class EditProperty extends presenter.Window {
 				break;
 			case PICS:
 				// Set title of file chooser
-				uploadChooser.setTitle(Translate.translateText(languageIndex,
+				uploadChooser.setTitle(Translator.translateText(languageIndex,
 						"Choose Property Image to Upload"));
 				// Set file types displayed in the file chooser as png and jpg
 				uploadChooser.getExtensionFilters().addAll(
@@ -888,7 +888,7 @@ public class EditProperty extends presenter.Window {
 				break;
 			case VIDEO:
 				// Set title of file chooser
-				uploadChooser.setTitle(Translate.translateText(languageIndex,
+				uploadChooser.setTitle(Translator.translateText(languageIndex,
 						"Choose Video to Upload"));
 				// Set file types displayed in the file chooser as mp4
 				uploadChooser.getExtensionFilters().add(

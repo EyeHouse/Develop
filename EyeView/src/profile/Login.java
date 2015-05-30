@@ -32,7 +32,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.RectangleBuilder;
 import javafx.scene.text.Font;
-import language.Translate;
+import language.Translator;
 
 public class Login extends presenter.Window {
 
@@ -204,7 +204,7 @@ public class Login extends presenter.Window {
 
 		// Add buttons to grid
 		ButtonType button1 = new ButtonType("166,208,255", null,
-				(Translate.translateText(languageIndex, "Login")), 100, 30);
+				(Translator.translateText(languageIndex, "Login")), 100, 30);
 		Button loginButton = new SetupButton().CreateButton(button1);
 		loginGrid.add(loginButton, 0, 3);
 		GridPane.setConstraints(loginButton, 0, 3, 2, 1, HPos.CENTER,
@@ -226,7 +226,7 @@ public class Login extends presenter.Window {
 	 */
 	public void setupTitle() {
 
-		Label topTitle = new Label(Translate.translateText(languageIndex, "Login"));
+		Label topTitle = new Label(Translator.translateText(languageIndex, "Login"));
 		topTitle.setTextFill(Color.web("#162252FF"));
 		topTitle.setFont(new Font(35));
 		topTitle.relocate(520, 200);
