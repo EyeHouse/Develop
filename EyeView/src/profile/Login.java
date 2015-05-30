@@ -40,7 +40,7 @@ public class Login extends presenter.Window {
 	TextField password;
 
 	GridPane loginGrid = new GridPane();
-	static double sideBarWidth = 180.5;
+	static double sideBarWidth = 182;
 	int xBox = 350;
 	int yBox = 250;
 	public Label labelLogin = new Label();

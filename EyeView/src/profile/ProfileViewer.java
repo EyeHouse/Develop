@@ -440,10 +440,6 @@ public class ProfileViewer extends presenter.Window {
 				buttonStar[i].setOnAction(new starButtonHandler(i));
 			}
 			
-			//if(profileUser.skype != null){
-				
-			//}
-			
 		}
 
 		// VBox to contain Profile label and text area
@@ -583,9 +579,6 @@ public class ProfileViewer extends presenter.Window {
 
 	private void reloadProfile() {
 
-		root.getChildren().clear();
-		slideID = PROFILE;
-		SlideContent sc = new SlideContent();
-		sc.createSlide();
+		loadSlide(PROFILE);
 	}
 }

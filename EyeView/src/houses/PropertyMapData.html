@@ -14,16 +14,18 @@ html,body {
 	position: right;
 	height: 50%;
 	width: 76%;
-	margin: 0px;
+	margin: 10px;
 	padding: 50px;
 }
 
 #outputDiv {
+	position: center;
 	font-size: 15px;
 	font-family: verdana;
-	width: 81%;
+	width: 60%;
 	height: 20%;
 	border: 2px solid #999;
+	margin-left: 95px;
 	padding: 25px;
 }
 
@@ -33,11 +35,16 @@ html,body {
 	position: absolute;
 	top: 20px;
 	left: 50%;
-	margin-left: -180px;
+	margin-left: -150px;
 	z-index: 5;
 	background-color: #BDBDBD;
 	padding: 5px;
 	border: 1px solid #999;
+}
+
+#mode {
+	line-height: 20px;
+	line-width: 30px;
 }
 </style>
 <script>
@@ -177,10 +184,10 @@ html,body {
 
 	<div id="panel">
 		<b>Travel Routes: </b> <select id="mode" onchange="calcRoute();">
-			<option value="WALKING">Walking</option>
-			<option value="DRIVING">Driving</option>
-			<option value="BICYCLING">Bicycling</option>
-			<option value="TRANSIT">Transit</option>
+			<option value="WALKING">Walk</option>
+			<option value="DRIVING">Drive</option>
+			<option value="BICYCLING">Cycle</option>
+			<option value="TRANSIT">Bus</option>
 		</select>
 	</div>
 	<div id="map-canvas"></div>
