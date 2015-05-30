@@ -90,7 +90,7 @@ public class GoogleMapsPage extends Window {
 			House destination = Database.getHouse(currentPropertyID);
 			changeDestination(destination.address,destination.postcode);
 			
-			File file = new File("src/maps/PropertyMapData.html");
+			File file = new File("src/houses/PropertyMapData.html");
 			try {
 				URL urlGoogleMaps = file.toURI().toURL();
 				webEngine.load(urlGoogleMaps.toExternalForm());

@@ -164,6 +164,10 @@ public class SavedProperties extends presenter.Window {
 			propertyInfo.getChildren().addAll(propertyAddress, propertyDetails);
 			listItem.getChildren().addAll(thumbnail, propertyInfo);
 
+			houseImages.clear();
+			houseImages = null;
+			house = null;
+			
 			items.add(listItem);
 		}
 		propertyList.setItems(items);
