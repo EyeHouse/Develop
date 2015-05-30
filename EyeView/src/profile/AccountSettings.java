@@ -34,6 +34,7 @@ import button.ButtonType;
 import button.SetupButton;
 import database.DataHandler;
 import database.Database;
+import database.SQLFilter;
 import database.User;
 
 public class AccountSettings extends presenter.Window{
@@ -285,6 +286,11 @@ public class AccountSettings extends presenter.Window{
 				labelUsernameError.setText("Contains Bad Language");
 				labelUsernameError.setVisible(true);
 			}
+			
+			else if(SQLFilter.SQLWordCheck(fieldUsername.getText())){
+				labelUsernameError.setText("Contains Invalid Characters");
+				labelUsernameError.setVisible(true);
+			}
 			// If username is unavailable
 			else if (!Database.oneFieldCheck("username", fieldUsername.getText())) {
 				// Send new username to database and remove error message
@@ -309,9 +315,13 @@ public class AccountSettings extends presenter.Window{
 
 		// Return to profile if password is not entered and there is
 		// no username error
-		String hashPass = DataHandler.crypt((String) fieldPassword.getText());
+		boolean passwordCorrect = false;
+		if(!fieldPassword.getText().equals("")){
+			String hashPass = DataHandler.crypt((String) fieldPassword.getText());
 		
-		boolean passwordCorrect = Database.login((String) currentUsername, hashPass);
+			passwordCorrect = Database.login((String) currentUsername, hashPass);
+		}
+		
 		
 		if (fieldPassword.getText().equals("")) {
 			if (!labelUsernameError.isVisible() && !labelBadLanguage.isVisible()) {
