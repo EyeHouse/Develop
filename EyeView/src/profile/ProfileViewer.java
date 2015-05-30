@@ -249,6 +249,7 @@ public class ProfileViewer extends presenter.Window {
 				FileChooser profilePictureChooser = new FileChooser();
 				configureFileChooser(profilePictureChooser);
 				Window fileChooserStage = null;
+				profilePictureView.setDisable(true);
 
 				// Replace profile picture with new one from selected file
 				newProfilePictureFile = profilePictureChooser
@@ -270,10 +271,13 @@ public class ProfileViewer extends presenter.Window {
 								.println("Failed to upload new profile picture");
 						e.printStackTrace();
 					}
-				} else {
-					createWarningPopup("Invalid File Type.");
-					dialogStage.show();
+				} else if (newProfilePictureFile != null) {
+					if (newProfilePictureFile.getName().contains(".url")) {
+						createWarningPopup("Invalid File Type.");
+						dialogStage.show();
+					}
 				}
+				profilePictureView.setDisable(false);
 			}
 		});
 	}
