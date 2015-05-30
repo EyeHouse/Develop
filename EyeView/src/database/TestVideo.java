@@ -23,7 +23,6 @@ public class TestVideo extends Application {
 	public void start(Stage stage) throws Exception {
 
 		Database.dbConnect();
-		String filename1 = "example_clip.mp4";
 		
 		// goes to user Directory
 		HouseVideo house1;

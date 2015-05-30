@@ -426,15 +426,15 @@ public class Database {
 	 * @return
 	 */
 	public static boolean userUpdate(User user, String fieldSelect,
-			Boolean priv, String newField) {
+			Boolean priv, String newValue) {
 		// prepare a statement to update a field 'field'
 		try {
 			PreparedStatement editUser = con
 					.prepareStatement("UPDATE users SET " + fieldSelect
 							+ "=? WHERE username=? AND email=?");
 			// if there's a string use string data else it must be a bool
-			if (newField != null || fieldSelect.equals("properties"))
-				editUser.setString(1, newField);
+			if (newValue != null || fieldSelect.equals("properties"))
+				editUser.setString(1, newValue);
 			else
 				editUser.setBoolean(1, priv);
 			editUser.setString(2, user.username);
