@@ -156,8 +156,10 @@ public class SavedProperties extends presenter.Window {
 			// Rectangle propertyImage = new Rectangle(100, 100,
 			// Color.BLUEVIOLET);
 			Label propertyAddress = new Label(house.address);
+			propertyAddress.setWrapText(true);
+			propertyAddress.setMaxWidth(300);
 			Label propertyDetails = new Label("No. of Bedrooms: " + house.rooms
-					+ "\nPrice: £" + house.price + " pcm");
+					+ "\nPrice: £" + house.price + " pppw");
 
 			propertyAddress.setFont(Font.font(null, FontWeight.BOLD, 20));
 
@@ -198,8 +200,11 @@ public class SavedProperties extends presenter.Window {
 	}
 
 	public void dispose() {
+		properties.clear();
+		properties.trimToSize();
 		properties = null;
 		propertyList = null;
+		items.clear();
 		items = null;
 	}
 }

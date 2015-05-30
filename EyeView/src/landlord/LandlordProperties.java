@@ -181,6 +181,8 @@ public class LandlordProperties extends presenter.Window {
 
 			House house = properties.get(i);
 			Label propertyAddress = new Label(house.address);
+			propertyAddress.setWrapText(true);
+			propertyAddress.setMaxWidth(300);
 			Label propertyDetails = new Label(Translator.translateText(
 					languageIndex, "Bedrooms: ")
 					+ house.rooms
@@ -199,6 +201,15 @@ public class LandlordProperties extends presenter.Window {
 		propertyList.setItems(items);
 
 		grid.add(propertyList, 0, 1);
+	}
+	
+	public void dispose(){
+		properties.clear();
+		properties.trimToSize();
+		properties = null;
+		propertyList = null;
+		items.clear();
+		items = null;
 	}
 
 }

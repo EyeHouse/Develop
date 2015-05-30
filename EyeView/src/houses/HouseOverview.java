@@ -57,12 +57,10 @@ public class HouseOverview extends Window {
 	private Label labelBedrooms = new Label();
 	private Label labelLandlord = new Label();
 	private static ImageView playpauseButton;
-	private static Image play = new Image(
-			"file:resources/advert_icons/play.png");
-	private static Image pause = new Image(
-			"file:resources/advert_icons/pause.png");
-	private Image save = new Image("file:resources/advert_icons/save.png");
-	private Image saved = new Image("file:resources/advert_icons/saved.png");
+	private static Image play;
+	private static Image pause;
+	private Image save;
+	private Image saved;
 
 	/**
 	 * Constructor method
@@ -124,7 +122,11 @@ public class HouseOverview extends Window {
 
 			galleries.add(galleryList);
 
+			//galleryList.clear();
+			//galleryList.trimToSize();
 			galleryList = null;
+			houseImages.clear();
+			houseImages.trimToSize();
 			houseImages = null;
 		}
 	}
@@ -151,6 +153,8 @@ public class HouseOverview extends Window {
 		// Label showing house address
 		Label address = new Label(houses.get(pageIndex).address);
 		address.setFont(Font.font(null, FontWeight.BOLD, 24));
+		address.setMaxWidth(300);
+		address.setWrapText(true);
 		Label price = new Label("£"
 				+ Integer.toString(houses.get(pageIndex).price) + "  (pppw)");
 		price.setFont(new Font(20));
@@ -243,8 +247,10 @@ public class HouseOverview extends Window {
 		buttonSave.setCursor(Cursor.HAND);
 		buttonSave.relocate(460, 400);
 		if (savedProperties.contains(String.format("%03d", currentPropertyID))) {
+			saved = new Image("file:resources/advert_icons/saved.png");
 			buttonSave.setDisable(true);
 			buttonSave.setGraphic(new ImageView(saved));
+			saved = null;
 		}
 		buttonSave.setOnMouseEntered(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent arg0) {
@@ -389,21 +395,20 @@ public class HouseOverview extends Window {
 	public void dispose() {
 
 		houses.clear();
+		houses.trimToSize();
 		houses = null;
 		
 		gallery.dispose();
 		gallery = null;
 		pagination = null;
-		System.out.println("Dispose");
 		galleries.clear();
 		galleries = null;
 
 		savedProperties.clear();
+		savedProperties.trimToSize();
 		savedProperties = null;
 		
 		playpauseButton = null;
-		//play = null;
-		//pause = null;
 		save = null;
 		saved = null;
 	}
