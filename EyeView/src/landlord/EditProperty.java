@@ -108,14 +108,14 @@ public class EditProperty extends presenter.Window {
 		picStatus = new ImageView();
 		tick = new Image("file:resources/images/Status/Tick.png");
 		cross = new Image("file:resources/images/Status/Cross.png");
-		
+
 		root.getChildren().add(grid);
-		
+
 		createEditPage();
 	}
 
 	public void createEditPage() {
-		
+
 		setupGrid();
 		setupTabLabels(page);
 		setupButtons();
@@ -226,23 +226,23 @@ public class EditProperty extends presenter.Window {
 		buttonFinish.setCursor(Cursor.HAND);
 		buttonFinish.setOnAction(new CreateHouse());
 
-		if (hid == 0){
+		if (hid == 0) {
 			ButtonType button4 = new ButtonType("166,208,255", null,
 					Translator.translateText(languageIndex, "Cancel"), 110, 30);
 			Button buttonCancel = new SetupButton().CreateButton(button4);
 			buttonCancel.setCursor(Cursor.HAND);
 			buttonCancel.setOnAction(new Cancel());
-			
+
 			backButtons.getChildren().add(buttonCancel);
 			backButtons.getChildren().add(buttonFinish);
-			
+
 		} else {
 			ButtonType button4 = new ButtonType("166,208,255", null,
-					Translator.translateText(languageIndex, "Save"), 110, 30);
+					Translator.translateText(languageIndex, "Back"), 110, 30);
 			Button buttonSaveEdit = new SetupButton().CreateButton(button4);
 			buttonSaveEdit.setCursor(Cursor.HAND);
 			buttonSaveEdit.setOnAction(new Cancel());
-			
+
 			backButtons.getChildren().add(buttonSaveEdit);
 		}
 
@@ -271,8 +271,8 @@ public class EditProperty extends presenter.Window {
 				"Bedrooms:"));
 		Label labelBaths = new Label(Translator.translateText(languageIndex,
 				"Bathrooms:"));
-		Label labelFurnished = new Label(Translator.translateText(languageIndex,
-				"Furnished:"));
+		Label labelFurnished = new Label(Translator.translateText(
+				languageIndex, "Furnished:"));
 		Label labelDate = new Label(Translator.translateText(languageIndex,
 				"Date Available:"));
 		Label labelDeposit = new Label(Translator.translateText(languageIndex,
@@ -332,7 +332,6 @@ public class EditProperty extends presenter.Window {
 		buttonSave.setDisable(true);
 		buttonSave.setOnAction(new ApplyChanges());
 
-
 		grid.addRow(2, labelAddress, address);
 		grid.addRow(3, labelPostcode, postcode);
 		grid.addRow(4, labelPrice, price);
@@ -371,8 +370,8 @@ public class EditProperty extends presenter.Window {
 		labelUpload.setFont(Font.font(null, FontWeight.BOLD, 14));
 		uploadPathImage = new TextField();
 		uploadPathImage.setEditable(false);
-		
-		Label pictureNumber = new Label (Translator.translateText(languageIndex,
+
+		Label pictureNumber = new Label(Translator.translateText(languageIndex,
 				"* A Minimum of 3 Pictures is Required"));
 		pictureNumber.setFont(Font.font(null, FontWeight.BOLD, 14));
 		grid.addRow(2, pictureNumber);
@@ -381,9 +380,9 @@ public class EditProperty extends presenter.Window {
 
 		ButtonType button1 = new ButtonType("166,208,255", null,
 				Translator.translateText(languageIndex, "Browse"), 70, 30);
-		Button buttonBrowse = new SetupButton().CreateButton(button1);
-		buttonBrowse.setCursor(Cursor.HAND);
-		buttonBrowse.setOnAction(new Browse());
+		fileChooserButton = new SetupButton().CreateButton(button1);
+		fileChooserButton.setCursor(Cursor.HAND);
+		fileChooserButton.setOnAction(new Browse());
 
 		ButtonType button2 = new ButtonType("166,208,255", null,
 				Translator.translateText(languageIndex, "Upload"), 70, 30);
@@ -399,7 +398,7 @@ public class EditProperty extends presenter.Window {
 		HBox uploadControls = new HBox(10);
 		uploadControls.setAlignment(Pos.CENTER);
 		uploadControls.getChildren().addAll(labelUpload, uploadPathImage,
-				buttonBrowse, buttonUpload);
+				fileChooserButton, buttonUpload);
 		grid.addRow(1, uploadControls);
 		GridPane.setConstraints(uploadControls, 0, 1, 3, 1, HPos.CENTER,
 				VPos.CENTER);
@@ -458,7 +457,8 @@ public class EditProperty extends presenter.Window {
 
 			if (videoInfo != null) {
 
-				File file = FileManager.readVideo(Database.getUser(currentUsername),videoInfo);
+				File file = FileManager.readVideo(
+						Database.getUser(currentUsername), videoInfo);
 				videoPath = file.getAbsolutePath();
 			}
 		}
@@ -475,7 +475,7 @@ public class EditProperty extends presenter.Window {
 		ButtonType button1 = new ButtonType("166,208,255", null,
 				Translator.translateText(languageIndex, "Browse"), 100, 30);
 		fileChooserButton = new SetupButton().CreateButton(button1);
-		if (videoPath != null){
+		if (videoPath != null) {
 			fileChooserButton.setDisable(true);
 		} else {
 			fileChooserButton.setDisable(false);
@@ -533,7 +533,7 @@ public class EditProperty extends presenter.Window {
 
 		StackPane videoPane = new StackPane();
 
-		video = new VideoElement(newVideoFileString,true);
+		video = new VideoElement(newVideoFileString, true);
 		video.setStylesheet("resources/videoStyle.css");
 		video.setWidth(500);
 		video.setAutoplay(true);
@@ -546,12 +546,12 @@ public class EditProperty extends presenter.Window {
 
 	private void SetupRoomMarkers() {
 
-		if (hid != 0){
-			
+		if (hid != 0) {
+
 			videoMarkers = Database.getVideoMarkers(videoInfo.vid);
-			
-			for (int i = 0; i < videoMarkers.size(); i++){
-				
+
+			for (int i = 0; i < videoMarkers.size(); i++) {
+
 				HBox currentMarker = new HBox(0);
 				Marker markers = videoMarkers.get(i);
 				System.out.println(markers.room);
@@ -559,16 +559,17 @@ public class EditProperty extends presenter.Window {
 				currentRoomLabel.setPrefWidth(200);
 				Label currentVideoTimeLabel = new Label(
 						Double.toString(markers.markerTime));
-				currentVideoTimeLabel .setPrefWidth(80);
-				currentMarker.getChildren().addAll(currentRoomLabel, currentVideoTimeLabel);
+				currentVideoTimeLabel.setPrefWidth(80);
+				currentMarker.getChildren().addAll(currentRoomLabel,
+						currentVideoTimeLabel);
 
 				currentMarker.setAlignment(Pos.CENTER_LEFT);
-				
+
 				items.add(currentMarker);
 			}
-			
+
 		}
-		
+
 		HBox markerSetup = new HBox(10);
 		markerList.setPrefHeight(180);
 		markerList.setMaxWidth(300);
@@ -587,9 +588,10 @@ public class EditProperty extends presenter.Window {
 		setMarkerButton = new SetupButton().CreateButton(button1);
 		setMarkerButton.setOnAction(new AddMarker());
 		setMarkerButton.setDisable(true);
-		
+
 		ButtonType button3 = new ButtonType("166,208,255", null,
-				Translator.translateText(languageIndex, "Remove Video"), 120, 30);
+				Translator.translateText(languageIndex, "Remove Video"), 120,
+				30);
 		Button videoRemove = new SetupButton().CreateButton(button3);
 		videoRemove.setOnAction(new RemoveVideo());
 
@@ -625,7 +627,7 @@ public class EditProperty extends presenter.Window {
 								.getSelectedIndex();
 
 						System.out.println(markersIndex);
-						
+
 						if (markersIndex >= 0) {
 							deleteMarker.setDisable(false);
 						} else {
@@ -644,7 +646,7 @@ public class EditProperty extends presenter.Window {
 
 		// Add marker setup to HBox
 		markerSetup.getChildren().addAll(addNewRoomLabel, newRoomField,
-				setMarkerButton,videoRemove);
+				setMarkerButton, videoRemove);
 		markerSetup.setAlignment(Pos.CENTER);
 		markerListHeader.getChildren()
 				.addAll(roomNamesHeader, videoTimesHeader);
@@ -670,37 +672,50 @@ public class EditProperty extends presenter.Window {
 		public void handle(ActionEvent arg0) {
 
 			BadWordCheck bwd = new BadWordCheck();
-			if(bwd.containsBlackListedWords(description.getText())){
-				description.setText(bwd.highlightBlackListedWords(description.getText()));
+			if (bwd.containsBlackListedWords(description.getText())) {
+				description.setText(bwd.highlightBlackListedWords(description
+						.getText()));
 				createWarningPopup("Inappropriate Language");
 				dialogStage.show();
+
+			} else if (bwd.containsBlackListedWords(address.getText())) {
+				address.setText(bwd.highlightBlackListedWords(address.getText()));
+				createWarningPopup("Inappropriate Language");
+				dialogStage.show();
+
+			} else if (bwd.containsBlackListedWords(postcode.getText())) {
+				postcode.setText(bwd.highlightBlackListedWords(postcode
+						.getText()));
+				createWarningPopup("Inappropriate Language");
+				dialogStage.show();
+
 			} else {
-				
-			String dateAvailableString = dateComboArray.get(2).getValue() + "-"
-					+ dateComboArray.get(1).getValue() + "-"
-					+ dateComboArray.get(0).getValue();
-			System.out.println(house.dateAvailable);
-			System.out.println(dateAvailableString);
-			Database.updateHouse(owner, house, "address", address.getText(),
-					null, null, 0, 1);
-			Database.updateHouse(owner, house, "postcode", postcode.getText(),
-					null, null, 0, 1);
-			Database.updateHouse(owner, house, "price", null, null, null,
-					Integer.parseInt(price.getText()), 4);
-			Database.updateHouse(owner, house, "rooms", null, null, null,
-					Integer.parseInt(beds.getText()), 4);
-			Database.updateHouse(owner, house, "bathrooms", null, null, null,
-					Integer.parseInt(baths.getText()), 4);
-			Database.updateHouse(owner, house, "furnished", null,
-					furnished.isSelected(), null, 0, 2);
-			Database.updateHouse(owner, house, "deposit", null, null, null,
-					Integer.parseInt(deposit.getText()), 4);
-			Database.updateHouse(owner, house, "description",
-					description.getText(), null, null, 0, 1);
-			Database.updateHouse(owner, house, "date_available",
-					dateAvailableString, null, null, 0, 1);
-			grid.getChildren().clear();
-			createEditPage();
+
+				String dateAvailableString = dateComboArray.get(2).getValue()
+						+ "-" + dateComboArray.get(1).getValue() + "-"
+						+ dateComboArray.get(0).getValue();
+				System.out.println(house.dateAvailable);
+				System.out.println(dateAvailableString);
+				Database.updateHouse(owner, house, "address",
+						address.getText(), null, null, 0, 1);
+				Database.updateHouse(owner, house, "postcode",
+						postcode.getText(), null, null, 0, 1);
+				Database.updateHouse(owner, house, "price", null, null, null,
+						Integer.parseInt(price.getText()), 4);
+				Database.updateHouse(owner, house, "rooms", null, null, null,
+						Integer.parseInt(beds.getText()), 4);
+				Database.updateHouse(owner, house, "bathrooms", null, null,
+						null, Integer.parseInt(baths.getText()), 4);
+				Database.updateHouse(owner, house, "furnished", null,
+						furnished.isSelected(), null, 0, 2);
+				Database.updateHouse(owner, house, "deposit", null, null, null,
+						Integer.parseInt(deposit.getText()), 4);
+				Database.updateHouse(owner, house, "description",
+						description.getText(), null, null, 0, 1);
+				Database.updateHouse(owner, house, "date_available",
+						dateAvailableString, null, null, 0, 1);
+				grid.getChildren().clear();
+				createEditPage();
 			}
 		}
 	}
@@ -741,23 +756,24 @@ public class EditProperty extends presenter.Window {
 							}
 
 						}
-						
+
 						if (videoPath != null) {
 							// insert the video if a video was selected
-							Database.insertHouseVideo(owner, house,
-									videoFile.getName(), videoFile
-											.getParentFile()
-											.getAbsolutePath());
-							
-							videoInfo = Database.checkHouseVideo(owner, house.hid);
-							
+							Database.insertHouseVideo(owner, house, videoFile
+									.getName(), videoFile.getParentFile()
+									.getAbsolutePath());
+
+							videoInfo = Database.checkHouseVideo(owner,
+									house.hid);
+
 							for (int i = 0; i < videoMarkers.size(); i++) {
-								
+
 								Marker marker = videoMarkers.get(i);
 								String roomMarker = marker.room;
 								double videoTime = marker.markerTime;
-								
-								Database.insertVideoMarker(videoInfo.vid, roomMarker, videoTime);
+
+								Database.insertVideoMarker(videoInfo.vid,
+										roomMarker, videoTime);
 							}
 						}
 
@@ -885,9 +901,11 @@ public class EditProperty extends presenter.Window {
 			configureFileChooser(uploadChooser);
 			Window fileChooserStage = null;
 
+			fileChooserButton.setDisable(true);
+
 			// Replace profile picture with new one from selected file
 			newFile = uploadChooser.showOpenDialog(fileChooserStage);
-			if (newFile != null) {
+			if (newFile != null && !newFile.getName().contains(".url")) {
 				switch (page) {
 				case INFO:
 					break;
@@ -896,6 +914,7 @@ public class EditProperty extends presenter.Window {
 					buttonUpload.setCursor(Cursor.HAND);
 					buttonUpload.setDisable(false);
 					filePath = newFile.getAbsolutePath();
+
 					break;
 				case VIDEO:
 					uploadPathVideo.clear();
@@ -907,6 +926,13 @@ public class EditProperty extends presenter.Window {
 					break;
 				}
 			}
+			else if (newFile != null) {
+				if (newFile.getName().contains(".url")) {
+					createWarningPopup("Invalid File Type");
+					dialogStage.show();
+				}
+			}
+			fileChooserButton.setDisable(false);
 		}
 
 		private void configureFileChooser(FileChooser uploadChooser) {
@@ -923,10 +949,11 @@ public class EditProperty extends presenter.Window {
 				uploadChooser.setTitle(Translator.translateText(languageIndex,
 						"Choose Property Image to Upload"));
 				// Set file types displayed in the file chooser as png and jpg
-				uploadChooser.getExtensionFilters().addAll(
-						new FileChooser.ExtensionFilter("JPG, PNG", "*.jpg",
-								"*.png"),
-						new FileChooser.ExtensionFilter("PNG", "*.png"));
+				FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(
+						"JPG, PNG", "*.jpg", "*.png");
+
+				uploadChooser.getExtensionFilters().addAll(extFilter);
+
 				break;
 			case VIDEO:
 				// Set title of file chooser
@@ -1000,8 +1027,9 @@ public class EditProperty extends presenter.Window {
 
 		public void handle(ActionEvent arg0) {
 
-			if(hid != 0){
-				HouseVideo currentVideo = Database.checkHouseVideo(owner, currentPropertyID);
+			if (hid != 0) {
+				HouseVideo currentVideo = Database.checkHouseVideo(owner,
+						currentPropertyID);
 				Database.deleteVideo(owner, currentVideo);
 			}
 
@@ -1062,22 +1090,23 @@ public class EditProperty extends presenter.Window {
 				newMarker.getChildren().addAll(newRoomLabel, newVideoTimeLabel);
 
 				newMarker.setAlignment(Pos.CENTER_LEFT);
-				
+
 				String[] times = video.printCurrentVideoTime().split(":");
 				double seconds = Double.parseDouble(times[1]);
 				double minutes = Double.parseDouble(times[0]);
-				double videoTime = (minutes*60) + seconds;
+				double videoTime = (minutes * 60) + seconds;
 				String roomMarker = newRoomField.getText();
-			
-				if (hid != 0){
-					Database.insertVideoMarker(videoInfo.vid, roomMarker, videoTime);
+
+				if (hid != 0) {
+					Database.insertVideoMarker(videoInfo.vid, roomMarker,
+							videoTime);
 				}
-				
+
 				Marker marker = new Marker(roomMarker);
 				marker.time(videoTime);
-				
+
 				items.add(newMarker);
-				videoMarkers.add(marker);  
+				videoMarkers.add(marker);
 				newRoomField.clear();
 				setMarkerButton.setDisable(true);
 			}
@@ -1091,12 +1120,12 @@ public class EditProperty extends presenter.Window {
 	 * @author hcw515
 	 */
 	public class DeleteMarker implements EventHandler<ActionEvent> {
-		
+
 		@Override
 		public void handle(ActionEvent event) {
 			if (markerList.getSelectionModel().getSelectedIndex() >= 0) {
 				int index = markerList.getSelectionModel().getSelectedIndex();
-				
+
 				System.out.println(index);
 
 				for (int i = index; i < items.size() - 1; i++) {
@@ -1104,7 +1133,7 @@ public class EditProperty extends presenter.Window {
 				}
 
 				items.remove(items.size() - 1);
-				
+
 				Database.deleteVideoMarker(videoMarkers.get(index));
 				videoMarkers.remove(index);
 				deleteMarker.setDisable(true);
@@ -1184,4 +1213,3 @@ public class EditProperty extends presenter.Window {
 		return date;
 	}
 }
-
