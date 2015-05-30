@@ -125,5 +125,12 @@ public class Translate extends presenter.Window {
 						};
 					}
 				});
+		englishImage = null;
+		spanishImage = null;
+		frenchImage = null;
+		italianImage = null;
+		germanImage = null;
+		portugueseImage = null;
+		dutchImage = null;
 	}
 }

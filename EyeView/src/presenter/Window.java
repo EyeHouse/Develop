@@ -7,7 +7,6 @@ import java.util.List;
 import button.ButtonType;
 import button.SetupButton;
 
-
 import database.Database;
 import database.House;
 
@@ -63,8 +62,8 @@ public class Window extends Application {
 	public static List<SlideData> slideList;
 	public static SlideData slideData;
 	public static String groupID;
-	public static int slideID;
-	public static int prevSlideID = STARTPAGE;
+	public static int slideID = -1;
+	public static int prevSlideID = -1;
 
 	public static String currentUsername = null;
 	public static String viewedUsername = null;
@@ -85,10 +84,10 @@ public class Window extends Application {
 		primaryStage.setHeight(yResolution);
 		primaryStage.setResizable(false);
 		primaryStage.setTitle("EyeHouse");
-		
+
 		root = new Group();
 		primaryStage.setScene(new Scene(root));
-
+		dialogStage = new Stage();
 		createXMLOptions(primaryStage);
 	}
 
@@ -96,6 +95,7 @@ public class Window extends Application {
 
 		prevSlideID = slideID;
 		slideID = id;
+		
 		if (slideID < (slideList.size())) {
 
 			root.getChildren().clear();
@@ -163,7 +163,6 @@ public class Window extends Application {
 		primaryStage.setTitle(slideshow.getTitle());
 
 		if (groupID.matches("5")) {
-			dialogStage = new Stage();
 			primaryStage.getIcons().add(
 					new Image("file:./resources/icons/xxxhdpi.png"));
 			Database.dbConnect();
@@ -176,7 +175,7 @@ public class Window extends Application {
 	public class importHandler implements EventHandler<ActionEvent> {
 
 		public void handle(ActionEvent arg0) {
-			
+
 			File newFile;
 
 			// Open file chooser window
@@ -205,14 +204,21 @@ public class Window extends Application {
 
 		@Override
 		public void handle(ActionEvent arg0) {
-			root.getChildren().clear();
-			Stage stage = (Stage) root.getScene().getWindow();
-			openXML(stage, "EyeView.xml");
+			if (Database.dbConnect()) {
+				root.getChildren().clear();
+				Stage stage = (Stage) root.getScene().getWindow();
+				openXML(stage, "EyeView.xml");
+			}
+			else{
+				createWarningPopup("Not connected to EyeHouse server");
+				dialogStage.show();
+			}
+
 		}
 	}
 
 	public static void createWarningPopup(String message) {
-		
+
 		Label dialogText = new Label(message);
 		dialogText.setFont(new Font(14));
 		dialogText.setAlignment(Pos.CENTER);
@@ -230,7 +236,7 @@ public class Window extends Application {
 
 		Image icon = new Image("file:./resources/images/warning.png");
 		ImageView iconView = new ImageView(icon);
-		
+
 		dialogStage.setResizable(false);
 		dialogStage.setTitle("Warning");
 		dialogStage.getIcons().add(

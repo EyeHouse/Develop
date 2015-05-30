@@ -41,7 +41,6 @@ public class StartPage extends Window {
 	private Button buttonStart; // Start button
 	private Font fontMain = new Font(21); // Set font size for labels
 	private static ImageView logo; // ImageView in which logo image is drawn
-	public static Image companyLogo; // EyeHouse logo
 	private Label welcomeMessage; // Label for welcome message
 	private static Timeline scrollTimer; // Timer to scroll pictures banner
 	private PicturesBanner bannerPictures;
@@ -107,12 +106,13 @@ public class StartPage extends Window {
 		welcomeMessage.setWrapText(true);
 
 		// EyeHouse logo
-		companyLogo = new Image(
+		Image companyLogo = new Image(
 				"file:resources/start_page_images/StartPageLOGO.png");
 		logo = new ImageView(companyLogo);
 		logo.setPreserveRatio(true);
 		logo.setFitWidth(320);
 		logo.relocate(30, 30);
+		companyLogo = null;
 
 		// Create VBox containing the welcome message and the start button
 		elementBox.setAlignment(Pos.CENTER_LEFT);
@@ -126,12 +126,14 @@ public class StartPage extends Window {
 			Image image = new Image("file:resources/start_page_images/House"
 					+ i + ".JPG");
 			gallery.add(image);
+			image = null;
 		}
 
 		// Create pictures banner
 		bannerPictures = new PicturesBanner(gallery);
 		bannerPictures.setPrefSize(xResolution, bannerHeight);
-
+		gallery.clear();
+		gallery = null;
 		// Add all elements to the page
 		root.getChildren().addAll(background, centreBox, logo, bannerPictures,
 				elementBox);
@@ -343,6 +345,14 @@ public class StartPage extends Window {
 			imageView.setFitWidth(xResolution / 3); // Three images wide
 			imageView.setPreserveRatio(false);
 			getChildren().addAll(imageView);
+			image = null;
 		}
+	}
+	
+	public void displose(){
+		logo = null;
+		bannerPictures = null;
+		scrollTimer.stop();
+		scrollTimer = null;
 	}
 }

@@ -7,7 +7,6 @@ import houses.VideoPage;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -56,7 +55,8 @@ import database.User;
 public class SlideContent extends Window {
 
 	public ImageView profilePictureView;
-	public static ComboBox<ImageView> languageComboBox = new ComboBox<ImageView>();
+	private static ImageView buttonslideBack;
+	public static ComboBox<ImageView> languageComboBox;
 	public static HouseOverview houseAdverts;
 	public static StartPage startPage;
 	public static Login login;
@@ -167,6 +167,10 @@ public class SlideContent extends Window {
 		houseAdverts = new HouseOverview(false, houses);
 		createSidebar();
 		createMenuBar();
+		
+		houseIDs.clear();
+		houseIDs = null;
+		houses = null;
 	}
 
 	private void createHomeSlide() {
@@ -178,6 +182,9 @@ public class SlideContent extends Window {
 		houseAdverts = new HouseOverview(false, houses);
 		createSidebar();
 		createMenuBar();
+		
+		houseIDs.clear();
+		houseIDs = null;
 	}
 
 	private void createLoginSlide() {
@@ -273,15 +280,17 @@ public class SlideContent extends Window {
 
 			User currentUser = Database.getUser(currentUsername);
 			try {
-				InputStream binaryStream = currentUser.profimg.getBinaryStream(
-						1, currentUser.profimg.length());
-				Image profilePicture = new Image(binaryStream);
+				//InputStream binaryStream = currentUser.profimg.getBinaryStream(
+						//1, currentUser.profimg.length());
+				Image profilePicture = new Image(currentUser.profimg.getBinaryStream());
+
 				profilePictureView = new ImageView(profilePicture);
 				// Set maximum dimensions for profile picture
 				profilePictureView.setFitWidth(100);
 				profilePictureView.setFitHeight(100);
 				profilePictureView.setPreserveRatio(true);
 				sidebar.getChildren().add(profilePictureView);
+				profilePicture = null;
 			} catch (SQLException e) {
 				System.out.println("Failed to retrieve profile picture.");
 				e.printStackTrace();
@@ -372,15 +381,14 @@ public class SlideContent extends Window {
 
 			if (slideID == HOUSES || slideID == HOUSE || slideID == RESULTS)
 				createSearchBar();
+			currentUser = null;
 		} else {
 			labelLogin = new Label(Translate.translateText(languageIndex,
 					"Login"));
 			labelLogin.setFont(new Font(16));
 			labelLogin.setOnMouseClicked(new EventHandler<MouseEvent>() {
 				public void handle(MouseEvent arg0) {
-					root.getChildren().clear();
-					slideID = LOGIN;
-					createSlide();
+					loadSlide(LOGIN);
 				}
 			});
 
@@ -389,9 +397,7 @@ public class SlideContent extends Window {
 			labelRegister.setFont(new Font(16));
 			labelRegister.setOnMouseClicked(new EventHandler<MouseEvent>() {
 				public void handle(MouseEvent arg0) {
-					root.getChildren().clear();
-					slideID = REGISTER;
-					createSlide();
+					loadSlide(REGISTER);
 				}
 			});
 
@@ -410,6 +416,7 @@ public class SlideContent extends Window {
 		sidebar.setMinWidth(150);
 		sidebar.setAlignment(Pos.CENTER);
 
+		
 		root.getChildren().add(sidebar);
 	}
 
@@ -507,13 +514,13 @@ public class SlideContent extends Window {
 
 	public static void setupBackButton() {
 
-		ImageView buttonBack = new ImageView(new Image(
+		buttonslideBack = new ImageView(new Image(
 				"file:resources/advert_icons/back.png"));
-		buttonBack.relocate(200, 20);
-		buttonBack.setPreserveRatio(true);
-		buttonBack.setFitWidth(80);
-		buttonBack.setCursor(Cursor.HAND);
-		buttonBack.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		buttonslideBack.relocate(200, 20);
+		buttonslideBack.setPreserveRatio(true);
+		buttonslideBack.setFitWidth(80);
+		buttonslideBack.setCursor(Cursor.HAND);
+		buttonslideBack.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent ae) {
 				if (currentUsername != null)
 					loadSlide(HOUSES);
@@ -523,11 +530,12 @@ public class SlideContent extends Window {
 			}
 		});
 
-		root.getChildren().add(buttonBack);
+		root.getChildren().add(buttonslideBack);
 	}
 
 	public void setupTranslate() {
 
+		languageComboBox = new ComboBox<ImageView>();
 		Translate.translateBox();
 		languageComboBox.valueProperty().addListener(new LanguageChange());
 		languageComboBox.getStylesheets().add(
@@ -797,6 +805,18 @@ public class SlideContent extends Window {
 				}
 			}
 
+			result1.clear();
+			result2.clear();
+			result3.clear();
+			result4.clear();
+			result5.clear();
+			
+			result1 = null;
+			result2 = null;
+			result3 = null;
+			result4 = null;
+			result5 = null;
+			
 			searchResults = output;
 			if (output.size() > 0) {
 				loadSlide(RESULTS);
@@ -805,15 +825,18 @@ public class SlideContent extends Window {
 	}
 	
 	private void clearSlideData(){
-		
+		System.out.println("\nMemory Free:" + Runtime.getRuntime().freeMemory());
 		switch (prevSlideID) {
 		case STARTPAGE:
+			startPage.displose();
 			startPage = null;
 			break;
 		case RESULTS:
 		case INDEX:
 		case HOUSE:	
 		case HOUSES:
+			languageComboBox.getItems().clear();
+			languageComboBox = null;
 			houseAdverts.dispose();
 			houseAdverts = null;
 			break;
@@ -854,6 +877,9 @@ public class SlideContent extends Window {
 		default:
 			break;
 		}
+		
+		profilePictureView = null;
 		System.gc();
+		System.out.println("Memory Free After:" + Runtime.getRuntime().freeMemory());
 	}
 }
