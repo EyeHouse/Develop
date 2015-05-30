@@ -24,7 +24,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.util.Callback;
 import javafx.util.Duration;
-import language.Translate;
+import language.Translator;
 import presenter.Window;
 import profile.SavedProperties;
 import database.Database;
@@ -80,7 +80,10 @@ public class HouseOverview extends Window {
 
 		// Only set up advert timer loop if viewing more than one house
 		if (!singlePropertyView) {
-			savedProperties = User.getSavedProperties(currentUsername);
+			if (currentUsername != null) {
+				savedProperties = User.getSavedProperties(currentUsername);
+			}
+
 			setupAdvertTimer();
 			setupTimerControl();
 		}
@@ -106,16 +109,19 @@ public class HouseOverview extends Window {
 				HouseImage input = houseImages.get(j);
 				Image image = new Image(input.imageIS);
 				galleryList.add(image);
+				image = null;
+				input = null;
 			}
 
 			// If the house has an energy rating picture it is included
 			if (houses.get(i).energyRatingIS != null) {
 				Image image = new Image(houses.get(i).energyRatingIS);
 				galleryList.add(image);
+				image = null;
 			}
 
 			galleries.add(galleryList);
-			
+
 			galleryList = null;
 			houseImages = null;
 		}
@@ -149,7 +155,7 @@ public class HouseOverview extends Window {
 
 		// Labels showing number of bedrooms
 		HBox bedroomsBox = new HBox();
-		labelBedrooms = new Label(Translate.translateText(languageIndex,
+		labelBedrooms = new Label(Translator.translateText(languageIndex,
 				"Bedrooms") + ":  ");
 		labelBedrooms.setFont(new Font(20));
 		Label bedrooms = new Label(
@@ -159,22 +165,17 @@ public class HouseOverview extends Window {
 
 		// Label showing landlord's name
 		HBox landlordBox = new HBox();
-		labelLandlord = new Label(Translate.translateText(languageIndex,
+		labelLandlord = new Label(Translator.translateText(languageIndex,
 				"Landlord") + ":  ");
 		labelLandlord.setFont(new Font(20));
-		final User landlordUser = Database.getUser(Database.getUsername(houses
+		User landlordUser = Database.getUser(Database.getUsername(houses
 				.get(pageIndex).uid));
 
 		// Hyperlink to landlord's profile page
 		Hyperlink landlord = new Hyperlink(landlordUser.first_name);
 		landlord.setFont(new Font(20));
 		if (currentUsername != null) {
-			landlord.setOnMouseClicked(new EventHandler<MouseEvent>() {
-				public void handle(MouseEvent ae) {
-					viewedUsername = landlordUser.username;
-					loadSlide(PROFILE);
-				}
-			});
+			landlord.setOnMouseClicked(new loadLandlord(landlordUser.username));
 		} else {
 			// If user is logged out, landlord's profile is not available
 			landlord.setDisable(true);
@@ -188,8 +189,10 @@ public class HouseOverview extends Window {
 				landlordBox);
 		propertyInfo.relocate(450, 100);
 
-		// Creates the icon for saving a house to view later
-		setupSaveButton(galleryPane);
+		if (currentUsername != null) {
+			// Creates the icon for saving a house to view later
+			setupSaveButton(galleryPane);
+		}
 
 		// Set up back button if this is a single house viewing
 		if (slideID == HOUSE) {
@@ -197,8 +200,23 @@ public class HouseOverview extends Window {
 		}
 
 		galleryPane.getChildren().add(propertyInfo);
-
+		landlordUser = null;
 		return galleryPane;
+	}
+	
+	private class loadLandlord implements EventHandler<MouseEvent>{
+
+		String username = null;
+		public loadLandlord(String username){
+			this.username = username;
+		}
+		
+		@Override
+		public void handle(MouseEvent arg0) {
+			viewedUsername = username;
+			loadSlide(PROFILE);
+		}
+		
 	}
 
 	/**
@@ -299,7 +317,7 @@ public class HouseOverview extends Window {
 	 * and sets the timeline to start playing by default.
 	 */
 	private void setupAdvertTimer() {
-		
+
 		advertTimer = new Timeline(new KeyFrame(Duration.millis(5 * 1000),
 				new EventHandler<ActionEvent>() {
 					public void handle(ActionEvent ae) {
@@ -340,35 +358,31 @@ public class HouseOverview extends Window {
 	 */
 	public void updateLanguage() {
 
-		labelBedrooms.setText(Translate
+		labelBedrooms.setText(Translator
 				.translateText(languageIndex, "Bedrooms") + ":  ");
-		labelLandlord.setText(Translate
+		labelLandlord.setText(Translator
 				.translateText(languageIndex, "Landlord") + ":  ");
 	}
-	
+
 	/**
 	 * Disposes of all of the house objects
 	 */
-	public void dispose(){
-		
-		for(int i = 0 ; i < houses.size() ; i++){
-			houses.remove(0);
-		}
+	public void dispose() {
+
+		houses.clear();
 		houses = null;
 		
+		gallery.dispose();
 		gallery = null;
 		pagination = null;
-		
-		for(int i = 0 ; i < galleries.size() ; i++){
-			galleries.remove(0);
-		}
+		System.out.println("Dispose");
+		galleries.clear();
 		galleries = null;
-		
-		for(int i = 0 ; i < savedProperties.size() ; i++){
-			savedProperties.remove(0);
-		}
+
+		savedProperties.clear();
 		savedProperties = null;
 		
+		playpauseButton = null;
 		play = null;
 		pause = null;
 		save = null;

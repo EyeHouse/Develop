@@ -15,7 +15,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
-import language.Translate;
+import language.Translator;
 import presenter.SlideContent;
 import presenter.Window;
 
@@ -53,7 +53,7 @@ public class GoogleMapsPage extends Window {
 
 	public void setupTitle() {
 
-		Label topTitle = new Label(Translate.translateText(languageIndex,"Map and Route"));
+		Label topTitle = new Label(Translator.translateText(languageIndex, "Map and Route"));
 		topTitle.setTextFill(Color.web("#162252FF"));
 		topTitle.setFont(new Font(32));
 		topTitle.relocate(440, 80);
@@ -61,7 +61,7 @@ public class GoogleMapsPage extends Window {
 	}	
 	
 	public void UpdateLanguage() {
-		topTitle.setText(Translate.translateText(languageIndex, "Map and Route"));
+		topTitle.setText(Translator.translateText(languageIndex, "Map and Route"));
 	}
 
 	public void setupButtons() {
@@ -90,7 +90,7 @@ public class GoogleMapsPage extends Window {
 			House destination = Database.getHouse(currentPropertyID);
 			changeDestination(destination.address,destination.postcode);
 			
-			File file = new File("src/maps/PropertyMapData.html");
+			File file = new File("src/houses/PropertyMapData.html");
 			try {
 				URL urlGoogleMaps = file.toURI().toURL();
 				webEngine.load(urlGoogleMaps.toExternalForm());
@@ -114,7 +114,7 @@ public class GoogleMapsPage extends Window {
 						inputConnection.getInputStream()));
 
 				PrintWriter output = new PrintWriter(new OutputStreamWriter(
-					       new FileOutputStream("src/maps/PropertyMapData.html")));
+					       new FileOutputStream("src/houses/PropertyMapData.html")));
 				while (in.hasNext()) {
 					String inputLine = in.nextLine();
 					if(inputLine.contains("var destinationA")){

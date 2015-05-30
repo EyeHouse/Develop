@@ -30,7 +30,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import language.Translate;
+import language.Translator;
 import presenter.SlideContent;
 
 public class SavedProperties extends presenter.Window {
@@ -70,7 +70,7 @@ public class SavedProperties extends presenter.Window {
 
 	private void setupTitle() {
 
-		labelTitle = new Label(Translate.translateText(languageIndex,
+		labelTitle = new Label(Translator.translateText(languageIndex,
 				"Saved Properties"));
 		labelTitle.setTextFill(Color.web("#162252FF"));
 		labelTitle.setFont(new Font(35));
@@ -84,11 +84,11 @@ public class SavedProperties extends presenter.Window {
 
 		// View button//
 		ButtonType button1 = new ButtonType("150,150,150", null,
-				Translate.translateText(languageIndex, "View"), 100, 30);
+				Translator.translateText(languageIndex, "View"), 100, 30);
 
 		// Remove button//
 		ButtonType button2 = new ButtonType("150,150,150", null,
-				Translate.translateText(languageIndex, "Remove"), 100, 30);
+				Translator.translateText(languageIndex, "Remove"), 100, 30);
 
 		Button buttonView = new SetupButton().CreateButton(button1);
 		Button buttonRemove = new SetupButton().CreateButton(button2);
@@ -164,6 +164,10 @@ public class SavedProperties extends presenter.Window {
 			propertyInfo.getChildren().addAll(propertyAddress, propertyDetails);
 			listItem.getChildren().addAll(thumbnail, propertyInfo);
 
+			houseImages.clear();
+			houseImages = null;
+			house = null;
+			
 			items.add(listItem);
 		}
 		propertyList.setItems(items);
@@ -189,7 +193,7 @@ public class SavedProperties extends presenter.Window {
 	}
 
 	public void UpdateLanguage() {
-		labelTitle.setText(Translate.translateText(languageIndex,
+		labelTitle.setText(Translator.translateText(languageIndex,
 				"Saved Properties") + ": ");
 	}
 

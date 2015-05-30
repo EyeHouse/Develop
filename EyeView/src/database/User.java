@@ -134,10 +134,17 @@ public class User {
 			if (currentUser.properties != null) {
 				int length = currentUser.properties.length();
 				for (int i = 0; i < length; i += 4) {
-					properties.add(currentUser.properties.substring(i, i + 3));
+					
+					String propertyID = currentUser.properties.substring(i, i + 3);
+					House house = Database.getHouse(Integer.parseInt(propertyID));
+					
+					if(house!= null){
+						properties.add(currentUser.properties.substring(i, i + 3));
+					}
 				}
 			}
 		}
+		updateSavedProperties(username, properties);
 		return properties;
 	}
 

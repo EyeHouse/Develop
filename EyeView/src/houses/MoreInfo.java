@@ -8,7 +8,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import language.Translate;
+import language.Translator;
 import presenter.SlideContent;
 import presenter.Window;
 import database.Database;
@@ -21,16 +21,16 @@ public class MoreInfo extends Window {
 	private static Label description = new Label("");
 	private static House house = Database.getHouse(currentPropertyID);
 	
-	private static Label labelTitle = new Label(Translate.translateText(languageIndex, "More Information"));
-	private static Label labelAddress = new Label(Translate.translateText(languageIndex, "Address: "));
-	private static Label labelPostcode = new Label(Translate.translateText(languageIndex, "Postcode:"));
-	private static Label labelPrice = new Label(Translate.translateText(languageIndex, "Price (£pppw):"));
-	private static Label labelBeds = new Label(Translate.translateText(languageIndex, "Bedrooms:"));
-	private static Label labelBaths = new Label(Translate.translateText(languageIndex, "Bathrooms:"));
-	private static Label labelFurnished = new Label(Translate.translateText(languageIndex, "Furnished:"));
-	private static Label labelDate = new Label(Translate.translateText(languageIndex, "Date Available:"));
-	private static Label labelDeposit = new Label(Translate.translateText(languageIndex, "Deposit:"));
-	private static Label labelDesc = new Label(Translate.translateText(languageIndex, "Description"));
+	private static Label labelTitle = new Label(Translator.translateText(languageIndex, "More Information"));
+	private static Label labelAddress = new Label(Translator.translateText(languageIndex, "Address: "));
+	private static Label labelPostcode = new Label(Translator.translateText(languageIndex, "Postcode:"));
+	private static Label labelPrice = new Label(Translator.translateText(languageIndex, "Price (£pppw):"));
+	private static Label labelBeds = new Label(Translator.translateText(languageIndex, "Bedrooms:"));
+	private static Label labelBaths = new Label(Translator.translateText(languageIndex, "Bathrooms:"));
+	private static Label labelFurnished = new Label(Translator.translateText(languageIndex, "Furnished:"));
+	private static Label labelDate = new Label(Translator.translateText(languageIndex, "Date Available:"));
+	private static Label labelDeposit = new Label(Translator.translateText(languageIndex, "Deposit:"));
+	private static Label labelDesc = new Label(Translator.translateText(languageIndex, "Description"));
 		
 	private GridPane grid = new GridPane();
 
@@ -46,10 +46,10 @@ public class MoreInfo extends Window {
 		Label beds = new Label(Integer.toString(house.rooms));
 		Label baths = new Label(Integer.toString(house.bathrooms));
 		if(house.furnished){
-			furnishedField = new Label(Translate.translateText(languageIndex, "Yes"));
+			furnishedField = new Label(Translator.translateText(languageIndex, "Yes"));
 		}
 		else{
-			furnishedField = new Label(Translate.translateText(languageIndex, "No"));
+			furnishedField = new Label(Translator.translateText(languageIndex, "No"));
 		}
 		Label dateAvailable = new Label(house.dateAvailable.substring(8, 10) + "/"
 				+ house.dateAvailable.substring(5, 7) + "/"
@@ -115,32 +115,32 @@ public class MoreInfo extends Window {
 	 * Updates labels with translation based on selected language
 	 */
 	public static void UpdateLanguage() {
-		labelTitle.setText(Translate.translateText(
+		labelTitle.setText(Translator.translateText(
 				languageIndex, "More Information"));
-		labelAddress.setText(Translate.translateText(
+		labelAddress.setText(Translator.translateText(
 				languageIndex, "Address") + ": ");
-		labelPostcode.setText(Translate.translateText(
+		labelPostcode.setText(Translator.translateText(
 				languageIndex, "Postcode") + ": ");
-		labelPrice.setText(Translate.translateText(
+		labelPrice.setText(Translator.translateText(
 				languageIndex, "Price") + ": ");
-		labelBeds.setText(Translate.translateText(
+		labelBeds.setText(Translator.translateText(
 				languageIndex, "Bedrooms") + ": ");
-		labelBaths.setText(Translate.translateText(
+		labelBaths.setText(Translator.translateText(
 				languageIndex, "Bathrooms") + ": ");
-		labelFurnished.setText(Translate.translateText(
+		labelFurnished.setText(Translator.translateText(
 				languageIndex, "Furnished") + ": ");
-		labelDate.setText(Translate.translateText(
+		labelDate.setText(Translator.translateText(
 				languageIndex, "Date Available") + ": ");
-		labelDeposit.setText(Translate.translateText(
+		labelDeposit.setText(Translator.translateText(
 				languageIndex, "Deposit") + ": ");
-		labelDesc.setText(Translate.translateText(
+		labelDesc.setText(Translator.translateText(
 				languageIndex, "Description") + ": ");
 		
 		if(house.furnished){
-			furnishedField.setText(Translate.translateText(languageIndex, "Yes"));
+			furnishedField.setText(Translator.translateText(languageIndex, "Yes"));
 		}
 		else{
-			furnishedField.setText(Translate.translateText(languageIndex, "No"));
+			furnishedField.setText(Translator.translateText(languageIndex, "No"));
 		}
 		
 //		description.setText(Translate.translateText(languageIndex, house.description));

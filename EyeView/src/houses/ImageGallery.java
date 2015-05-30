@@ -82,6 +82,8 @@ public class ImageGallery extends Window {
 		galleryGroup.getChildren().add(mainHouseImage);
 		galleryGroup.setLayoutX(xPosition);
 		galleryGroup.setLayoutY(yPosition);
+		
+		galleryPictures = null;		
 	}
 
 	public Node getGallery() {
@@ -322,7 +324,14 @@ public class ImageGallery extends Window {
 			imageView.setFitWidth(GalleryPictures.smallHouseWidth);
 			imageView.setPreserveRatio(false);
 			getChildren().addAll(imageView);
+			image = null;
 		}
+	}
+	
+	public void dispose(){
+		mainImage = null;
+		galleryImages.clear();
+		galleryImages = null;
 	}
 
 }
