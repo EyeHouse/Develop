@@ -100,11 +100,14 @@ public class ProfileViewer extends Window {
 		profileGrid.setPrefWidth(600);
 
 		// Set column widths of grid.
+		
 		ColumnConstraints col1 = new ColumnConstraints();
 		ColumnConstraints col2 = new ColumnConstraints();
-		col1.setMinWidth(200);
-		col2.setMinWidth(100);
-		profileGrid.getColumnConstraints().addAll(col1, col1, col2);
+		ColumnConstraints col3 = new ColumnConstraints();
+		col1.setMinWidth(220);
+		col2.setMinWidth(200);
+		col3.setMinWidth(100);
+		profileGrid.getColumnConstraints().addAll(col1, col2, col3);
 
 		// Set grid size and spacing in group.
 		profileGrid.setHgap(gridCellWidth);
@@ -210,9 +213,10 @@ public class ProfileViewer extends Window {
 				languageIndex, "Click on image to update profile picture"));
 		// Create a VBox to contain the label
 		vBoxUpdateProfilePictureLabel = new VBox(30);
+		vBoxUpdateProfilePictureLabel.setMinWidth(200);
 		// Add update profile label to grid pane
 		profileGrid.addRow(1, vBoxUpdateProfilePictureLabel);
-
+		
 		profilePictureView.setCursor(Cursor.HAND); // Set hand cursor
 
 		profilePictureView.setOnMouseEntered(new EventHandler<MouseEvent>() {
@@ -464,7 +468,9 @@ public class ProfileViewer extends Window {
 			for (int i = 0; i < 5; i++) {
 				buttonStar[i].setOnAction(new starButtonHandler(i));
 			}
+			hBoxNewStars.setCursor(Cursor.HAND);
 		}
+
 
 		// VBox to contain Profile label and text area
 		VBox vBoxProfile = new VBox(10);
