@@ -11,6 +11,7 @@ import button.ButtonType;
 import button.SetupButton;
 
 import presenter.SlideContent;
+import presenter.Window;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -42,7 +43,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.FileChooser;
-import javafx.stage.Window;
 import language.BadWordCheck;
 import language.Translator;
 import database.Database;
@@ -53,7 +53,7 @@ import database.HouseVideo;
 import database.Marker;
 import database.User;
 
-public class EditProperty extends presenter.Window {
+public class EditProperty extends Window {
 
 	private User owner;
 	private int page;
@@ -74,7 +74,7 @@ public class EditProperty extends presenter.Window {
 	private TextField newRoomField;
 	private CheckBox furnished = new CheckBox();
 	private TextArea description = new TextArea();
-	ArrayList<ComboBox<String>> dateComboArray = new ArrayList<ComboBox<String>>();
+	private ArrayList<ComboBox<String>> dateComboArray = new ArrayList<ComboBox<String>>();
 	private HBox pageChangeButtons;
 	private VBox backButtons;
 	private Button buttonSave = new Button();
@@ -91,8 +91,8 @@ public class EditProperty extends presenter.Window {
 	private String videoPath;
 	private VideoElement video;
 	private HouseVideo videoInfo = null;
-	ListView<HBox> markerList = new ListView<HBox>();
-	ObservableList<HBox> items = FXCollections.observableArrayList();
+	private ListView<HBox> markerList = new ListView<HBox>();
+	private ObservableList<HBox> items = FXCollections.observableArrayList();
 	private ArrayList<Marker> videoMarkers = new ArrayList<Marker>();
 
 	private ArrayList<HouseImage> houseImages;
@@ -101,6 +101,7 @@ public class EditProperty extends presenter.Window {
 	Image tick, cross;
 
 	public EditProperty(int page, int houseID) {
+
 		owner = Database.getUser(currentUsername);
 		this.page = page;
 		this.hid = houseID;
@@ -133,6 +134,7 @@ public class EditProperty extends presenter.Window {
 	}
 
 	private void setupGrid() {
+
 		// Set grid size and spacing in group.
 		grid.setHgap(50);
 		if (page == INFO) {
@@ -182,7 +184,7 @@ public class EditProperty extends presenter.Window {
 			break;
 		}
 
-		UpdateTabLabels();
+		updateTabLabels();
 
 		info.getChildren().addAll(labelInfoTab, infoStatus);
 		pics.getChildren().addAll(labelPictureTab, picStatus);
@@ -200,6 +202,7 @@ public class EditProperty extends presenter.Window {
 	}
 
 	private void setupButtons() {
+
 		root.getChildren().removeAll(backButtons);
 		root.getChildren().removeAll(pageChangeButtons);
 
@@ -325,8 +328,8 @@ public class EditProperty extends presenter.Window {
 
 		vBoxDesc.getChildren().addAll(labelDesc, description);
 
-		ButtonType button1 = new ButtonType("166,208,255", null, "Save", 150,
-				30);
+		ButtonType button1 = new ButtonType("166,208,255", null,
+				Translator.translateText(languageIndex, "Save"), 150, 30);
 		buttonSave = new SetupButton().CreateButton(button1);
 		buttonSave.setCursor(Cursor.HAND);
 		buttonSave.setDisable(true);
@@ -469,7 +472,6 @@ public class EditProperty extends presenter.Window {
 		Label fileLabel = new Label("File:");
 		// Create file directory text field
 		uploadPathVideo = new TextField();
-		uploadPathVideo.setEditable(false);
 		uploadPathVideo.setPrefWidth(250);
 
 		// Add FileChooser button
@@ -490,6 +492,23 @@ public class EditProperty extends presenter.Window {
 
 		// Setup Upload video button event
 		uploadVideoButton.setOnAction(new Upload());
+
+		// Listen for TextField text changes
+		uploadPathVideo.textProperty().addListener(
+				new ChangeListener<String>() {
+					@Override
+					public void changed(
+							ObservableValue<? extends String> observable,
+							String oldValue, String newValue) {
+
+						if (uploadPathVideo.getText() != null
+								&& !uploadPathVideo.getText().trim().isEmpty()) {
+							uploadVideoButton.setDisable(false);
+						} else {
+							uploadVideoButton.setDisable(true);
+						}
+					}
+				});
 
 		// Setup FileChooser (browse) button event
 		fileChooserButton.setOnAction(new Browse());
@@ -685,15 +704,15 @@ public class EditProperty extends presenter.Window {
 				Database.updateHouse(owner, house, "postcode",
 						postcode.getText(), null, null, 0, 1);
 				Database.updateHouse(owner, house, "price", null, null, null,
-						Integer.parseInt(price.getText()), 4);
+						Integer.parseInt(price.getText().trim()), 4);
 				Database.updateHouse(owner, house, "rooms", null, null, null,
-						Integer.parseInt(beds.getText()), 4);
+						Integer.parseInt(beds.getText().trim()), 4);
 				Database.updateHouse(owner, house, "bathrooms", null, null,
-						null, Integer.parseInt(baths.getText()), 4);
+						null, Integer.parseInt(baths.getText().trim()), 4);
 				Database.updateHouse(owner, house, "furnished", null,
 						furnished.isSelected(), null, 0, 2);
 				Database.updateHouse(owner, house, "deposit", null, null, null,
-						Integer.parseInt(deposit.getText()), 4);
+						Integer.parseInt(deposit.getText().trim()), 4);
 				Database.updateHouse(owner, house, "description",
 						description.getText(), null, null, 0, 1);
 				Database.updateHouse(owner, house, "date_available",
@@ -711,7 +730,7 @@ public class EditProperty extends presenter.Window {
 					+ dateComboArray.get(1).getValue() + "-"
 					+ dateComboArray.get(0).getValue();
 
-			if (CheckInfoPage() && imagePaths.size() >= 3) {
+			if (checkInfoPage() && imagePaths.size() >= 3) {
 				House newHouse = new House(address.getText());
 				newHouse.address(address.getText());
 				newHouse.bathrooms(Integer.parseInt(baths.getText()));
@@ -789,24 +808,25 @@ public class EditProperty extends presenter.Window {
 
 	}
 
-	public boolean CheckInfoPage() {
+	public boolean checkInfoPage() {
+
 		int check = 0;
 		if (!address.getText().equals(""))
 			check++;
-		if (!baths.getText().equals("") && CheckNumber(baths.getText()))
+		if (!baths.getText().equals("") && checkNumber(baths.getText()))
 			check++;
 		if (!postcode.getText().equals("") && postcode.getText().length() <= 10)
 			check++;
-		if (!price.getText().equals("") && CheckNumber(price.getText()))
+		if (!price.getText().equals("") && checkNumber(price.getText()))
 			check++;
-		if (!beds.getText().equals("") && CheckNumber(beds.getText()))
+		if (!beds.getText().equals("") && checkNumber(beds.getText()))
 			check++;
 		if (!address.getText().equals(""))
 			check++;
 		if (!description.getText().equals("")
 				&& description.getText().length() <= 65535)
 			check++;
-		if (!deposit.getText().equals("") && CheckNumber(deposit.getText()))
+		if (!deposit.getText().equals("") && checkNumber(deposit.getText()))
 			check++;
 
 		if (check == 8) {
@@ -815,10 +835,10 @@ public class EditProperty extends presenter.Window {
 			return false;
 	}
 
-	public boolean CheckNumber(String input) {
+	public boolean checkNumber(String input) {
 
 		try {
-			int check = Integer.parseInt(input);
+			int check = Integer.parseInt(input.trim());
 			if (check >= 2048) {
 				return false;
 			}
@@ -828,9 +848,9 @@ public class EditProperty extends presenter.Window {
 		return true;
 	}
 
-	public void UpdateTabLabels() {
+	public void updateTabLabels() {
 
-		if (CheckInfoPage()) {
+		if (checkInfoPage()) {
 			if (hid == 0) {
 				infoStatus.setImage(tick);
 			} else {
@@ -854,12 +874,13 @@ public class EditProperty extends presenter.Window {
 
 		public void changed(ObservableValue<? extends String> arg0,
 				String arg1, String arg2) {
-			UpdateTabLabels();
+			updateTabLabels();
 		}
 
 	}
 
 	public class ChangePage implements EventHandler<MouseEvent> {
+
 		final int direction;
 
 		public ChangePage(int dir) {
@@ -878,12 +899,13 @@ public class EditProperty extends presenter.Window {
 	public class Browse implements EventHandler<ActionEvent> {
 
 		public void handle(ActionEvent arg0) {
+
 			File newFile;
 
 			// Open file chooser window
 			FileChooser uploadChooser = new FileChooser();
 			configureFileChooser(uploadChooser);
-			Window fileChooserStage = null;
+			javafx.stage.Window fileChooserStage = null;
 
 			fileChooserButton.setDisable(true);
 
@@ -909,8 +931,7 @@ public class EditProperty extends presenter.Window {
 					System.out.println(filePath);
 					break;
 				}
-			}
-			else if (newFile != null) {
+			} else if (newFile != null) {
 				if (newFile.getName().contains(".url")) {
 					createWarningPopup("Invalid File Type");
 					dialogStage.show();
@@ -962,7 +983,7 @@ public class EditProperty extends presenter.Window {
 			}
 
 			if (hid == 0) {
-				UpdateTabLabels();
+				updateTabLabels();
 				switch (page) {
 				case INFO:
 					break;
@@ -1031,22 +1052,21 @@ public class EditProperty extends presenter.Window {
 
 			if (hid == 0) {
 				int i = 0;
-				while(i < imagePaths.size()){
+				while (i < imagePaths.size()) {
 					if (deleteImage.get(i).isSelected()) {
 						imagePaths.remove(i);
 						deleteImage.remove(i);
-						UpdateTabLabels();
+						updateTabLabels();
 						i = 0;
-					}
-					else{
+					} else {
 						i++;
 					}
 				}
 			}
 
 			else {
-				int i  = 0;
-				while(i < houseImages.size()){
+				int i = 0;
+				while (i < houseImages.size()) {
 					if (deleteImage.get(i).isSelected()) {
 						boolean check = Database.deleteHouseImage(houseImages
 								.get(i));
@@ -1056,8 +1076,7 @@ public class EditProperty extends presenter.Window {
 							System.out.println("Image Deleted");
 						}
 						i = 0;
-					}
-					else{
+					} else {
 						i++;
 					}
 				}
