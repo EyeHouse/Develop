@@ -590,9 +590,7 @@ public class ProfileViewer extends Window {
 
 		@Override
 		public void handle(MouseEvent event) {
-			Database.deleteUserReview(review);
-			review.like(review.like + 1);
-			Database.insertUserReview(review);
+			Database.likeReview(Database.getUser(currentUsername), null, review, 1);
 			reloadProfile();
 		}
 	}
@@ -607,9 +605,7 @@ public class ProfileViewer extends Window {
 
 		@Override
 		public void handle(MouseEvent event) {
-			Database.deleteUserReview(review);
-			review.dislike(review.dislike + 1);
-			Database.insertUserReview(review);
+			Database.dislikeReview(Database.getUser(currentUsername), null, review, 1);
 			reloadProfile();
 		}
 	}
