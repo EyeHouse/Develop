@@ -76,6 +76,7 @@ public class SlideContent extends Window {
 	public final ComboBox<Integer> minPrice = new ComboBox<Integer>();
 	public final ComboBox<Integer> maxPrice = new ComboBox<Integer>();
 	public final ComboBox<Integer> distance = new ComboBox<Integer>();
+	public boolean SavedOrOwned;
 
 	public void createSlide() {
 
@@ -208,6 +209,7 @@ public class SlideContent extends Window {
 
 	private void createSavedPropertySlide() {
 
+		SavedOrOwned = true;
 		savedProperties = new SavedProperties();
 		createSidebar();
 	}
@@ -253,6 +255,7 @@ public class SlideContent extends Window {
 	}
 
 	public void createLandlordPropertiesSlide() {
+		SavedOrOwned = false;
 		landlordProperties = new LandlordProperties(currentUsername);
 		createSidebar();
 	}
@@ -357,12 +360,12 @@ public class SlideContent extends Window {
 				}
 			});
 
-			if (slideID == SAVEDPROPERTIES || slideID == HOUSE)
+			if (SavedOrOwned && slideID == HOUSE)
 				labelSavedProperties.setFont(Font.font(null, FontWeight.BOLD,
 						16.5));
 			else if (slideID == PROFILE || slideID == ACCOUNTSETTINGS)
 				labelProfile.setFont(Font.font(null, FontWeight.BOLD, 16.5));
-			else if (slideID == LANDLORDPROPERTIES || slideID == EDITPROPERTY)
+			else if (slideID == LANDLORDPROPERTIES || slideID == EDITPROPERTY || (!SavedOrOwned && slideID == HOUSE))
 				labelLandlordProperties.setFont(Font.font(null,
 						FontWeight.BOLD, 16.5));
 
