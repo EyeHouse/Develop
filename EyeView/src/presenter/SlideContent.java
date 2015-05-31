@@ -218,37 +218,38 @@ public class SlideContent extends Window {
 		ArrayList<House> houseArray = new ArrayList<House>();
 		houseArray.add(house);
 
+		createMenuBar();
 		houseAdverts = new HouseOverview(true, houseArray);
 		createSidebar();
-		createMenuBar();
 	}
 
 	public void createMoreInfoSlide() {
 
+		createMenuBar();
 		moreInfo = new MoreInfo();
 		createSidebar();
-		createMenuBar();
+
 	}
 
 	public void createReviewsSlide() {
 
+		createMenuBar();
 		houseReviews = new HouseReviews();
 		createSidebar();
-		createMenuBar();
 	}
 
 	public void createMapSlide() {
 
+		createMenuBar();
 		mapPage = new GoogleMapsPage();
 		createSidebar();
-		createMenuBar();
 	}
 
 	public void createVideoSlide() {
 
+		createMenuBar();
 		videoPage = new VideoPage();
 		createSidebar();
-		createMenuBar();
 	}
 
 	public void createLandlordPropertiesSlide() {
@@ -262,9 +263,10 @@ public class SlideContent extends Window {
 	}
 
 	public void createResultsSlide() {
+
+		createMenuBar();
 		houseAdverts = new HouseOverview(false, searchResults);
 		createSidebar();
-		createMenuBar();
 	}
 
 	public void createSidebar() {
@@ -373,7 +375,6 @@ public class SlideContent extends Window {
 					labelSavedProperties);
 			if (currentUser.landlord)
 				sidebar.getChildren().add(labelLandlordProperties);
-
 			sidebar.getChildren().addAll(labelLogOut);
 
 			if (slideID == HOUSES || slideID == HOUSE || slideID == RESULTS)
@@ -421,7 +422,7 @@ public class SlideContent extends Window {
 		HBox buttonRow = new HBox(5);
 
 		ButtonType button1 = new ButtonType(null, null,
-				Translator.translateText(languageIndex, "Video Tour"), 140, 50);
+				Translator.translateText(languageIndex, "Video Tour"), 150, 50);
 		videoButton = new SetupButton().CreateButton(button1);
 		videoButton.setFocusTraversable(false);
 		videoButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -431,7 +432,7 @@ public class SlideContent extends Window {
 		});
 
 		ButtonType button2 = new ButtonType(null, null,
-				Translator.translateText(languageIndex, "Map"), 140, 50);
+				Translator.translateText(languageIndex, "Map"), 150, 50);
 		mapButton = new SetupButton().CreateButton(button2);
 		mapButton.setFocusTraversable(false);
 		mapButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -441,7 +442,7 @@ public class SlideContent extends Window {
 		});
 
 		ButtonType button3 = new ButtonType(null, null,
-				Translator.translateText(languageIndex, "Information"), 140, 50);
+				Translator.translateText(languageIndex, "Information"), 150, 50);
 		infoButton = new SetupButton().CreateButton(button3);
 		infoButton.setFocusTraversable(false);
 		infoButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -451,7 +452,7 @@ public class SlideContent extends Window {
 		});
 
 		ButtonType button4 = new ButtonType(null, null,
-				Translator.translateText(languageIndex, "Reviews"), 140, 50);
+				Translator.translateText(languageIndex, "Reviews"), 150, 50);
 		reviewsButton = new SetupButton().CreateButton(button4);
 		reviewsButton.setFocusTraversable(false);
 		reviewsButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -474,10 +475,16 @@ public class SlideContent extends Window {
 		}
 
 		setupTranslate();
-		buttonRow.relocate(280, 0);
-		buttonRow.getChildren().addAll(videoButton, mapButton, infoButton,
-				reviewsButton, new Label("    "), languageComboBox,
-				new Label("        "));
+
+		Label blank = new Label("");
+		blank.setMinWidth(70);
+
+		buttonRow.relocate((xResolution * 0.19), 0);
+		buttonRow.setMinWidth(xResolution - (xResolution * 0.19));
+		buttonRow.setMaxWidth(xResolution - (xResolution * 0.19));
+		buttonRow.getChildren().addAll(blank, videoButton, mapButton,
+				infoButton, reviewsButton, new Label("  "), languageComboBox,
+				new Label("   "));
 		buttonRow.setId("menubar");
 		buttonRow.getStylesheets().add(
 				new File("resources/menubarStyle.css").toURI().toString());
@@ -516,8 +523,9 @@ public class SlideContent extends Window {
 
 		buttonslideBack = new ImageView(new Image(
 				"file:resources/advert_icons/back.png"));
-		buttonslideBack.relocate(200, 15);
+		buttonslideBack.relocate(210, 8);
 		buttonslideBack.setPreserveRatio(true);
+		buttonslideBack.setFitHeight(35);
 		buttonslideBack.setCursor(Cursor.HAND);
 		buttonslideBack.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent ae) {
@@ -633,13 +641,18 @@ public class SlideContent extends Window {
 
 	public void updateSidebarLanguage() {
 
+		User currentUser = Database.getUser(currentUsername);
+		
 		labelProfile
 				.setText(Translator.translateText(languageIndex, "Profile"));
 		labelSavedProperties.setText(Translator.translateText(languageIndex,
 				"Saved Properties"));
-		labelLandlordProperties.setText(Translator.translateText(languageIndex,
-				"My Properties"));
+		if (currentUser.landlord)
+			labelLandlordProperties.setText(Translator.translateText(
+					languageIndex, "My Properties"));
 		labelLogOut.setText(Translator.translateText(languageIndex, "Log Out"));
+		
+		currentUser = null;
 	}
 
 	public void updateSearchBarLanguage() {
@@ -801,7 +814,7 @@ public class SlideContent extends Window {
 	public class searchHandler implements EventHandler<ActionEvent> {
 
 		public void handle(ActionEvent arg0) {
-			
+
 			ArrayList<House> result1 = new ArrayList<House>();
 			ArrayList<House> result2 = new ArrayList<House>();
 			ArrayList<House> result3 = new ArrayList<House>();
@@ -861,11 +874,11 @@ public class SlideContent extends Window {
 			result3.clear();
 			result4.clear();
 			result5.clear();
-			
+
 			outputBeds.clear();
 			outputPrice.clear();
 			outputPriceBed.clear();
-			
+
 			outputBeds.trimToSize();
 			outputPrice.trimToSize();
 			outputPriceBed.trimToSize();
@@ -887,7 +900,7 @@ public class SlideContent extends Window {
 	}
 
 	private void clearSlideData() {
-		
+
 		switch (prevSlideID) {
 		case STARTPAGE:
 			startPage.dispose();

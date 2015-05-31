@@ -384,8 +384,10 @@ public class HouseOverview extends Window {
 				"Bedrooms") + ":  ");
 		labelLandlord.setText(Translator.translateText(languageIndex,
 				"Landlord") + ":  ");
-		saveLabel.setText(Translator.translateText(languageIndex,
-				"Save for later"));
+		if (slideID != INDEX && slideID != HOUSE) {
+			saveLabel.setText(Translator.translateText(languageIndex,
+					"Save for later"));
+		}
 	}
 
 	/**

@@ -2,27 +2,29 @@
 	-fx-spacing: 0;
 	-fx-padding: 0 0 1 0;
 	-fx-alignment: center;
-	-fx-background-color: #0080c0;
+	-fx-background-color: #9CC0EA;
+
 	-fx-background-radius: 0;
 }
 
 .button {
-	-fx-background-color: #0080c0;
+	-fx-background-color: #9CC0EA;
+
 	-fx-background-radius: 0;
-	-fx-text-fill: white;
+	-fx-text-fill: black;
 	-fx-text-alignment: center;
 	-fx-font-weight: bold;
-	-fx-font-size: 14;
+	-fx-font-size: 15;
     -fx-label-padding: 0;
     -fx-wrap-text: true;
     -fx-cursor: hand;
 }
 
 .button:hover {
-	-fx-background-color: #00a8f9;
+	-fx-background-color: #B4CEEA;
 }
 
 .button:armed {	
-	-fx-background-color: #006a9d;
+	-fx-background-color: #7AA9DD;
 }
 
