@@ -365,7 +365,7 @@ public class SlideContent extends Window {
 				}
 			});
 
-			if (SavedOrOwned && slideID == HOUSE)
+			if (slideID == SAVEDPROPERTIES || (SavedOrOwned && slideID == HOUSE))
 				labelSavedProperties.setFont(Font.font(null, FontWeight.BOLD,
 						16.5));
 			else if (slideID == PROFILE || slideID == ACCOUNTSETTINGS)

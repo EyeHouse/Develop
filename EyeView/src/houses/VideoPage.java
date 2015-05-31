@@ -36,6 +36,7 @@ import database.User;
 public class VideoPage extends Window {
 
 	private Label topTitle = new Label();
+	private Label noVideoTitle = new Label();
 	private ArrayList<Marker> videoMarkers;
 	private TilePane markerTiles;
 	private VideoElement video;
@@ -68,6 +69,16 @@ public class VideoPage extends Window {
 			video.display(videoPane);
 
 			setupMarkerButtons();
+		}
+		else{
+			noVideoTitle = new Label(Translator.translateText(languageIndex,
+					"No video available for this property"));
+			noVideoTitle.setFont(new Font(24));
+			noVideoTitle.setTextFill(Color.web("#8b8989"));
+			noVideoTitle.setPrefWidth(550);
+			noVideoTitle.setAlignment(Pos.CENTER);
+			noVideoTitle.relocate(275, 180);
+			root.getChildren().add(noVideoTitle);
 		}
 
 		videoPane.relocate(250, 130);
@@ -168,8 +179,11 @@ public class VideoPage extends Window {
 	}
 	
 	public void dispose(){
-		video.stopVideo();
-		video = null;
+		if(video != null){
+			video.stopVideo();
+			video = null;
+		}
+		
 		videoMarkers.clear();
 		videoMarkers.trimToSize();
 		videoMarkers = null;
