@@ -61,6 +61,7 @@ public class HouseOverview extends Window {
 	private static Image pause;
 	private Image save;
 	private Image saved;
+	private Label saveLabel;
 
 	/**
 	 * Constructor method
@@ -72,8 +73,6 @@ public class HouseOverview extends Window {
 	 */
 	public HouseOverview(boolean singlePropertyView, ArrayList<House> houses) {
 
-		
-		
 		this.houses = houses;
 
 		createGalleryLists();
@@ -122,8 +121,8 @@ public class HouseOverview extends Window {
 
 			galleries.add(galleryList);
 
-			//galleryList.clear();
-			//galleryList.trimToSize();
+			// galleryList.clear();
+			// galleryList.trimToSize();
 			galleryList = null;
 			houseImages.clear();
 			houseImages.trimToSize();
@@ -209,20 +208,21 @@ public class HouseOverview extends Window {
 		landlordUser = null;
 		return galleryPane;
 	}
-	
-	private class loadLandlord implements EventHandler<MouseEvent>{
+
+	private class loadLandlord implements EventHandler<MouseEvent> {
 
 		String username = null;
-		public loadLandlord(String username){
+
+		public loadLandlord(String username) {
 			this.username = username;
 		}
-		
+
 		@Override
 		public void handle(MouseEvent arg0) {
 			viewedUsername = username;
 			loadSlide(PROFILE);
 		}
-		
+
 	}
 
 	/**
@@ -235,11 +235,11 @@ public class HouseOverview extends Window {
 	private void setupSaveButton(final Pane galleryPane) {
 
 		// Hidden label appears next to button when enabled and hovered over
-		final Label saveLabel = new Label("Save for later");
+		saveLabel = new Label(Translator.translateText(languageIndex,
+				"Save for later"));
 		saveLabel.setFont(Font.font(null, FontWeight.BOLD, 14));
 		saveLabel.relocate(520, 415);
 		save = new Image("file:resources/advert_icons/save.png");
-		
 
 		// Save button with no border and graphic only
 		final Button buttonSave = new Button("", new ImageView(save));
@@ -307,9 +307,8 @@ public class HouseOverview extends Window {
 	 */
 	private void setupTimerControl() {
 
-		pause = new Image(
-				"file:resources/advert_icons/pause.png");
-		
+		pause = new Image("file:resources/advert_icons/pause.png");
+
 		playpauseButton = new ImageView(pause);
 		playpauseButton.setPreserveRatio(true);
 		playpauseButton.setFitWidth(30);
@@ -358,11 +357,9 @@ public class HouseOverview extends Window {
 	 */
 	public static void setTimerState(String newState) {
 
-		play = new Image(
-				"file:resources/advert_icons/play.png");
-		pause = new Image(
-				"file:resources/advert_icons/pause.png");
-		
+		play = new Image("file:resources/advert_icons/play.png");
+		pause = new Image("file:resources/advert_icons/pause.png");
+
 		switch (newState) {
 		case "PLAY":
 			playpauseButton.setImage(pause);
@@ -373,7 +370,7 @@ public class HouseOverview extends Window {
 			advertTimer.pause();
 			break;
 		}
-		
+
 		play = null;
 		pause = null;
 	}
@@ -383,10 +380,12 @@ public class HouseOverview extends Window {
 	 */
 	public void updateLanguage() {
 
-		labelBedrooms.setText(Translator
-				.translateText(languageIndex, "Bedrooms") + ":  ");
-		labelLandlord.setText(Translator
-				.translateText(languageIndex, "Landlord") + ":  ");
+		labelBedrooms.setText(Translator.translateText(languageIndex,
+				"Bedrooms") + ":  ");
+		labelLandlord.setText(Translator.translateText(languageIndex,
+				"Landlord") + ":  ");
+		saveLabel.setText(Translator.translateText(languageIndex,
+				"Save for later"));
 	}
 
 	/**
@@ -397,7 +396,7 @@ public class HouseOverview extends Window {
 		houses.clear();
 		houses.trimToSize();
 		houses = null;
-		
+
 		gallery.dispose();
 		gallery = null;
 		pagination = null;
@@ -407,7 +406,7 @@ public class HouseOverview extends Window {
 		savedProperties.clear();
 		savedProperties.trimToSize();
 		savedProperties = null;
-		
+
 		playpauseButton = null;
 		save = null;
 		saved = null;

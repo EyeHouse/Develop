@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import button.ButtonType;
 import button.SetupButton;
-
 import database.Database;
 import database.House;
 import database.HouseImage;
@@ -13,9 +12,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.HPos;
 import javafx.geometry.Pos;
-import javafx.geometry.VPos;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -32,15 +29,14 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import language.Translator;
 import presenter.SlideContent;
+import presenter.Window;
 
-public class SavedProperties extends presenter.Window {
+public class SavedProperties extends Window {
 
 	GridPane grid = new GridPane();
 	ArrayList<String> properties = new ArrayList<String>();
 	ListView<HBox> propertyList = new ListView<HBox>();
 	ObservableList<HBox> items = FXCollections.observableArrayList();
-
-	public Label labelTitle = new Label();
 
 	public SavedProperties() {
 
@@ -65,29 +61,32 @@ public class SavedProperties extends presenter.Window {
 
 		grid.setVgap(30);
 		grid.setHgap(30);
-		grid.relocate(220, 80);
+		grid.relocate(220, 130);
 	}
 
 	private void setupTitle() {
 
-		labelTitle = new Label(Translator.translateText(languageIndex,
+		Label labelTitle = new Label(Translator.translateText(languageIndex,
 				"Saved Properties"));
-		labelTitle.setTextFill(Color.web("#162252FF"));
+		labelTitle.setTextFill(Color.web("#162252"));
 		labelTitle.setFont(new Font(35));
-		grid.add(labelTitle, 0, 0);
-		GridPane.setConstraints(labelTitle, 0, 0, 2, 1, HPos.CENTER,
-				VPos.CENTER);
+		labelTitle.setPrefWidth(550);
+		labelTitle.setAlignment(Pos.CENTER);
+		labelTitle.relocate(275, 80);
+
+		root.getChildren().add(labelTitle);
 	}
 
 	private void setupButtons() {
+
 		VBox buttons = new VBox(30);
 
 		// View button//
-		ButtonType button1 = new ButtonType("150,150,150", null,
+		ButtonType button1 = new ButtonType("166,208,255", null,
 				Translator.translateText(languageIndex, "View"), 100, 30);
 
 		// Remove button//
-		ButtonType button2 = new ButtonType("150,150,150", null,
+		ButtonType button2 = new ButtonType("166,208,255", null,
 				Translator.translateText(languageIndex, "Remove"), 100, 30);
 
 		Button buttonView = new SetupButton().CreateButton(button1);
@@ -153,13 +152,17 @@ public class SavedProperties extends presenter.Window {
 
 			House house = Database
 					.getHouse(Integer.parseInt(properties.get(i)));
-			// Rectangle propertyImage = new Rectangle(100, 100,
-			// Color.BLUEVIOLET);
+
 			Label propertyAddress = new Label(house.address);
 			propertyAddress.setWrapText(true);
 			propertyAddress.setMaxWidth(300);
-			Label propertyDetails = new Label("No. of Bedrooms: " + house.rooms
-					+ "\nPrice: £" + house.price + " pppw");
+			Label propertyDetails = new Label(Translator.translateText(
+					languageIndex, "Bedrooms: ")
+					+ house.rooms
+					+ "\n"
+					+ Translator.translateText(languageIndex, "Price:")
+					+ " £"
+					+ house.price + " pppw");
 
 			propertyAddress.setFont(Font.font(null, FontWeight.BOLD, 20));
 
@@ -169,7 +172,7 @@ public class SavedProperties extends presenter.Window {
 			houseImages.clear();
 			houseImages = null;
 			house = null;
-			
+
 			items.add(listItem);
 		}
 		propertyList.setItems(items);
@@ -194,12 +197,8 @@ public class SavedProperties extends presenter.Window {
 		root.getChildren().add(buttonBack);
 	}
 
-	public void UpdateLanguage() {
-		labelTitle.setText(Translator.translateText(languageIndex,
-				"Saved Properties") + ": ");
-	}
-
 	public void dispose() {
+
 		properties.clear();
 		properties.trimToSize();
 		properties = null;
