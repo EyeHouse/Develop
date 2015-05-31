@@ -122,12 +122,12 @@ public class Translator extends Window {
 						};
 					}
 				});
-		englishImage = null;
+		/*englishImage = null;
 		spanishImage = null;
 		frenchImage = null;
 		italianImage = null;
 		germanImage = null;
 		portugueseImage = null;
-		dutchImage = null;
+		dutchImage = null;*/
 	}
 }
