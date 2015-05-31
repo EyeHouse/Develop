@@ -1,14 +1,5 @@
 package profile;
 
-/**
- * This class implements the EyeView Login Page
- * 
- * @version 2.2 20.04.15
- * @author EyeHouse
- * 
- * Copyright 2015 EyeHouse
- */
-
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -28,30 +19,39 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.RectangleBuilder;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import language.Translator;
 import presenter.SlideContent;
+import presenter.Window;
 import button.ButtonType;
 import button.SetupButton;
 import database.DataHandler;
 import database.Database;
 import database.User;
 
-public class Login extends presenter.Window {
+/**
+ * This class implements the EyeView Login Page
+ * 
+ * @version 2.2 20.04.15
+ * @author EyeHouse
+ * 
+ * Copyright 2015 EyeHouse
+ */
+public class Login extends Window {
 
-	TextField username;
-	TextField password;
-
-	GridPane loginGrid = new GridPane();
-	static double sideBarWidth = 182;
-	int xBox = 350;
-	int yBox = 200;
-	public Label labelLogin = new Label();
+	private TextField username, password;
+	private GridPane loginGrid = new GridPane();
+	private static double sideBarWidth = 182;
+	private int xBox = 350;
+	private int yBox = 200;
+	private Label labelLogin, labelPassword;
 
 	/**
 	 * This method creates the login slide and calls the methods that will
 	 * create the slide's elements
 	 */
 	public Login() {
+		
 		setLayout();
 		setupGrid();
 		setupTextFields();
@@ -65,7 +65,8 @@ public class Login extends presenter.Window {
 	/**
 	 * This method creates the background of the login page
 	 */
-	public void setLayout() {
+	private void setLayout() {
+		
 		setBackground(true);
 		setWhiteBox(xBox, yBox, true);
 		Image icon = new Image("file:./resources/icons/xxhdpi.png");
@@ -149,26 +150,27 @@ public class Login extends presenter.Window {
 	 * This method sets up the spacing between the elements in rows and in
 	 * columns
 	 */
-	public void setupGrid() {
+	private void setupGrid() {
 
 		loginGrid.setVgap(30);
-		loginGrid.setHgap(30);
+		loginGrid.setHgap(20);
 		loginGrid.setMaxWidth(320);
 		loginGrid.setMinWidth(320);
 		
 		// Set position of the grid
-		loginGrid.relocate(380,290);
+		loginGrid.relocate(375, 290);
 	}
 
 	/**
 	 * This method sets up the username field for the user to fill in
 	 */
-	public void setupTextFields() {
+	private void setupTextFields() {
 
 		// Username field
 		username = new TextField();
 		labelLogin = new Label(Translator.translateText(languageIndex,
 				"Username") + ": ");
+		labelLogin.setFont(new Font(14));
 		GridPane.setHgrow(labelLogin, Priority.ALWAYS);
 		GridPane.setHalignment(labelLogin, HPos.RIGHT);
 		loginGrid.add(labelLogin, 0, 1);
@@ -191,15 +193,16 @@ public class Login extends presenter.Window {
 	 * This method sets up the password field for the user to fill in and used
 	 * an event handler to login when enter is pressed
 	 */
-	public void setupPasswordFields() {
+	private void setupPasswordFields() {
 
 		// Password field
 		password = new PasswordField();
-		Label passwordLabel = new Label(Translator.translateText(languageIndex,
+		labelPassword = new Label(Translator.translateText(languageIndex,
 				"Password")+ ": ");
-		loginGrid.add(passwordLabel, 0, 2);
+		labelPassword.setFont(new Font(14));
 		GridPane.setHgrow(labelLogin, Priority.ALWAYS);
-		GridPane.setHalignment(passwordLabel, HPos.RIGHT);
+		GridPane.setHalignment(labelPassword, HPos.RIGHT);
+		loginGrid.add(labelPassword, 0, 2);
 		password.setPromptText(Translator.translateText(languageIndex,
 				"Password"));
 		password.setPrefColumnCount(10);
@@ -221,14 +224,14 @@ public class Login extends presenter.Window {
 	 * This method sets up the buttons on the side menu and the save button,
 	 * which calls the function to login the user
 	 */
-	public void setupButtons() {
+	private void setupButtons() {
 
 		// Add buttons
 		ButtonType button1 = new ButtonType("166,208,255", null,
-				(Translator.translateText(languageIndex, "Login")), 140, 30);
+				(Translator.translateText(languageIndex, "Login")), 140, 35);
 		Button loginButton = new SetupButton().CreateButton(button1);
-		loginButton.relocate(510, 420);
-		// Save button
+		loginButton.relocate(500, 420);
+		loginButton.setFont(Font.font(null, FontWeight.BOLD, 14));
 		loginButton.setCursor(Cursor.HAND);
 		loginButton.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
@@ -242,12 +245,12 @@ public class Login extends presenter.Window {
 	/**
 	 * This method creates and places the title of the page
 	 */
-	public void setupTitle() {
+	private void setupTitle() {
 
 		Label topTitle = new Label(Translator.translateText(languageIndex, "Login"));
-		topTitle.setTextFill(Color.web("#162252FF"));
+		topTitle.setTextFill(Color.web("#162252"));
 		topTitle.setFont(new Font(35));
-		topTitle.relocate(370, 200);
+		topTitle.relocate(370, 210);
 		topTitle.setPrefWidth(400);
 		topTitle.setAlignment(Pos.CENTER);
 		root.getChildren().add(topTitle);
@@ -258,7 +261,7 @@ public class Login extends presenter.Window {
 	 * user. If they do the user is logged in, otherwise it displays a warning
 	 * message.
 	 */
-	public boolean login() {
+	private boolean login() {
 
 		boolean userExists;
 		// check the user exits
