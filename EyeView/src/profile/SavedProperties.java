@@ -184,7 +184,7 @@ public class SavedProperties extends Window {
 
 		ImageView buttonBack = new ImageView(new Image(
 				"file:resources/advert_icons/back.png"));
-		buttonBack.relocate(205, 8);
+		buttonBack.relocate(195, 8);
 		buttonBack.setPreserveRatio(true);
 		buttonBack.setFitHeight(35);
 		buttonBack.setCursor(Cursor.HAND);

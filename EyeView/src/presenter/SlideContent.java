@@ -259,6 +259,7 @@ public class SlideContent extends Window {
 	}
 
 	public void createLandlordPropertiesSlide() {
+		
 		SavedOrOwned = false;
 		landlordProperties = new LandlordProperties(currentUsername);
 		createSidebar();
@@ -530,7 +531,7 @@ public class SlideContent extends Window {
 
 		buttonslideBack = new ImageView(new Image(
 				"file:resources/advert_icons/back.png"));
-		buttonslideBack.relocate(205, 8);
+		buttonslideBack.relocate(195, 8);
 		buttonslideBack.setPreserveRatio(true);
 		buttonslideBack.setFitHeight(35);
 		buttonslideBack.setCursor(Cursor.HAND);
