@@ -187,6 +187,8 @@ public class Login extends Window {
 		});
 		loginGrid.getChildren().add(username);
 		GridPane.setConstraints(username, 1, 1);
+		
+		username.setPickOnBounds(true);
 	}
 
 	/**
@@ -263,19 +265,25 @@ public class Login extends Window {
 	 */
 	private boolean login() {
 
-		boolean userExists;
-		// check the user exits
-		String hashpass = DataHandler.crypt((String) password.getText());
-
-		userExists = Database.login((String) username.getText(), hashpass);
-		// if exists create user object
-		System.out.println("User:" + (String) username.getText());
-		if (userExists == true) {
-			User loggedIn = Database.getUser(username.getText());
-			currentUsername = loggedIn.username;
-			loadSlide(HOUSES);
-		} else {
+		boolean userExists = false;
+		
+		if (password.getText().isEmpty()) {
 			dialogStage.show();
+		} else {
+			// check the user exits
+			String hashpass = DataHandler.crypt((String) password.getText());
+	
+			userExists = Database.login((String) username.getText(), hashpass);
+			// if exists create user object
+			//System.out.println("User:" + (String) username.getText());
+			
+			if (userExists == true) {
+				User loggedIn = Database.getUser(username.getText());
+				currentUsername = loggedIn.username;
+				loadSlide(HOUSES);
+			} else {
+				dialogStage.show();
+			}
 		}
 		return userExists;
 	}
