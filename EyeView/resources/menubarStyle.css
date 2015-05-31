@@ -3,21 +3,19 @@
 	-fx-padding: 0 0 1 0;
 	-fx-alignment: center;
 	-fx-background-color: #9CC0EA;
-
 	-fx-background-radius: 0;
 }
 
 .button {
 	-fx-background-color: #9CC0EA;
-
 	-fx-background-radius: 0;
 	-fx-text-fill: black;
 	-fx-text-alignment: center;
 	-fx-font-weight: bold;
 	-fx-font-size: 15;
-    -fx-label-padding: 0;
-    -fx-wrap-text: true;
-    -fx-cursor: hand;
+	-fx-label-padding: 0;
+	-fx-wrap-text: true;
+	-fx-cursor: hand;
 }
 
 .button:hover {

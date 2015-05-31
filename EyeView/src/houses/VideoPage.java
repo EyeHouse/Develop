@@ -183,13 +183,13 @@ public class VideoPage extends Window {
 	}
 
 	public void dispose() {
+		
 		if (video != null) {
 			video.stopVideo();
 			video = null;
+			videoMarkers.clear();
+			videoMarkers.trimToSize();
+			videoMarkers = null;
 		}
-
-		videoMarkers.clear();
-		videoMarkers.trimToSize();
-		videoMarkers = null;
 	}
 }

@@ -75,7 +75,7 @@ public class AccountSettings extends Window {
 
 		ColumnConstraints col1 = new ColumnConstraints();
 		ColumnConstraints col2 = new ColumnConstraints();
-		col1.setMinWidth(100);
+		col1.setMinWidth(150);
 		col2.setMinWidth(200);
 		grid.getColumnConstraints().addAll(col1, col2);
 	}

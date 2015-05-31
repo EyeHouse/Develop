@@ -28,6 +28,7 @@ import javafx.util.Callback;
 import javafx.util.Duration;
 import language.Translator;
 import presenter.Window;
+import profile.Login;
 import profile.SavedProperties;
 import database.Database;
 import database.House;
@@ -76,7 +77,7 @@ public class HouseOverview extends Window {
 	public HouseOverview(boolean singlePropertyView, ArrayList<House> houses) {
 
 		this.houses = houses;
-
+		
 		createGalleryLists();
 
 		// Only set up advert timer loop if viewing more than one house
