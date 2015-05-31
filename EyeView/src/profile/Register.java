@@ -284,8 +284,8 @@ public class Register extends Window {
 
 		// Repeat Password field
 		repeatPassword = new PasswordField();
-		Label confirmPasswordLabel = new Label(Translator.translateText(
-				languageIndex, "*" + "Confirm Password:"));
+		Label confirmPasswordLabel = new Label("*" + Translator.translateText(
+				languageIndex, "Confirm Password:"));
 		GridPane.setHalignment(confirmPasswordLabel, HPos.RIGHT);
 		registerGrid.add(confirmPasswordLabel, 0, 5);
 		repeatPassword.setPromptText(Translator.translateText(languageIndex,
