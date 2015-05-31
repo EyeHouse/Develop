@@ -469,6 +469,7 @@ public class EditProperty extends presenter.Window {
 		Label fileLabel = new Label("File:");
 		// Create file directory text field
 		uploadPathVideo = new TextField();
+		uploadPathVideo.setEditable(false);
 		uploadPathVideo.setPrefWidth(250);
 
 		// Add FileChooser button
@@ -489,23 +490,6 @@ public class EditProperty extends presenter.Window {
 
 		// Setup Upload video button event
 		uploadVideoButton.setOnAction(new Upload());
-
-		// Listen for TextField text changes
-		uploadPathVideo.textProperty().addListener(
-				new ChangeListener<String>() {
-					@Override
-					public void changed(
-							ObservableValue<? extends String> observable,
-							String oldValue, String newValue) {
-
-						if (uploadPathVideo.getText() != null
-								&& !uploadPathVideo.getText().trim().isEmpty()) {
-							uploadVideoButton.setDisable(false);
-						} else {
-							uploadVideoButton.setDisable(true);
-						}
-					}
-				});
 
 		// Setup FileChooser (browse) button event
 		fileChooserButton.setOnAction(new Browse());
