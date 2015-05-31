@@ -6,7 +6,6 @@ import database.Database;
 import database.House;
 import database.HouseReview;
 import database.User;
-import database.UserReview;
 import button.ButtonType;
 import button.SetupButton;
 import javafx.collections.FXCollections;
@@ -36,20 +35,15 @@ import language.Translator;
 import presenter.SlideContent;
 import presenter.Window;
 import profile.ProfileViewer;
-import profile.ProfileViewer.dislikeHandler;
-import profile.ProfileViewer.likeHandler;
 
 public class HouseReviews extends Window {
 
 	private Label pageTitle, ratingLabel, newReviewLabel, giveRatingLabel;
 
-	private int houseRating = 2; // Overall house rating from database
-
 	private ListView<HBox> reviewsView;
 	private ObservableList<HBox> reviews = FXCollections.observableArrayList();
 
 	private Button[] buttonStar;
-	private ImageView[] reviewStar;
 	private Image reviewStarFull = new Image(
 			"file:resources/images/stars/starFull_28.png");
 	private Image reviewStarOutline = new Image(
@@ -123,8 +117,6 @@ public class HouseReviews extends Window {
 	 * Create stars to display average house rating from database
 	 */
 	public void setupAveRating() {
-
-		reviewStar = new ImageView[5];
 
 		int rating = 0;
 
