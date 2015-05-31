@@ -44,19 +44,3 @@ public class SQLFilter {
 	}
 
 }
-
-/*
- * This can to be put the same way as BadWordCheck..
- * 
- * In Register.java it could be:
- * 
- * 
- * (inside saveChanges..)
- * 
- * if ((DataHandler.SQLWordCheck(username.getText()) == true) ||
- * (DataHandler.SQLWordCheck(firstname.getText()) == true) ||
- * (DataHandler.SQLWordCheck(lastname.getText()) == true)) { createWarningPopup(
- * "SQL keyword found, please check username, first name or last name!");
- * dialogStage.show(); }
- */
-

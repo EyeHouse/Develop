@@ -52,6 +52,7 @@ public class SlideContent extends Window {
 	public ImageView profilePictureView;
 	private static ImageView buttonslideBack;
 	public static ComboBox<ImageView> languageComboBox;
+	public LoadXML loadXML;
 	public static HouseOverview houseAdverts;
 	public static StartPage startPage;
 	public static Login login;
@@ -82,7 +83,10 @@ public class SlideContent extends Window {
 
 		// Load all objects from XML file first
 		try {
-			new LoadXML();
+			if(loadXML != null){
+				LoadXML.stopMedia();
+			}
+			loadXML = new LoadXML();
 		} catch (IOException e) {
 			System.out.println("Error loading XML data.");
 		}
@@ -948,6 +952,7 @@ public class SlideContent extends Window {
 			mapPage = null;
 			break;
 		case VIDEO:
+			videoPage.dispose();
 			videoPage = null;
 			break;
 		case LANDLORDPROPERTIES:

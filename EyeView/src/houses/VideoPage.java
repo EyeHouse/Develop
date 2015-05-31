@@ -166,4 +166,12 @@ public class VideoPage extends Window {
 			video.playVideo();
 		}
 	}
+	
+	public void dispose(){
+		video.stopVideo();
+		video = null;
+		videoMarkers.clear();
+		videoMarkers.trimToSize();
+		videoMarkers = null;
+	}
 }

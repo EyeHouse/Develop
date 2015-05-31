@@ -9,6 +9,7 @@ import handlers.TextHandler;
 import handlers.VideoElement;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javafx.scene.layout.StackPane;
@@ -22,6 +23,9 @@ import parser.VideoData;
 
 public class LoadXML extends Window {
 
+	static ArrayList<VideoElement> slideVideos = new ArrayList<VideoElement>();
+	static ArrayList<AudioHandler> slideAudio = new ArrayList<AudioHandler>();
+	
 	public LoadXML() throws IOException {
 		
 		loadXMLBackGround();
@@ -124,20 +128,21 @@ public class LoadXML extends Window {
 	public void loadXMLVideos() {
 
 		List<VideoData> videoList = slideData.getVideoList();
-
+		int i  = 0;
 		for (VideoData currentVideo : videoList) {
 			StackPane videoPane = new StackPane();
 			videoPane.relocate(0, 0);
 			videoPane.resize(xResolution, yResolution);
-			VideoElement video = new VideoElement(currentVideo.getSource(),
-					false);
-			video.setWidth(500);
-			video.setAutoplay(true);
-			video.setXpos(currentVideo.getXstart());
-			video.setYpos(currentVideo.getYstart());
-			video.display(videoPane);
-			video.setStylesheet("resources/videoStyle.css");
+			slideVideos.add(new VideoElement(currentVideo.getSource(),
+					false));
+			slideVideos.get(i).setWidth(500);
+			slideVideos.get(i).setAutoplay(true);
+			slideVideos.get(i).setXpos(currentVideo.getXstart());
+			slideVideos.get(i).setYpos(currentVideo.getYstart());
+			slideVideos.get(i).display(videoPane);
+			slideVideos.get(i).setStylesheet("resources/videoStyle.css");
 			root.getChildren().add(videoPane);
+			i++;
 		}
 	}
 
@@ -147,10 +152,21 @@ public class LoadXML extends Window {
 	public void loadXMLAudio() {
 
 		List<AudioData> audioList = slideData.getAudioList();
-
+		int i  = 0;
 		for (AudioData currentAudio : audioList) {
-			AudioHandler.setupAudioElement(currentAudio.getSource(),
+			slideAudio.add(new AudioHandler());
+			slideAudio.get(i).setupAudioElement(currentAudio.getSource(),
 					currentAudio.getStarttime());
+			i++;
+		}
+	}
+	
+	public static void stopMedia(){
+		for(int i  = 0 ; i < slideVideos.size() ; i ++){
+			slideVideos.get(i).stopVideo();
+		}
+		for(int i  = 0 ; i < slideAudio.size() ; i ++){
+			slideAudio.get(i).stopAudio();
 		}
 	}
 

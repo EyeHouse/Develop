@@ -561,4 +561,8 @@ public class VideoElement {
 	public void playVideo(){
 		mediaPlayer.play();
 	}
+	
+	public void stopVideo(){
+		mediaPlayer.stop();
+	}
 }

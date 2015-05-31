@@ -21,13 +21,15 @@ import javafx.util.Duration;
 
 public class AudioHandler{
 
+	private MediaPlayer mediaPlayer = null;
+	
 	/**
 	 * This method plays the target audio file after the defined delay.
 	 * 
 	 * @param filepath	File path of target audio
 	 * @param delay		Time delay before playback
 	 */
-	public static void setupAudioElement(String filepath, float delay){
+	public void setupAudioElement(String filepath, float delay){
 		
 		/* Create audio file URI string */
 		String uriString = new File(filepath).toURI().toString();
@@ -36,7 +38,7 @@ public class AudioHandler{
 		Media audio = new Media(uriString);
 		
 		/* Create media player object */
-		final MediaPlayer mediaPlayer = new MediaPlayer(audio);
+		mediaPlayer = new MediaPlayer(audio);
 		
 		/* Play audio immediately if delay set to zero */
 		if(delay <= 0){
@@ -53,5 +55,9 @@ public class AudioHandler{
 						}
 					})).play();
 		}
+	}
+	
+	public void stopAudio(){
+		mediaPlayer.stop();
 	}
 }
