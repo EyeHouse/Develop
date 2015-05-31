@@ -899,6 +899,10 @@ public class SlideContent extends Window {
 			if (output.size() > 0) {
 				loadSlide(RESULTS);
 			}
+			else{
+				createWarningPopup("No matching properties.");
+				dialogStage.show();
+			}
 		}
 	}
 
