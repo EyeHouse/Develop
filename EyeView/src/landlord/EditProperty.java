@@ -418,7 +418,7 @@ public class EditProperty extends presenter.Window {
 
 				VBox tile = new VBox(5);
 				tile.setAlignment(Pos.CENTER);
-				tile.getChildren().addAll(propertyImage, delete);
+				tile.getChildren().addAll(propertyImage, deleteImage.get(i));
 				imageTiles.getChildren().add(tile);
 			}
 		} else {
@@ -433,7 +433,7 @@ public class EditProperty extends presenter.Window {
 
 				VBox tile = new VBox(5);
 				tile.setAlignment(Pos.CENTER);
-				tile.getChildren().addAll(propertyImage, delete);
+				tile.getChildren().addAll(propertyImage, deleteImage.get(i));
 				imageTiles.getChildren().add(tile);
 			}
 		}
@@ -1046,25 +1046,35 @@ public class EditProperty extends presenter.Window {
 		public void handle(ActionEvent arg0) {
 
 			if (hid == 0) {
-				for (int i = 0; i < imagePaths.size(); i++) {
+				int i = 0;
+				while(i < imagePaths.size()){
 					if (deleteImage.get(i).isSelected()) {
 						imagePaths.remove(i);
 						deleteImage.remove(i);
 						UpdateTabLabels();
+						i = 0;
+					}
+					else{
+						i++;
 					}
 				}
 			}
 
 			else {
-				for (int i = 0; i < houseImages.size(); i++) {
-					System.out.println("Check");
+				int i  = 0;
+				while(i < imagePaths.size()){
 					if (deleteImage.get(i).isSelected()) {
-						System.out.println(i);
 						boolean check = Database.deleteHouseImage(houseImages
 								.get(i));
+						imagePaths.remove(i);
+						deleteImage.remove(i);
 						if (check) {
 							System.out.println("Image Deleted");
 						}
+						i = 0;
+					}
+					else{
+						i++;
 					}
 				}
 			}
