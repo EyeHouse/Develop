@@ -66,7 +66,7 @@ public class StartPage extends Window {
 	private void createPageElements() {
 
 		// VBox to group the welcome message labels and the start button
-		VBox elementBox = new VBox(16);
+		VBox elementBox = new VBox(10);
 
 		// Set background colour by filling the screen with a rectangle
 		Rectangle background = new Rectangle();

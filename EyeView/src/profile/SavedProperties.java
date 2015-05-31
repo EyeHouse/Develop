@@ -184,9 +184,8 @@ public class SavedProperties extends Window {
 
 		ImageView buttonBack = new ImageView(new Image(
 				"file:resources/advert_icons/back.png"));
-		buttonBack.relocate(200, 20);
+		buttonBack.relocate(200, 15);
 		buttonBack.setPreserveRatio(true);
-		buttonBack.setFitWidth(80);
 		buttonBack.setCursor(Cursor.HAND);
 		buttonBack.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent ae) {

@@ -516,9 +516,8 @@ public class SlideContent extends Window {
 
 		buttonslideBack = new ImageView(new Image(
 				"file:resources/advert_icons/back.png"));
-		buttonslideBack.relocate(200, 20);
+		buttonslideBack.relocate(200, 15);
 		buttonslideBack.setPreserveRatio(true);
-		buttonslideBack.setFitWidth(80);
 		buttonslideBack.setCursor(Cursor.HAND);
 		buttonslideBack.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent ae) {
