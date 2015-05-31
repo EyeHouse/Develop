@@ -14,8 +14,6 @@ import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import javax.swing.JOptionPane;
-
 import button.ButtonType;
 import button.SetupButton;
 import presenter.SlideContent;
@@ -30,6 +28,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
+import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
@@ -53,7 +52,7 @@ import language.Translator;
 public class ProfileViewer extends Window {
 
 	// Profile Static Variables
-	private static final int gridCellWidth = 20;
+	private static final int gridCellWidth = 40;
 	private static final int gridCellHeight = 10;
 
 	// Profile Global Variables
@@ -84,6 +83,7 @@ public class ProfileViewer extends Window {
 	 * Open profile of user input
 	 */
 	public ProfileViewer(String profileUsername) {
+		
 		profileUser = Database.getUser(profileUsername);
 		SetupGrid();
 		SetupUserInfo();
@@ -96,19 +96,20 @@ public class ProfileViewer extends Window {
 	 * Setup grid layout object to contain user information
 	 */
 	private void SetupGrid() {
+		
 		profileGrid.setPrefWidth(600);
 
 		// Set column widths of grid.
 		ColumnConstraints col1 = new ColumnConstraints();
 		ColumnConstraints col2 = new ColumnConstraints();
-		col1.setMinWidth(250);
+		col1.setMinWidth(200);
 		col2.setMinWidth(100);
 		profileGrid.getColumnConstraints().addAll(col1, col1, col2);
 
 		// Set grid size and spacing in group.
 		profileGrid.setHgap(gridCellWidth);
 		profileGrid.setVgap(gridCellHeight);
-		profileGrid.relocate(220, 80);
+		profileGrid.relocate(220, 110);
 
 		root.getChildren().add(profileGrid);
 	}
@@ -117,11 +118,12 @@ public class ProfileViewer extends Window {
 	 * Add basic user information to grid
 	 */
 	private void SetupUserInfo() {
+		
 		Label labelType;
 		// System.out.println(languageIndex + "gibbersish");
 		// Instantiates a VBox to contain the user information
-		VBox vBoxUserText = new VBox(30);
-		VBox vBoxUserPicture = new VBox(30);
+		VBox vBoxUserText = new VBox(20);
+		VBox vBoxUserPicture = new VBox(20);
 
 		// Silhouette placeholder for profile picture
 		// Load image and add to imageview
@@ -140,6 +142,7 @@ public class ProfileViewer extends Window {
 		profilePictureView.setFitHeight(200);
 		profilePictureView.setPreserveRatio(true);
 		// Add profile picture to VBox
+		vBoxUserPicture.setAlignment(Pos.CENTER);
 		vBoxUserPicture.getChildren().add(profilePictureView);
 
 		if (profileUser.username.equals(currentUsername)) {
@@ -170,6 +173,7 @@ public class ProfileViewer extends Window {
 			Label labelSkype = new Label(Translator.translateText(
 					languageIndex, "Available on Skype:"));
 			labelSkype.setFont(fontMain);
+			skypeBox.setAlignment(Pos.CENTER_LEFT);
 			skypeBox.getChildren().addAll(labelSkype, skypeButton);
 		}
 
@@ -334,7 +338,7 @@ public class ProfileViewer extends Window {
 
 			ButtonType button1 = new ButtonType("166,208,255", null,
 					Translator.translateText(languageIndex, "Edit Profile"),
-					100, 30);
+					120, 30);
 			Button buttonEditProfile = new SetupButton().CreateButton(button1);
 
 			// Setup edit profile button event

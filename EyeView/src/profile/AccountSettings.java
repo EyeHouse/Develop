@@ -35,7 +35,7 @@ public class AccountSettings extends Window {
 
 	/* Account Settings Static Variables */
 	private static final int gridCellWidth = 50;
-	private static final int gridCellHeight = 30;
+	private static final int gridCellHeight = 25;
 
 	/* Account Settings Global Variables */
 	private GridPane grid = new GridPane();
@@ -73,7 +73,7 @@ public class AccountSettings extends Window {
 		// Set grid size and spacing in group.
 		grid.setHgap(gridCellWidth);
 		grid.setVgap(gridCellHeight);
-		grid.relocate(220, 80);
+		grid.relocate(320, 130);
 
 		ColumnConstraints col1 = new ColumnConstraints();
 		ColumnConstraints col2 = new ColumnConstraints();
