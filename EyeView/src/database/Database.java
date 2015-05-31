@@ -1287,10 +1287,7 @@ public class Database {
 				System.out.println("\nRating is out of 5");
 				return false;
 			}
-			if (reviewDetails.rating % 0 != 0) {
-				System.out.println("\nRating must be an integer");
-				return false;
-			}
+
 
 			// Values to insert
 			insertUserReview.setInt(id, 0);

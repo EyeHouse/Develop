@@ -1,5 +1,12 @@
 package houses;
 
+import java.util.ArrayList;
+
+import database.Database;
+import database.House;
+import database.HouseReview;
+import database.User;
+import database.UserReview;
 import button.ButtonType;
 import button.SetupButton;
 import javafx.collections.FXCollections;
@@ -9,12 +16,14 @@ import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
+import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -22,9 +31,13 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import language.BadWordCheck;
 import language.Translator;
 import presenter.SlideContent;
 import presenter.Window;
+import profile.ProfileViewer;
+import profile.ProfileViewer.dislikeHandler;
+import profile.ProfileViewer.likeHandler;
 
 public class HouseReviews extends Window {
 
@@ -32,8 +45,8 @@ public class HouseReviews extends Window {
 
 	private int houseRating = 2; // Overall house rating from database
 
-	private ListView<VBox> reviewsView;
-	private ObservableList<VBox> reviews = FXCollections.observableArrayList();
+	private ListView<HBox> reviewsView;
+	private ObservableList<HBox> reviews = FXCollections.observableArrayList();
 
 	private Button[] buttonStar;
 	private ImageView[] reviewStar;
@@ -113,18 +126,18 @@ public class HouseReviews extends Window {
 
 		reviewStar = new ImageView[5];
 
-		for (int i = 0; i < 5; i++) {
-			if (i <= houseRating - 1) {
-				reviewStar[i] = new ImageView(reviewStarFull);
-				reviewStar[i].setFitHeight(28);
-				reviewStar[i].setFitWidth(28);
-			} else {
-				reviewStar[i] = new ImageView(reviewStarOutline);
+		int rating = 0;
+
+		ArrayList<HouseReview> houseReviews = Database
+				.getHouseReviews(currentPropertyID);
+		if (houseReviews.size() > 0) {
+			for (int i = 0; i < houseReviews.size(); i++) {
+				rating += houseReviews.get(i).rating;
 			}
+			rating /= houseReviews.size();
 		}
 
-		hBoxOverallRating.getChildren().addAll(reviewStar);
-		hBoxOverallRating.setAlignment(Pos.CENTER_LEFT);
+		hBoxOverallRating = ProfileViewer.createStarHBox(5, 28, rating);
 		pane.add(hBoxOverallRating, 0, 1);
 		GridPane.setConstraints(hBoxOverallRating, 0, 1, 3, 1, HPos.LEFT,
 				VPos.CENTER);
@@ -137,9 +150,49 @@ public class HouseReviews extends Window {
 		newReviewLabel.setFont(new Font(20));
 		pane.add(newReviewLabel, 0, 2);
 
-		reviewsView = new ListView<VBox>();
+		reviewsView = new ListView<HBox>();
 		reviewsView.setPrefHeight(200);
 		reviewsView.setItems(reviews);
+
+		House house = Database.getHouse(currentPropertyID);
+		User landlord = Database.getUser(Database.getUsername(house.uid));
+		ArrayList<HouseReview> houseReviews = Database
+				.getHouseReviews(currentPropertyID);
+
+		Image thumbsUp = new Image("file:resources/images/stars/thumbs_up.png");
+		Image thumbsDown = new Image(
+				"file:resources/images/stars/thumbs_down.png");
+
+		for (int i = houseReviews.size() - 1; 0 < i + 1; i = i - 1) {
+
+			HBox reviewItem = new HBox(10);
+			VBox reviewLeft = new VBox(10);
+			VBox buttons = new VBox(12);
+			HBox stars = ProfileViewer.createStarHBox(2, 14,
+					houseReviews.get(i).rating);
+
+			Label reviewText = new Label(houseReviews.get(i).review + "\n"
+					+ "Likes: " + houseReviews.get(i).like + "  Dislikes: "
+					+ houseReviews.get(i).dislike);
+			reviewText.setWrapText(true);
+			reviewText.setPrefWidth(450);
+
+			ImageView like = new ImageView(thumbsUp);
+			ImageView dislike = new ImageView(thumbsDown);
+
+			if (!landlord.username.equals(currentUsername)) {
+				like.setOnMouseClicked(new likeHandler(houseReviews.get(i)));
+				like.setCursor(Cursor.HAND);
+				dislike.setOnMouseClicked(new dislikeHandler(houseReviews
+						.get(i)));
+				dislike.setCursor(Cursor.HAND);
+			}
+
+			reviewLeft.getChildren().addAll(reviewText, stars);
+			buttons.getChildren().addAll(like, dislike);
+			reviewItem.getChildren().addAll(reviewLeft, buttons);
+			reviews.add(reviewItem);
+		}
 
 		pane.add(reviewsView, 0, 3);
 		GridPane.setConstraints(reviewsView, 0, 3, 3, 1, HPos.CENTER,
@@ -212,39 +265,30 @@ public class HouseReviews extends Window {
 			public void handle(ActionEvent ae) {
 				if (newReviewText.getText().length() != 0) {
 
-					HBox newStarRatingHBox = new HBox(2);
+					BadWordCheck bwd = new BadWordCheck();
 
-					ImageView[] newReviewStar = new ImageView[5];
+					if (bwd.containsBlackListedWords(newReviewText.getText())) {
+						newReviewText.setText(bwd
+								.highlightBlackListedWords(newReviewText
+										.getText()));
+						createWarningPopup("Inappropriate Language");
+						dialogStage.show();
+					} else {
+						House house = Database.getHouse(currentPropertyID);
+						User landlord = Database.getUser(Database
+								.getUsername(house.uid));
+						// Add new review to new line of review text area
+						HouseReview newReview = new HouseReview(
+								currentPropertyID);
+						newReview.uid(landlord.uid);
+						newReview.review(newReviewText.getText());
+						newReview.rating(newRating);
+						newReview.like(0);
+						newReview.dislike(0);
+						Database.insertHouseReview(newReview);
 
-					for (int i = 0; i < 5; i++) {
-						if (i <= newRating - 1) {
-							newReviewStar[i] = new ImageView(reviewStarFull);
-							newReviewStar[i].setFitHeight(14);
-							newReviewStar[i].setFitWidth(14);
-						} else {
-							newReviewStar[i] = new ImageView(reviewStarOutline);
-							newReviewStar[i].setFitHeight(14);
-							newReviewStar[i].setFitWidth(14);
-						}
+						loadSlide(REVIEWS);
 					}
-
-					newStarRatingHBox.getChildren().addAll(newReviewStar);
-					newStarRatingHBox.setAlignment(Pos.CENTER_LEFT);
-
-					Label newReviewTextLabel = new Label(newReviewText
-							.getText());
-					newReviewTextLabel.setPrefWidth(445);
-					newReviewTextLabel.setWrapText(true);
-
-					VBox newReviewVBox = new VBox(10);
-					newReviewVBox.setPrefWidth(445);
-					newReviewVBox.getChildren().addAll(newReviewTextLabel,
-							newStarRatingHBox);
-					reviews.add(newReviewVBox);
-
-					reviewsView.setItems(reviews);
-
-					newReviewText.clear();
 				}
 			}
 		});
@@ -288,6 +332,36 @@ public class HouseReviews extends Window {
 					buttonStar[i].setGraphic(new ImageView(reviewStarOutline));
 				}
 			}
+		}
+	}
+
+	public class likeHandler implements EventHandler<MouseEvent> {
+
+		private HouseReview review;
+
+		public likeHandler(HouseReview review) {
+			this.review = review;
+		}
+
+		@Override
+		public void handle(MouseEvent event) {
+			Database.likeReview(Database.getUser(currentUsername), review, null, 2);
+			loadSlide(REVIEWS);
+		}
+	}
+
+	public class dislikeHandler implements EventHandler<MouseEvent> {
+
+		private HouseReview review;
+
+		public dislikeHandler(HouseReview review) {
+			this.review = review;
+		}
+
+		@Override
+		public void handle(MouseEvent event) {
+			Database.dislikeReview(Database.getUser(currentUsername), review, null, 2);
+			loadSlide(REVIEWS);
 		}
 	}
 }
