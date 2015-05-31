@@ -190,7 +190,33 @@ public class SavedProperties extends Window {
 		buttonBack.setCursor(Cursor.HAND);
 		buttonBack.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent ae) {
-				loadSlide(prevSlideID);
+				if (originSavedProperties)
+					switch (slideID) {
+					case VIDEO:
+					case REVIEWS:
+					case MAP:
+					case MOREINFO:
+						loadSlide(HOUSE);
+						break;
+					default:
+						loadSlide(SAVEDPROPERTIES);
+						break;
+					}
+				else if (originManageProperties) {
+					switch (slideID) {
+					case VIDEO:
+					case REVIEWS:
+					case MAP:
+					case MOREINFO:
+						loadSlide(HOUSE);
+						break;
+					default:
+						loadSlide(LANDLORDPROPERTIES);
+						break;
+					}
+				} else {
+					loadSlide(HOUSES);
+				}
 			}
 		});
 

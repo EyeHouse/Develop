@@ -27,9 +27,7 @@
 		<graphic type="rectangle" xstart="0.0" ystart="0.0" xend="0.19" yend="1.0" solid="true" graphiccolor="#FF7AA9DD" duration="0" />
 	</slide>
 	<slide id="5" title="Video Slide" duration="0">
-		<graphic type="rectangle" xstart="0.0" ystart="0.0" xend="0.19" yend="1.0"
-			duration="0" graphiccolor="#FF7AA9DD" solid="true">
-		</graphic>
+		<graphic type="rectangle" xstart="0.0" ystart="0.0" xend="0.19" yend="1.0" solid="true" graphiccolor="#FF7AA9DD" duration="0" />
 	</slide>
 	<slide id="6" title="Profile Slide" duration="0">
 		<graphic type="rectangle" xstart="0.0" ystart="0.0" xend="0.19" yend="1.0" solid="true" graphiccolor="#FF7AA9DD" duration="0" />

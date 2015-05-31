@@ -77,13 +77,12 @@ public class SlideContent extends Window {
 	public final ComboBox<Integer> minPrice = new ComboBox<Integer>();
 	public final ComboBox<Integer> maxPrice = new ComboBox<Integer>();
 	public final ComboBox<Integer> distance = new ComboBox<Integer>();
-	public boolean SavedOrOwned;
 
 	public void createSlide() {
 
 		// Load all objects from XML file first
 		try {
-			if(loadXML != null){
+			if (loadXML != null) {
 				LoadXML.stopMedia();
 			}
 			loadXML = new LoadXML();
@@ -155,11 +154,15 @@ public class SlideContent extends Window {
 	}
 
 	private void createStartSlide() {
+		originSavedProperties = false;
+		originManageProperties = false;
 		startPage = new StartPage();
 	}
 
 	private void createLoggedOutSlide() {
 
+		originSavedProperties = false;
+		originManageProperties = false;
 		ArrayList<Integer> houseIDs = new ArrayList<Integer>();
 		houseIDs = Database.selectAllHouses();
 		ArrayList<House> houses = getDisplayHouses(houseIDs);
@@ -175,6 +178,8 @@ public class SlideContent extends Window {
 
 	private void createHomeSlide() {
 
+		originSavedProperties = false;
+		originManageProperties = false;
 		ArrayList<Integer> houseIDs = new ArrayList<Integer>();
 		houseIDs = Database.selectAllHouses();
 		ArrayList<House> houses = getDisplayHouses(houseIDs);
@@ -189,31 +194,40 @@ public class SlideContent extends Window {
 
 	private void createLoginSlide() {
 
+		originSavedProperties = false;
+		originManageProperties = false;
 		login = new Login();
 		createSidebar();
 	}
 
 	private void createRegisterSlide() {
 
+		originSavedProperties = false;
+		originManageProperties = false;
 		register = new Register();
 		createSidebar();
 	}
 
 	private void createProfileSlide() {
 
+		originSavedProperties = false;
+		originManageProperties = false;
 		profile = new ProfileViewer(viewedUsername);
 		createSidebar();
 	}
 
 	private void createAccountSettingsSlide() {
 
+		originSavedProperties = false;
+		originManageProperties = false;
 		accountSettings = new AccountSettings();
 		createSidebar();
 	}
 
 	private void createSavedPropertySlide() {
 
-		SavedOrOwned = true;
+		originSavedProperties = true;
+		originManageProperties = false;
 		savedProperties = new SavedProperties();
 		createSidebar();
 	}
@@ -229,7 +243,7 @@ public class SlideContent extends Window {
 		createSidebar();
 	}
 
-	public void createMoreInfoSlide() {
+	private void createMoreInfoSlide() {
 
 		createMenuBar();
 		moreInfo = new MoreInfo();
@@ -237,47 +251,52 @@ public class SlideContent extends Window {
 
 	}
 
-	public void createReviewsSlide() {
+	private void createReviewsSlide() {
 
 		createMenuBar();
 		houseReviews = new HouseReviews();
 		createSidebar();
 	}
 
-	public void createMapSlide() {
+	private void createMapSlide() {
 
 		createMenuBar();
 		mapPage = new GoogleMapsPage();
 		createSidebar();
 	}
 
-	public void createVideoSlide() {
+	private void createVideoSlide() {
 
 		createMenuBar();
 		videoPage = new VideoPage();
 		createSidebar();
 	}
 
-	public void createLandlordPropertiesSlide() {
-		
-		SavedOrOwned = false;
+	private void createLandlordPropertiesSlide() {
+
+		originSavedProperties = false;
+		originManageProperties = true;
 		landlordProperties = new LandlordProperties(currentUsername);
 		createSidebar();
 	}
 
-	public void createEditPropertySlide() {
+	private void createEditPropertySlide() {
+		originSavedProperties = false;
+		originManageProperties = true;
 		editProperty = new EditProperty(0, currentPropertyID);
 		createSidebar();
 	}
 
-	public void createResultsSlide() {
+	private void createResultsSlide() {
 
+		originSavedProperties = false;
+		originManageProperties = false;
 		createMenuBar();
 		houseAdverts = new HouseOverview(false, searchResults);
 		createSidebar();
 	}
 
-	public void createSidebar() {
+	private void createSidebar() {
 
 		VBox sidebar = new VBox(18);
 
@@ -365,12 +384,12 @@ public class SlideContent extends Window {
 				}
 			});
 
-			if (slideID == SAVEDPROPERTIES || (SavedOrOwned && slideID == HOUSE))
+			if (originSavedProperties)
 				labelSavedProperties.setFont(Font.font(null, FontWeight.BOLD,
 						16.5));
 			else if (slideID == PROFILE || slideID == ACCOUNTSETTINGS)
 				labelProfile.setFont(Font.font(null, FontWeight.BOLD, 16.5));
-			else if (slideID == LANDLORDPROPERTIES || slideID == EDITPROPERTY || (!SavedOrOwned && slideID == HOUSE))
+			else if (originManageProperties)
 				labelLandlordProperties.setFont(Font.font(null,
 						FontWeight.BOLD, 16.5));
 
@@ -425,7 +444,7 @@ public class SlideContent extends Window {
 		root.getChildren().add(sidebar);
 	}
 
-	public void createMenuBar() {
+	private void createMenuBar() {
 
 		HBox buttonRow = new HBox(5);
 
@@ -487,7 +506,7 @@ public class SlideContent extends Window {
 		Label blank = new Label("");
 		blank.setMinWidth(70);
 
-		buttonRow.relocate((xResolution * 0.19), 0);
+		buttonRow.relocate(182.2, 0);
 		buttonRow.setMinWidth(xResolution - (xResolution * 0.19));
 		buttonRow.setMaxWidth(xResolution - (xResolution * 0.19));
 		buttonRow.getChildren().addAll(blank, videoButton, mapButton,
@@ -502,6 +521,7 @@ public class SlideContent extends Window {
 	private void setupLabelHover(final Label input) {
 
 		final boolean selected;
+
 		if (input.getFont().getSize() == 16.5)
 			selected = true;
 		else
@@ -548,7 +568,7 @@ public class SlideContent extends Window {
 		root.getChildren().add(buttonslideBack);
 	}
 
-	public void setupTranslate() {
+	private void setupTranslate() {
 
 		languageComboBox = new ComboBox<ImageView>();
 		Translator.translateBox();
@@ -557,16 +577,16 @@ public class SlideContent extends Window {
 				new File("resources/languageStyle.css").toURI().toString());
 	}
 
-	public class LanguageChange implements ChangeListener<ImageView> {
+	private class LanguageChange implements ChangeListener<ImageView> {
 
 		@Override
 		public void changed(ObservableValue<? extends ImageView> arg0,
 				ImageView arg1, ImageView arg2) {
+
 			languageIndex = languageComboBox.getSelectionModel()
 					.getSelectedIndex();
 
 			switch (slideID) {
-
 			case INDEX:
 				updateLoginRegisterLanguage();
 				updateMenuBarLanguage();
@@ -629,14 +649,14 @@ public class SlideContent extends Window {
 		}
 	}
 
-	public void updateLoginRegisterLanguage() {
+	private void updateLoginRegisterLanguage() {
 
 		labelLogin.setText(Translator.translateText(languageIndex, "Login"));
 		labelRegister.setText(Translator.translateText(languageIndex,
 				"Register"));
 	}
 
-	public void updateMenuBarLanguage() {
+	private void updateMenuBarLanguage() {
 
 		videoButton.setText(Translator.translateText(languageIndex,
 				"Video Tour"));
@@ -647,10 +667,10 @@ public class SlideContent extends Window {
 				.translateText(languageIndex, "Reviews"));
 	}
 
-	public void updateSidebarLanguage() {
+	private void updateSidebarLanguage() {
 
 		User currentUser = Database.getUser(currentUsername);
-		
+
 		labelProfile
 				.setText(Translator.translateText(languageIndex, "Profile"));
 		labelSavedProperties.setText(Translator.translateText(languageIndex,
@@ -659,11 +679,11 @@ public class SlideContent extends Window {
 			labelLandlordProperties.setText(Translator.translateText(
 					languageIndex, "My Properties"));
 		labelLogOut.setText(Translator.translateText(languageIndex, "Log Out"));
-		
+
 		currentUser = null;
 	}
 
-	public void updateSearchBarLanguage() {
+	private void updateSearchBarLanguage() {
 
 		labelFilter.setText(Translator.translateText(languageIndex,
 				"Filter results:"));
@@ -676,7 +696,7 @@ public class SlideContent extends Window {
 		searchButton.setText(Translator.translateText(languageIndex, "Search"));
 	}
 
-	public ArrayList<House> getDisplayHouses(ArrayList<Integer> houseIDs) {
+	private ArrayList<House> getDisplayHouses(ArrayList<Integer> houseIDs) {
 
 		ArrayList<House> houses = new ArrayList<House>();
 
@@ -693,7 +713,7 @@ public class SlideContent extends Window {
 		return houses;
 	}
 
-	public void createSearchBar() {
+	private void createSearchBar() {
 
 		VBox searchFields = new VBox(0);
 		VBox minBedsColumn = new VBox(5);
@@ -819,8 +839,9 @@ public class SlideContent extends Window {
 		root.getChildren().addAll(centreBox, searchFields);
 	}
 
-	public class searchHandler implements EventHandler<ActionEvent> {
+	private class searchHandler implements EventHandler<ActionEvent> {
 
+		@Override
 		public void handle(ActionEvent arg0) {
 
 			ArrayList<House> result1 = new ArrayList<House>();
@@ -901,10 +922,10 @@ public class SlideContent extends Window {
 			outputPriceBed = null;
 
 			searchResults = output;
+			
 			if (output.size() > 0) {
 				loadSlide(RESULTS);
-			}
-			else{
+			} else {
 				createWarningPopup("No matching properties.");
 				dialogStage.show();
 			}

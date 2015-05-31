@@ -24,8 +24,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
 import language.Translator;
-import presenter.SlideContent;
 import presenter.Window;
+import profile.SavedProperties;
 import database.Database;
 import database.FileManager;
 import database.House;
@@ -45,7 +45,7 @@ public class VideoPage extends Window {
 
 		setupTitle();
 		setupVideoPlayer();
-		SlideContent.setupBackButton();
+		SavedProperties.setupPropertyBackButton();
 	}
 
 	private void setupVideoPlayer() {
@@ -183,13 +183,13 @@ public class VideoPage extends Window {
 	}
 
 	public void dispose() {
+		
 		if (video != null) {
 			video.stopVideo();
 			video = null;
+			videoMarkers.clear();
+			videoMarkers.trimToSize();
+			videoMarkers = null;
 		}
-
-		videoMarkers.clear();
-		videoMarkers.trimToSize();
-		videoMarkers = null;
 	}
 }

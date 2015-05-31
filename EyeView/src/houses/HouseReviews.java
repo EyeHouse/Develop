@@ -32,9 +32,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import language.BadWordCheck;
 import language.Translator;
-import presenter.SlideContent;
 import presenter.Window;
 import profile.ProfileViewer;
+import profile.SavedProperties;
 
 public class HouseReviews extends Window {
 
@@ -247,7 +247,7 @@ public class HouseReviews extends Window {
 
 	public void setupButtons() {
 
-		SlideContent.setupBackButton();
+		SavedProperties.setupPropertyBackButton();
 
 		ButtonType button2 = new ButtonType("166,208,255", null, "Submit", 70,
 				30);

@@ -10,8 +10,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import language.Translator;
-import presenter.SlideContent;
 import presenter.Window;
+import profile.SavedProperties;
 import database.Database;
 import database.House;
 
@@ -49,7 +49,7 @@ public class MoreInfo extends Window {
 		setupGrid();
 		VBox vBoxDesc = new VBox(10);
 
-		SlideContent.setupBackButton();
+		SavedProperties.setupPropertyBackButton();
 		Label address = new Label(house.address);
 		Label postcode = new Label(house.postcode);
 		Label price = new Label("£" + Integer.toString(house.price));

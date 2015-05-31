@@ -62,6 +62,8 @@ public class Window extends Application {
 	public static String groupID;
 	public static int slideID = -1;
 	public static int prevSlideID = -1;
+	public static boolean originSavedProperties = false;
+	public static boolean originManageProperties = false;
 
 	public static String currentUsername = null;
 	public static String viewedUsername = null;

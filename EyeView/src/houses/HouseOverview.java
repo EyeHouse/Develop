@@ -76,7 +76,7 @@ public class HouseOverview extends Window {
 	public HouseOverview(boolean singlePropertyView, ArrayList<House> houses) {
 
 		this.houses = houses;
-
+		
 		createGalleryLists();
 
 		// Only set up advert timer loop if viewing more than one house
