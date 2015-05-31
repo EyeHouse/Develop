@@ -18,6 +18,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -27,13 +28,7 @@ import presenter.Window;
 
 public class HouseReviews extends Window {
 
-	private static Label pageTitle = new Label("");
-	private static Label ratingLabel = new Label(Translator.translateText(languageIndex, "Rating") + ":    ");
-	private static Label giveRatingLabel = new Label("");
-	private static ButtonType button2 = new ButtonType("166,208,255", null,
-			"Submit", 70, 30);
-	private static Button buttonSubmit = new SetupButton()
-			.CreateButton(button2);
+	private Label pageTitle, ratingLabel, newReviewLabel, giveRatingLabel;
 
 	private int houseRating = 2; // Overall house rating from database
 
@@ -52,7 +47,10 @@ public class HouseReviews extends Window {
 	TextArea newReviewText;
 	HBox hBoxOverallRating = new HBox(5);
 
+	private Button buttonSubmit;
+
 	public HouseReviews() {
+
 		pane = new GridPane();
 
 		setupGrid();
@@ -70,28 +68,40 @@ public class HouseReviews extends Window {
 
 		pane.setVgap(20);
 		pane.setHgap(30);
-		pane.relocate(315, 80);
+		pane.relocate(315, 130);
 		pane.setPrefWidth(450);
 
 		// pane.setGridLinesVisible(true);
 
 		// Set column widths of grid.
 		ColumnConstraints col1 = new ColumnConstraints();
-		col1.setMinWidth(150);
-		pane.getColumnConstraints().addAll(col1, col1, col1);
+		col1.setMinWidth(200);
+		ColumnConstraints col2 = new ColumnConstraints();
+		col2.setMinWidth(125);
+		pane.getColumnConstraints().addAll(col1, col2, col2);
 	}
 
 	private void setupTitle() {
 
-		pageTitle = new Label(Translator.translateText(languageIndex, "Reviews"));
+		pageTitle = new Label(
+				Translator.translateText(languageIndex, "Reviews"));
 		pageTitle.setFont(new Font(32));
-		pageTitle.setTextFill(Color.web("#162252FF"));
-		pane.add(pageTitle, 0, 0);
-		GridPane.setConstraints(pageTitle, 0, 0, 3, 1, HPos.CENTER, VPos.CENTER);
+		pageTitle.setTextFill(Color.web("#162252"));
+		pageTitle.setPrefWidth(550);
+		pageTitle.setAlignment(Pos.CENTER);
+		pageTitle.relocate(275, 80);
+
+		root.getChildren().add(pageTitle);
+		/*
+		 * pane.add(pageTitle, 0, 0); GridPane.setConstraints(pageTitle, 0, 0,
+		 * 3, 1, HPos.CENTER, VPos.CENTER);
+		 */
 	}
 
 	public void setupRatingLabel() {
 
+		ratingLabel = new Label(Translator.translateText(languageIndex,
+				"Rating") + ":    ");
 		ratingLabel.setFont(new Font(20));
 		hBoxOverallRating.getChildren().add(ratingLabel);
 	}
@@ -122,7 +132,7 @@ public class HouseReviews extends Window {
 
 	public void displayReviews() {
 
-		Label newReviewLabel = new Label(Translator.translateText(languageIndex,
+		newReviewLabel = new Label(Translator.translateText(languageIndex,
 				"Reviews") + ":");
 		newReviewLabel.setFont(new Font(20));
 		pane.add(newReviewLabel, 0, 2);
@@ -150,9 +160,9 @@ public class HouseReviews extends Window {
 
 	public void setupAddStarRating() {
 
-		giveRatingLabel.setText(Translator.translateText(languageIndex,
+		giveRatingLabel = new Label(Translator.translateText(languageIndex,
 				"Give a rating") + ":");
-		giveRatingLabel.setFont(new Font(20));
+		giveRatingLabel.setFont(new Font(18));
 
 		// Create star buttons
 		ButtonType button1 = new ButtonType(null, null, null, 28, 28);
@@ -176,6 +186,7 @@ public class HouseReviews extends Window {
 
 		// Add review star buttons to gridpane
 		pane.add(giveRatingLabel, 0, 6);
+		GridPane.setHgrow(giveRatingLabel, Priority.ALWAYS);
 		GridPane.setConstraints(giveRatingLabel, 0, 6, 1, 1, HPos.RIGHT,
 				VPos.CENTER);
 		pane.add(hBoxNewStars, 1, 6);
@@ -193,6 +204,9 @@ public class HouseReviews extends Window {
 
 		SlideContent.setupBackButton();
 
+		ButtonType button2 = new ButtonType("166,208,255", null, "Submit", 70,
+				30);
+		buttonSubmit = new SetupButton().CreateButton(button2);
 		buttonSubmit.relocate(785, 720);
 		buttonSubmit.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent ae) {
@@ -240,11 +254,17 @@ public class HouseReviews extends Window {
 				VPos.CENTER);
 	}
 
-	public static void updateLanguage() {
+	public void updateLanguage() {
 
 		pageTitle.setText(Translator.translateText(languageIndex, "Reviews"));
 		ratingLabel.setText(Translator.translateText(languageIndex, "Rating")
-				+ ":     ");
+				+ ":    ");
+		newReviewLabel.setText(Translator.translateText(languageIndex,
+				"Reviews") + ":");
+		giveRatingLabel.setText(Translator.translateText(languageIndex,
+				"Give a rating") + ":");
+		newReviewText.setPromptText(Translator.translateText(languageIndex,
+				"Submit a review") + "...");
 		buttonSubmit.setText(Translator.translateText(languageIndex, "Submit"));
 	}
 
