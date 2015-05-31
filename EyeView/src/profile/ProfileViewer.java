@@ -321,7 +321,7 @@ public class ProfileViewer extends presenter.Window {
 		// Populate hBox based on user rating
 		hBoxStars = createStarHBox(5, 28, rating);
 		// Add star HBox to grid
-		profileGrid.addRow(1, hBoxStars);
+		profileGrid.add(hBoxStars,1,2);
 	}
 
 	/*
@@ -348,9 +348,9 @@ public class ProfileViewer extends presenter.Window {
 				}
 			});
 
-			profileGrid.addRow(3, buttonEditProfile);
+			profileGrid.addRow(4, buttonEditProfile);
 
-			GridPane.setConstraints(buttonEditProfile, 0, 3, 1, 1, HPos.CENTER,
+			GridPane.setConstraints(buttonEditProfile, 0, 4, 1, 1, HPos.CENTER,
 					VPos.CENTER);
 
 		} else {
@@ -418,7 +418,7 @@ public class ProfileViewer extends presenter.Window {
 			// Add new review and rating label and text area
 			vBoxNewReview.getChildren().addAll(labelNewReview, textNewReview,
 					labelNewRating);
-			profileGrid.addRow(3, vBoxNewReview, buttonReview);
+			
 
 			// Setup review star images
 			reviewStarFull = new Image(
@@ -447,14 +447,14 @@ public class ProfileViewer extends presenter.Window {
 				hBoxNewStars.getChildren().add(buttonStar[i]);
 			}
 			// Add star label and HBox to grid
-			profileGrid.addRow(2, labelNewRating, hBoxNewStars);
-
+			
+			profileGrid.add(vBoxNewReview,1,4);
+			profileGrid.add(buttonReview,2,4);
+			profileGrid.add(labelNewRating,1,5);
+			profileGrid.add(hBoxNewStars,2,5);
 			// Align Add Review fields
-			GridPane.setConstraints(buttonReview, 2, 3, 1, 1, HPos.CENTER,
+			GridPane.setConstraints(buttonReview, 2, 4, 1, 1, HPos.CENTER,
 					VPos.BOTTOM);
-			GridPane.setConstraints(vBoxNewReview, 1, 3, 1, 1);
-			GridPane.setConstraints(labelNewRating, 1, 4, 1, 1);
-			GridPane.setConstraints(hBoxNewStars, 2, 4, 1, 1);
 
 			// Add review star button handlers
 			for (int i = 0; i < 5; i++) {
@@ -522,7 +522,7 @@ public class ProfileViewer extends presenter.Window {
 		// Populate grid with profile and review information
 		vBoxProfile.getChildren().addAll(labelProfile, textProfile);
 		vBoxReview.getChildren().addAll(labelReview, reviewList);
-		profileGrid.addRow(2, vBoxProfile, vBoxReview);
+		profileGrid.addRow(3, vBoxProfile, vBoxReview);
 	}
 
 	public HBox createStarHBox(int spacing, int size, int rating) {
