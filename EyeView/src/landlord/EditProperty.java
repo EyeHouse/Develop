@@ -1062,11 +1062,11 @@ public class EditProperty extends presenter.Window {
 
 			else {
 				int i  = 0;
-				while(i < imagePaths.size()){
+				while(i < houseImages.size()){
 					if (deleteImage.get(i).isSelected()) {
 						boolean check = Database.deleteHouseImage(houseImages
 								.get(i));
-						imagePaths.remove(i);
+						houseImages.remove(i);
 						deleteImage.remove(i);
 						if (check) {
 							System.out.println("Image Deleted");
