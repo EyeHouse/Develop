@@ -861,12 +861,23 @@ public class SlideContent extends Window {
 			result3.clear();
 			result4.clear();
 			result5.clear();
+			
+			outputBeds.clear();
+			outputPrice.clear();
+			outputPriceBed.clear();
+			
+			outputBeds.trimToSize();
+			outputPrice.trimToSize();
+			outputPriceBed.trimToSize();
 
 			result1 = null;
 			result2 = null;
 			result3 = null;
 			result4 = null;
 			result5 = null;
+			outputBeds = null;
+			outputPrice = null;
+			outputPriceBed = null;
 
 			searchResults = output;
 			if (output.size() > 0) {
@@ -877,8 +888,6 @@ public class SlideContent extends Window {
 
 	private void clearSlideData() {
 		
-		System.out
-				.println("\nMemory Free:" + Runtime.getRuntime().freeMemory());
 		switch (prevSlideID) {
 		case STARTPAGE:
 			startPage.dispose();
@@ -933,7 +942,5 @@ public class SlideContent extends Window {
 
 		profilePictureView = null;
 		System.gc();
-		System.out.println("Memory Free After:"
-				+ Runtime.getRuntime().freeMemory());
 	}
 }
