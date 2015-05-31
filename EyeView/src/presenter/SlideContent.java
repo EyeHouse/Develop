@@ -15,17 +15,14 @@ import profile.Login;
 import profile.ProfileViewer;
 import profile.Register;
 import profile.SavedProperties;
-
 import button.ButtonType;
 import button.SetupButton;
-
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.HPos;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.geometry.VPos;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -33,7 +30,6 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -42,7 +38,6 @@ import javafx.scene.shape.RectangleBuilder;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
-
 import landlord.EditProperty;
 import landlord.LandlordProperties;
 import language.Translator;
@@ -75,7 +70,7 @@ public class SlideContent extends Window {
 			labelBedSearch, labelBedMin, labelBedMax, labelPriceSearch,
 			labelPriceMin, labelPriceMax, labelDistanceSearch;
 	public static Button videoButton, mapButton, infoButton, reviewsButton,
-			buttonBack;
+			buttonBack, searchButton;
 	public final ComboBox<Integer> minBeds = new ComboBox<Integer>();
 	public final ComboBox<Integer> maxBeds = new ComboBox<Integer>();
 	public final ComboBox<Integer> minPrice = new ComboBox<Integer>();
@@ -558,107 +553,107 @@ public class SlideContent extends Window {
 			switch (slideID) {
 
 			case INDEX:
-
+				updateLoginRegisterLanguage();
+				updateMenuBarLanguage();
 				houseAdverts.updateLanguage();
-				videoButton.setText(Translator.translateText(languageIndex,
-						"Video Tour"));
-				mapButton.setText(Translator
-						.translateText(languageIndex, "Map"));
-				infoButton.setText(Translator.translateText(languageIndex,
-						"Information"));
-				reviewsButton.setText(Translator.translateText(languageIndex,
-						"Reviews"));
-				labelLogin.setText(Translator.translateText(languageIndex,
-						"Login"));
-				labelRegister.setText(Translator.translateText(languageIndex,
-						"Register"));
-				break;
-			case HOUSES:
 				break;
 			case LOGIN:
-				labelLogin.setText(Translator.translateText(languageIndex,
-						"Login"));
-				labelRegister.setText(Translator.translateText(languageIndex,
-						"Register"));
 				break;
 			case REGISTER:
-				labelLogin.setText(Translator.translateText(languageIndex,
-						"Login"));
-				labelRegister.setText(Translator.translateText(languageIndex,
-						"Register"));
+				break;
+			case HOUSES:
+				updateSidebarLanguage();
+				updateMenuBarLanguage();
+				updateSearchBarLanguage();
+				houseAdverts.updateLanguage();
 				break;
 			case PROFILE:
-				
-				labelProfile.setText(Translator.translateText(languageIndex,
-						"Profile"));
-				labelSavedProperties.setText(Translator.translateText(
-						languageIndex, "Saved Properties"));
-				labelLandlordProperties.setText(Translator.translateText(
-						languageIndex, "My Properties"));
-				labelLogOut.setText(Translator.translateText(languageIndex,
-						"Log Out"));
-				
 				break;
 			case ACCOUNTSETTINGS:
 				break;
 			case SAVEDPROPERTIES:
 				break;
 			case HOUSE:
+				updateSidebarLanguage();
+				updateMenuBarLanguage();
+				houseAdverts.updateLanguage();
 				break;
 			case MOREINFO:
+				updateSidebarLanguage();
+				updateMenuBarLanguage();
+				moreInfo.updateLanguage();
 				break;
 			case REVIEWS:
+				updateSidebarLanguage();
+				updateMenuBarLanguage();
+				houseReviews.updateLanguage();
 				break;
 			case MAP:
+				updateSidebarLanguage();
+				updateMenuBarLanguage();
+				mapPage.updateLanguage();
 				break;
 			case VIDEO:
+				updateSidebarLanguage();
+				updateMenuBarLanguage();
+				videoPage.updateLanguage();
 				break;
 			case LANDLORDPROPERTIES:
 				break;
 			case EDITPROPERTY:
 				break;
 			case RESULTS:
+				updateSidebarLanguage();
+				updateMenuBarLanguage();
+				updateSearchBarLanguage();
+				houseAdverts.updateLanguage();
 				break;
 			default:
 				break;
 			}
-
-			/*
-			 * if ( || slideID == HOUSES ) { houseAdverts.updateLanguage();
-			 * 
-			 * videoButton.setText(Translator.translateText(languageIndex,
-			 * "Video Tour")); mapButton.setText(Translator
-			 * .translateText(languageIndex, "Map"));
-			 * infoButton.setText(Translator.translateText(languageIndex,
-			 * "Information"));
-			 * reviewsButton.setText(Translator.translateText(languageIndex,
-			 * "Reviews")); }
-			 * 
-			 * if (slideID == LOGIN || slideID == REGISTER || slideID == INDEX)
-			 * { labelLogin.setText(Translator.translateText(languageIndex,
-			 * "Login"));
-			 * labelRegister.setText(Translator.translateText(languageIndex,
-			 * "Register")); }
-			 * 
-			 * if (slideID != INDEX && slideID != LOGIN && slideID != REGISTER)
-			 * {
-			 * 
-			 * labelProfile.setText(Translator.translateText(languageIndex,
-			 * "Profile"));
-			 * labelSavedProperties.setText(Translator.translateText(
-			 * languageIndex, "Saved Properties"));
-			 * labelLandlordProperties.setText(Translator.translateText(
-			 * languageIndex, "My Properties"));
-			 * labelLogOut.setText(Translator.translateText(languageIndex,
-			 * "Log Out")); } if (slideID == HOUSES || slideID == HOUSE ||
-			 * slideID == RESULTS) {
-			 * labelBedSearch.setText(Translator.translateText(languageIndex,
-			 * "Bedrooms")); labelPriceSearch.setText(Translator.translateText(
-			 * languageIndex, "Price"));
-			 * labelDistanceSearch.setText(Translator.translateText(
-			 * languageIndex, "Distance to University") + " (km)"); }
-			 */
 		}
+	}
+
+	public void updateLoginRegisterLanguage() {
+
+		labelLogin.setText(Translator.translateText(languageIndex, "Login"));
+		labelRegister.setText(Translator.translateText(languageIndex,
+				"Register"));
+	}
+
+	public void updateMenuBarLanguage() {
+
+		videoButton.setText(Translator.translateText(languageIndex,
+				"Video Tour"));
+		mapButton.setText(Translator.translateText(languageIndex, "Map"));
+		infoButton.setText(Translator.translateText(languageIndex,
+				"Information"));
+		reviewsButton.setText(Translator
+				.translateText(languageIndex, "Reviews"));
+	}
+
+	public void updateSidebarLanguage() {
+
+		labelProfile
+				.setText(Translator.translateText(languageIndex, "Profile"));
+		labelSavedProperties.setText(Translator.translateText(languageIndex,
+				"Saved Properties"));
+		labelLandlordProperties.setText(Translator.translateText(languageIndex,
+				"My Properties"));
+		labelLogOut.setText(Translator.translateText(languageIndex, "Log Out"));
+	}
+
+	public void updateSearchBarLanguage() {
+
+		labelFilter.setText(Translator.translateText(languageIndex,
+				"Filter results:"));
+		labelBedSearch.setText(Translator.translateText(languageIndex,
+				"Bedrooms"));
+		labelPriceSearch.setText(Translator.translateText(languageIndex,
+				"Price"));
+		labelDistanceSearch.setText(Translator.translateText(languageIndex,
+				"Distance to University") + " (km)");
+		searchButton.setText(Translator.translateText(languageIndex, "Search"));
 	}
 
 	public ArrayList<House> getDisplayHouses(ArrayList<Integer> houseIDs) {
@@ -680,44 +675,42 @@ public class SlideContent extends Window {
 
 	public void createSearchBar() {
 
-		GridPane searchFields = new GridPane();
-		searchFields.setVgap(5);
-		searchFields.setHgap(5);
+		VBox searchFields = new VBox(0);
 		VBox minBedsColumn = new VBox(5);
 		VBox maxBedsColumn = new VBox(5);
 		VBox minPriceColumn = new VBox(5);
 		VBox maxPriceColumn = new VBox(5);
+		HBox bedsRow = new HBox(10);
+		HBox priceRow = new HBox(10);
 
 		labelFilter = new Label(Translator.translateText(languageIndex,
-				"Filter results") + ":");
-		labelFilter.setFont(new Font(15));
+				"Filter results:"));
+		labelFilter.setFont(Font.font(null, FontWeight.BOLD, 14));
 
 		labelBedSearch = new Label(Translator.translateText(languageIndex,
 				"Bedrooms"));
 		labelBedSearch.setFont(Font.font(null, FontWeight.BOLD, 12));
-		labelBedMin = new Label(Translator.translateText(languageIndex, "Min"));
-		labelBedMax = new Label(Translator.translateText(languageIndex, "Max"));
+		labelBedMin = new Label("Min");
+		labelBedMax = new Label("Max");
 
 		labelPriceSearch = new Label(Translator.translateText(languageIndex,
 				"Price"));
 		labelPriceSearch.setFont(Font.font(null, FontWeight.BOLD, 12));
-		labelPriceMin = new Label(
-				Translator.translateText(languageIndex, "Min") + " (£)");
-		labelPriceMax = new Label(
-				Translator.translateText(languageIndex, "Max") + " (£)");
+		labelPriceMin = new Label("Min (£)");
+		labelPriceMax = new Label("Max (£)");
 
 		labelDistanceSearch = new Label(Translator.translateText(languageIndex,
 				"Distance to University") + " (km)");
-
 		labelDistanceSearch.setFont(Font.font(null, FontWeight.BOLD, 12));
 		labelDistanceSearch.setMaxWidth(110);
 		labelDistanceSearch.setWrapText(true);
+		labelDistanceSearch.setTextAlignment(TextAlignment.CENTER);
 
 		// Button setup
 		ButtonType button1 = new ButtonType("166,208,255", null,
-				Translator.translateText(languageIndex, "Search"), 75, 25);
-		Button goButton = new SetupButton().CreateButton(button1);
-		goButton.setOnAction(new searchHandler());
+				Translator.translateText(languageIndex, "Search"), 90, 25);
+		searchButton = new SetupButton().CreateButton(button1);
+		searchButton.setOnAction(new searchHandler());
 
 		// Combobox for
 		minBeds.getItems().addAll(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
@@ -770,46 +763,46 @@ public class SlideContent extends Window {
 			}
 		});
 
+		Rectangle centreBox = RectangleBuilder.create().arcWidth(30)
+				.arcHeight(30).x(15).y(450).fill(Color.TRANSPARENT)
+				.strokeWidth(1).stroke(Color.rgb(33, 51, 76)).build();
+		centreBox.setWidth(150);
+		centreBox.setHeight(290);
+
 		maxBedsColumn.getChildren().addAll(labelBedMax, maxBeds);
+		maxBedsColumn.setAlignment(Pos.CENTER);
 		minBedsColumn.getChildren().addAll(labelBedMin, minBeds);
+		minBedsColumn.setAlignment(Pos.CENTER);
+		bedsRow.getChildren().addAll(minBedsColumn, maxBedsColumn);
+		bedsRow.setAlignment(Pos.CENTER);
 
 		maxPriceColumn.getChildren().addAll(labelPriceMax, maxPrice);
+		maxPriceColumn.setAlignment(Pos.CENTER);
 		minPriceColumn.getChildren().addAll(labelPriceMin, minPrice);
+		minPriceColumn.setAlignment(Pos.CENTER);
+		priceRow.getChildren().addAll(minPriceColumn, maxPriceColumn);
+		priceRow.setAlignment(Pos.CENTER);
 
-		Rectangle centreBox = RectangleBuilder.create().arcWidth(30)
-				// Curved edges
-				.arcHeight(30).x(15).y(420).fill(Color.TRANSPARENT)
-				.strokeWidth(1).stroke(Color.rgb(33, 51, 76)).build();
-		centreBox.setWidth(163);
-		centreBox.setHeight(285);
+		searchFields.getChildren().addAll(labelFilter, labelBedSearch, bedsRow,
+				labelPriceSearch, priceRow, labelDistanceSearch, distance,
+				searchButton);
+		searchFields.relocate(15, 425);
+		searchFields.setAlignment(Pos.CENTER);
+		searchFields.setMinWidth(150);
+		searchFields.setMaxWidth(150);
 
-		// Include content on each row and column
-		searchFields.addRow(0, labelFilter);
-		searchFields.addRow(2, labelBedSearch);
-		GridPane.setConstraints(labelBedSearch, 0, 2, 2, 1, HPos.CENTER,
-				VPos.CENTER);
-		searchFields.add(minBedsColumn, 0, 3);
-		searchFields.add(maxBedsColumn, 1, 3);
-		searchFields.addRow(5, labelPriceSearch);
-		GridPane.setConstraints(labelPriceSearch, 0, 5, 2, 1, HPos.CENTER,
-				VPos.CENTER);
-		searchFields.add(minPriceColumn, 0, 6);
-		searchFields.add(maxPriceColumn, 1, 6);
-		searchFields.addRow(8, labelDistanceSearch);
-		GridPane.setConstraints(labelDistanceSearch, 0, 8, 2, 1, HPos.CENTER,
-				VPos.CENTER);
-		searchFields.addRow(9, distance);
-		GridPane.setConstraints(distance, 0, 9, 2, 1, HPos.CENTER, VPos.TOP);
-		searchFields.addRow(12, goButton);
-		GridPane.setConstraints(goButton, 0, 12, 2, 1, HPos.CENTER, VPos.BOTTOM);
+		VBox.setMargin(labelFilter, new Insets(0, 0, 15, 0));
+		VBox.setMargin(bedsRow, new Insets(5, 0, 15, 0));
+		VBox.setMargin(priceRow, new Insets(5, 0, 15, 0));
+		VBox.setMargin(distance, new Insets(10, 0, 20, 0));
 
-		searchFields.relocate(30, 390);
 		root.getChildren().addAll(centreBox, searchFields);
 	}
 
 	public class searchHandler implements EventHandler<ActionEvent> {
 
 		public void handle(ActionEvent arg0) {
+			
 			ArrayList<House> result1 = new ArrayList<House>();
 			ArrayList<House> result2 = new ArrayList<House>();
 			ArrayList<House> result3 = new ArrayList<House>();
@@ -884,11 +877,12 @@ public class SlideContent extends Window {
 	}
 
 	private void clearSlideData() {
+		
 		System.out
 				.println("\nMemory Free:" + Runtime.getRuntime().freeMemory());
 		switch (prevSlideID) {
 		case STARTPAGE:
-			startPage.displose();
+			startPage.dispose();
 			startPage = null;
 			break;
 		case RESULTS:

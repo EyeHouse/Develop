@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 import database.Database;
 import database.House;
-
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -23,8 +23,8 @@ public class GoogleMapsPage extends Window {
 
 	MyBrowser myBrowser;
 
-	GridPane grid = new GridPane();
-	private static Label topTitle = new Label();
+	private GridPane grid = new GridPane();
+	private Label topTitle;
 
 	public GoogleMapsPage() {
 
@@ -33,7 +33,6 @@ public class GoogleMapsPage extends Window {
 		setupGrid();
 		setupButtons();
 		setupTitle();
-		UpdateLanguage();
 		Pane pane = new Pane();
 
 		pane.getChildren().add(myBrowser);
@@ -53,14 +52,17 @@ public class GoogleMapsPage extends Window {
 
 	public void setupTitle() {
 
-		Label topTitle = new Label(Translator.translateText(languageIndex, "Map and Route"));
-		topTitle.setTextFill(Color.web("#162252FF"));
+		topTitle = new Label(Translator.translateText(languageIndex, "Map and Route"));
 		topTitle.setFont(new Font(32));
-		topTitle.relocate(440, 80);
+		topTitle.setTextFill(Color.web("#162252"));
+		topTitle.setPrefWidth(550);
+		topTitle.setAlignment(Pos.CENTER);
+		topTitle.relocate(275, 80);
 		root.getChildren().add(topTitle);
 	}	
 	
-	public void UpdateLanguage() {
+	public void updateLanguage() {
+		
 		topTitle.setText(Translator.translateText(languageIndex, "Map and Route"));
 	}
 

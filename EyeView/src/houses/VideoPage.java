@@ -7,7 +7,6 @@ import java.util.ArrayList;
 
 import button.ButtonType;
 import button.SetupButton;
-
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -37,16 +36,15 @@ import database.User;
 
 public class VideoPage extends Window {
 	
-	private static Label topTitle = new Label();
+	private Label topTitle = new Label();
 	private ArrayList<Marker> videoMarkers;
 	private VideoElement video;
 	
 	public VideoPage() {
+		
 		setupTitle();
 		setupVideoPlayer();
-		UpdateLanguage();
 		SlideContent.setupBackButton();
-
 	}
 
 	private void setupVideoPlayer() {
@@ -79,13 +77,16 @@ public class VideoPage extends Window {
 	public void setupTitle() {
 
 		topTitle = new Label(Translator.translateText(languageIndex,"Video Tour"));
-		topTitle.setTextFill(Color.web("#162252FF"));
 		topTitle.setFont(new Font(32));
-		topTitle.relocate(480, 80);
+		topTitle.setTextFill(Color.web("#162252"));
+		topTitle.setPrefWidth(550);
+		topTitle.setAlignment(Pos.CENTER);
+		topTitle.relocate(275, 80);
 		root.getChildren().add(topTitle);
 	}	
 	
-	public void UpdateLanguage() {
+	public void updateLanguage() {
+		
 		topTitle.setText(Translator.translateText(languageIndex, "Video Tour"));
 	}
 	
