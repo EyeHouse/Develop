@@ -7,7 +7,6 @@ import java.util.ArrayList;
 
 import button.ButtonType;
 import button.SetupButton;
-
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -22,7 +21,10 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 import language.Translator;
 import presenter.SlideContent;
@@ -42,11 +44,10 @@ public class VideoPage extends Window {
 	private VideoElement video;
 	
 	public VideoPage() {
+		
 		setupTitle();
 		setupVideoPlayer();
-		UpdateLanguage();
 		SlideContent.setupBackButton();
-
 	}
 
 	private void setupVideoPlayer() {
@@ -78,14 +79,18 @@ public class VideoPage extends Window {
 	
 	public void setupTitle() {
 
+		Rectangle r = new Rectangle(280, 80, 550, 20);
 		topTitle = new Label(Translator.translateText(languageIndex,"Video Tour"));
 		topTitle.setTextFill(Color.web("#162252FF"));
 		topTitle.setFont(new Font(32));
-		topTitle.relocate(480, 80);
-		root.getChildren().add(topTitle);
+		topTitle.setPrefWidth(550);
+		topTitle.setAlignment(Pos.CENTER);
+		topTitle.relocate(280, 80);
+		root.getChildren().addAll(r, topTitle);
 	}	
 	
-	public void UpdateLanguage() {
+	public void updateLanguage() {
+		
 		topTitle.setText(Translator.translateText(languageIndex, "Video Tour"));
 	}
 	

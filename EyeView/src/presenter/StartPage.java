@@ -368,7 +368,8 @@ public class StartPage extends Window {
 		}
 	}
 	
-	public void displose(){
+	public void dispose() {
+		
 		logo = null;
 		PicturesBanner.items.clear();
 		PicturesBanner.items.trimToSize();
@@ -380,6 +381,6 @@ public class StartPage extends Window {
 		bannerPictures = null;
 		scrollTimer.stop();
 		scrollTimer = null;
-		
 	}
+
 }
