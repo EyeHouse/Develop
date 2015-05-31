@@ -162,7 +162,7 @@ public class HouseReviews extends Window {
 
 		giveRatingLabel = new Label(Translator.translateText(languageIndex,
 				"Give a rating") + ":");
-		giveRatingLabel.setFont(new Font(18));
+		giveRatingLabel.setFont(new Font(16));
 
 		// Create star buttons
 		ButtonType button1 = new ButtonType(null, null, null, 28, 28);

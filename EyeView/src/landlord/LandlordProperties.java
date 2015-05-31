@@ -4,12 +4,10 @@ import java.util.ArrayList;
 
 import button.ButtonType;
 import button.SetupButton;
-
 import database.Database;
 import database.House;
 import database.HouseImage;
 import database.User;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -32,8 +30,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import language.Translator;
 import presenter.SlideContent;
+import presenter.Window;
 
-public class LandlordProperties extends presenter.Window {
+public class LandlordProperties extends Window {
 
 	GridPane grid = new GridPane();
 	ArrayList<House> properties = new ArrayList<House>();
@@ -65,22 +64,24 @@ public class LandlordProperties extends presenter.Window {
 
 		grid.setVgap(30);
 		grid.setHgap(30);
-		grid.relocate(220, 80);
+		grid.relocate(220, 130);
 	}
 
 	private void setupTitle() {
 
 		Label labelTitle = new Label(Translator.translateText(languageIndex,
 				"Manage Properties"));
-
-		labelTitle.setTextFill(Color.web("#162252FF"));
+		labelTitle.setTextFill(Color.web("#162252"));
 		labelTitle.setFont(new Font(35));
-		grid.add(labelTitle, 0, 0);
-		GridPane.setConstraints(labelTitle, 0, 0, 2, 1, HPos.CENTER,
-				VPos.CENTER);
+		labelTitle.setPrefWidth(550);
+		labelTitle.setAlignment(Pos.CENTER);
+		labelTitle.relocate(275, 80);
+		
+		root.getChildren().add(labelTitle);
 	}
 
 	private void setupLandlordButtons() {
+		
 		VBox buttons = new VBox(30);
 
 		ButtonType button1 = new ButtonType("166,208,255", null,
@@ -203,7 +204,8 @@ public class LandlordProperties extends presenter.Window {
 		grid.add(propertyList, 0, 1);
 	}
 	
-	public void dispose(){
+	public void dispose() {
+		
 		properties.clear();
 		properties.trimToSize();
 		properties = null;

@@ -160,10 +160,9 @@ public class Window extends Application {
 
 		primaryStage.setTitle(slideshow.getTitle());
 
-		/*
-		 * if (groupID.matches("5")) { primaryStage.getIcons().add( new
-		 * Image("file:./resources/icons/xxxhdpi.png")); Database.dbConnect(); }
-		 */
+		if (groupID.matches("5"))
+			primaryStage.getIcons().add(
+					new Image("file:./resources/icons/xxxhdpi.png"));
 
 		sc = new SlideContent();
 		loadSlide(STARTPAGE);
@@ -204,9 +203,10 @@ public class Window extends Application {
 			if (Database.dbConnect()) {
 				root.getChildren().clear();
 				Stage stage = (Stage) root.getScene().getWindow();
-				openXML(stage, "EyeView.xml");			
-			    Translate.setClientId("EyeView");
-			    Translate.setClientSecret("Nqi5bXBq6CCreKnvUBy8OlXYveT3NWRlVIoLDidFG0I=");
+				openXML(stage, "EyeView.xml");
+				Translate.setClientId("EyeView");
+				Translate
+						.setClientSecret("Nqi5bXBq6CCreKnvUBy8OlXYveT3NWRlVIoLDidFG0I=");
 			} else {
 				createWarningPopup("Not connected to EyeHouse server");
 				dialogStage.show();

@@ -14,12 +14,10 @@ import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import javax.swing.JOptionPane;
-
 import button.ButtonType;
 import button.SetupButton;
-
 import presenter.SlideContent;
+import presenter.Window;
 import database.Database;
 import database.User;
 import database.UserReview;
@@ -30,6 +28,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
+import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
@@ -47,14 +46,13 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Polyline;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
-import javafx.stage.Window;
 import language.BadWordCheck;
 import language.Translator;
 
-public class ProfileViewer extends presenter.Window {
+public class ProfileViewer extends Window {
 
 	// Profile Static Variables
-	private static final int gridCellWidth = 20;
+	private static final int gridCellWidth = 40;
 	private static final int gridCellHeight = 10;
 
 	// Profile Global Variables
@@ -85,6 +83,7 @@ public class ProfileViewer extends presenter.Window {
 	 * Open profile of user input
 	 */
 	public ProfileViewer(String profileUsername) {
+		
 		profileUser = Database.getUser(profileUsername);
 		SetupGrid();
 		SetupUserInfo();
@@ -97,19 +96,20 @@ public class ProfileViewer extends presenter.Window {
 	 * Setup grid layout object to contain user information
 	 */
 	private void SetupGrid() {
+		
 		profileGrid.setPrefWidth(600);
 
 		// Set column widths of grid.
 		ColumnConstraints col1 = new ColumnConstraints();
 		ColumnConstraints col2 = new ColumnConstraints();
-		col1.setMinWidth(250);
+		col1.setMinWidth(200);
 		col2.setMinWidth(100);
 		profileGrid.getColumnConstraints().addAll(col1, col1, col2);
 
 		// Set grid size and spacing in group.
 		profileGrid.setHgap(gridCellWidth);
 		profileGrid.setVgap(gridCellHeight);
-		profileGrid.relocate(220, 80);
+		profileGrid.relocate(220, 110);
 
 		root.getChildren().add(profileGrid);
 	}
@@ -118,11 +118,12 @@ public class ProfileViewer extends presenter.Window {
 	 * Add basic user information to grid
 	 */
 	private void SetupUserInfo() {
+		
 		Label labelType;
 		// System.out.println(languageIndex + "gibbersish");
 		// Instantiates a VBox to contain the user information
-		VBox vBoxUserText = new VBox(30);
-		VBox vBoxUserPicture = new VBox(30);
+		VBox vBoxUserText = new VBox(20);
+		VBox vBoxUserPicture = new VBox(20);
 
 		// Silhouette placeholder for profile picture
 		// Load image and add to imageview
@@ -141,6 +142,7 @@ public class ProfileViewer extends presenter.Window {
 		profilePictureView.setFitHeight(200);
 		profilePictureView.setPreserveRatio(true);
 		// Add profile picture to VBox
+		vBoxUserPicture.setAlignment(Pos.CENTER);
 		vBoxUserPicture.getChildren().add(profilePictureView);
 
 		if (profileUser.username.equals(currentUsername)) {
@@ -149,15 +151,11 @@ public class ProfileViewer extends presenter.Window {
 		}
 
 		// Setup labels with information of current user
-		Label labelName = new Label(profileUser.first_name + "\t("
+		Label labelName = new Label(profileUser.first_name + "     ("
 				+ profileUser.username + ")");
-		// Translate.translateText(languageIndex, " Email ") + (": ")
 		labelName.setFont(fontTitle);
-		// String email = Translate.translateText(languageIndex, "Email ")
 		labelEmail.setText((Translator.translateText(languageIndex, "Email: "))
 				+ profileUser.email);
-		// labelEmail.setText(Translate.translateText(languageIndex, "Hello"));
-		// labelEmail.setFont(fontMain);
 		Label labelDoB = new Label(Translator.translateText(languageIndex,
 				"Date of birth: ")
 				+ profileUser.DOB.substring(8, 10)
@@ -175,6 +173,7 @@ public class ProfileViewer extends presenter.Window {
 			Label labelSkype = new Label(Translator.translateText(
 					languageIndex, "Available on Skype:"));
 			labelSkype.setFont(fontMain);
+			skypeBox.setAlignment(Pos.CENTER_LEFT);
 			skypeBox.getChildren().addAll(labelSkype, skypeButton);
 		}
 
@@ -183,7 +182,8 @@ public class ProfileViewer extends presenter.Window {
 			labelType = new Label(Translator.translateText(languageIndex,
 					"Landlord"));
 		} else
-			labelType = new Label("Student");
+			labelType = new Label(Translator.translateText(languageIndex,
+					"Student"));
 		labelType.setFont(fontMain);
 		vBoxUserText.getChildren().addAll(labelName, labelType, labelEmail,
 				labelDoB, skypeBox);
@@ -206,8 +206,8 @@ public class ProfileViewer extends presenter.Window {
 		final VBox vBoxUpdateProfilePictureLabel;
 
 		// Create update profile picture label
-		updateProfilePictureLabel = new Label(
-				"Click on image to update profile picture");
+		updateProfilePictureLabel = new Label(Translator.translateText(
+				languageIndex, "Click on image to update profile picture"));
 		// Create a VBox to contain the label
 		vBoxUpdateProfilePictureLabel = new VBox(30);
 		// Add update profile label to grid pane
@@ -248,7 +248,7 @@ public class ProfileViewer extends presenter.Window {
 				// Open file chooser window
 				FileChooser profilePictureChooser = new FileChooser();
 				configureFileChooser(profilePictureChooser);
-				Window fileChooserStage = null;
+				javafx.stage.Window fileChooserStage = null;
 				profilePictureView.setDisable(true);
 
 				// Replace profile picture with new one from selected file
@@ -305,6 +305,7 @@ public class ProfileViewer extends presenter.Window {
 	 * Add review stars to profile based on average review from database
 	 */
 	private void AddStars() {
+		
 		// HBox to contain the stars
 		HBox hBoxStars = new HBox(5);
 		int rating = 0;
@@ -321,22 +322,23 @@ public class ProfileViewer extends presenter.Window {
 		// Populate hBox based on user rating
 		hBoxStars = createStarHBox(5, 28, rating);
 		// Add star HBox to grid
-		profileGrid.add(hBoxStars,1,2);
+		profileGrid.add(hBoxStars, 1, 2);
 	}
 
-	/*
+	/**
 	 * Setup profile and appendable review text areas
 	 */
 	private void SetupProfileReview() {
 
-		Label textProfile; // = new TextArea();
+		Label textProfile, labelProfile, labelReview, labelNewReview, labelNewRating;
 		reviewList = new ListView<HBox>();
 		final TextArea textNewReview = new TextArea();
-		Label labelProfile, labelReview, labelNewReview, labelNewRating;
 
 		if (profileUser.username.equals(currentUsername)) {
+
 			ButtonType button1 = new ButtonType("166,208,255", null,
-					"Edit Profile", 100, 30);
+					Translator.translateText(languageIndex, "Edit Profile"),
+					120, 30);
 			Button buttonEditProfile = new SetupButton().CreateButton(button1);
 
 			// Setup edit profile button event
@@ -354,9 +356,10 @@ public class ProfileViewer extends presenter.Window {
 					VPos.CENTER);
 
 		} else {
+
 			// Create "Submit" Review button
-			ButtonType button2 = new ButtonType("166,208,255", null, "Submit",
-					100, 30);
+			ButtonType button2 = new ButtonType("166,208,255", null,
+					Translator.translateText(languageIndex, "Submit"), 100, 30);
 			final Button buttonReview = new SetupButton().CreateButton(button2);
 			buttonReview.setDisable(true);
 
@@ -364,8 +367,10 @@ public class ProfileViewer extends presenter.Window {
 			VBox vBoxNewReview = new VBox(5);
 
 			// Setup Review labels
-			labelNewReview = new Label("Add Review");
-			labelNewRating = new Label("Add Rating:");
+			labelNewReview = new Label(Translator.translateText(languageIndex,
+					"Add Review"));
+			labelNewRating = new Label(Translator.translateText(languageIndex,
+					"Add Rating:"));
 			labelNewReview.setFont(fontMain);
 			labelNewRating.setFont(fontMain);
 
@@ -392,13 +397,13 @@ public class ProfileViewer extends presenter.Window {
 				public void handle(ActionEvent event) {
 
 					BadWordCheck bwd = new BadWordCheck();
+
 					if (bwd.containsBlackListedWords(textNewReview.getText())) {
 						textNewReview.setText(bwd
 								.highlightBlackListedWords(textNewReview
 										.getText()));
-						JOptionPane.showMessageDialog(null,
-								"Inappropriate Language", "",
-								JOptionPane.WARNING_MESSAGE);
+						createWarningPopup("Inappropriate Language");
+						dialogStage.show();
 					} else {
 						// Add new review to new line of review text area
 						UserReview newReview = new UserReview(profileUser.uid);
@@ -418,7 +423,6 @@ public class ProfileViewer extends presenter.Window {
 			// Add new review and rating label and text area
 			vBoxNewReview.getChildren().addAll(labelNewReview, textNewReview,
 					labelNewRating);
-			
 
 			// Setup review star images
 			reviewStarFull = new Image(
@@ -427,7 +431,7 @@ public class ProfileViewer extends presenter.Window {
 					"file:resources/images/stars/starOutlineButton_28.png");
 
 			// Create star buttons
-			ButtonType button3 = new ButtonType("20,00,00", null, null, 28, 28);
+			ButtonType button3 = new ButtonType("00,00,00", null, null, 28, 28);
 
 			// Declare array of review star buttons
 			buttonStar = new Button[5];
@@ -447,11 +451,11 @@ public class ProfileViewer extends presenter.Window {
 				hBoxNewStars.getChildren().add(buttonStar[i]);
 			}
 			// Add star label and HBox to grid
-			
-			profileGrid.add(vBoxNewReview,1,4);
-			profileGrid.add(buttonReview,2,4);
-			profileGrid.add(labelNewRating,1,5);
-			profileGrid.add(hBoxNewStars,2,5);
+
+			profileGrid.add(vBoxNewReview, 1, 4);
+			profileGrid.add(buttonReview, 2, 4);
+			profileGrid.add(labelNewRating, 1, 5);
+			profileGrid.add(hBoxNewStars, 2, 5);
 			// Align Add Review fields
 			GridPane.setConstraints(buttonReview, 2, 4, 1, 1, HPos.CENTER,
 					VPos.BOTTOM);
@@ -460,7 +464,6 @@ public class ProfileViewer extends presenter.Window {
 			for (int i = 0; i < 5; i++) {
 				buttonStar[i].setOnAction(new starButtonHandler(i));
 			}
-
 		}
 
 		// VBox to contain Profile label and text area
@@ -469,9 +472,11 @@ public class ProfileViewer extends presenter.Window {
 		VBox vBoxReview = new VBox(10);
 
 		// Setup labels
-		labelProfile = new Label("Biography");
+		labelProfile = new Label(Translator.translateText(languageIndex,
+				"Biography"));
 		labelProfile.setFont(fontMain);
-		labelReview = new Label("Reviews");
+		labelReview = new Label(Translator.translateText(languageIndex,
+				"Reviews"));
 		labelReview.setFont(fontMain);
 
 		// Setup text areas with text wrapping
@@ -526,6 +531,7 @@ public class ProfileViewer extends presenter.Window {
 	}
 
 	public HBox createStarHBox(int spacing, int size, int rating) {
+
 		HBox stars = new HBox(spacing);
 		for (int i = 0; i < 5; i++) {
 			if (i < rating) {
@@ -546,6 +552,7 @@ public class ProfileViewer extends presenter.Window {
 	}
 
 	public class starButtonHandler implements EventHandler<ActionEvent> {
+
 		private int buttonNumber;
 
 		public starButtonHandler(int number) {
@@ -567,6 +574,7 @@ public class ProfileViewer extends presenter.Window {
 	}
 
 	public class likeHandler implements EventHandler<MouseEvent> {
+
 		private UserReview review;
 
 		public likeHandler(UserReview review) {
@@ -583,6 +591,7 @@ public class ProfileViewer extends presenter.Window {
 	}
 
 	public class dislikeHandler implements EventHandler<MouseEvent> {
+
 		private UserReview review;
 
 		public dislikeHandler(UserReview review) {

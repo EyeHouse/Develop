@@ -1,13 +1,5 @@
 package profile;
 
-/*
- * AccountSettings.java
- * 
- * Version: 1.9
- * 
- * Copyright:
- */
-
 import java.util.ArrayList;
 
 import javafx.event.ActionEvent;
@@ -29,7 +21,9 @@ import javax.swing.JOptionPane;
 
 import landlord.EditProperty;
 import language.BadWordCheck;
+import language.Translator;
 import presenter.SlideContent;
+import presenter.Window;
 import button.ButtonType;
 import button.SetupButton;
 import database.DataHandler;
@@ -37,22 +31,22 @@ import database.Database;
 import database.SQLFilter;
 import database.User;
 
-public class AccountSettings extends presenter.Window{
+public class AccountSettings extends Window {
 
 	/* Account Settings Static Variables */
 	private static final int gridCellWidth = 50;
-	private static final int gridCellHeight = 30;
+	private static final int gridCellHeight = 25;
 
 	/* Account Settings Global Variables */
 	private GridPane grid = new GridPane();
-	private TextField fieldFName, fieldLName, fieldUsername, fieldEmail, fieldSkypeUsername;
+	private TextField fieldFName, fieldLName, fieldUsername, fieldEmail,
+			fieldSkypeUsername;
 	private PasswordField fieldPassword = new PasswordField();
 	private PasswordField fieldNewPassword = new PasswordField();
 	private PasswordField fieldConfNewPassword = new PasswordField();
 	private TextArea profileText = new TextArea();
-	//private RadioButton buttonStudent = new RadioButton("Student");
-	//private RadioButton buttonLandlord = new RadioButton("Landlord");
-	private Label labelPasswordIncorrect, labelNewPasswordInvalid, labelPasswordMismatch;
+	private Label labelPasswordIncorrect, labelNewPasswordInvalid,
+			labelPasswordMismatch;
 	private Label labelUsernameError, labelBadLanguage;
 	private User currentUser;
 	ArrayList<ComboBox<String>> dateComboArray;
@@ -66,9 +60,9 @@ public class AccountSettings extends presenter.Window{
 
 		setupGrid();
 		setupInfo();
-		SetupPassword();
-		SetupProfileText();
-		SetupButtons();
+		setupPassword();
+		setupProfileText();
+		setupButtons();
 
 		root.getChildren().add(grid);
 	}
@@ -79,8 +73,8 @@ public class AccountSettings extends presenter.Window{
 		// Set grid size and spacing in group.
 		grid.setHgap(gridCellWidth);
 		grid.setVgap(gridCellHeight);
-		grid.relocate(220, 80);
-		
+		grid.relocate(320, 130);
+
 		ColumnConstraints col1 = new ColumnConstraints();
 		ColumnConstraints col2 = new ColumnConstraints();
 		col1.setMinWidth(100);
@@ -123,7 +117,7 @@ public class AccountSettings extends presenter.Window{
 	}
 
 	/* Add password labels and text areas to grid */
-	public void SetupPassword() {
+	public void setupPassword() {
 
 		// Setup Password labels
 		Label labelCurrentPassword = new Label("Current Password");
@@ -151,17 +145,18 @@ public class AccountSettings extends presenter.Window{
 	}
 
 	/* Add profile label and text area to grid */
-	public void SetupProfileText() {
+	public void setupProfileText() {
+
 		Label labelProfileText = new Label("Profile");
 		labelBadLanguage = new Label("Contains Bad Language");
-		
+
 		labelBadLanguage.setVisible(false);
 		// Load profile text area with current user profile and set size
 		profileText.setText(currentUser.bio);
 		profileText.setMaxHeight(gridCellHeight * 3);
 		profileText.setPrefWidth(150);
 		profileText.setWrapText(true);
-		
+
 		profileText.setPrefWidth(200);
 
 		// Add profile label and text area to grid
@@ -169,15 +164,20 @@ public class AccountSettings extends presenter.Window{
 	}
 
 	/* Add apply and cancel buttons to grid */
-	public void SetupButtons() {
-		
-		ButtonType button1 = new ButtonType("150,150,150",null,"Apply Changes",150,30);
+	public void setupButtons() {
+
+		ButtonType button1 = new ButtonType("166,208,255", null,
+				Translator.translateText(languageIndex, "Apply Changes"), 150,
+				30);
 		Button buttonApply = new SetupButton().CreateButton(button1);
-		
-		ButtonType button2 = new ButtonType("150,150,150",null,"Cancel",100,30);
+
+		ButtonType button2 = new ButtonType("166,208,255", null,
+				Translator.translateText(languageIndex, "Cancel"), 100, 30);
 		Button buttonCancel = new SetupButton().CreateButton(button2);
-		
-		ButtonType button3 = new ButtonType("150,150,150",null,"Delete Account",150,30);
+
+		ButtonType button3 = new ButtonType("166,208,255", null,
+				Translator.translateText(languageIndex, "Delete Account"), 150,
+				30);
 		Button buttonDelete = new SetupButton().CreateButton(button3);
 
 		HBox hBoxButtons = new HBox(40);
@@ -187,12 +187,13 @@ public class AccountSettings extends presenter.Window{
 			@Override
 			public void handle(ActionEvent event) {
 
-				if(fieldNewPassword.getText().equals(fieldConfNewPassword.getText())){
+				if (fieldNewPassword.getText().equals(
+						fieldConfNewPassword.getText())) {
 					// Save changes and return to profile if valid
-					ApplyChanges();
+					applyChanges();
 				} else {
 					labelPasswordMismatch.setVisible(true);
-				}				
+				}
 			}
 		});
 
@@ -204,19 +205,19 @@ public class AccountSettings extends presenter.Window{
 				loadSlide(PROFILE);
 			}
 		});
-		
+
 		buttonDelete.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
 
 				boolean check = Database.userDelete(currentUser.username);
-				if(check){
+				if (check) {
 					currentUsername = null;
 					loadSlide(LOGIN);
-				}
-				else JOptionPane.showMessageDialog(null,
-						"Failed to delete user", "Account Error",
-						JOptionPane.WARNING_MESSAGE);
+				} else
+					JOptionPane.showMessageDialog(null,
+							"Failed to delete user", "Account Error",
+							JOptionPane.WARNING_MESSAGE);
 			}
 		});
 
@@ -226,7 +227,8 @@ public class AccountSettings extends presenter.Window{
 		buttonDelete.setPrefWidth(120);
 
 		// Add buttons to grid
-		hBoxButtons.getChildren().addAll(buttonApply, buttonCancel, buttonDelete);
+		hBoxButtons.getChildren().addAll(buttonApply, buttonCancel,
+				buttonDelete);
 		hBoxButtons.setAlignment(Pos.CENTER);
 		grid.add(hBoxButtons, 0, 10);
 		GridPane.setConstraints(hBoxButtons, 0, 10, 2, 1, HPos.CENTER,
@@ -235,96 +237,108 @@ public class AccountSettings extends presenter.Window{
 	}
 
 	/* Send account changes to database(WHEN IMPLEMENTED FULLY) */
-	private void ApplyChanges() {
-		
-		String doB = dateComboArray.get(2).getValue() + "-" + dateComboArray.get(1).getValue() + "-" + dateComboArray.get(0).getValue();
-		
-		Database.userUpdate(currentUser,"first_name",null,fieldFName.getText());
-		Database.userUpdate(currentUser,"second_name",null,fieldLName.getText());
-		Database.userUpdate(currentUser,"email",null,fieldEmail.getText());
-		Database.userUpdate(currentUser,"DOB",null,doB);
-		Database.userUpdate(currentUser,"first_name",null,fieldFName.getText());
-		Database.userUpdate(currentUser,"skype",null,fieldSkypeUsername.getText());		
+	private void applyChanges() {
 
-		CheckBio();
-		
+		String doB = dateComboArray.get(2).getValue() + "-"
+				+ dateComboArray.get(1).getValue() + "-"
+				+ dateComboArray.get(0).getValue();
+
+		Database.userUpdate(currentUser, "first_name", null,
+				fieldFName.getText());
+		Database.userUpdate(currentUser, "second_name", null,
+				fieldLName.getText());
+		Database.userUpdate(currentUser, "email", null, fieldEmail.getText());
+		Database.userUpdate(currentUser, "DOB", null, doB);
+		Database.userUpdate(currentUser, "first_name", null,
+				fieldFName.getText());
+		Database.userUpdate(currentUser, "skype", null,
+				fieldSkypeUsername.getText());
+
+		checkBio();
+
 		// Check username availability
-		CheckUsername();
+		checkUsername();
 
 		// Check password validity
-		CheckPassword();
+		checkPassword();
 
 		// Clear password inputs if not valid
 		fieldPassword.setText("");
 		fieldNewPassword.setText("");
 		fieldConfNewPassword.setText("");
 	}
-	
-	private void CheckBio(){
+
+	private void checkBio() {
+
 		BadWordCheck bwc = new BadWordCheck();
-		if(bwc.containsBlackListedWords(profileText.getText())){
+		if (bwc.containsBlackListedWords(profileText.getText())) {
 			labelBadLanguage.setVisible(true);
-			profileText.setText(bwc.highlightBlackListedWords(profileText.getText()));
-			
-		}
-		else{
-			//System.out.println(bwc.highlightBlackListedWords(profileText.getText()));
+			profileText.setText(bwc.highlightBlackListedWords(profileText
+					.getText()));
+
+		} else {
+			// System.out.println(bwc.highlightBlackListedWords(profileText.getText()));
 			labelBadLanguage.setVisible(false);
 			Database.userUpdate(currentUser, "bio", null, profileText.getText());
 		}
 	}
 
 	/* Check whether new username is available */
-	private void CheckUsername() {
-		
+	private void checkUsername() {
+
 		// Skip check if username unchanged
-		if (!fieldUsername.getText().equals(currentUser.username)&&(!fieldUsername.getText().equals(""))) {
+		if (!fieldUsername.getText().equals(currentUser.username)
+				&& (!fieldUsername.getText().equals(""))) {
 
 			BadWordCheck bwc = new BadWordCheck();
-			
-			if(bwc.containsBlackListedWords(fieldUsername.getText())){
+
+			if (bwc.containsBlackListedWords(fieldUsername.getText())) {
 				labelUsernameError.setText("Contains Bad Language");
 				labelUsernameError.setVisible(true);
 			}
-			
-			else if(SQLFilter.SQLWordCheck(fieldUsername.getText())){
+
+			else if (SQLFilter.SQLWordCheck(fieldUsername.getText())) {
 				labelUsernameError.setText("Contains Invalid Characters");
 				labelUsernameError.setVisible(true);
 			}
 			// If username is unavailable
-			else if (!Database.oneFieldCheck("username", fieldUsername.getText())) {
+			else if (!Database.oneFieldCheck("username",
+					fieldUsername.getText())) {
 				// Send new username to database and remove error message
-				Database.userUpdate(currentUser,"username",null,fieldUsername.getText());
+				Database.userUpdate(currentUser, "username", null,
+						fieldUsername.getText());
 				currentUser.username = fieldUsername.getText();
 				labelUsernameError.setVisible(false);
 			} else {
-				
+
 				// Show error message if username is unavailable
 				labelUsernameError.setText("Username Already Exists");
 				labelUsernameError.setVisible(true);
 			}
 		} else {
-			
+
 			// Remove error message if username is unchanged
 			labelUsernameError.setVisible(false);
 		}
 	}
 
 	/* Check current password is correct and new password is valid */
-	private void CheckPassword() {
+	private void checkPassword() {
 
 		// Return to profile if password is not entered and there is
 		// no username error
 		boolean passwordCorrect = false;
-		if(!fieldPassword.getText().equals("")){
-			String hashPass = DataHandler.crypt((String) fieldPassword.getText());
-		
-			passwordCorrect = Database.login((String) currentUsername, hashPass);
+		if (!fieldPassword.getText().equals("")) {
+			String hashPass = DataHandler.crypt((String) fieldPassword
+					.getText());
+
+			passwordCorrect = Database
+					.login((String) currentUsername, hashPass);
 		}
-		
-		
+
 		if (fieldPassword.getText().equals("")) {
-			if (!labelUsernameError.isVisible() && !labelBadLanguage.isVisible()) {
+			if (!labelUsernameError.isVisible()
+					&& !labelBadLanguage.isVisible()) {
 				loadSlide(PROFILE);
 			}
 
@@ -335,7 +349,7 @@ public class AccountSettings extends presenter.Window{
 
 			// Check new password validity if current password is correct
 		} else if (passwordCorrect) {
-			
+
 			labelPasswordIncorrect.setVisible(false);
 
 			// If new password is not empty and matches the confirm password
@@ -343,11 +357,13 @@ public class AccountSettings extends presenter.Window{
 			if ((!fieldNewPassword.getText().equals(""))
 					&& (fieldNewPassword.getText().equals(fieldConfNewPassword
 							.getText()))) {
-				String newHash = DataHandler.crypt((String) fieldNewPassword.getText());
-				Database.userUpdate(currentUser,"password",null,newHash);
+				String newHash = DataHandler.crypt((String) fieldNewPassword
+						.getText());
+				Database.userUpdate(currentUser, "password", null, newHash);
 
 				// Return to profile if there is no username error
-				if (!labelUsernameError.isVisible() && !labelBadLanguage.isVisible()) {
+				if (!labelUsernameError.isVisible()
+						&& !labelBadLanguage.isVisible()) {
 					loadSlide(PROFILE);
 				}
 
