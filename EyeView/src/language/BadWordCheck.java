@@ -162,8 +162,13 @@ public class BadWordCheck {
 	 */
 	public boolean containsBlackListedWords(String inputText){
 		boolean badWordDetected = false;
-		String[] inputTextWordArray = inputText.split(" ");
-
+		String[] inputTextWordArray = null;
+		if(inputText.equals("")){
+			return false;
+		}
+		
+		inputTextWordArray = inputText.split(" ");
+		
 		for (int i = 0; i < inputTextWordArray.length; i++){
 			badWordDetected = CheckforBlackListedWords(inputTextWordArray[i]);
 			
@@ -171,6 +176,7 @@ public class BadWordCheck {
 				break;
 			}
 		}
+
 		return badWordDetected;
 	}
 }
