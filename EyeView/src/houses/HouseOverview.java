@@ -20,6 +20,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.paint.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.util.Callback;
@@ -82,11 +84,19 @@ public class HouseOverview extends Window {
 			if (currentUsername != null) {
 				savedProperties = User.getSavedProperties(currentUsername);
 			}
-
+			
 			setupAdvertTimer();
 			setupTimerControl();
-		}
-		setupPagination();
+			setupPagination();
+		} else {
+			Rectangle coverRect = new Rectangle();
+			coverRect.relocate(500, 600);
+			coverRect.setWidth(170);
+			coverRect.setHeight(60);
+			coverRect.setFill(Color.WHITE);
+			setupPagination();
+			root.getChildren().add(coverRect);
+		}	
 	}
 
 	/**

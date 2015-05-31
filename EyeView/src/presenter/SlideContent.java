@@ -377,7 +377,7 @@ public class SlideContent extends Window {
 				sidebar.getChildren().add(labelLandlordProperties);
 			sidebar.getChildren().addAll(labelLogOut);
 
-			if (slideID == HOUSES || slideID == HOUSE || slideID == RESULTS)
+			if (slideID == HOUSES || slideID == RESULTS)
 				createSearchBar();
 			currentUser = null;
 		} else {
@@ -523,7 +523,7 @@ public class SlideContent extends Window {
 
 		buttonslideBack = new ImageView(new Image(
 				"file:resources/advert_icons/back.png"));
-		buttonslideBack.relocate(210, 8);
+		buttonslideBack.relocate(205, 8);
 		buttonslideBack.setPreserveRatio(true);
 		buttonslideBack.setFitHeight(35);
 		buttonslideBack.setCursor(Cursor.HAND);
