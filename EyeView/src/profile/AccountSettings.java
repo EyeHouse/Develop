@@ -17,8 +17,6 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 
-import javax.swing.JOptionPane;
-
 import landlord.EditProperty;
 import language.BadWordCheck;
 import language.Translator;
@@ -34,8 +32,8 @@ import database.User;
 public class AccountSettings extends Window {
 
 	/* Account Settings Static Variables */
-	private static final int gridCellWidth = 50;
-	private static final int gridCellHeight = 25;
+	private final int gridCellWidth = 50;
+	private final int gridCellHeight = 25;
 
 	/* Account Settings Global Variables */
 	private GridPane grid = new GridPane();
@@ -49,7 +47,7 @@ public class AccountSettings extends Window {
 			labelPasswordMismatch;
 	private Label labelUsernameError, labelBadLanguage;
 	private User currentUser;
-	ArrayList<ComboBox<String>> dateComboArray;
+	private ArrayList<ComboBox<String>> dateComboArray;
 
 	/* Account Settings Methods */
 
@@ -68,7 +66,7 @@ public class AccountSettings extends Window {
 	}
 
 	/* Setup grid layout object to contain user information */
-	public void setupGrid() {
+	private void setupGrid() {
 
 		// Set grid size and spacing in group.
 		grid.setHgap(gridCellWidth);
@@ -83,15 +81,21 @@ public class AccountSettings extends Window {
 	}
 
 	/* Add existing account information to grid */
-	public void setupInfo() {
+	private void setupInfo() {
 
 		// Setup row labels
-		Label labelFName = new Label("First Name");
-		Label labelLName = new Label("Last Name");
-		Label labelUsername = new Label("User Name");
-		Label labelEmail = new Label("Email");
-		Label labelDoB = new Label("Date of Birth");
-		Label labelSkypeUsername = new Label("Skype Username");
+		Label labelFName = new Label(Translator.translateText(languageIndex,
+				"First Name"));
+		Label labelLName = new Label(Translator.translateText(languageIndex,
+				"Last Name"));
+		Label labelUsername = new Label(Translator.translateText(languageIndex,
+				"User Name"));
+		Label labelEmail = new Label(Translator.translateText(languageIndex,
+				"Email"));
+		Label labelDoB = new Label(Translator.translateText(languageIndex,
+				"Date of Birth"));
+		Label labelSkypeUsername = new Label(Translator.translateText(
+				languageIndex, "Skype Username"));
 
 		// Setup username error label
 		labelUsernameError = new Label();
@@ -117,17 +121,23 @@ public class AccountSettings extends Window {
 	}
 
 	/* Add password labels and text areas to grid */
-	public void setupPassword() {
+	private void setupPassword() {
 
 		// Setup Password labels
-		Label labelCurrentPassword = new Label("Current Password");
-		Label labelNewPassword = new Label("New Password");
-		Label labelConfNewPassword = new Label("Confirm New Password");
+		Label labelCurrentPassword = new Label(Translator.translateText(
+				languageIndex, "Current Password"));
+		Label labelNewPassword = new Label(Translator.translateText(
+				languageIndex, "New Password"));
+		Label labelConfNewPassword = new Label(Translator.translateText(
+				languageIndex, "Confirm New Password"));
 
 		// Setup password errors
-		labelPasswordIncorrect = new Label("Incorrect Password");
-		labelNewPasswordInvalid = new Label("New Password Invalid");
-		labelPasswordMismatch = new Label("New Passwords don't match");
+		labelPasswordIncorrect = new Label(Translator.translateText(
+				languageIndex, "Incorrect Password"));
+		labelNewPasswordInvalid = new Label(Translator.translateText(
+				languageIndex, "New Password Invalid"));
+		labelPasswordMismatch = new Label(Translator.translateText(
+				languageIndex, "New Passwords don't match"));
 		labelPasswordIncorrect.setVisible(false);
 		labelNewPasswordInvalid.setVisible(false);
 		labelPasswordMismatch.setVisible(false);
@@ -145,10 +155,12 @@ public class AccountSettings extends Window {
 	}
 
 	/* Add profile label and text area to grid */
-	public void setupProfileText() {
+	private void setupProfileText() {
 
-		Label labelProfileText = new Label("Profile");
-		labelBadLanguage = new Label("Contains Bad Language");
+		Label labelProfileText = new Label(Translator.translateText(
+				languageIndex, "Profile"));
+		labelBadLanguage = new Label(Translator.translateText(languageIndex,
+				"Contains Bad Language"));
 
 		labelBadLanguage.setVisible(false);
 		// Load profile text area with current user profile and set size
@@ -164,7 +176,7 @@ public class AccountSettings extends Window {
 	}
 
 	/* Add apply and cancel buttons to grid */
-	public void setupButtons() {
+	private void setupButtons() {
 
 		ButtonType button1 = new ButtonType("166,208,255", null,
 				Translator.translateText(languageIndex, "Apply Changes"), 150,
@@ -201,7 +213,6 @@ public class AccountSettings extends Window {
 		buttonCancel.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-
 				loadSlide(PROFILE);
 			}
 		});
@@ -214,10 +225,10 @@ public class AccountSettings extends Window {
 				if (check) {
 					currentUsername = null;
 					loadSlide(LOGIN);
-				} else
-					JOptionPane.showMessageDialog(null,
-							"Failed to delete user", "Account Error",
-							JOptionPane.WARNING_MESSAGE);
+				} else {
+					createWarningPopup("Failed to delete user.");
+					dialogStage.show();
+				}
 			}
 		});
 
@@ -275,9 +286,7 @@ public class AccountSettings extends Window {
 			labelBadLanguage.setVisible(true);
 			profileText.setText(bwc.highlightBlackListedWords(profileText
 					.getText()));
-
 		} else {
-			// System.out.println(bwc.highlightBlackListedWords(profileText.getText()));
 			labelBadLanguage.setVisible(false);
 			Database.userUpdate(currentUser, "bio", null, profileText.getText());
 		}
@@ -293,12 +302,11 @@ public class AccountSettings extends Window {
 			BadWordCheck bwc = new BadWordCheck();
 
 			if (bwc.containsBlackListedWords(fieldUsername.getText())) {
-				labelUsernameError.setText("Contains Bad Language");
+				labelUsernameError.setText(Translator.translateText(languageIndex, "Contains Bad Language"));
 				labelUsernameError.setVisible(true);
 			}
-
 			else if (SQLFilter.SQLWordCheck(fieldUsername.getText())) {
-				labelUsernameError.setText("Contains Invalid Characters");
+				labelUsernameError.setText(Translator.translateText(languageIndex, "Contains Invalid Characters"));
 				labelUsernameError.setVisible(true);
 			}
 			// If username is unavailable
@@ -310,13 +318,11 @@ public class AccountSettings extends Window {
 				currentUser.username = fieldUsername.getText();
 				labelUsernameError.setVisible(false);
 			} else {
-
 				// Show error message if username is unavailable
-				labelUsernameError.setText("Username Already Exists");
+				labelUsernameError.setText(Translator.translateText(languageIndex, "Username Already Exists"));
 				labelUsernameError.setVisible(true);
 			}
 		} else {
-
 			// Remove error message if username is unchanged
 			labelUsernameError.setVisible(false);
 		}
