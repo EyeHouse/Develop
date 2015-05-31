@@ -433,7 +433,7 @@ public class Database {
 					.prepareStatement("UPDATE users SET " + fieldSelect
 							+ "=? WHERE username=? AND email=?");
 			// if there's a string use string data else it must be a bool
-			if (newValue != null || fieldSelect.equals("properties"))
+			if (newValue != null || fieldSelect.equals("properties") || fieldSelect.equals("bio"))
 				editUser.setString(1, newValue);
 			else
 				editUser.setBoolean(1, priv);
