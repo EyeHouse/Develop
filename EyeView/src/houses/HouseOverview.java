@@ -28,7 +28,6 @@ import javafx.util.Callback;
 import javafx.util.Duration;
 import language.Translator;
 import presenter.Window;
-import profile.Login;
 import profile.SavedProperties;
 import database.Database;
 import database.House;

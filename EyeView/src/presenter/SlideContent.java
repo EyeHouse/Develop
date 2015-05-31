@@ -77,7 +77,6 @@ public class SlideContent extends Window {
 	public final ComboBox<Integer> minPrice = new ComboBox<Integer>();
 	public final ComboBox<Integer> maxPrice = new ComboBox<Integer>();
 	public final ComboBox<Integer> distance = new ComboBox<Integer>();
-	public boolean savedOrOwned;
 
 	public void createSlide() {
 
@@ -155,11 +154,15 @@ public class SlideContent extends Window {
 	}
 
 	private void createStartSlide() {
+		originSavedProperties = false;
+		originManageProperties = false;
 		startPage = new StartPage();
 	}
 
 	private void createLoggedOutSlide() {
 
+		originSavedProperties = false;
+		originManageProperties = false;
 		ArrayList<Integer> houseIDs = new ArrayList<Integer>();
 		houseIDs = Database.selectAllHouses();
 		ArrayList<House> houses = getDisplayHouses(houseIDs);
@@ -175,6 +178,8 @@ public class SlideContent extends Window {
 
 	private void createHomeSlide() {
 
+		originSavedProperties = false;
+		originManageProperties = false;
 		ArrayList<Integer> houseIDs = new ArrayList<Integer>();
 		houseIDs = Database.selectAllHouses();
 		ArrayList<House> houses = getDisplayHouses(houseIDs);
@@ -189,31 +194,40 @@ public class SlideContent extends Window {
 
 	private void createLoginSlide() {
 
+		originSavedProperties = false;
+		originManageProperties = false;
 		login = new Login();
 		createSidebar();
 	}
 
 	private void createRegisterSlide() {
 
+		originSavedProperties = false;
+		originManageProperties = false;
 		register = new Register();
 		createSidebar();
 	}
 
 	private void createProfileSlide() {
 
+		originSavedProperties = false;
+		originManageProperties = false;
 		profile = new ProfileViewer(viewedUsername);
 		createSidebar();
 	}
 
 	private void createAccountSettingsSlide() {
 
+		originSavedProperties = false;
+		originManageProperties = false;
 		accountSettings = new AccountSettings();
 		createSidebar();
 	}
 
 	private void createSavedPropertySlide() {
 
-		savedOrOwned = true;
+		originSavedProperties = true;
+		originManageProperties = false;
 		savedProperties = new SavedProperties();
 		createSidebar();
 	}
@@ -260,18 +274,23 @@ public class SlideContent extends Window {
 
 	private void createLandlordPropertiesSlide() {
 
-		savedOrOwned = false;
+		originSavedProperties = false;
+		originManageProperties = true;
 		landlordProperties = new LandlordProperties(currentUsername);
 		createSidebar();
 	}
 
 	private void createEditPropertySlide() {
+		originSavedProperties = false;
+		originManageProperties = true;
 		editProperty = new EditProperty(0, currentPropertyID);
 		createSidebar();
 	}
 
 	private void createResultsSlide() {
 
+		originSavedProperties = false;
+		originManageProperties = false;
 		createMenuBar();
 		houseAdverts = new HouseOverview(false, searchResults);
 		createSidebar();
@@ -365,14 +384,12 @@ public class SlideContent extends Window {
 				}
 			});
 
-			if (slideID == SAVEDPROPERTIES
-					|| (savedOrOwned && slideID == HOUSE))
+			if (originSavedProperties)
 				labelSavedProperties.setFont(Font.font(null, FontWeight.BOLD,
 						16.5));
 			else if (slideID == PROFILE || slideID == ACCOUNTSETTINGS)
 				labelProfile.setFont(Font.font(null, FontWeight.BOLD, 16.5));
-			else if (slideID == LANDLORDPROPERTIES || slideID == EDITPROPERTY
-					|| (!savedOrOwned && slideID == HOUSE))
+			else if (originManageProperties)
 				labelLandlordProperties.setFont(Font.font(null,
 						FontWeight.BOLD, 16.5));
 

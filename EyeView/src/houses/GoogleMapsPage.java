@@ -16,8 +16,8 @@ import javafx.scene.text.Font;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import language.Translator;
-import presenter.SlideContent;
 import presenter.Window;
+import profile.SavedProperties;
 
 public class GoogleMapsPage extends Window {
 
@@ -68,7 +68,7 @@ public class GoogleMapsPage extends Window {
 
 	public void setupButtons() {
 
-		SlideContent.setupBackButton();
+		SavedProperties.setupPropertyBackButton();
 	}
 
 	class MyBrowser extends Region {
