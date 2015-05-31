@@ -69,8 +69,7 @@ public class VideoPage extends Window {
 			video.display(videoPane);
 
 			setupMarkerButtons();
-		}
-		else{
+		} else {
 			noVideoTitle = new Label(Translator.translateText(languageIndex,
 					"No video available for this property"));
 			noVideoTitle.setFont(new Font(24));
@@ -101,23 +100,28 @@ public class VideoPage extends Window {
 	public void updateLanguage() {
 
 		topTitle.setText(Translator.translateText(languageIndex, "Video Tour"));
+		if (video == null) {
+			noVideoTitle.setText(Translator.translateText(languageIndex,
+					"No video available for this property"));
+		} else {
+			markerTiles.getChildren().clear();
 
-		markerTiles.getChildren().clear();
+			for (int i = 0; i < videoMarkers.size(); i++) {
 
-		for (int i = 0; i < videoMarkers.size(); i++) {
+				Marker marker = videoMarkers.get(i);
 
-			Marker marker = videoMarkers.get(i);
+				ButtonType button = new ButtonType("166,208,255", null,
+						Translator.translateText(languageIndex, marker.room),
+						125, 30);
+				Button buttonTime = new SetupButton().CreateButton(button);
+				buttonTime.setCursor(Cursor.HAND);
+				buttonTime.setOnAction(new VideoTime(i));
 
-			ButtonType button = new ButtonType("166,208,255", null,
-					Translator.translateText(languageIndex, marker.room), 125,
-					30);
-			Button buttonTime = new SetupButton().CreateButton(button);
-			buttonTime.setCursor(Cursor.HAND);
-			buttonTime.setOnAction(new VideoTime(i));
+				markerTiles.getChildren().add(buttonTime);
 
-			markerTiles.getChildren().add(buttonTime);
-
+			}
 		}
+
 	}
 
 	public void setupMarkerButtons() {
@@ -177,13 +181,13 @@ public class VideoPage extends Window {
 			video.playVideo();
 		}
 	}
-	
-	public void dispose(){
-		if(video != null){
+
+	public void dispose() {
+		if (video != null) {
 			video.stopVideo();
 			video = null;
 		}
-		
+
 		videoMarkers.clear();
 		videoMarkers.trimToSize();
 		videoMarkers = null;
