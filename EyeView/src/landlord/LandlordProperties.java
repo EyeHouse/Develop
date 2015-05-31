@@ -2,19 +2,11 @@ package landlord;
 
 import java.util.ArrayList;
 
-import button.ButtonType;
-import button.SetupButton;
-import database.Database;
-import database.House;
-import database.HouseImage;
-import database.User;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.HPos;
 import javafx.geometry.Pos;
-import javafx.geometry.VPos;
 import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -31,6 +23,12 @@ import javafx.scene.text.FontWeight;
 import language.Translator;
 import presenter.SlideContent;
 import presenter.Window;
+import button.ButtonType;
+import button.SetupButton;
+import database.Database;
+import database.House;
+import database.HouseImage;
+import database.User;
 
 public class LandlordProperties extends Window {
 

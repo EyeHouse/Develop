@@ -114,6 +114,7 @@ public class VideoPage extends Window {
 			ButtonType button = new ButtonType("166,208,255", null,
 					Translator.translateText(languageIndex, marker.room), 100, 30);
 			Button buttonTime = new SetupButton().CreateButton(button);
+			buttonTime.setWrapText(true);
 			buttonTime.setCursor(Cursor.HAND);
 			buttonTime.setOnAction(new VideoTime(i));
 			

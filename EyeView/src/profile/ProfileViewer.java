@@ -211,6 +211,7 @@ public class ProfileViewer extends Window {
 		// Create update profile picture label
 		updateProfilePictureLabel = new Label(Translator.translateText(
 				languageIndex, "Click on image to update profile picture"));
+		updateProfilePictureLabel.setWrapText(true);
 		// Create a VBox to contain the label
 		vBoxUpdateProfilePictureLabel = new VBox(30);
 		vBoxUpdateProfilePictureLabel.setMinWidth(200);
@@ -536,7 +537,7 @@ public class ProfileViewer extends Window {
 		profileGrid.addRow(3, vBoxProfile, vBoxReview);
 	}
 
-	public HBox createStarHBox(int spacing, int size, int rating) {
+	public static HBox createStarHBox(int spacing, int size, int rating) {
 
 		HBox stars = new HBox(spacing);
 		for (int i = 0; i < 5; i++) {
