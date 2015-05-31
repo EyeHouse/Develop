@@ -45,6 +45,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Polyline;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.FileChooser;
 import language.BadWordCheck;
 import language.Translator;
@@ -83,7 +84,7 @@ public class ProfileViewer extends Window {
 	 * Open profile of user input
 	 */
 	public ProfileViewer(String profileUsername) {
-		
+
 		profileUser = Database.getUser(profileUsername);
 		SetupGrid();
 		SetupUserInfo();
@@ -96,11 +97,11 @@ public class ProfileViewer extends Window {
 	 * Setup grid layout object to contain user information
 	 */
 	private void SetupGrid() {
-		
+
 		profileGrid.setPrefWidth(600);
 
 		// Set column widths of grid.
-		
+
 		ColumnConstraints col1 = new ColumnConstraints();
 		ColumnConstraints col2 = new ColumnConstraints();
 		ColumnConstraints col3 = new ColumnConstraints();
@@ -121,7 +122,7 @@ public class ProfileViewer extends Window {
 	 * Add basic user information to grid
 	 */
 	private void SetupUserInfo() {
-		
+
 		Label labelType;
 		// System.out.println(languageIndex + "gibbersish");
 		// Instantiates a VBox to contain the user information
@@ -172,7 +173,7 @@ public class ProfileViewer extends Window {
 		if (profileUser.skype != null
 				&& !profileUser.username.equals(currentUsername)) {
 			SkypeCall skype = new SkypeCall();
-			ImageView skypeButton = skype.addCallButton(profileUser.skype, 50);
+			HBox skypeButton = skype.addCallButton(profileUser.skype);
 			Label labelSkype = new Label(Translator.translateText(
 					languageIndex, "Available on Skype:"));
 			labelSkype.setFont(fontMain);
@@ -215,24 +216,25 @@ public class ProfileViewer extends Window {
 		// Create a VBox to contain the label
 		vBoxUpdateProfilePictureLabel = new VBox(30);
 		vBoxUpdateProfilePictureLabel.setMinWidth(200);
+		vBoxUpdateProfilePictureLabel.setVisible(false);
 		// Add update profile label to grid pane
 		profileGrid.addRow(1, vBoxUpdateProfilePictureLabel);
-		
 		profilePictureView.setCursor(Cursor.HAND); // Set hand cursor
+
+		vBoxUpdateProfilePictureLabel.getChildren().add(
+				updateProfilePictureLabel);
 
 		profilePictureView.setOnMouseEntered(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent arg0) {
 				// Add update profile picture label to VBox underneath picture
-				vBoxUpdateProfilePictureLabel.getChildren().add(
-						updateProfilePictureLabel);
+				vBoxUpdateProfilePictureLabel.setVisible(true);
 			}
 		});
 
 		profilePictureView.setOnMouseExited(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent arg0) {
 				// Add update profile picture label to VBox underneath picture
-				vBoxUpdateProfilePictureLabel.getChildren().remove(
-						updateProfilePictureLabel);
+				vBoxUpdateProfilePictureLabel.setVisible(false);
 			}
 		});
 	}
@@ -310,7 +312,7 @@ public class ProfileViewer extends Window {
 	 * Add review stars to profile based on average review from database
 	 */
 	private void AddStars() {
-		
+
 		// HBox to contain the stars
 		HBox hBoxStars = new HBox(5);
 		int rating = 0;
@@ -472,7 +474,6 @@ public class ProfileViewer extends Window {
 			hBoxNewStars.setCursor(Cursor.HAND);
 		}
 
-
 		// VBox to contain Profile label and text area
 		VBox vBoxProfile = new VBox(10);
 		// VBox to contain Review label and text area
@@ -590,7 +591,8 @@ public class ProfileViewer extends Window {
 
 		@Override
 		public void handle(MouseEvent event) {
-			Database.likeReview(Database.getUser(currentUsername), null, review, 1);
+			Database.likeReview(Database.getUser(currentUsername), null,
+					review, 1);
 			reloadProfile();
 		}
 	}
@@ -605,7 +607,8 @@ public class ProfileViewer extends Window {
 
 		@Override
 		public void handle(MouseEvent event) {
-			Database.dislikeReview(Database.getUser(currentUsername), null, review, 1);
+			Database.dislikeReview(Database.getUser(currentUsername), null,
+					review, 1);
 			reloadProfile();
 		}
 	}

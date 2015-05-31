@@ -5,53 +5,76 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import javax.swing.JOptionPane;
-
 import presenter.Window;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Cursor;
-import javafx.scene.image.*;
+import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import language.Translator;
 
 public class SkypeCall extends Window {
-	
-	public ImageView addCallButton(String skypeID, double width){
-		Image logo = new Image("file:resources/images/Skype.png");
-		ImageView skypeLogo = new ImageView(logo);
+
+	public HBox addCallButton(String skypeID) {
+
+		final HBox skypeBox = new HBox(5);
+		
+		// Hidden label appears next to button when enabled and hovered over
+		final Label skypeLabel = new Label(Translator.translateText(languageIndex,
+				"Call on Skype"));
+		skypeLabel.setFont(Font.font(null, FontWeight.BOLD, 14));
+		
+		ImageView skypeLogo = new ImageView(new Image(
+				"file:resources/images/Skype.png"));
 		skypeLogo.setPreserveRatio(true);
-		skypeLogo.setFitWidth(width);
 		skypeLogo.setCursor(Cursor.HAND);
+		skypeLogo.setOnMouseEntered(new EventHandler<MouseEvent>() {
+			public void handle(MouseEvent arg0) {
+				skypeBox.getChildren().add(skypeLabel);
+			}
+		});
+		skypeLogo.setOnMouseExited(new EventHandler<MouseEvent>() {
+			public void handle(MouseEvent arg0) {
+				skypeBox.getChildren().remove(skypeLabel);
+			}
+		});
 		skypeLogo.setOnMouseClicked(new callHandler(skypeID));
-		
-		return skypeLogo;
+
+		skypeBox.setAlignment(Pos.CENTER_LEFT);
+		skypeBox.getChildren().add(skypeLogo);
+
+		return skypeBox;
 	}
-	
+
 	private class callHandler implements EventHandler<MouseEvent> {
-		
+
 		final String skypeID;
-		
-		callHandler(String skypeID){
+
+		callHandler(String skypeID) {
 			this.skypeID = skypeID;
 		}
-		
+
 		@Override
 		public void handle(MouseEvent arg0) {
 			try {
 				URI uri = new URI("skype:" + skypeID + "?call");
 				if (Desktop.isDesktopSupported()) {
-				    try {
+					try {
 						Desktop.getDesktop().browse(uri);
 					} catch (IOException e) {
-						JOptionPane.showMessageDialog(null,
-								"Skype must be installed to utilise this feature.", "Skype Call Error",
-								JOptionPane.WARNING_MESSAGE);
+						createWarningPopup("Skype must be installed to utilise this feature.");
+						dialogStage.show();
 					}
 				}
 			} catch (URISyntaxException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-		
+
 	}
 }
