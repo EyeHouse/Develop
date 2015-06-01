@@ -59,9 +59,8 @@ html,body {
 	var origin1 = 'Central Hall, University of York, UK';
 	var destinationA;
 
-	
 	function initialize() {
-		
+
 		// Instantiate a directions service.
 		directionsDisplay = new google.maps.DirectionsRenderer();
 
@@ -85,10 +84,9 @@ html,body {
 		initialiseRoute();
 	}
 
-	
-	// Calculates distance and walking time for given route
+	// Calculates distance and walking time for given route.
 	function calculateDistances() {
-		
+
 		var service = new google.maps.DistanceMatrixService();
 		service.getDistanceMatrix({
 			origins : [ origin1 ],
@@ -102,7 +100,7 @@ html,body {
 
 	// Checks status and outputs the info on the panel.
 	function callback(response, status) {
-		
+
 		if (status != google.maps.DistanceMatrixStatus.OK) {
 			alert('Error was: ' + status);
 		} else {
@@ -126,29 +124,27 @@ html,body {
 		}
 	}
 
-	
 	// Removes any existing markers from the map.
 	function deleteOverlays() {
-		
+
 		for ( var i = 0; i < markersArray.length; i++) {
 			markersArray[i].setMap(null);
 		}
-		// clearing the array itself.
+		// Clearing the array itself.
 		markersArray = [];
 	}
 
-	
 	// Making sure the map loads with the route dispalyed.
 	function initialiseRoute() {
 
-		// Retrieve the start and end locations and create
-		// a DirectionsRequest using selected route.
+		// Retrieve the start and end locations.
 		var request = {
 			origin : origin1,
 			destination : destinationA,
 			travelMode : google.maps.TravelMode.WALKING
 		};
 
+		// Create a DirectionsRequest using selected route.
 		directionsService.route(request, function(response, status) {
 			if (status == google.maps.DirectionsStatus.OK) {
 				directionsDisplay.setDirections(response);
@@ -157,9 +153,7 @@ html,body {
 		deleteOverlays();
 	}
 
-
-	// Same function as initialiseRoute() 
-	// but allows travel mode selection from user. 
+	// Same function as initialiseRoute(), but allows mode selection. 
 	function calcRoute() {
 
 		var selectedMode = document.getElementById('mode').value;

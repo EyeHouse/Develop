@@ -133,7 +133,7 @@ html,body {
 		for ( var i = 0; i < markersArray.length; i++) {
 			markersArray[i].setMap(null);
 		}
-		// clearing the array itself.
+		// Clearing the array itself.
 		markersArray = [];
 	}
 
@@ -141,14 +141,14 @@ html,body {
 	// Making sure the map loads with the route dispalyed.
 	function initialiseRoute() {
 
-		// Retrieve the start and end locations and create
-		// a DirectionsRequest using selected route.
+		// Retrieve the start and end locations.
 		var request = {
 			origin : origin1,
 			destination : destinationA,
 			travelMode : google.maps.TravelMode.WALKING
 		};
 
+		// Create a DirectionsRequest using selected route.
 		directionsService.route(request, function(response, status) {
 			if (status == google.maps.DirectionsStatus.OK) {
 				directionsDisplay.setDirections(response);
@@ -158,8 +158,7 @@ html,body {
 	}
 
 
-	// Same function as initialiseRoute() 
-	// but allows travel mode selection from user. 
+	// Same function as initialiseRoute(), but allows mode selection. 
 	function calcRoute() {
 
 		var selectedMode = document.getElementById('mode').value;

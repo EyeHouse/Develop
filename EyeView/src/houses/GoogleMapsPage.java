@@ -155,7 +155,7 @@ public class GoogleMapsPage extends Window {
 				PrintWriter output = new PrintWriter(
 						new OutputStreamWriter(new FileOutputStream(
 								"src/houses/PropertyMapData.html")));
-				
+
 				// Setting the destination line to the house location.
 				while (in.hasNext()) {
 					String inputLine = in.nextLine();
