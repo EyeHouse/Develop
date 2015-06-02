@@ -10,43 +10,55 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * Returns a list of houses based on
+ * A class that contains methods used in searching for houses.
  * 
- * @author Tom
+ * @version 1.48 (15.03.15)
+ * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
  * 
  */
 public class Search {
-	
-	private static final String GEO_CODE_SERVER = "http://maps.googleapis.com/maps/api/geocode/json?";
-	public static final double R = 6372.8; // In kilometers
 
+	private static final String GEO_CODE_SERVER = "http://maps.googleapis.com/maps/api/geocode/json?";
+	public static final double R = 6372.8; // In kilometres
+
+	/**
+	 * Takes a post code and returns a latitude and longitude.
+	 * 
+	 * @param address
+	 * @return ArrayList
+	 */
 	public static ArrayList<Double> getLongLat(String address) {
 
 		ArrayList<Double> list = new ArrayList<Double>();
+
 		String code = address;
 
+		// Get location
 		String response = getLocation(code);
-		
+
+		// Add long lat to array
 		String[] result = parseLocation(response);
-		
+
 		int i = 0;
+		// Convert into ArrayList
 		for (i = 0; i < result.length; i++) {
 			System.out.println("Parsing : " + result[i]);
-			if(result[i] == null){
+			if (result[i] == null) {
 				break;
 			}
 			list.add(Double.parseDouble(result[i]));
 
 		}
-
 		return list;
 	}
 
+	/**
+	 * Sourced from Stack Overflow
+	 * 
+	 * @param response
+	 * @return
+	 */
 	private static String[] parseLocation(String response) {
-		// Look for location using brute force.
-		// There are much nicer ways to do this, e.g. with Google's JSON
-		// library: Gson
-		// https://sites.google.com/site/gson/gson-user-guide
 
 		String[] lines = response.split("\n");
 
@@ -60,10 +72,16 @@ public class Search {
 				break;
 			}
 		}
-		
+
 		return new String[] { lat, lng };
 	}
-	
+
+	/**
+	 * Sourced from StackOverflow
+	 * 
+	 * @param s
+	 * @return
+	 */
 	private static String getOrdinate(String s) {
 		String[] split = s.trim().split(" ");
 
@@ -82,7 +100,13 @@ public class Search {
 
 		return ord;
 	}
-	
+
+	/**
+	 * Sourced form Stack Overflow
+	 * 
+	 * @param code
+	 * @return
+	 */
 	private static String buildUrl(String code) {
 		StringBuilder builder = new StringBuilder();
 
@@ -95,6 +119,12 @@ public class Search {
 		return builder.toString();
 	}
 
+	/**
+	 * Sourced from stack overflow
+	 * 
+	 * @param code
+	 * @return
+	 */
 	private static String getLocation(String code) {
 
 		String address = buildUrl(code);
@@ -109,22 +139,22 @@ public class Search {
 
 			try {
 				int available = stream.available();
-				
+
 				byte[] bytes = new byte[available];
-				
+
 				stream.read(bytes);
 
 				content = new String(bytes);
 			} finally {
 				stream.close();
 			}
-			
+
 			return (String) content.toString();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	/**
 	 * From http://rosettacode.org/wiki/Haversine_formula#Java
 	 * 
@@ -139,7 +169,7 @@ public class Search {
 		// Conver Lat Long to radians and calculate differences
 		double dLat = Math.toRadians(lat2 - lat1);
 		double dLon = Math.toRadians(lon2 - lon1);
-		
+
 		lat1 = Math.toRadians(lat1);
 		lat2 = Math.toRadians(lat2);
 		// Calculate the distance between ll's using haversine function maths
@@ -151,6 +181,13 @@ public class Search {
 
 	}
 
+	/**
+	 * Filters houses by room number.
+	 * 
+	 * @param rooms
+	 * @param filterType
+	 * @return ArrayList
+	 */
 	public static ArrayList<House> rooms(int rooms, boolean filterType) {
 
 		ArrayList<House> list = new ArrayList<House>();
@@ -159,37 +196,62 @@ public class Search {
 		ResultSet roomRS2 = null;
 
 		try {
-			// if filter is true then search where room number is greater
+			// If filter is true then search where room number is greater
 			if (filterType) {
+				// Prepare query
 				PreparedStatement roomQuery = Database.con
 						.prepareStatement("SELECT * FROM houses WHERE rooms > ? ORDER BY rooms ASC LIMIT 50");
+
+				// Parameterise inputs
 				roomQuery.setInt(1, rooms);
+
+				// Execute query
 				roomRS1 = roomQuery.executeQuery();
 
+				// Add houses to the list
 				while (roomRS1.next()) {
 					list.add(new House(roomRS1));
 				}
+
+				// Close query
+				roomQuery.close();
+
 			}
 			// < entered rooms
 			if (!filterType) {
+
+				// Prepare query
 				PreparedStatement roomQuery = Database.con
 						.prepareStatement("SELECT * FROM houses WHERE rooms < ? ORDER BY rooms ASC LIMIT 50");
 
+				// Parameterise inputs
 				roomQuery.setInt(1, rooms);
+
+				// Execute query
 				roomRS2 = roomQuery.executeQuery();
 
+				// Add houses to list
 				while (roomRS2.next()) {
 					list.add(new House(roomRS2));
 				}
+
+				// Close query
+				roomQuery.close();
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.out.println("Error Rooms Search: " + e.getErrorCode());
 		}
 		return list;
 	}
 
+	/**
+	 * Filter houses by price.
+	 * 
+	 * @param price
+	 * @param filterType
+	 * @return ArrayList<House>
+	 */
 	public static ArrayList<House> price(int price, boolean filterType) {
 
 		ArrayList<House> list = new ArrayList<House>();
@@ -198,47 +260,75 @@ public class Search {
 		ResultSet priceRS2 = null;
 
 		try {
-			// if filter is true then search where price is greater
+			// If filter is true then search where price is greater
 			if (filterType) {
+				// Prepare query
 				PreparedStatement priceQuery = Database.con
 						.prepareStatement("SELECT * FROM houses WHERE price > ? ORDER BY price ASC LIMIT 50");
+
+				// Parameterise inputs
 				priceQuery.setInt(1, price);
+
+				// Execute query
 				priceRS1 = priceQuery.executeQuery();
 
+				// Add houses to list
 				while (priceRS1.next()) {
 					list.add(new House(priceRS1));
 				}
 			}
 			// < entered price
 			if (!filterType) {
+
+				// Prepare query
 				PreparedStatement priceQuery = Database.con
 						.prepareStatement("SELECT * FROM houses WHERE price < ? ORDER BY price ASC LIMIT 50");
 
+				// Parameterise inputs
 				priceQuery.setInt(1, price);
+
+				// Execute query
 				priceRS2 = priceQuery.executeQuery();
 
+				// Add hosues to list
 				while (priceRS2.next()) {
 					list.add(new House(priceRS2));
 				}
+
+				// Close query
+				priceQuery.close();
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.out.println("Error Price Search: " + e.getErrorCode());
 		}
 		return list;
 	}
 
+	/**
+	 * Get all post codes in the database.
+	 * 
+	 * @return ResultSet
+	 */
 	public static ResultSet getPostcodes() {
+
 		ResultSet postcodes = null;
+
 		try {
+			// Prepare query
 			PreparedStatement selectPostcodes = Database.con
 					.prepareStatement("SELECT hid, postcode FROM houses ");
+
+			// Parameterise inputs
 			postcodes = selectPostcodes.executeQuery();
 
+			// If empty
 			if (!postcodes.next()) {
 				System.out.println("\nNo houses in database.");
 			}
+
+			// Close query
+			selectPostcodes.close();
 
 			return postcodes;
 		} catch (SQLException e) {
@@ -248,6 +338,13 @@ public class Search {
 		}
 	}
 
+	/**
+	 * Search String. The houses table runs on MyISAM engine and some columns
+	 * have full text indexing allowing for quick string searching.
+	 * 
+	 * @param userinput
+	 * @return ArrayList<Integer>
+	 */
 	public static ArrayList<Integer> searchString(String userinput) {
 
 		ArrayList<Integer> validHouses = new ArrayList<Integer>();
@@ -255,21 +352,25 @@ public class Search {
 
 		try {
 
-			// Query for a string userinput in postcode address or title
+			// Prepare query
 			PreparedStatement selectPostcodes = Database.con
 					.prepareStatement("SELECT * FROM houses WHERE MATCH(`postcode`,`address`,`title`) AGAINST (?)");
 
+			// Parameterise inputs
 			selectPostcodes.setString(1, userinput);
 
+			// Execute query
 			houses = selectPostcodes.executeQuery();
 
+			// Add valid houses to the list
 			while (houses.next()) {
-				// return results that matched
 				validHouses.add(houses.getInt("hid"));
 			}
 
+			// Close query
+			selectPostcodes.close();
+
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -289,16 +390,17 @@ public class Search {
 			int kilometers) {
 
 		ResultSet postcodes = null;
+
 		ArrayList<Integer> validHouseID = new ArrayList<Integer>();
-		
 		ArrayList<Double> longLat2 = new ArrayList<Double>();
 
 		String tempPC = null;
+
 		double distanceCheck;
 
-		// get all post codes and house ids
+		// Get all post codes and house ids
 		postcodes = getPostcodes();
-		
+
 		// The user input post code
 		longLat2 = getLongLat(postcode);
 
@@ -309,28 +411,30 @@ public class Search {
 				tempPC = postcodes.getString("postcode");
 
 				System.out.println("\n" + tempPC);
-				
+
 				if (tempPC == null) {
 					break;
 				}
 
 				// Get the long lat of both post codes
 				ArrayList<Double> longLat1 = new ArrayList<Double>();
-			
+
 				// The post code being checked
 				longLat1 = getLongLat(tempPC);
 
-				// find distance between two post codes
+				// Find distance between two post codes
 				distanceCheck = haversine(longLat1.get(0), longLat1.get(1),
 						longLat2.get(0), longLat2.get(1));
 
-				// if distance is within distance specified add the id to an
-				// ArrayList
+				/*
+				 * If distance is within distance specified add the id to an
+				 * ArrayList
+				 */
 				if (distanceCheck <= kilometers) {
 					validHouseID.add(postcodes.getInt("hid"));
 				}
 
-				// if distance check is negative, error
+				// If distance check is negative, error
 				if (distanceCheck < 0) {
 					System.out.println("\nError : negative distance");
 				}
@@ -345,19 +449,27 @@ public class Search {
 		return validHouseID;
 	}
 
+	/**
+	 * Example cases of the methods
+	 * 
+	 * @param args
+	 * @throws Exception
+	 */
 	public static void main(String[] args) throws Exception {
 
 		Database.dbConnect();
 
 		switch ("string") {
-
+		// Search string example
 		case "string":
 			ArrayList<Integer> validHouses = new ArrayList<Integer>();
+
+			// Search string
 			validHouses = searchString("link");
 
 			System.out.println("Contains : " + validHouses);
 			break;
-		// this case is the prototype of the searchProximity method
+		// This case is the prototype of the searchProximity method
 		case "fullhousexy":
 
 			ResultSet postcodes = null;
@@ -367,28 +479,27 @@ public class Search {
 			double distanceCheck;
 			double userinputKM = 2.5;
 
-			// for checking method
+			// For checking method
 			int loopCounter = 0;
 
-			// get all post codes and house ids
+			// Get all post codes and house ids
 			postcodes = getPostcodes();
 
 			do {
-
-				// Get data from the current row and use it
-
 				// Gets the post code
 				tempPC = postcodes.getString("postcode");
 
 				// Get the long lat of both post codes
 				ArrayList<Double> longLat1 = new ArrayList<Double>();
 				ArrayList<Double> longLat2 = new ArrayList<Double>();
+
 				// The post code being checked
 				longLat1 = getLongLat(tempPC);
+
 				// The user input post code
 				longLat2 = getLongLat(userinputPC);
 
-				// find distance between two post codes
+				// Find distance between two post codes
 				distanceCheck = haversine(longLat1.get(0), longLat1.get(1),
 						longLat2.get(0), longLat2.get(1));
 
@@ -396,11 +507,12 @@ public class Search {
 						.println("\nDistance between reference postcode and house :"
 								+ distanceCheck);
 
-				// if distance is within distance specified add the id to an
-				// ArrayList
-
+				/*
+				 * If distance is within distance specified add the id to an
+				 * ArrayList
+				 */
 				if (distanceCheck <= userinputKM) {
-
+					// Add valid houses to the list
 					validHouseID.add(postcodes.getInt("hid"));
 
 					System.out.println("\nindex " + loopCounter);
@@ -410,16 +522,10 @@ public class Search {
 					loopCounter++;
 				}
 
-				// if distance check is negative, error
+				// If distance check is negative, error
 				if (distanceCheck < 0) {
 					System.out.println("\nError : negative distance");
 				}
-
-				// print any elements of the valid houses list
-				// if (validHouseID.size() > loopCounter) {
-				// System.out.println("House id : "
-				// + validHouseID.get(loopCounter));
-				// }
 
 			} while (postcodes.next());
 
@@ -439,7 +545,6 @@ public class Search {
 
 			ArrayList<House> list = new ArrayList<House>();
 
-			// list = price(5000, false);
 			list = rooms(4, false);
 
 			int i;

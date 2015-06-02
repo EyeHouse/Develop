@@ -2,7 +2,12 @@ package database;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
+/**
+ * Holds user review information.
+ * 
+ * @version 1.48 (15.03.15)
+ * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
+ */
 public class UserReview {
 
 	private final static int URID = 1;
@@ -23,12 +28,12 @@ public class UserReview {
 	public int like;
 	public int dislike;
 
-	// Manually create a view off of new input
+	// UserReview Contructor method
 	public UserReview(int urTG) {
 		this.uid_target = urTG;
 	}
 
-	// Get a reviews details after searching/ selecting it
+	// Create a new UserReview from a result set
 	public UserReview(ResultSet reviewDetails) {
 		try {
 			this.urid = reviewDetails.getInt(URID);
@@ -44,6 +49,7 @@ public class UserReview {
 		}
 	}
 
+	// Set details
 	public void uid_reviewer(int urRV) {
 		this.uid_reviewer = urRV;
 	}
