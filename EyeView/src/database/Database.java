@@ -1,7 +1,3 @@
-/*
- *	@author Tom Butts
- * 
- */
 package database;
 
 import java.awt.BorderLayout;
@@ -25,13 +21,24 @@ import javax.swing.JLabel;
 
 import com.mysql.jdbc.Blob;
 
+/**
+ * 
+ * Database.java sets up a connection with the database and contains methods to
+ * handle SQL queries.
+ * 
+ * @version 1.48 (15.03.15)
+ * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
+ * 
+ *         Copyright 2015 EyeHouse
+ */
 public class Database {
 
 	// Public variables
 	public static Connection con = null;
-	// Define the column numbers of the db table as integer variables
-	// 'id' autoincrements due to the table set up, enter any integer when
-	// required
+	/*
+	 * Define the column numbers of the db table as integer variables 'id' auto
+	 * increments due to the table set up, enter any integer when required
+	 */
 	private final static int id = 1;
 	private final static int firstName = 2;
 	private final static int secondName = 3;
@@ -63,23 +70,26 @@ public class Database {
 	public static String url = "10.10.0.1";
 
 	/**
-	 * A void function used to open the database connection
+	 * A void function used to open the database connection.
 	 */
 	public static boolean dbConnect() {
-		// Create a connection with db:master_db user:root pw:
+		// Create a connection
 		url = "127.0.0.1";
+
 		try {
 
 			System.out.print("Establishing connection via PuTTY... ");
 
+			// Uses get connection to open a connection stored in con.
 			con = DriverManager.getConnection("jdbc:mysql://" + url
 					+ ":3306/eyehouse", "eyehouseuser", "Toothbrush50");
 			System.out.print("Success");
 
-			// Print url
+			// Print local address we are using.
 			System.out.println("\n" + url);
 
 			return true;
+
 		} catch (SQLException ex1) {
 
 			System.out.print("Fail\nEstablishing connection via OpenVPN... ");
@@ -87,6 +97,7 @@ public class Database {
 			url = "10.10.0.1";
 
 			try {
+
 				con = DriverManager.getConnection("jdbc:mysql://" + url
 						+ ":3306/eyehouse", "eyehouseuser", "Toothbrush50");
 
@@ -98,11 +109,12 @@ public class Database {
 				return true;
 
 			} catch (SQLException ex) {
-				// ex.printStackTrace();
+
 				// handle any errors
 				System.out.println("SQLException: " + ex.getMessage());
 				System.out.println("SQLState: " + ex.getSQLState());
 				System.out.println("VendorError: " + ex.getErrorCode());
+
 				return false;
 			}
 		}
@@ -113,17 +125,19 @@ public class Database {
 	 * the database you're connected to.
 	 * 
 	 * @param userDetails
-	 * @return 1 if user is inserted successfully
-	 * @return 0 if failure to insert
+	 * @return true on success
 	 */
 	public static boolean userInsert(User userDetails) {
 		// query
 		try {
+			// Initialise a File
 			File picture = null;
+
+			// Prepare a MySQL statment to insert data into users table
 			PreparedStatement insertUser = con
 					.prepareStatement("INSERT INTO users "
 							+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)");
-			// insert the users data
+			// Parameterise the inputs
 			insertUser.setInt(id, 0);
 			insertUser.setString(firstName, userDetails.first_name);
 			insertUser.setString(secondName, userDetails.second_name);
@@ -135,68 +149,119 @@ public class Database {
 			insertUser.setBoolean(admin, userDetails.admin);
 
 			try {
+				/*
+				 * Try to read in the profile picture from the remote server
+				 * into File picture.
+				 */
 				picture = FileManager
 						.readFile("eyehouse/defaults/default_profpic.jpg");
+
+				// Create a new input stream out of picture
 				FileInputStream fis = new FileInputStream(picture);
+
+				/*
+				 * The profile image column in the database takes binary large
+				 * objects (BLOB) type.
+				 */
 				insertUser.setBinaryStream(profileIMG, fis, fis.available());
-				// insertUser.setBinaryStream(profileIMG, is, is.available());
+
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
-				System.out.println("\nTheres been an sftp error");
+				System.out.println("\nError user Insert: " + e.getMessage());
 			}
+
+			// More insert data
 			insertUser.setString(properties, null);
 			insertUser.setString(skype, userDetails.skype);
 			insertUser.setString(bio, userDetails.bio);
-			// execute the query
+
+			// Execute the query
 			insertUser.executeUpdate();
+
+			// Close prepared statement
+			insertUser.close();
+
 		} catch (SQLException e) {
-			// catch the error get the message
 			e.printStackTrace();
 			e.getMessage();
 		}
 		return true;
 	}
 
+	/**
+	 * Gets the id of a user or of a house/
+	 * 
+	 * @param userDetails
+	 * @param houseDetails
+	 * @param idType
+	 * @return id
+	 */
 	public static int getID(User userDetails, House houseDetails, int idType) {
-		// IMPORTANT: idType key:
-		// 1 = User id from table users - found by username
-		// 2 = hid from table houses - found by the user logged in and the
-		// postcode
+		/*
+		 * IMPORTANT: idType key: 1 = User id from table users - found by user
+		 * name. 2 = hid from table houses - found by the user logged in and the
+		 * post code.
+		 */
 		ResultSet id = null;
-		// select that user
+
 		int idnumber = 0;
+
 		try {
+			// If looking for a user id
 			if (idType == 1 && userDetails != null) {
+				// Select the user.
 				PreparedStatement userID = con
 						.prepareStatement("SELECT id FROM users WHERE username=?");
+
 				userID.setString(1, userDetails.username);
+				// Execute query and enter it into result set.
 				id = userID.executeQuery();
+
+				// Get id number
 				while (id.next()) {
 					idnumber = id.getInt("id");
 				}
+
+				// Close query
+				userID.close();
 			}
+			// If require house ID
 			if (idType == 2 && userDetails != null) {
+				// Select the house
 				PreparedStatement houseID = con
 						.prepareStatement("SELECT hid FROM houses WHERE uid=? AND postcode=?");
+
+				// Use this method to get user ID
 				int uid = getID(userDetails, null, 1);
+
+				// Parameterise inputs
 				houseID.setInt(1, uid);
 				houseID.setString(2, houseDetails.postcode);
+
 				id = houseID.executeQuery();
+				// Get ID
 				while (id.next()) {
 					idnumber = id.getInt("hid");
 				}
+
+				// Close query
+				houseID.close();
 			}
-
-			// take all the users details and put them in an instance of user
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 			e.getMessage();
 		}
+
 		return idnumber;
 	}
 
+	/**
+	 * Checks a house exists in the database.
+	 * 
+	 * @param userDetails
+	 * @param houseDetails
+	 * @return true on success
+	 */
 	public static boolean checkHouseExists(User userDetails, House houseDetails) {
 		ResultSet title;
 		String titleStr;
@@ -227,9 +292,19 @@ public class Database {
 			return false;
 		}
 		System.out.println("\nCase unspecified");
+
 		return false;
 	}
 
+	/**
+	 * 
+	 * @param houseDetails
+	 * @param brochurefp
+	 * @param energyratingfp
+	 * @param userDetails
+	 * @return true on success
+	 * @throws IOException
+	 */
 	public static boolean houseInsert(House houseDetails, String brochurefp,
 			String energyratingfp, User userDetails) throws IOException {
 		int hid = 2;
@@ -242,31 +317,44 @@ public class Database {
 			PreparedStatement insertHouse = con
 					.prepareStatement("INSERT INTO houses "
 							+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+
+			// Handle the pdf
 			if (brochurefp != null) {
+
 				File brochure = new File(brochurefp);
+
 				try {
+					// Convert to input stream
 					bis = new FileInputStream(brochure);
+					// Insert BLOB into database
 					insertHouse.setBinaryStream(BROCHURE, bis, bis.available());
 				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			} else
+
+				// If no PDF set to null
 				insertHouse.setBinaryStream(BROCHURE, null);
 
+			// Handle energy ratings image
 			if (energyratingfp != null) {
+
 				File energyRatings = new File(energyratingfp);
+
 				try {
+					// Convert to input stream
 					eis = new FileInputStream(energyRatings);
+					// Insert BLOB into database
 					insertHouse.setBinaryStream(ENERGYRATING, eis,
 							eis.available());
 				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			} else
+				// If no image set to null
 				insertHouse.setBinaryStream(ENERGYRATING, null);
-			// insert the house data
+
+			// Insert the house data
 			insertHouse.setInt(hid, 0);
 			insertHouse.setInt(UID, id);
 			insertHouse.setString(TITLE, houseDetails.title);
@@ -279,16 +367,34 @@ public class Database {
 			insertHouse.setString(DATEAVAILABLE, houseDetails.dateAvailable);
 			insertHouse.setBoolean(FURNISHED, houseDetails.furnished);
 			insertHouse.setString(DESCRIPTION, houseDetails.description);
-			// execute the query
+
+			// Execute the query
 			insertHouse.executeUpdate();
+
+			// Close query
+			insertHouse.close();
+
 		} catch (SQLException e) {
 			// catch the error get the message
 			e.printStackTrace();
 			e.getMessage();
 		}
+
 		return true;
 	}
 
+	/**
+	 * 
+	 * @param userDetails
+	 * @param houseDetails
+	 * @param field
+	 * @param value1
+	 * @param value2
+	 * @param value3
+	 * @param value4
+	 * @param varType
+	 * @return true on success
+	 */
 	public static boolean updateHouse(User userDetails, House houseDetails,
 			String field, String value1, Boolean value2, Blob value3,
 			int value4, int varType) {
@@ -297,11 +403,14 @@ public class Database {
 		try {
 			hid = getID(userDetails, houseDetails, 2);
 			uid = getID(userDetails, null, 1);
+
 			PreparedStatement updateHouse = con
 					.prepareStatement("UPDATE houses SET " + field
 							+ "=? WHERE uid=? AND hid=?");
-			// IMPORTANT: filetype int specifies which variable to use
-			// 1 = string, 2 = bool, 3 = blob, 4 = int
+			/*
+			 * IMPORTANT: int varType specifies which variable to use (1 =
+			 * String) (2 = boolean) (3 = blob) (4 = integer)
+			 */
 			switch (varType) {
 			case 1:
 				updateHouse.setString(1, value1);
@@ -318,15 +427,24 @@ public class Database {
 			default:
 				break;
 			}
+			// Parameterise inputs
 			updateHouse.setInt(2, uid);
 			updateHouse.setInt(3, hid);
+
+			// Execute query
 			updateHouse.executeUpdate();
+
+			// Close query
+			updateHouse.close();
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			System.out.println("Someone done messed up");
+			System.out.println("\nError updateHouse: " + e.getMessage());
+
 			return false;
 		}
+
 		return true;
 	}
 
@@ -335,8 +453,7 @@ public class Database {
 	 * 
 	 * @param houseDetails
 	 * @param userDetails
-	 * @return true if success
-	 * @return false if failure
+	 * @return true on success
 	 */
 	public static boolean houseDelete(House houseDetails, User userDetails) {
 		int uid;
@@ -423,31 +540,41 @@ public class Database {
 	 * @param fieldSelect
 	 * @param priv
 	 * @param newField
-	 * @return
+	 * @return true on success
 	 */
 	public static boolean userUpdate(User user, String fieldSelect,
 			Boolean priv, String newValue) {
-		// prepare a statement to update a field 'field'
+
 		try {
 			PreparedStatement editUser = con
 					.prepareStatement("UPDATE users SET " + fieldSelect
 							+ "=? WHERE username=? AND email=?");
-			// if there's a string use string data else it must be a bool
-			if (newValue != null || fieldSelect.equals("properties") || fieldSelect.equals("bio"))
+
+			// If theres a String use string else use the boolean value.
+			if (newValue != null || fieldSelect.equals("properties")
+					|| fieldSelect.equals("bio") || fieldSelect.equals("skype"))
+
+				// Parameterise inputs
 				editUser.setString(1, newValue);
 			else
 				editUser.setBoolean(1, priv);
 			editUser.setString(2, user.username);
 			editUser.setString(3, user.email);
-			// execute query
+
+			// Execute query
 			editUser.executeUpdate();
+
+			// Close query
+			editUser.close();
+
 		} catch (SQLException e) {
 			e.getMessage();
 			e.getErrorCode();
 			e.printStackTrace();
+
 			return false;
 		}
-		// updated a string field
+
 		return true;
 	}
 
@@ -458,24 +585,35 @@ public class Database {
 	 * 
 	 * This method is currently superfluous (while loginCheck does the same
 	 * thing)
+	 * 
+	 * @return the users details in an instance of User
 	 */
-	public static User getUser(String username) throws NullPointerException {
+	public static User getUser(String username) {
 		// Takes a unique field (username) and returns the user
 		User user = null;
 		ResultSet userDetails = null;
-		// select that user
+
 		try {
+			// Prepare query
 			PreparedStatement getUser = con
 					.prepareStatement("SELECT * FROM users WHERE username=?");
-			// parameterise inputs
+
+			// Parameterise inputs
 			getUser.setString(1, username);
-			// execute
+
+			// Execute query
 			userDetails = getUser.executeQuery();
-			// take all the users details and put them in an instance of user
+
+			// Take all the users details and put them in an instance of user.
 			while (userDetails.next()) {
-				// construct an instance using the logged on users details
+
+				// Construct an instance using the logged on users details
 				user = new User(userDetails);
 			}
+
+			// Close query
+			getUser.close();
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 			e.getMessage();
@@ -490,36 +628,46 @@ public class Database {
 	 * 
 	 * This method is currently superfluous (while loginCheck does the same
 	 * thing)
+	 * 
+	 * @param uid
+	 * @return username
 	 */
-	public static String getUsername(int uid) throws NullPointerException {
-		// Takes a unique field (username) and returns the user
+	public static String getUsername(int uid) {
+
 		String username = null;
 		ResultSet userDetails = null;
-		// select that user
+
 		try {
+			// Prepare query
 			PreparedStatement getUsername = con
 					.prepareStatement("SELECT username FROM users WHERE id=?");
-			// parameterise inputs
+
+			// Parameterise inputs
 			getUsername.setInt(1, uid);
-			// execute
+
+			// Execute query
 			userDetails = getUsername.executeQuery();
-			// take all the users details and put them in an instance of user
+
+			// Take all the users details and put them in an instance of user
 			if (userDetails.next()) {
-				// construct an instance using the logged on users details
+				// Construct an instance using the logged on users details
 				username = userDetails.getString("username");
 			}
+
+			// Close query
+			getUsername.close();
+
+			return username;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			e.getMessage();
-		}
-		if (username == null)
-			throw new NullPointerException();
-		else
+
 			return username;
+		}
 	}
 
 	/**
-	 * Gets a house and puts it into a object type: House
+	 * Gets a house and puts it into a instance of House.
 	 * 
 	 * @param hid
 	 * @return House
@@ -527,49 +675,73 @@ public class Database {
 	public static House getHouse(int hid) {
 		House house = null;
 		ResultSet houseDetails = null;
-		// select that user
+
 		try {
 
-			// select all the columns of house
+			// Select the house
 			PreparedStatement getHouse = con
 					.prepareStatement("SELECT * FROM houses WHERE hid=?");
-			// parameterise inputs
+
+			// Parameterise inputs
 			getHouse.setInt(1, hid);
-			// execute
+
+			// Execute query
 			houseDetails = getHouse.executeQuery();
-			// take all the users details and put them in an instance of user
+
+			// If house exists use its data to create a new instance of house.
 			if (houseDetails.next()) {
-				// construct an instance using the logged on users details
 				house = new House(houseDetails);
 			} else {
 				System.out.println("\nUser has no houses with this title");
 				house = null;
 			}
+			// Close query
+			getHouse.close();
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 			e.getMessage();
 		}
-		
+
 		return house;
 	}
 
+	/**
+	 * Get the houses owned by a user.
+	 * 
+	 * @param uid
+	 * @return ArrayList<House>
+	 */
 	public static ArrayList<House> getLandlordProperties(int uid) {
+
 		ResultSet houses;
 		ArrayList<House> list = new ArrayList<House>();
+
 		try {
+			// Prepare query
 			PreparedStatement getHouses = con
 					.prepareStatement("SELECT * FROM houses WHERE uid=?");
+
+			// Parameterise inputs
 			getHouses.setInt(1, uid);
+
+			// Execute query
 			houses = getHouses.executeQuery();
 
+			// Add houses to the list
 			while (houses.next()) {
 				list.add(new House(houses));
 			}
 
+			// Close query
+			getHouses.close();
+
 		} catch (SQLException e) {
 			e.printStackTrace();
+
 			return null;
 		}
+
 		return list;
 	}
 
@@ -587,8 +759,7 @@ public class Database {
 	 * account information and information belonging to them.
 	 * 
 	 * @param username
-	 * @return 1 if success
-	 * @return 0 if failure
+	 * @return true on success
 	 */
 	public static boolean userDelete(String username) {
 		try {
@@ -662,62 +833,66 @@ public class Database {
 	 * @param Data1
 	 * @param Field2
 	 * @param Data2
-	 * @return
+	 * @return true on success
 	 */
 	public static boolean twoFieldCheck(String Field1, String Data1,
 			String Field2, String Data2) {
 
 		ResultSet result = null;
-		// check database to see if EITHER of the fields exist
+
 		try {
+			// Prepare query
 			PreparedStatement checkExists = con
 					.prepareStatement("SELECT * FROM users WHERE " + Field1
 							+ "=? OR " + Field2 + "=?");
-			// parameterise queries
+
+			// Parameterise queries
 			checkExists.setString(1, Data1);
 			checkExists.setString(2, Data2);
 
+			// Execute query
 			result = checkExists.executeQuery();
-			// loop through every row until
+
 			if (result.next()) {
-				// if the user exists there will only be one instance so the
-				// next result
-				// will trigger returning true
+				// If exists return true
 				return true;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			e.getMessage();
+
 			return false;
 		}
-		// the user doesnt exist
+
 		return false;
 	}
 
 	public static boolean login(String username, String password) {
 		ResultSet result = null;
-		// check to see if Username and password exist in db
+
 		try {
+			// Prepare query
 			PreparedStatement checkExists = con
 					.prepareStatement("SELECT * FROM users WHERE username=? AND password=?");
-			// parameterise queries
+
+			// Parameterise queries
 			checkExists.setString(1, username);
 			checkExists.setString(2, password);
 
+			// Execute query
 			result = checkExists.executeQuery();
-			// loop through every row until
+
 			if (result.next()) {
-				// if the user exists there will only be one instance so the
-				// next result
-				// will trigger returning true
+				// if exists return true
 				return true;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			e.getMessage();
+
 			return false;
 		}
-		// the user doesnt exist
+
 		return false;
 	}
 
@@ -728,25 +903,26 @@ public class Database {
 	 *            eg(username)
 	 * @param Data1
 	 *            eg(Eyehouse1)
-	 * @return
+	 * @return true on success
 	 */
 	public static boolean oneFieldCheck(String Field1, String Data1) {
 
 		ResultSet result = null;
-		// check database to see if username password exists
+
 		try {
+			// Prepare query
 			PreparedStatement checkExists = con
 					.prepareStatement("SELECT * FROM users WHERE " + Field1
 							+ "=?");
-			// parameterise queries
+
+			// Parameterise queries
 			checkExists.setString(1, Data1);
 
+			// Execute query
 			result = checkExists.executeQuery();
-			// loop through every row until
+
 			if (result.next()) {
-				// if the user exists there will only be one instance so the
-				// next result
-				// will trigger returning true
+				// If exists return true
 				return true;
 			}
 		} catch (SQLException e) {
@@ -754,7 +930,6 @@ public class Database {
 			e.getMessage();
 			return false;
 		}
-		// the user doesnt exist
 		return false;
 	}
 
@@ -763,14 +938,15 @@ public class Database {
 	 * already exist and enters them into the database.
 	 * 
 	 * @param newUser
-	 * @return 1 success
-	 * @return 0 failure
+	 * @return true on success
 	 */
 	public static boolean userRegister(User newUser) {
-		// boolean success = true / failure = false
+
 		// Check user email && username aren't already in database
 		if (!twoFieldCheck("username", newUser.username, "email", newUser.email)) {
 			try {
+
+				// Insert User
 				userInsert(newUser);
 				return true;
 			} catch (Exception e) {
@@ -779,29 +955,52 @@ public class Database {
 			}
 		}
 		if (twoFieldCheck("username", newUser.username, "email", newUser.email)) {
+			// User already exists
 			System.out
 					.println("\nAn account with the same username or Email already exists.\n");
 		}
 		return false;
 	}
 
+	/**
+	 * 
+	 * @param tablename
+	 * @param filepath
+	 * @param fieldSelect
+	 * @param id
+	 * @return true on success
+	 * @throws FileNotFoundException
+	 */
 	public static boolean updateImage(String tablename, String filepath,
 			String fieldSelect, int id) throws FileNotFoundException {
+
 		try {
+			// Initialise an input stream
 			FileInputStream fis = null;
+
+			// Prepare query
 			PreparedStatement updateImage = con.prepareStatement("UPDATE "
 					+ tablename + " SET " + fieldSelect + "=? WHERE id=?");
+
+			// Put the file specified in parameters into a File
 			File file = new File(filepath);
+
+			// Create an input stream from File
 			fis = new FileInputStream(file);
 
+			// Parameterise inputs
 			updateImage.setBinaryStream(1, fis, (int) file.length());
 			updateImage.setInt(2, id);
+
+			// Execute query
 			updateImage.executeUpdate();
+
+			// Close query
+			updateImage.close();
+
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 		System.out.println("\nImage update executed");
 		return true;
 	}
@@ -813,21 +1012,24 @@ public class Database {
 	 * @param houseDetails
 	 * @param userDetails
 	 * @return true on success
-	 * @return false on failure
 	 * @throws SQLException
 	 */
 	public static boolean insertHouseImage(String localFilepath,
 			House houseDetails, User userDetails) throws SQLException {
 		PreparedStatement insertImage;
+
 		try {
+			// Prepare query
 			insertImage = con
 					.prepareStatement("INSERT INTO house_images VALUES (?,?,?)");
-			// enter the relevant house in parameters so we can use its unqiue
-			// id
+
+			// Parameterise inputs
 			insertImage.setInt(1, 0);
 			insertImage.setInt(2, houseDetails.hid);
-			// check on the image they want to insert
+
+			// Check image file exists
 			File picture = new File(localFilepath);
+
 			if (!picture.exists())
 				throw new RuntimeException("Error. Local file not found");
 			else {
@@ -835,31 +1037,48 @@ public class Database {
 				System.out.println(picture);
 				insertImage.setBinaryStream(3, fis, fis.available());
 			}
+			// Execute query
 			insertImage.executeUpdate();
+
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.out.println("\nThe Insert Query Failed");
 			return false;
 		}
+
+		// Close query
+		insertImage.close();
 		return true;
 	}
 
+	/**
+	 * Gets all house images associated with a house and returns them and their
+	 * information in an ArrayList.
+	 * 
+	 * @param hid
+	 * @return ArrayList<HouseImage>
+	 */
 	public static ArrayList<HouseImage> getHouseImageSet(int hid) {
 		ResultSet images;
 		ArrayList<HouseImage> list = new ArrayList<HouseImage>();
+
 		try {
+			// Prepare query
 			PreparedStatement getImages = con
 					.prepareStatement("SELECT * FROM house_images WHERE hid=?");
+
+			// Parameterise inputs
 			getImages.setInt(1, hid);
+
+			// Execute query
 			images = getImages.executeQuery();
 
+			// Add houses to list
 			while (images.next()) {
 				list.add(new HouseImage(images));
 			}
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}
@@ -867,11 +1086,11 @@ public class Database {
 	}
 
 	/**
+	 * Check a video exists for a house.
 	 * 
 	 * @param userDetails
 	 * @param videoDetails
 	 * @return true if exists
-	 * @return false if does not exist
 	 */
 	public static boolean checkHouseVideoExists(User userDetails,
 			HouseVideo videoDetails) {
@@ -880,26 +1099,27 @@ public class Database {
 		String videoStr;
 
 		try {
-
+			// Prepare query
 			PreparedStatement checkTitle = con
 					.prepareStatement("SELECT video_loc FROM house_videos WHERE vid=?");
 
+			// Parametise inputs
 			checkTitle.setInt(1, videoDetails.vid);
 
+			// Execute query
 			title = checkTitle.executeQuery();
 
+			// Check record matches parameter
 			while (title.next()) {
 
 				videoStr = title.getString("video_loc");
 
 				if (!videoDetails.videoLocation.equals(videoStr)) {
-
 					System.out.println("\nVideo doesn't Exist for this user");
-
 					return false;
 				}
 			}
-
+			checkTitle.close();
 			return true;
 
 		} catch (SQLException e) {
@@ -910,23 +1130,36 @@ public class Database {
 		}
 	}
 
+	/**
+	 * Tries to return a HouseVideo.
+	 * 
+	 * @param userDetails
+	 * @param hid
+	 * @return HouseVideo
+	 */
 	public static HouseVideo checkHouseVideo(User userDetails, int hid) {
 
 		ResultSet videoExists = null;
 		HouseVideo video = null;
 
 		try {
+			// Execute query
 			PreparedStatement checkTitle = con
 					.prepareStatement("SELECT * FROM house_videos WHERE hid=?");
 
+			// Parameterise input
 			checkTitle.setInt(1, hid);
 
+			// Execute query
 			videoExists = checkTitle.executeQuery();
 
+			// If exists get the house video
 			if (videoExists.next()) {
 				video = new HouseVideo(videoExists);
 			}
 
+			// Close query
+			checkTitle.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -942,12 +1175,19 @@ public class Database {
 	 */
 	public static boolean deleteHouseImage(HouseImage image) {
 		try {
+			// Prepare query
 			PreparedStatement dropUser = con
 					.prepareStatement("DELETE FROM house_images WHERE iid=?");
+
 			// Parameterise inputs
 			dropUser.setInt(1, image.iid);
-			// Execute SQL drop statement
+
+			// Execute query
 			dropUser.executeUpdate();
+
+			// Close query
+			dropUser.close();
+
 			return true;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -956,14 +1196,27 @@ public class Database {
 		}
 	}
 
+	/**
+	 * Deletes all house images for a house.
+	 * 
+	 * @param hid
+	 * @return true on success
+	 */
 	public static boolean deleteAllHouseImage(int hid) {
 		try {
+			// Prepare query
 			PreparedStatement dropUser = con
 					.prepareStatement("DELETE FROM house_images WHERE hid=?");
+
 			// Parameterise inputs
 			dropUser.setInt(1, hid);
-			// Execute SQL drop statement
+
+			// Execute query
 			dropUser.executeUpdate();
+
+			// Close query
+			dropUser.close();
+
 			return true;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -997,21 +1250,21 @@ public class Database {
 				+ "/" + filename;
 
 		try {
-			// Check if video path already exists in the database
+			// Prepare query
 			PreparedStatement checkExists = con
 					.prepareStatement("SELECT * FROM house_videos WHERE video_loc=?");
 
-			// Enter field data
+			// Parameterise query
 			checkExists.setString(1, vidLocation);
 
 			// Execute query
 			check = checkExists.executeQuery();
 
-			// Check ResultSet
 			if (check.next()) {
-				// if the video location exists
+				// If the video location exists return false
 				System.out
 						.println("\nVideo path already exists.\nCheck if video has already been uploaded or change file name");
+				checkExists.close();
 				return false;
 			}
 		} catch (SQLException e) {
@@ -1021,17 +1274,20 @@ public class Database {
 		}
 
 		try {
-			// Insert video location into database
+			// Prepare query
 			PreparedStatement insertVideo = con
 					.prepareStatement("INSERT INTO house_videos VALUES (?,?,?)");
 
-			// Enter data fields
+			// Parameterise query
 			insertVideo.setInt(1, 0);
 			insertVideo.setInt(2, hid);
 			insertVideo.setString(3, vidLocation);
 
 			// Execute query
 			insertVideo.executeUpdate();
+
+			// Close query
+			insertVideo.close();
 
 		} catch (SQLException e) {
 
@@ -1040,34 +1296,49 @@ public class Database {
 
 			return false;
 		}
-		// Initialise file manager and upload the file to the vidLocation
-		// NOTE: the location also includes a U-PW-SRVR element that needs
-		// to be constant.
+		/*
+		 * Initialise file manager and upload the file to the vidLocation NOTE:
+		 * the location also includes a User-Password-ServerLocation element
+		 * that needs to be constant.
+		 */
 		FileManager update = new FileManager();
+
+		// Upload file to database
 		update.uploadVideo(userDetails, houseDetails, localDirectory, filename);
 
 		return true;
 	}
 
+	/**
+	 * Get video info from the database.
+	 * 
+	 * @param userDetails
+	 * @param houseDetails
+	 * @return HouseVideo
+	 */
 	public static HouseVideo getVideoInfo(User userDetails, House houseDetails) {
 
 		ResultSet videoRS;
 		HouseVideo video = null;
 
 		try {
-			// Check if video path already exists in the database
+			// Prepare query
 			PreparedStatement checkExists = con
 					.prepareStatement("SELECT * FROM house_videos WHERE hid=?");
 
-			// Enter field data
+			// Parameterise inputs
 			checkExists.setInt(1, houseDetails.hid);
 
 			// Execute query
 			videoRS = checkExists.executeQuery();
 
+			// If exists make a new HouseVideo
 			if (videoRS.next()) {
 				video = new HouseVideo(videoRS);
 			}
+
+			// Close query
+			checkExists.close();
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -1077,11 +1348,19 @@ public class Database {
 		return video;
 	}
 
+	/**
+	 * Delete a video.
+	 * 
+	 * @param userDetails
+	 * @param videoDetails
+	 * @return true on success
+	 */
 	public static boolean deleteVideo(User userDetails, HouseVideo videoDetails) {
 
 		Boolean exists;
 		ArrayList<Marker> deleteMarkers = new ArrayList<Marker>();
 
+		// Check the video entered exists
 		exists = checkHouseVideoExists(userDetails, videoDetails);
 
 		if (!exists) {
@@ -1089,19 +1368,24 @@ public class Database {
 			return false;
 		} else {
 			System.out.println("\n\n" + videoDetails.hid);
+
 			// Delete the video
 			try {
-				// if the video location exists
+
+				// If the video location exists
 				PreparedStatement dropVideo = con
 						.prepareStatement("DELETE FROM house_videos WHERE hid=?");
 
-				// Enter field data
+				// Parameterise Inputs
 				dropVideo.setInt(1, videoDetails.hid);
 
 				System.out.println("\n\n" + videoDetails.hid);
 
-				// Delete record of filepath
+				// Execute Update
 				dropVideo.executeUpdate();
+
+				// Close query
+				dropVideo.close();
 
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -1133,23 +1417,42 @@ public class Database {
 		return true;
 	}
 
+	/**
+	 * Check review exists in the database.
+	 * 
+	 * @param reviewDetails
+	 * @return true on success
+	 */
 	public static boolean checkReviewExists(UserReview reviewDetails) {
 		ResultSet userReviewSet;
 		int review;
+
 		try {
+			// Prepare query
 			PreparedStatement checkUserReview = con
 					.prepareStatement("SELECT * FROM user_reviews WHERE urid=?");
 
+			// Parameterise inputs
 			checkUserReview.setInt(1, reviewDetails.urid);
 
+			// Execute query
 			userReviewSet = checkUserReview.executeQuery();
 
 			while (userReviewSet.next()) {
 				review = userReviewSet.getInt(id);
+
+				// Check review exists
 				if (review == reviewDetails.urid) {
 					System.out.println("\nUser review exists");
+
+					// Close query
+					checkUserReview.close();
 					return true;
 				} else {
+
+					// Close query
+					checkUserReview.close();
+
 					System.out.println("\nUser review does not exist");
 					return false;
 				}
@@ -1157,25 +1460,33 @@ public class Database {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			e.getMessage();
-			System.out.println("\nSQL error in user review check");
+			System.out.println("\nError checkReviewExists: " + e.getMessage());
 			return false;
 		}
 		return true;
 	}
 
+	/**
+	 * Insert review for a user.
+	 * 
+	 * @param reviewDetails
+	 * @return true on success
+	 */
 	public static boolean insertUserReview(UserReview reviewDetails) {
 
 		try {
+			// Prepare query
 			PreparedStatement insertUserReview = con
 					.prepareStatement("INSERT INTO user_reviews "
 							+ "VALUES (?,?,?,?,?,?,?)");
 
+			// Handle error
 			if (reviewDetails.rating > 5) {
 				System.out.println("\nRating is out of 5");
 				return false;
 			}
 
-			// Values to insert
+			// Parameterise query
 			insertUserReview.setInt(id, 0);
 			insertUserReview.setInt(2, reviewDetails.uid_target);
 			insertUserReview.setInt(3, reviewDetails.uid_reviewer);
@@ -1184,35 +1495,57 @@ public class Database {
 			insertUserReview.setInt(6, reviewDetails.like);
 			insertUserReview.setInt(7, reviewDetails.dislike);
 
-			// execute the query
+			// Execute query
 			insertUserReview.executeUpdate();
 
+			// Close query
+			insertUserReview.close();
+
 		} catch (SQLException e) {
-			System.out.println("\nSQL Error: in insertUserReview");
+			System.out.println("\nError insertUserReview: " + e.getMessage());
 			e.printStackTrace();
 			e.getMessage();
 			return false;
 		}
-		System.out.println("\nSucces! Inserted User Review");
+		System.out.println("\nSuccess! Inserted User Review");
 		return true;
 	}
 
+	/**
+	 * Get a user review and associated data.
+	 * 
+	 * @param urid
+	 * @return
+	 */
 	public static UserReview getUserReview(int urid) {
 
 		ResultSet userReview;
 		UserReview userRev = null;
 
 		try {
+			// Prepare query
 			PreparedStatement getUserReview = con
 					.prepareStatement("SELECT * FROM user_reviews WHERE urid=?");
 
+			// Parameterise query
 			getUserReview.setInt(1, urid);
+
+			// Execute query
 			userReview = getUserReview.executeQuery();
 
+			// Get review
 			if (userReview.next()) {
+				// Create UserReview
 				userRev = new UserReview(userReview);
+
+				// Close query
+				getUserReview.close();
+
 				return userRev;
 			}
+			// Close query
+			getUserReview.close();
+
 		} catch (SQLException e) {
 			System.out.println("\nNo user review with that ID exists");
 			e.printStackTrace();
@@ -1221,22 +1554,36 @@ public class Database {
 		return userRev;
 	}
 
+	/**
+	 * Get all user reviews that are targeted at a user (target) and return them
+	 * in an ArrayList.
+	 * 
+	 * @param target
+	 * @return ArrayList<UserReview>
+	 */
 	public static ArrayList<UserReview> getUserReviewList(int target) {
 
 		ResultSet userReview;
 		ArrayList<UserReview> list = new ArrayList<UserReview>();
 
 		try {
+			// Prepare query
 			PreparedStatement getUserReview = con
 					.prepareStatement("SELECT * FROM user_reviews WHERE uid_target=?");
 
+			// Parameterise inputs
 			getUserReview.setInt(1, target);
 
+			// Execute query
 			userReview = getUserReview.executeQuery();
+
+			// Add reviews to list
 			while (userReview.next()) {
-				//
 				list.add(new UserReview(userReview));
 			}
+
+			// Close query
+			getUserReview.close();
 
 		} catch (SQLException e) {
 			System.out.println("\nNo user review with that ID exists");
@@ -1246,10 +1593,17 @@ public class Database {
 		return list;
 	}
 
+	/**
+	 * Delete user review.
+	 * 
+	 * @param reviewDetails
+	 * @return true on success
+	 */
 	public static boolean deleteUserReview(UserReview reviewDetails) {
 
 		Boolean exists;
 
+		// Check the review exists
 		exists = checkReviewExists(reviewDetails);
 
 		if (!exists) {
@@ -1257,15 +1611,18 @@ public class Database {
 			return false;
 		} else {
 			try {
-				// if the video location exists
+				// Prepare query
 				PreparedStatement dropReview = con
 						.prepareStatement("DELETE FROM user_reviews WHERE urid=?");
 
-				// Enter field data
+				// Parameterise inputs
 				dropReview.setInt(1, reviewDetails.urid);
 
-				// Delete record of filepath
+				// Execute Update
 				dropReview.executeUpdate();
+
+				// Close query
+				dropReview.close();
 
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -1276,20 +1633,27 @@ public class Database {
 		}
 	}
 
+	/**
+	 * Inserts a house review into the database.
+	 * 
+	 * @param reviewDetails
+	 * @return true on success
+	 */
 	public static boolean insertHouseReview(HouseReview reviewDetails) {
 
 		try {
+			// Prepare query
 			PreparedStatement insertUserReview = con
 					.prepareStatement("INSERT INTO house_reviews "
 							+ "VALUES (?,?,?,?,?,?,?)");
 
+			// Handle error
 			if (reviewDetails.rating > 5) {
 				System.out.println("\nRating is out of 5");
 				return false;
 			}
 
-
-			// Values to insert
+			// Parameterise query
 			insertUserReview.setInt(id, 0);
 			insertUserReview.setInt(2, reviewDetails.hid);
 			insertUserReview.setInt(3, reviewDetails.uid);
@@ -1298,11 +1662,14 @@ public class Database {
 			insertUserReview.setInt(6, reviewDetails.like);
 			insertUserReview.setInt(7, reviewDetails.dislike);
 
-			// execute the query
+			// Execute query
 			insertUserReview.executeUpdate();
 
+			// Close query
+			insertUserReview.close();
+
 		} catch (SQLException e) {
-			System.out.println("\nSQL Error: in insertHouseReview");
+			System.out.println("\nError insertHouseReview: " + e.getMessage());
 			e.printStackTrace();
 			e.getMessage();
 			return false;
@@ -1311,21 +1678,35 @@ public class Database {
 		return true;
 	}
 
+	/**
+	 * Get house reviews.
+	 * 
+	 * @param hid
+	 * @return ArrayList<HouseReview>
+	 */
 	public static ArrayList<HouseReview> getHouseReviews(int hid) {
 
 		ArrayList<HouseReview> list = new ArrayList<HouseReview>();
 		ResultSet houseReview;
 
 		try {
+			// Prepare query
 			PreparedStatement getUserReview = con
 					.prepareStatement("SELECT * FROM house_reviews WHERE hid=?");
 
+			// Parameterise query
 			getUserReview.setInt(1, hid);
 
+			// Execute query
 			houseReview = getUserReview.executeQuery();
+
+			// Add reviews to the list
 			while (houseReview.next()) {
 				list.add(new HouseReview(houseReview));
 			}
+
+			// Close query
+			getUserReview.close();
 
 		} catch (SQLException e) {
 			System.out.println("\nNo house review with that ID exists");
@@ -1334,24 +1715,42 @@ public class Database {
 		return list;
 	}
 
+	/**
+	 * Check a house review exists.
+	 * 
+	 * @param reviewDetails
+	 * @return true if exists
+	 */
 	public static boolean checkHouseReviewExists(HouseReview reviewDetails) {
 		ResultSet houseReviewSet;
 		int review;
+
 		try {
+			// Prepare query
 			PreparedStatement checkHouseReview = con
 					.prepareStatement("SELECT * FROM house_reviews WHERE hrid=?");
 
+			// Parameterise inputs
 			checkHouseReview.setInt(1, reviewDetails.hrid);
 
+			// Execute query
 			houseReviewSet = checkHouseReview.executeQuery();
 
 			while (houseReviewSet.next()) {
 				review = houseReviewSet.getInt(id);
+
+				// Check if review exists
 				if (review == reviewDetails.hrid) {
 					System.out.println("\nHouse review exists");
+
+					// Close query
+					checkHouseReview.close();
 					return true;
 				} else {
 					System.out.println("\nHouse review does not exist");
+
+					// Close query
+					checkHouseReview.close();
 					return false;
 				}
 			}
@@ -1364,10 +1763,17 @@ public class Database {
 		return true;
 	}
 
+	/**
+	 * Delete house review.
+	 * 
+	 * @param reviewDetails
+	 * @return true on success
+	 */
 	public static boolean deleteHouseReview(HouseReview reviewDetails) {
 
 		Boolean exists;
 
+		// Check review exists
 		exists = checkHouseReviewExists(reviewDetails);
 
 		if (!exists) {
@@ -1375,15 +1781,18 @@ public class Database {
 			return false;
 		} else {
 			try {
-				// if the video location exists
+				// Prepare query
 				PreparedStatement dropReview = con
 						.prepareStatement("DELETE FROM house_reviews WHERE hrid=?");
 
-				// Enter field data
+				// Parameterise inputs
 				dropReview.setInt(1, reviewDetails.hrid);
 
-				// Delete record of filepath
+				// Execute query
 				dropReview.executeUpdate();
+
+				// Close query
+				dropReview.close();
 
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -1394,64 +1803,105 @@ public class Database {
 		}
 	}
 
+	/**
+	 * Like a review. If the user has already liked the review delete the like
+	 * record and switch status to no like or dislike. If the user has disliked
+	 * the review switch the record to like. If the user has not liked or
+	 * disliked the review insert a like record.
+	 * 
+	 * @param userDetails
+	 * @param houseReview
+	 * @param userReview
+	 * @param type
+	 * @return true on success
+	 */
 	public static boolean likeReview(User userDetails, HouseReview houseReview,
 			UserReview userReview, int type) {
 
 		// type 1 = User review
 		// type 2 = House review
 		ResultSet likeCheck;
-		// Check User-Review like record exists
+
 		try {
+			// Prepare query
 			PreparedStatement checkLikes = con
 					.prepareStatement("SELECT * FROM likes WHERE type=? AND uid=? AND rid=?");
-			// Users is
+			// Parameterise inputs
 			checkLikes.setInt(1, type);
 			checkLikes.setInt(2, userDetails.uid);
 			if (type == 1)
 				checkLikes.setInt(3, userReview.urid);
 			if (type == 2)
 				checkLikes.setInt(3, houseReview.hrid);
+
+			// Execute query
 			likeCheck = checkLikes.executeQuery();
+
+			// Close query
+			checkLikes.close();
 
 			boolean likeStatus;
 
 			if (likeCheck.next()) {
-				// Record already exists
-				// Check if they liked or disliked
+				// Record exists check like status
 				likeStatus = likeCheck.getBoolean("liked");
+
 				if (!likeStatus) {
 					// If disliked
 					try {
+						// Prepare query
 						PreparedStatement like = con
 								.prepareStatement("UPDATE likes SET liked=? WHERE rid=? AND type=?");
+						// Parameterise inputs
 						like.setBoolean(1, true);
 						if (type == 1)
 							like.setInt(2, userReview.urid);
 						if (type == 2)
 							like.setInt(2, houseReview.hrid);
 						like.setInt(3, type);
+
+						// Execute query
 						like.executeUpdate();
+
+						// Close query
+						like.close();
+
 						try {
-							// iterate the reviews like count and decrement
-							// dislikes
+							// Update like count of user review
 							if (type == 1) {
+								// Prepare query
 								PreparedStatement iterateUserLikes = con
 										.prepareStatement("UPDATE user_reviews SET `like`=?, dislike=? WHERE urid=?");
+
+								// Parameterise inputs
 								iterateUserLikes.setInt(1, userReview.like + 1);
 								iterateUserLikes.setInt(2,
 										userReview.dislike - 1);
 								iterateUserLikes.setInt(3, userReview.urid);
+								// Execute query
 								iterateUserLikes.executeUpdate();
+
+								// Close query
+								iterateUserLikes.close();
 							}
+							// Update like count for house review
 							if (type == 2) {
+								// Prepare query
 								PreparedStatement iterateHouseLikes = con
 										.prepareStatement("UPDATE house_reviews SET `like`=?, dislike=? WHERE hrid=?");
+
+								// Parameterise inputs
 								iterateHouseLikes.setInt(1,
 										houseReview.like + 1);
 								iterateHouseLikes.setInt(2,
 										houseReview.dislike - 1);
 								iterateHouseLikes.setInt(3, houseReview.hrid);
+
+								// Execute query
 								iterateHouseLikes.executeUpdate();
+
+								// Close query
+								iterateHouseLikes.close();
 							}
 						} catch (Exception e) {
 							System.out
@@ -1464,34 +1914,57 @@ public class Database {
 					}
 
 				} else {
-					// If already liked delete record
-					// and decrement likes
-					// if the video location exists
+					// If already like delete record
 					try {
+						// Prepare query
 						PreparedStatement dropLikeRec = con
 								.prepareStatement("DELETE FROM likes WHERE type=? AND rid=?");
+
+						// Parameterise inputs
 						dropLikeRec.setInt(1, type);
 						if (type == 1)
 							dropLikeRec.setInt(2, userReview.urid);
 						if (type == 2)
 							dropLikeRec.setInt(2, houseReview.hrid);
+
+						// Execute query
 						dropLikeRec.executeUpdate();
+
+						// Close query
+						dropLikeRec.close();
+
 						try {
-							// decrememt the reviews like count
+							// Decrement the reviews like count
 							if (type == 1) {
+								// Prepare query
 								PreparedStatement iterateUserLikes = con
 										.prepareStatement("UPDATE user_reviews SET `like`=? WHERE urid=?");
+
+								// Parameterise inputs
 								iterateUserLikes.setInt(1, userReview.like - 1);
 								iterateUserLikes.setInt(2, userReview.urid);
+
+								// Execute query
 								iterateUserLikes.executeUpdate();
+
+								// Close query
+								iterateUserLikes.close();
 							}
 							if (type == 2) {
+								// Prepare query
 								PreparedStatement iterateHouseLikes = con
 										.prepareStatement("UPDATE house_reviews SET `like`=? WHERE hrid=?");
+
+								// Parameterise inputs
 								iterateHouseLikes.setInt(1,
 										houseReview.like - 1);
 								iterateHouseLikes.setInt(2, houseReview.hrid);
+
+								// Execute query
 								iterateHouseLikes.executeUpdate();
+
+								// Close query
+								iterateHouseLikes.close();
 							}
 						} catch (Exception e) {
 							System.out
@@ -1504,40 +1977,67 @@ public class Database {
 					}
 				}
 			} else {
-				// If record doesn't exist create it
-				// and add a like to the review
+				/*
+				 * If record doesn't exist create it and add a like to the
+				 * review.
+				 */
 				try {
+					// Prepare query
 					PreparedStatement newRecord = con
 							.prepareStatement("INSERT INTO likes VALUES (?,?,?,?)");
-					// ID of the user submitting a like
+
+					// Parameterise inputs
 					newRecord.setInt(1, userDetails.uid);
 					newRecord.setInt(2, type);
-					// ID of the review being like
+
+					// ID of the review being liked
 					if (type == 1)
 						newRecord.setInt(3, userReview.urid);
 					if (type == 2)
 						newRecord.setInt(3, houseReview.hrid);
 					newRecord.setBoolean(4, true);
+
+					// Execute update
 					newRecord.executeUpdate();
+
+					// Close query
+					newRecord.close();
+
 				} catch (Exception e) {
 					System.out.println("\nFailure to insert like record");
 					e.printStackTrace();
 				}
 				try {
-					// iterate the reviews like count
+					// Iterate the reviews like count
 					if (type == 1) {
+						// Prepare query
 						PreparedStatement iterateUserLikes = con
 								.prepareStatement("UPDATE user_reviews SET `like`=? WHERE urid=?");
+
+						// Parameterise inputs
 						iterateUserLikes.setInt(1, userReview.like + 1);
 						iterateUserLikes.setInt(2, userReview.urid);
+
+						// Execute query
 						iterateUserLikes.executeUpdate();
+
+						// Close query
+						iterateUserLikes.close();
 					}
 					if (type == 2) {
+						// Prepare query
 						PreparedStatement iterateHouseLikes = con
 								.prepareStatement("UPDATE house_reviews SET `like`=? WHERE hrid=?");
+
+						// Parameterise inputs
 						iterateHouseLikes.setInt(1, houseReview.like + 1);
 						iterateHouseLikes.setInt(2, houseReview.hrid);
+
+						// Execute queries
 						iterateHouseLikes.executeUpdate();
+
+						// Close queries
+						iterateHouseLikes.close();
 					}
 				} catch (Exception e) {
 					System.out.println("\nFailure to iterate like number : 2");
@@ -1550,24 +2050,41 @@ public class Database {
 		return true;
 	}
 
+	/**
+	 * Dislike review. If review already disliked delete record. If liked switch
+	 * to disliked. If no like or dislike create dislike record.
+	 * 
+	 * @param userDetails
+	 * @param houseReview
+	 * @param userReview
+	 * @param type
+	 * @return true on success
+	 */
 	public static boolean dislikeReview(User userDetails,
 			HouseReview houseReview, UserReview userReview, int type) {
 
-		// type 1 = User review
-		// type 2 = House review
+		// type == 1 for User review
+		// type == 2 for House review
 		ResultSet likeCheck;
 		// Check User-Review like record exists
 		try {
+			// Prepare query
 			PreparedStatement checkLikes = con
 					.prepareStatement("SELECT * FROM likes WHERE type=? AND uid=? AND rid=?");
-			// Users is
+
+			// Parameterise inputs
 			checkLikes.setInt(1, type);
 			checkLikes.setInt(2, userDetails.uid);
 			if (type == 1)
 				checkLikes.setInt(3, userReview.urid);
 			if (type == 2)
 				checkLikes.setInt(3, houseReview.hrid);
+
+			// Execute query
 			likeCheck = checkLikes.executeQuery();
+
+			// Close query
+			checkLikes.close();
 
 			boolean likeStatus;
 
