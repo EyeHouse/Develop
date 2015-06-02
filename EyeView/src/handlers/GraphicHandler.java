@@ -31,9 +31,13 @@ public class GraphicHandler extends Window {
 		buildGraphicsCanvas();
 	}
 
-	/* Graphic Methods */
+	/** Graphic Methods
+	 * 
+	 */
 
-	/* Populate stage with canvas of XML graphics */
+	/** Populate stage with canvas of XML graphics 
+	 * 
+	 */
 	private void buildGraphicsCanvas() {
 
 		// Instantiate group and canvas then retrieve graphics context.
@@ -50,7 +54,9 @@ public class GraphicHandler extends Window {
 		redraw();
 	}
 
-	/* Draw all XML graphics */
+	/** Draw all XML graphics
+	 * 
+	 */
 	private void redraw() {
 
 		// Clear canvas.
@@ -72,7 +78,10 @@ public class GraphicHandler extends Window {
 		}
 	}
 
-	/* Draw XML graphic */
+	/** Draw XML graphic
+	 * 
+	 * @param shape
+	 */
 	private void drawShape(GraphicElement shape) {
 
 		// Calculate graphic coordinates and size.
@@ -106,7 +115,14 @@ public class GraphicHandler extends Window {
 		}
 	}
 
-	/* Set colours of XML graphic */
+	/** Set colours of XML graphic
+	 * 
+	 * @param shape
+	 * @param xcoordinate
+	 * @param ycoordinate
+	 * @param width
+	 * @param height
+	 */
 	private void setShapeColor(GraphicElement shape, double xcoordinate,
 			double ycoordinate, double width, double height) {
 
@@ -163,7 +179,15 @@ public class GraphicHandler extends Window {
 		}
 	}
 
-	/* Add rectangle to canvas */
+	/** Add rectangle to canvas
+	 * 
+	 * @param xcoordinate
+	 * @param ycoordinate
+	 * @param width
+	 * @param height
+	 * @param duration
+	 * @param solid
+	 */
 	private void drawRectangle(double xcoordinate, double ycoordinate,
 			double width, double height, double duration, boolean solid) {
 
@@ -177,7 +201,15 @@ public class GraphicHandler extends Window {
 			gc.strokeRect(xcoordinate, ycoordinate, width, height);
 	}
 
-	/* Add oval to canvas */
+	/** Add oval to canvas
+	 * 
+	 * @param xcoordinate
+	 * @param ycoordinate
+	 * @param width
+	 * @param height
+	 * @param duration
+	 * @param solid
+	 */
 	private void drawOval(double xcoordinate, double ycoordinate, double width,
 			double height, double duration, boolean solid) {
 
@@ -191,7 +223,15 @@ public class GraphicHandler extends Window {
 			gc.strokeOval(xcoordinate, ycoordinate, width, height);
 	}
 
-	/* Add line to canvas */
+	/** Add line to canvas
+	 * 
+	 * @param xcoordinate
+	 * @param ycoordinate
+	 * @param width
+	 * @param height
+	 * @param duration
+	 * @param solid
+	 */
 	private void drawLine(double xcoordinate, double ycoordinate, double width,
 			double height, double duration, boolean solid) {
 
@@ -200,7 +240,10 @@ public class GraphicHandler extends Window {
 				(ycoordinate + height));
 	}
 
-	/* Add removal timer to XML graphic */
+	/** Add removal timer to XML graphic
+	 * 
+	 * @param shape
+	 */
 	private void setGraphicDurationTimer(final GraphicElement shape) {
 
 		// Add timeline if duration is greater than zero.
