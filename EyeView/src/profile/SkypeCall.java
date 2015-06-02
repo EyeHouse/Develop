@@ -21,7 +21,7 @@ import language.Translator;
 /**
  * This class implements skype calling in the form of a clickable skype logo.
  * 
- * @version 1.2 01.06.15
+ * @version 3.3 01.06.15
  * @author EyeHouse
  * 
  *         Copyright 2015 EyeHouse
@@ -87,6 +87,7 @@ public class SkypeCall extends Window {
 	 * 
 	 * @author EyeHouse
 	 * 
+	 *         Copyright 2015 EyeHouse
 	 */
 	private class callHandler implements EventHandler<MouseEvent> {
 

@@ -34,7 +34,7 @@ import presenter.Window;
 /**
  * This class creates the saved properties page
  * 
- * @version 1.4 01.06.15
+ * @version 2.4 01.06.15
  * @author EyeHouse
  * 
  *         Copyright 2015 EyeHouse

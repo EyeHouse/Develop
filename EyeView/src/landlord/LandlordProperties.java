@@ -33,7 +33,7 @@ import database.User;
 /**
  * This class creates the landlord properties page
  * 
- * @version 1.8 01.06.15
+ * @version 3.8 01.06.15
  * @author EyeHouse
  * 
  *         Copyright 2015 EyeHouse

@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import button.ButtonType;
 import button.SetupButton;
 
-import presenter.SlideContent;
 import presenter.Window;
 
 import javafx.beans.value.ChangeListener;
@@ -56,7 +55,7 @@ import database.User;
 /**
  * This class creates the edit property page
  * 
- * @version 1.10 01.06.15
+ * @version 3.10 01.06.15
  * @author EyeHouse
  * 
  *         Copyright 2015 EyeHouse
@@ -1001,6 +1000,7 @@ public class EditProperty extends Window {
 	 * 
 	 * @author EyeHouse
 	 * 
+	 *         Copyright 2015 EyeHouse
 	 */
 	public class ApplyChanges implements EventHandler<ActionEvent> {
 
@@ -1072,6 +1072,7 @@ public class EditProperty extends Window {
 	 * 
 	 * @author EyeHouse
 	 * 
+	 *         Copyright 2015 EyeHouse
 	 */
 	public class CreateHouse implements EventHandler<ActionEvent> {
 
@@ -1198,6 +1199,7 @@ public class EditProperty extends Window {
 	 * 
 	 * @author EyeHouse
 	 * 
+	 *         Copyright 2015 EyeHouse
 	 */
 	public class Cancel implements EventHandler<ActionEvent> {
 
@@ -1332,6 +1334,7 @@ public class EditProperty extends Window {
 	 * 
 	 * @author EyeHouse
 	 * 
+	 *         Copyright 2015 EyeHouse
 	 */
 	public class TextChanged implements ChangeListener<String> {
 
@@ -1351,6 +1354,7 @@ public class EditProperty extends Window {
 	 * 
 	 * @author EyeHouse
 	 * 
+	 *         Copyright 2015 EyeHouse
 	 */
 	public class ChangePage implements EventHandler<MouseEvent> {
 
@@ -1391,6 +1395,7 @@ public class EditProperty extends Window {
 	 * 
 	 * @author EyeHouse
 	 * 
+	 *         Copyright 2015 EyeHouse
 	 */
 	public class Browse implements EventHandler<ActionEvent> {
 
@@ -1507,6 +1512,7 @@ public class EditProperty extends Window {
 	 * 
 	 * @author EyeHouse
 	 * 
+	 *         Copyright 2015 EyeHouse
 	 */
 	public class Upload implements EventHandler<ActionEvent> {
 
@@ -1615,6 +1621,7 @@ public class EditProperty extends Window {
 	 * 
 	 * @author EyeHouse
 	 * 
+	 *         Copyright 2015 EyeHouse
 	 */
 	public class RemoveVideo implements EventHandler<ActionEvent> {
 
@@ -1654,6 +1661,7 @@ public class EditProperty extends Window {
 	 * 
 	 * @author EyeHouse
 	 * 
+	 *         Copyright 2015 EyeHouse
 	 */
 	public class DeleteImage implements EventHandler<ActionEvent> {
 
@@ -1741,6 +1749,7 @@ public class EditProperty extends Window {
 	 * 
 	 * @author EyeHouse
 	 * 
+	 *         Copyright 2015 EyeHouse
 	 */
 	public class AddMarker implements EventHandler<ActionEvent> {
 
@@ -1807,6 +1816,8 @@ public class EditProperty extends Window {
 	 * This event handler handles the delete marker event
 	 * 
 	 * @author EyeHouse
+	 * 
+	 *         Copyright 2015 EyeHouse
 	 */
 	public class DeleteMarker implements EventHandler<ActionEvent> {
 
@@ -1942,12 +1953,12 @@ public class EditProperty extends Window {
 					}
 				});
 
-		// Create and populate the combobox arraylist 
+		// Create and populate the combobox arraylist
 		ArrayList<ComboBox<String>> date = new ArrayList<ComboBox<String>>();
 		date.add(comboAvailableDay);
 		date.add(comboAvailableMonth);
 		date.add(comboAvailableYear);
-		
+
 		// Return the date combobox arraylist
 		return date;
 	}
