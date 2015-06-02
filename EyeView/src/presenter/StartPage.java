@@ -36,7 +36,7 @@ import javafx.util.Duration;
  * @version 2.2 20.04.15
  * @author EyeHouse
  * 
- *         Copyright 2015 EyeHouse
+ * Copyright 2015 EyeHouse
  */
 public class StartPage extends Window {
 

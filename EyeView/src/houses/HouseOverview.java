@@ -46,7 +46,7 @@ import database.User;
  * The page is constructed differently depending if a user is logged in, or if
  * the user is viewing a single property as opposed to a collection.
  * 
- * @version 1.0
+ * @version 1.5
  * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
  */
 public class HouseOverview extends Window {
@@ -84,7 +84,6 @@ public class HouseOverview extends Window {
 			if (currentUsername != null) {
 				savedProperties = User.getSavedProperties(currentUsername);
 			}
-			
 			setupAdvertTimer();
 			setupTimerControl();
 			setupPagination();
