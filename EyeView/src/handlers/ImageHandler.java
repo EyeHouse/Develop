@@ -20,7 +20,7 @@ import javafx.util.Duration;
  *         Copyright 2015 EyeHouse
  */
 
-public class ImageHandler extends Window{
+public class ImageHandler extends Window {
 
 	private float xPosition; // Horizontal position of image to be displayed
 	private float yPosition; // Vertical position of image to be displayed
@@ -37,21 +37,11 @@ public class ImageHandler extends Window{
 	private int imageIndex; // Index of current image.
 
 	/**
-	 * This method loads an image and places it in the group at the specified x
-	 * and y position, and with specified scale, and displays it at a specified
-	 * time and for a specified duration
+	 * Passes in a specific ImageElement object and displays it on the screen
+	 * with specified parameters
 	 * 
-	 * @param root
-	 *            Group to be populated with image.
-	 * @param image
-	 *            A container containing the sourcefile and the data required to
-	 *            place an image on the screen at a specified x and y position,
-	 *            with a specified scale, and displays it at a specified time
-	 *            and for a specified duration
-	 * @param xResolution
-	 *            Width of target area in pixels.
-	 * @param yResolution
-	 *            Height of target area in pixels.
+	 * @param imageData
+	 *            the ImageElement object to be displayed on the current Scene
 	 */
 	public void createImage(ImageElement imageData) {
 		this.imageData = imageData;
@@ -95,13 +85,13 @@ public class ImageHandler extends Window{
 	}
 
 	/**
-	 * This returns the width of the image
+	 * Returns the width of the image
 	 * 
 	 * @param widthImage
-	 *            ImageElement object containing the source file in question.
+	 *            ImageElement object containing the source file in question
 	 * 
-	 * @return The original width of the image file before any processing by the
-	 *         handler.
+	 * @return the original width of the image file before any processing by the
+	 *         handler
 	 */
 	public float GetImageWidth(ImageElement widthImage) {
 
@@ -113,14 +103,16 @@ public class ImageHandler extends Window{
 		return (float) imageObject.getImage().getWidth();
 	}
 
-	/* Setup start and duration timers to show and remove images */
+	/**
+	 * Setup start and duration timers to show and remove images
+	 */
 	private void SetupImageTimer() {
 
 		// Store index
 		final int currentImageIndex = imageIndex;
 		imageIndex++;
 
-		// Add timeline if starttime is greater than zero.
+		// Add Timeline if starttime is greater than zero.
 		if (imageData.starttime > 0) {
 
 			// Instantiate timeline to show image after start time.
@@ -152,6 +144,5 @@ public class ImageHandler extends Window{
 								}
 							})).play();
 		}
-
 	}
 }

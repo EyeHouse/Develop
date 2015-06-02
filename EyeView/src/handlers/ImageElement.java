@@ -28,7 +28,6 @@ public class ImageElement {
 	 * 
 	 * @param sourcefile
 	 *            the filename of the image
-	 * 
 	 * @param xstart
 	 *            the horizontal position of the top-left pixel of the image as
 	 *            it is displayed on the screen, relative to the resolution of
@@ -46,7 +45,7 @@ public class ImageElement {
 	 *            screen
 	 * @param starttime
 	 *            the time the image should be first displayed on the screen
-	 * @param specifiedWidth
+	 * @param specifiedWidths
 	 *            the required width of the image which is used to scale the
 	 *            image, preserving the aspect ratio
 	 */
