@@ -1,7 +1,5 @@
 package database;
 
-import java.awt.BorderLayout;
-import java.awt.Image;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -10,20 +8,14 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-//import com.mysql.jdbc.PreparedStatement;
 import java.sql.PreparedStatement;
 import java.util.*;
-
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 
 import com.mysql.jdbc.Blob;
 
 /**
  * 
- * Database.java sets up a connection with the database and contains methods to
+ * Database.java has methods to set up a connection with the database and 
  * handle SQL queries.
  * 
  * @version 1.48 (15.03.15)
@@ -33,7 +25,7 @@ import com.mysql.jdbc.Blob;
  */
 public class Database {
 
-	// Public variables
+	// Connection initialised
 	public static Connection con = null;
 	/*
 	 * Define the column numbers of the db table as integer variables 'id' auto
@@ -866,7 +858,13 @@ public class Database {
 
 		return false;
 	}
-
+	
+	/**
+	 * Uses entered details to log a user in.
+	 * @param username
+	 * @param password
+	 * @return true on success
+	 */
 	public static boolean login(String username, String password) {
 		ResultSet result = null;
 
@@ -882,17 +880,19 @@ public class Database {
 			// Execute query
 			result = checkExists.executeQuery();
 
+			// If exists return true
 			if (result.next()) {
-				// if exists return true
 				return true;
 			}
+			
+			// Close query
+			checkExists.close();
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 			e.getMessage();
-
 			return false;
 		}
-
 		return false;
 	}
 
@@ -2089,39 +2089,63 @@ public class Database {
 			boolean likeStatus;
 
 			if (likeCheck.next()) {
-				// Record already exists
-				// Check if they liked or disliked
+				// Record already exists check if they liked or disliked
 				likeStatus = likeCheck.getBoolean("liked");
+
 				if (!likeStatus) {
-					// If already disliked delete record
-					// and decrement dislikes
+					// If already disliked delete record and decrement dislikes
 					try {
+						// Prepare query
 						PreparedStatement dropLikeRec = con
 								.prepareStatement("DELETE FROM likes WHERE type=? AND rid=? AND uid=?");
+
+						// Parameterise inputs
 						dropLikeRec.setInt(1, type);
 						if (type == 1)
 							dropLikeRec.setInt(2, userReview.urid);
 						if (type == 2)
 							dropLikeRec.setInt(2, houseReview.hrid);
 						dropLikeRec.setInt(3, userDetails.uid);
+
+						// Execute update
 						dropLikeRec.executeUpdate();
+
+						// Close query
+						dropLikeRec.close();
+
 						try {
-							// decrememt the reviews dislike count
+							// Decrement the reviews dislike count.
 							if (type == 1) {
+								// Prepare query
 								PreparedStatement iterateUserLikes = con
 										.prepareStatement("UPDATE user_reviews SET dislike=? WHERE urid=?");
+
+								// Parameterise query
 								iterateUserLikes.setInt(1,
 										userReview.dislike - 1);
 								iterateUserLikes.setInt(2, userReview.urid);
+
+								// Execute query
 								iterateUserLikes.executeUpdate();
+
+								// Close query
+								iterateUserLikes.close();
 							}
 							if (type == 2) {
+								// Prepare query
 								PreparedStatement iterateHouseLikes = con
 										.prepareStatement("UPDATE house_reviews SET dislike=? WHERE hrid=?");
+
+								// Parameterise query
 								iterateHouseLikes.setInt(1,
 										houseReview.dislike - 1);
 								iterateHouseLikes.setInt(2, houseReview.hrid);
+
+								// Execute update
 								iterateHouseLikes.executeUpdate();
+
+								// Close query
+								iterateHouseLikes.close();
 							}
 						} catch (Exception e) {
 							System.out
@@ -2134,10 +2158,13 @@ public class Database {
 					}
 
 				} else {
-					// if liked switch like status and ++ dis -- likes
+					// If liked switch like status and ++ dis -- likes
 					try {
+						// Prepare query
 						PreparedStatement like = con
 								.prepareStatement("UPDATE likes SET liked=? WHERE rid=? AND type=? AND uid=?");
+
+						// Parameterise query
 						like.setBoolean(1, false);
 						if (type == 1)
 							like.setInt(2, userReview.urid);
@@ -2145,28 +2172,52 @@ public class Database {
 							like.setInt(2, houseReview.hrid);
 						like.setInt(3, type);
 						like.setInt(4, userDetails.uid);
+
+						// Execute update
 						like.executeUpdate();
+
+						// Close query
+						like.close();
+
 						try {
-							// iterate the reviews like count and decrement
-							// dislikes
+							/*
+							 * Iterate the reviews like count and decrement
+							 * dislikes.
+							 */
 							if (type == 1) {
+								// Prepare query
 								PreparedStatement iterateUserLikes = con
 										.prepareStatement("UPDATE user_reviews SET `like`=?, dislike=? WHERE urid=?");
+
+								// Parameterise inputs
 								iterateUserLikes.setInt(1, userReview.like - 1);
 								iterateUserLikes.setInt(2,
 										userReview.dislike + 1);
 								iterateUserLikes.setInt(3, userReview.urid);
+
+								// Execute query
 								iterateUserLikes.executeUpdate();
+
+								// Close query
+								iterateUserLikes.close();
 							}
 							if (type == 2) {
+								// Prepare query
 								PreparedStatement iterateHouseLikes = con
 										.prepareStatement("UPDATE house_reviews SET `like`=?, dislike=? WHERE hrid=?");
+
+								// Parameterise inputs
 								iterateHouseLikes.setInt(1,
 										houseReview.like - 1);
 								iterateHouseLikes.setInt(2,
 										houseReview.dislike + 1);
 								iterateHouseLikes.setInt(3, houseReview.hrid);
+
+								// Execute update
 								iterateHouseLikes.executeUpdate();
+
+								// Close query
+								iterateHouseLikes.close();
 							}
 						} catch (Exception e) {
 							System.out
@@ -2181,40 +2232,65 @@ public class Database {
 
 				}
 			} else {
-				// If record doesn't exist create it
-				// and add a dislike to the review
+				/*
+				 * If record doesn't exist create it and add a dislike to the
+				 * review
+				 */
 				try {
+					// Prepare query
 					PreparedStatement newRecord = con
 							.prepareStatement("INSERT INTO likes VALUES (?,?,?,?)");
-					// ID of the user submitting a like
+					// Parameterise inputs
 					newRecord.setInt(1, userDetails.uid);
 					newRecord.setInt(2, type);
-					// ID of the review being like
+
 					if (type == 1)
 						newRecord.setInt(3, userReview.urid);
 					if (type == 2)
 						newRecord.setInt(3, houseReview.hrid);
 					newRecord.setBoolean(4, false);
+
+					// Execute update
 					newRecord.executeUpdate();
+
+					// Close query
+					newRecord.close();
+
 				} catch (Exception e) {
 					System.out.println("\nFailure to insert dislike record");
 					e.printStackTrace();
 				}
 				try {
-					// iterate the reviews dislike count
+					// Iterate the reviews dislike count
 					if (type == 1) {
+						// Prepare query
 						PreparedStatement iterateUserLikes = con
 								.prepareStatement("UPDATE user_reviews SET dislike=? WHERE urid=?");
+
+						// Parameterise input
 						iterateUserLikes.setInt(1, userReview.dislike + 1);
 						iterateUserLikes.setInt(2, userReview.urid);
+
+						// Execute update
 						iterateUserLikes.executeUpdate();
+
+						// Close query
+						iterateUserLikes.close();
 					}
 					if (type == 2) {
+						// Prepare query
 						PreparedStatement iterateHouseLikes = con
 								.prepareStatement("UPDATE house_reviews SET dislike=? WHERE hrid=?");
+
+						// Parameterise inputs
 						iterateHouseLikes.setInt(1, houseReview.dislike + 1);
 						iterateHouseLikes.setInt(2, houseReview.hrid);
+
+						// Execute query
 						iterateHouseLikes.executeUpdate();
+
+						// Close query
+						iterateHouseLikes.close();
 					}
 				} catch (Exception e) {
 					System.out
@@ -2229,26 +2305,35 @@ public class Database {
 	}
 
 	/**
+	 * Insert video marker.
 	 * 
 	 * @param vid
 	 * @param room
 	 * @param time
 	 * @return true on success
-	 * @return false on failure
 	 */
 	public static boolean insertVideoMarker(int vid, String room, double time) {
 
 		ResultSet check = null;
-		// Check if video has marker with the same room name already
-		// room names for each video are unique within that video
-		// eg vid=3 cannot have two 'living room' markers
+		/*
+		 * Check if video has marker with the same room name already room names
+		 * for each video are unique within that video eg vid=3 cannot have two
+		 * 'living room' markers
+		 */
 		try {
+			// Prepare query
 			PreparedStatement checkVideoMarkers = con
 					.prepareStatement("SELECT * FROM markers WHERE vid=? AND room=?");
+
+			// Parameterise inputs
 			checkVideoMarkers.setInt(1, vid);
 			checkVideoMarkers.setString(2, room);
 
+			// Execute query
 			check = checkVideoMarkers.executeQuery();
+
+			// Close query
+			checkVideoMarkers.close();
 
 			if (check.next()) {
 				System.out
@@ -2263,15 +2348,22 @@ public class Database {
 		}
 
 		try {
+			// Prepare query
 			PreparedStatement insertMarker = con
 					.prepareStatement("INSERT INTO markers "
 							+ "VALUES (?,?,?,?)");
+
+			// Parameterise inputs
 			insertMarker.setInt(1, 0);
 			insertMarker.setInt(2, vid);
 			insertMarker.setString(3, room);
 			insertMarker.setDouble(4, time);
 
+			// Execute update
 			insertMarker.executeUpdate();
+
+			// Close query
+			insertMarker.close();
 
 			System.out.println("\nMarker Inserted");
 
@@ -2284,14 +2376,28 @@ public class Database {
 		}
 	}
 
+	/**
+	 * Delete video marker.
+	 * 
+	 * @param videoMarker
+	 * @return
+	 */
 	public static boolean deleteVideoMarker(Marker videoMarker) {
 
-		// Trys to drop the marker with the relevant marker id (mid)
 		try {
+			// Prepare query
 			PreparedStatement dropMarker = con
 					.prepareStatement("DELETE FROM markers WHERE vid=?");
+
+			// Parameterise inputs
 			dropMarker.setInt(1, videoMarker.vid);
+
+			// Execute update
 			dropMarker.executeUpdate();
+
+			// Close query
+			dropMarker.close();
+
 			System.out.println("\nMarker Deleted");
 			return true;
 		} catch (SQLException e) {
@@ -2314,18 +2420,23 @@ public class Database {
 		ArrayList<Marker> list = new ArrayList<Marker>();
 
 		try {
+			// Prepare query
 			PreparedStatement getVideoMarkers = con
 					.prepareStatement("SELECT * FROM markers WHERE vid=?");
 
+			// Paramterise inputs
 			getVideoMarkers.setInt(1, vid);
 
+			// Execute query
 			markers = getVideoMarkers.executeQuery();
 
-			// loop through markers for the vid
-			// Enter them into an array list
+			// Add markers to the list
 			while (markers.next()) {
 				list.add(new Marker(markers));
 			}
+
+			// Close query
+			getVideoMarkers.close();
 
 			return list;
 
@@ -2338,25 +2449,30 @@ public class Database {
 	}
 
 	/**
-	 * Selects all houses
+	 * Selects all houses.
 	 * 
-	 * @return ArrayList of house id's
+	 * @return ArrayList<Integer>
 	 */
 	public static ArrayList<Integer> selectAllHouses() {
 
 		ArrayList<Integer> list = new ArrayList<Integer>();
 		ResultSet houses = null;
+
 		try {
+			// Prepare query
 			PreparedStatement allHouses = con
 					.prepareStatement("SELECT * FROM houses");
 
+			// Execute query
 			houses = allHouses.executeQuery();
-			// if houses do exist loop through all of them
 
+			// Add houses
 			while (houses.next()) {
-				// store all hid's in an arraylist
 				list.add(houses.getInt("hid"));
 			}
+
+			// Close query
+			allHouses.close();
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -2364,329 +2480,5 @@ public class Database {
 			System.out.println("\nSelect all houses failed.");
 		}
 		return list;
-	}
-
-	public static void main(String[] args) throws Exception {
-		// Connect to the Database
-		dbConnect();
-
-		boolean check;
-		User insert = null;
-		// User checkUse = null
-		String username = "DefTest3";
-		String password = "Eyehouse1";
-		String hashPassword = DataHandler.crypt(password);
-
-		String email = "DefProfTest3@york.ac.uk";
-
-		String title = "Example";
-
-		int mode = 18;
-		boolean insertSuccess;
-		boolean houseDeleted;
-		boolean updateSuccess;
-
-		// Henries ID
-		int targetID = 3106;
-
-		// testing switch
-		switch (mode) {
-		case 201:
-
-			userDelete(username);
-
-			break;
-		case 101:
-
-			// logged in user
-			User tempu89 = getUser("MVPTom");
-
-			HouseVideo video = checkHouseVideo(tempu89, 9);
-			System.out.println("\nVideo exists" + video.videoLocation);
-
-			break;
-		case 11:
-			// insert the houses basic info
-			House eyehouseHQ = null;
-			int pricepermonth = 56;
-			boolean house;
-
-			String brc = "M:/Distributed Computer Systems/DNSTex.pdf";
-			String enrg = "M:/Distributed Computer Systems/ddos.jpg";
-			eyehouseHQ = new House(title);
-			eyehouseHQ.postcode("YO1 7HP");
-			eyehouseHQ.address("Testing Date");
-			eyehouseHQ.price(pricepermonth);
-			eyehouseHQ.deposit(pricepermonth);
-			eyehouseHQ.rooms(pricepermonth);
-			eyehouseHQ.bathrooms(pricepermonth);
-			eyehouseHQ.dateAvailable("2015-04-24");
-			eyehouseHQ.furnished(true);
-			eyehouseHQ.description("Test");
-			User temp = getUser(username);
-			if (!checkHouseExists(temp, eyehouseHQ)) {
-				house = houseInsert(eyehouseHQ, brc, enrg, temp);
-				eyehouseHQ.printHouse();
-				System.out.println(house);
-			}
-			break;
-		case 14:
-			int tempPrc = 9001;
-			// for a date string
-			int varType = 1;
-			User tempu3 = getUser("MVPTom");
-			House temph3 = getHouse(8);
-			check = updateHouse(tempu3, temph3, "date_available", "2015-06-22",
-					null, null, tempPrc, varType);
-			if (check == true)
-				System.out.println("\nUpdate Successful");
-			else
-				System.out.println("\nFailure");
-			break;
-		case 21:
-
-			User tempu14 = getUser("MVPTom");
-
-			// MVPTom review on
-			// HouseReview one = getHouseReview(2);
-
-			ArrayList<HouseReview> test1 = new ArrayList<HouseReview>();
-
-			test1 = getHouseReviews(0);
-			UserReview test2 = getUserReview(2);
-
-			// likeReview(tempu14, test1, test2, 2);
-
-			dislikeReview(tempu14, test1.get(1), test2, 2);
-
-			break;
-		case 2: // insert User
-
-			// user to be inserted
-			insert = new User(username);
-			insert.firstName("Testing");
-			insert.secondName("File read");
-			insert.email(email);
-			insert.admin(true);
-			insert.landlord(true);
-			insert.DOB("0000-01-01");
-			String encryptedPassword = DataHandler.crypt(password);
-			insert.password(encryptedPassword);
-
-			// Register user
-			insertSuccess = userRegister(insert);
-
-			if (!insertSuccess) {
-				System.out.println("Failure to register user");
-			} else
-				System.out.println("User Registered");
-
-			break;
-		case 4: // edit details
-
-			User tempu9 = getUser("MVPTom");
-
-			// Update user
-			updateSuccess = userUpdate(tempu9, "password", null, hashPassword);
-
-			System.out.println("User update method returns: " + updateSuccess);
-
-			tempu9.printUser();
-
-			break;
-		case 10:
-			// String tablename, String filepath, String fieldSelect, String id
-			String tablename = "users";
-			String filepath = "D:/EE course/SWEng/Java/Compilation1.jpg";
-			String fieldSelect = "profileIMG";
-
-			int id = 3104;
-
-			// Update image
-			updateImage(tablename, filepath, fieldSelect, id);
-
-			break;
-		case 12:
-			// a lot of cases!
-			// get House id method and get house as well
-			User tempu = getUser("MVPTom");
-			// gets house and puts it into memory
-			House temph = getHouse(8);
-			int uid = getID(tempu, null, 1);
-			int hid = getID(tempu, temph, 2);
-			System.out.println("User ID: " + uid + "\nHouse ID: " + hid);
-			break;
-		case 13:
-			User tempu2 = getUser("MVPTom");
-			House temph2 = getHouse(42);
-
-			try {
-				houseDeleted = houseDelete(temph2, tempu2);
-				if (!houseDeleted)
-					System.out.println("House not Deleted");
-				else
-					System.out.println("\nHouse succesfully deleted");
-			} catch (NullPointerException e) {
-				e.printStackTrace();
-				System.out.println("House not Deleted");
-			}
-			break;
-		case 15:
-
-			User tempu4 = getUser("MVPTom");
-			House temph4 = getHouse(8);
-
-			// perhaps enter your own local file to test here, unless you're on
-			// my laptop
-			String localFilePath = "D:/EE course/SWEng/Java/eyehouseHQ1.jpg";
-
-			// Insert image
-			check = insertHouseImage(localFilePath, temph4, tempu4);
-
-			if (check == true)
-				System.out.println("\nInsert Successful");
-			else
-				System.out.println("\nFailure");
-
-			break;
-		case 16:
-
-			// int hid5 = getID(tempu5, temph5, 2);
-			ArrayList<HouseImage> list = new ArrayList<HouseImage>();
-			list = getHouseImageSet(10);
-
-			int i;
-			for (i = 0; i < list.size(); i++) {
-				HouseImage image = list.get(i);
-				System.out.println(image.imageIS);
-
-				// InputStream binaryStream = image.imageBlob.getBinaryStream(1,
-				// image.imageBlob.length());
-				Image picture = ImageIO.read(image.imageIS);
-
-				JFrame frame = new JFrame();
-				JLabel label = new JLabel(new ImageIcon(picture));
-				frame.getContentPane().add(label, BorderLayout.CENTER);
-				frame.pack();
-				frame.setVisible(true);
-				// Deletes all the images for this house
-				if (image.iid == 19) {
-					deleteHouseImage(image);
-				}
-			}
-
-			break;
-		case 17:
-
-			User tempu6 = getUser("MVPTom");
-
-			House temph6 = getHouse(8);
-
-			String localDir = "D:/EE course/SWEng/Java/";
-			String filename = "example_clip.mp4";
-
-			check = insertHouseVideo(tempu6, temph6, filename, localDir);
-
-			if (check == true)
-				System.out.println("\nInsert Successful");
-			else
-				System.out.println("\nFailure");
-
-			break;
-		case 18:
-
-			User tempu7 = getUser("RickMc");
-			House temph7 = getHouse(51);
-
-			HouseVideo house1;
-
-			house1 = getVideoInfo(tempu7, temph7);
-
-			house1.printHouseInfo();
-
-			check = deleteVideo(tempu7, house1);
-			if (check == true)
-				System.out.println("\nDelete Successful");
-			else
-				System.out.println("\nFailure");
-
-			break;
-
-		case 19:
-			// logged in user
-			User tempu12 = getUser(username);
-
-			// fill in target ID
-			UserReview reviewDetails = new UserReview(tempu12.uid);
-			reviewDetails.uid_reviewer = targetID;
-			reviewDetails.review = "Hes such a dick. Thank god hes not in charge of anything important";
-			reviewDetails.rating(1);
-			reviewDetails.like(1000);
-			reviewDetails.dislike(0);
-
-			check = insertUserReview(reviewDetails);
-
-			checkReviewExists(reviewDetails);
-
-			ArrayList<UserReview> list2 = new ArrayList<UserReview>();
-			list2 = getUserReviewList(targetID);
-
-			int k;
-			for (k = 0; k < list2.size(); k++) {
-				System.out.println("\nReview: " + list2.get(k).review);
-				System.out.println("\nReview id: " + list2.get(k).urid);
-				System.out.println("\nReviewer id: "
-						+ list2.get(k).uid_reviewer);
-			}
-			// check = deleteUserReview(list2.get(1));
-
-			// if (check == true)
-			// System.out.println("\nSuccessful");
-			// else
-			// System.out.println("\nFailure");
-
-			break;
-		case 20:
-			// logged in user
-			User tempu13 = getUser("MVPTom");
-			House temph13 = getHouse(8);
-			// get user id
-			int uid13 = getID(tempu13, null, 1);
-			// get hid
-			int hid13 = getID(tempu13, temph13, 2);
-
-			// fill in target ID
-			HouseReview hreviewDetails = new HouseReview(hid13);
-			hreviewDetails.uid = uid13;
-			hreviewDetails.review = "A kind house. Slightly too fond of children";
-			hreviewDetails.rating(0);
-			hreviewDetails.like(23);
-			hreviewDetails.dislike(49);
-
-			// check = insertHouseReview(hreviewDetails);
-
-			ArrayList<HouseReview> list5 = new ArrayList<HouseReview>();
-
-			list5 = getHouseReviews(3);
-
-			// checkHouseReviewExists(newHouseReview);
-
-			System.out.println("\nNew review: " + list5.get(0).review);
-
-			// check = deleteHouseReview(newHouseReview);
-
-			checkHouseReviewExists(list5.get(0));
-
-			// if (check == true)
-			// System.out.println("\nSuccessful");
-			// else
-			// System.out.println("\nFailure");
-
-			break;
-
-		default: // no mode selected
-			System.out.println("\nSelect a valid switch case mode");
-			break;
-		}
 	}
 }
