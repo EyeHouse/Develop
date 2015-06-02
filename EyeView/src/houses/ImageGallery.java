@@ -27,21 +27,18 @@ import presenter.Window;
  * This class groups together the image gallery with rectangles to cover
  * thumbnails that are out of bounds, and set the background of the thumbnails
  * 
- * @version 1.4 15.03.15
- * @author EyeHouse
- * 
- *         Copyright 2015 EyeHouse
+ * @version 1.4 (15.03.15)
+ * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
  */
 public class ImageGallery extends Window {
 
 	private static Group galleryGroup;
 	private GalleryPictures galleryPictures;
-	public static ArrayList<Image> galleryImages;
-	public static Image mainImage;
-	public static ImageView mainHouseImage; // ImageView in which Image is drawn
-
-	public static final double thumbnailHeight = 80;
-	public static final double thumbnailWidth = 130;
+	private static ArrayList<Image> galleryImages;
+	private static Image mainImage;
+	private static ImageView mainHouseImage;
+	private static final double thumbnailHeight = 80;
+	private static final double thumbnailWidth = 130;
 	private static final double mainImageHeight = 300;
 	private static final double mainImageWidth = 410;
 
@@ -83,7 +80,7 @@ public class ImageGallery extends Window {
 		/*
 		 * White rectangles cover the thumbnails that go past the edge of the
 		 * main image on both sides when the scrollbar moves the thumbnails left
-		 * and right
+		 * and right.
 		 */
 		Rectangle rightCoverBox = new Rectangle();
 		rightCoverBox.setX(mainImageWidth);
@@ -117,21 +114,19 @@ public class ImageGallery extends Window {
 	}
 
 	/**
-	 * Return the image gallery group
+	 * Returns the image gallery group.
 	 */
 	public Node getGallery() {
 		return galleryGroup;
 	}
 
 	/**
-	 * This class defines the functionality of the image gallery
-	 * 
-	 * @version 1.4 15.03.15
-	 * @author EyeHouse
-	 * 
-	 *         Copyright 2015 EyeHouse
+	 * This class defines the functionality of the image gallery.
+	 *
+	 * @version 1.4 (15.03.15)
+	 * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
 	 */
-	public static class GalleryPictures extends Region {
+	private static class GalleryPictures extends Region {
 
 		// Time for thumbnails to move to position with the scrollbar
 		private static final Duration DURATION = Duration.millis(250);
@@ -143,10 +138,8 @@ public class ImageGallery extends Window {
 		private static final double SPACING = 140;
 
 		private static final double scrollbarHeight = 15;
-		public static final double thumbnailHeight = 80;
-		public static final double thumbnailWidth = 130;
 
-		public static ArrayList<Thumbnails> thumbnails;
+		public static ArrayList<Thumbnail> thumbnails;
 		private Group centered = new Group();
 		private Group left = new Group();
 		private Group center = new Group();
@@ -161,25 +154,25 @@ public class ImageGallery extends Window {
 
 		/**
 		 * Constructor creates the content and checks for any changes, and
-		 * updates the image positions accordingly
+		 * updates the image positions accordingly.
 		 * 
 		 * @param galleryImages
 		 *            an array list of images for the thumbnails
 		 * @param mainImage
 		 *            the main image of the image gallery
 		 */
-		public GalleryPictures(final ArrayList<Image> galleryImages,
+		private GalleryPictures(final ArrayList<Image> galleryImages,
 				final Image mainImage) {
 
 			// Set the appearance of the scroll bar
 			scrollBar.setStyle("-fx-base: #202020; -fx-background: #202020;");
 
 			// Create thumbnails
-			thumbnails = new ArrayList<Thumbnails>();
+			thumbnails = new ArrayList<Thumbnail>();
 
 			for (int i = 0; i < galleryImages.size(); i++) {
 
-				Thumbnails thumbnail = new Thumbnails(galleryImages.get(i));
+				Thumbnail thumbnail = new Thumbnail(galleryImages.get(i));
 				thumbnails.add(thumbnail);
 				final int index = i;
 
@@ -214,7 +207,7 @@ public class ImageGallery extends Window {
 				thumbnail = null;
 			}
 
-			// setup scroll bar
+			// Set up scroll bar
 			scrollBar.setMax(thumbnails.size() - 3);
 			scrollBar.setVisibleAmount(1);
 			scrollBar.setUnitIncrement(1);
@@ -236,14 +229,22 @@ public class ImageGallery extends Window {
 				}
 			});
 
-			// create content
+			// Create content
 			centered.getChildren().addAll(left, right, center);
 			getChildren().addAll(centered, scrollBar);
 
-			// update
 			update();
 		}
 
+		/**
+		 * Changes the main image in the gallery to be the selected image given
+		 * by the index of the new gallery image.
+		 * 
+		 * @param i
+		 *            index of the house image to switch to
+		 * @param mainImage
+		 *            the main image to be displayed in the gallery
+		 */
 		public void changeImage(int i, Image mainImage) {
 
 			galleryGroup.getChildren().remove(mainHouseImage);
@@ -267,7 +268,6 @@ public class ImageGallery extends Window {
 		protected void layoutChildren() {
 
 			if (currentIndex == 0) {
-				// keep centered centered
 				centered.setLayoutX(xPosition);
 			} else if (currentIndex == galleryImages.size() - 1) {
 				centered.setLayoutX(xPosition + (mainImageWidth / 2));
@@ -276,23 +276,22 @@ public class ImageGallery extends Window {
 						- (thumbnailWidth / 2));
 			}
 
-			// centered.setLayoutX(mainImageWidth/2);
 			// Change to main image + amount
 			centered.setLayoutY(mainImageHeight + yPosition + scrollbarHeight);
 
-			// position scroll bar at bottom
-			scrollBar.setLayoutX(xPosition); // change to main image start x
-												// position
-			scrollBar.setLayoutY(mainImageHeight + yPosition); // change to
-																// small
-																// images +
-																// amount
+			// Re-position scroll bar underneath the main image
+			scrollBar.setLayoutX(xPosition);
+			scrollBar.setLayoutY(mainImageHeight + yPosition);
 			scrollBar.resize(mainImageWidth, scrollbarHeight);
 		}
 
+		/**
+		 * Refreshes the image gallery after a thumbnail image is clicked or the
+		 * scroll bar is moved.
+		 */
 		private void update() {
 
-			// move thumbnails to new homes in groups
+			// Move thumbnails to new homes in groups
 			left.getChildren().clear();
 			center.getChildren().clear();
 			right.getChildren().clear();
@@ -305,43 +304,51 @@ public class ImageGallery extends Window {
 				right.getChildren().add(thumbnails.get(i));
 			}
 
-			// stop old timeline if there is one running
+			// Stop old timeline if there is one running
 			if (timeline != null)
 				timeline.stop();
 
-			// create timeline to animate to new positions
+			// Create timeline to animate to new positions
 			timeline = new Timeline();
 
-			// add keyframes for left thumbnails
+			// Add keyframes for left thumbnails
 			final ObservableList<KeyFrame> keyFrames = timeline.getKeyFrames();
 
 			for (int i = 0; i < left.getChildren().size(); i++) {
-				final Thumbnails it = thumbnails.get(i);
+				final Thumbnail it = thumbnails.get(i);
 				double newX = -left.getChildren().size() * SPACING + SPACING
 						* i;
 				keyFrames.add(new KeyFrame(DURATION, new KeyValue(it
 						.translateXProperty(), newX, INTERPOLATOR)));
 			}
 
-			// add keyframe for center item
-			final Thumbnails centerItem = thumbnails.get(centerIndex);
+			// Add keyframe for center item
+			final Thumbnail centerItem = thumbnails.get(centerIndex);
 			keyFrames.add(new KeyFrame(DURATION, new KeyValue(centerItem
 					.translateXProperty(), 0, INTERPOLATOR)));
 
-			// add keyframes for right thumbnails
+			// Add keyframes for right thumbnails
 			for (int i = 0; i < right.getChildren().size(); i++) {
-				final Thumbnails it = thumbnails.get(thumbnails.size() - i - 1);
+				final Thumbnail it = thumbnails.get(thumbnails.size() - i - 1);
 				final double newX = right.getChildren().size() * SPACING
 						- SPACING * i;
 				keyFrames.add(new KeyFrame(DURATION, new KeyValue(it
 						.translateXProperty(), newX, INTERPOLATOR)));
 			}
 
-			// play animation
+			// Play animation
 			timeline.play();
 		}
 
-		private void shiftToCenter(Thumbnails item) {
+		/**
+		 * Positions the selected thumbnail image to be in the center
+		 * perspective of the gallery image row.
+		 * 
+		 * @param item
+		 *            the selected thumbnail image
+		 */
+		private void shiftToCenter(Thumbnail item) {
+
 			for (int i = 0; i < left.getChildren().size(); i++) {
 				if (left.getChildren().get(i) == item) {
 					int shiftAmount = left.getChildren().size() - i;
@@ -363,7 +370,14 @@ public class ImageGallery extends Window {
 			}
 		}
 
-		public void shift(int shiftAmount) {
+		/**
+		 * Shifts the row of images left or right by the appropriate amount.
+		 * 
+		 * @param shiftAmount
+		 *            the number of positions to shift the image row across by
+		 */
+		private void shift(int shiftAmount) {
+
 			if (centerIndex <= 0 && shiftAmount > 0)
 				return;
 			if (centerIndex >= thumbnails.size() - 1 && shiftAmount < 0)
@@ -374,23 +388,27 @@ public class ImageGallery extends Window {
 	}
 
 	/**
-	 * A Node that displays a image with some 2.5D perspective rotation around
-	 * the Y axis.
+	 * This class creates a small image of specific size, given by the
+	 * thumbnailHeight and thumbnailHeight constants.
 	 */
-	public static class Thumbnails extends Parent {
+	public static class Thumbnail extends Parent {
 
-		public Thumbnails(Image image) {
+		public Thumbnail(Image image) {
 
 			ImageView imageView = new ImageView(image);
-			imageView.setFitHeight(GalleryPictures.thumbnailHeight);
-			imageView.setFitWidth(GalleryPictures.thumbnailWidth);
+			imageView.setFitHeight(ImageGallery.thumbnailHeight);
+			imageView.setFitWidth(ImageGallery.thumbnailWidth);
 			imageView.setPreserveRatio(false);
 			getChildren().addAll(imageView);
 			image = null;
 		}
 	}
 
+	/**
+	 * Disposes of the image gallery and any contained objects.
+	 */
 	public void dispose() {
+
 		mainImage = null;
 		mainHouseImage = null;
 		galleryImages.clear();
