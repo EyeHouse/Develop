@@ -3,10 +3,18 @@ package database;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-
+/**
+ * A class to handle potential user inputs before they are processed by
+ * Database.java methods
+ * 
+ * @version 1.48 (15.03.15)
+ * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
+ * 
+ */
 public class DataHandler {
-	
+
 	private static MessageDigest digester;
+
 	/**
 	 * 
 	 * @param email
@@ -35,8 +43,8 @@ public class DataHandler {
 		// one lower case letter,
 		// one digit,
 		// be 6 - 20 character long.
-		if(password.equals(retypePassword)) {
-			if(password.equals("")) {
+		if (password.equals(retypePassword)) {
+			if (password.equals("")) {
 				System.out.println("Password Fields Null");
 				return false;
 			}
@@ -56,42 +64,41 @@ public class DataHandler {
 		}
 		return result;
 	}
-	
+
 	// Method for encrypting the password starts here
-		static {
-			try {
-				digester = MessageDigest.getInstance("MD5");
-			} catch (NoSuchAlgorithmException e) {
-				e.printStackTrace();
-			}
+	static {
+		try {
+			digester = MessageDigest.getInstance("MD5");
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * The crypt method is used to generate the MD5 of a given string.
+	 * 
+	 * @param password
+	 *            is the string to be encrypted.
+	 * @return Returns the generated MD5 string. If the passwords do not pass
+	 *         passwordChecker method, it returns a null string.
+	 */
+	public static String crypt(String password) {
+		if (password == null || password.length() == 0) {
+			throw new IllegalArgumentException("Please enter a password!");
 		}
 
-		/**
-		 * The crypt method is used to generate the MD5 of a given string.
-		 * 
-		 * @param password
-		 *            is the string to be encrypted.
-		 * @return Returns the generated MD5 string. If the passwords do not pass
-		 *         passwordChecker method, it returns a null string.
-		 */
-		public static String crypt(String password) {
-			if (password == null || password.length() == 0) {
-				throw new IllegalArgumentException("Please enter a password!");
-			}
+		digester.update(password.getBytes());
+		byte[] hash = digester.digest();
+		StringBuffer hexString = new StringBuffer();
 
-			digester.update(password.getBytes());
-			byte[] hash = digester.digest();
-			StringBuffer hexString = new StringBuffer();
-
-			for (int i = 0; i < hash.length; i++) {
-				if ((0xff & hash[i]) < 0x10) {
-					hexString.append("0" + Integer.toHexString((0xFF & hash[i])));
-				} else {
-					hexString.append(Integer.toHexString(0xFF & hash[i]));
-				}
+		for (int i = 0; i < hash.length; i++) {
+			if ((0xff & hash[i]) < 0x10) {
+				hexString.append("0" + Integer.toHexString((0xFF & hash[i])));
+			} else {
+				hexString.append(Integer.toHexString(0xFF & hash[i]));
 			}
-			return hexString.toString();
 		}
-	
-	
+		return hexString.toString();
+	}
+
 }

@@ -15,9 +15,14 @@ import javax.swing.JLabel;
 
 import com.mysql.jdbc.Blob;
 
+/**
+ * Holds information associated with a user.
+ * 
+ * @version 1.48 (15.03.15)
+ * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
+ */
 public class User {
 
-	
 	private final static int UID = 1;
 	private final static int FNAME = 2;
 	private final static int SNAME = 3;
@@ -32,7 +37,7 @@ public class User {
 	private final static int SKYPE = 12;
 	private final static int BIO = 13;
 
-	// id should automatically be created on insertion
+	// ID should automatically be created on insertion
 	public int uid;
 	public String first_name;
 	public String second_name;
@@ -47,14 +52,13 @@ public class User {
 	public String skype;
 	public String bio;
 
-	// user contructor method
+	// User constructor method
 	public User(String username) {
 		this.username = username;
 	}
 
-	// user contructor method
+	// Creates User from result set
 	public User(ResultSet userDetails) {
-		// fill details
 		try {
 			this.uid = userDetails.getInt(UID);
 			this.username = userDetails.getString(USER);
@@ -75,117 +79,188 @@ public class User {
 		}
 	}
 
-	// fill user details
+	// Set details
 	public void firstName(String firstname) {
 		first_name = firstname;
 	}
 
-	// user second name
 	public void secondName(String secondname) {
 		second_name = secondname;
 	}
 
-	// user email address
 	public void email(String emailAddress) {
 		email = emailAddress;
 	}
 
-	// true if user is to be granted landlord privileges
 	public void landlord(boolean isLandlord) {
 		landlord = isLandlord;
 	}
 
-	// user password
 	public void password(String pw) {
 		password = pw;
 	}
-	// dates in the form year/month/day xxxx-xx-xx
+
+	// Dates in the form year/month/day xxxx-xx-xx
 	public void DOB(String dateBirth) {
 		DOB = dateBirth;
 	}
 
-	// true if user is to be granted admin privileges
 	public void admin(boolean isAdmin) {
 		admin = isAdmin;
 	}
-	
+
 	public void profimg(Blob imageblob) {
 		profimg = imageblob;
 	}
-	
+
 	public void properties(String userHouses) {
 		properties = userHouses;
 	}
-	
-	public void skype(String username){
+
+	public void skype(String username) {
 		skype = username;
 	}
-	
-	public void bio(String biography){
+
+	public void bio(String biography) {
 		bio = biography;
 	}
-	
+
+	/**
+	 * Gets the saved properties for a user
+	 * 
+	 * @param username
+	 *            Username of user to retrieve
+	 * @return Arraylist of property IDs stored by the user
+	 */
 	public static ArrayList<String> getSavedProperties(String username) {
 
+		// Instantiate an arraylist to contain the property IDs
 		ArrayList<String> properties = new ArrayList<String>();
 
+		// If a valid username has been input
 		if (username != null) {
+
+			// Retrieve the user from the database
 			User currentUser = Database.getUser(username);
+
+			// If the "properties" field of the user is not empty
 			if (currentUser.properties != null) {
+
+				// Check the length of the "properties" field
 				int length = currentUser.properties.length();
+
+				/*
+				 * Loop through the "properties" field populate the property ID
+				 * arraylist with the stored IDs
+				 */
 				for (int i = 0; i < length; i += 4) {
-					
-					String propertyID = currentUser.properties.substring(i, i + 3);
-					House house = Database.getHouse(Integer.parseInt(propertyID));
-					
-					if(house!= null){
-						properties.add(currentUser.properties.substring(i, i + 3));
+
+					// Extract the current substring of the "properties" field
+					String propertyID = currentUser.properties.substring(i,
+							i + 3);
+
+					// Attempt to retrieve the current property ID
+					House house = Database.getHouse(Integer
+							.parseInt(propertyID));
+
+					// If the property exists
+					if (house != null) {
+
+						// Add the current ID to the output arraylist
+						properties.add(propertyID);
 					}
 				}
 			}
 		}
+
+		/*
+		 * Update the database with any changes to the saved properties as a
+		 * result of unbound property IDs
+		 */
 		updateSavedProperties(username, properties);
+		
+		// Return the arraylist of property IDs
 		return properties;
 	}
 
+	/**
+	 * Update saved properties.
+	 * 
+	 * @param username
+	 *            Username of user to update
+	 * @param properties
+	 *            Arraylist of strings containing property IDs to save
+	 */
 	public static void updateSavedProperties(String username,
 			ArrayList<String> properties) {
+
+		// Retrieve the specified user from the database
 		User currentUser = Database.getUser(username);
+
+		// Instantiate a string to store parsed list of propert IDs
 		String savedProperties = null;
 
+		// If there are no property IDs to store
 		if (properties.size() == 0) {
+
+			// Set the "properties" field of the user to null in the database
 			Database.userUpdate(currentUser, "properties", null, null);
-		} else {
+		}
+
+		/*
+		 * Otherwise loop through the property IDs and parse into a database
+		 * compatible string
+		 */
+		else {
 			for (int i = 0; i < properties.size(); i++) {
-				if (i == 0)
+
+				// If this is the first property ID in the set
+				if (i == 0) {
+
+					// Add the ID to the database string
 					savedProperties = properties.get(0);
-				else
+				} else {
+
+					/*
+					 * Otherwise append the current property ID to the end of
+					 * the database string
+					 */
 					savedProperties = properties.get(i) + "," + savedProperties;
+				}
 			}
+
+			/*
+			 * Update the "property" field of the current user with the parsed
+			 * database string
+			 */
 			Database.userUpdate(currentUser, "properties", null,
 					savedProperties);
 		}
 	}
-	
-	// option to print details for developer tests
+
+	/**
+	 * Option to print details for developer tests.
+	 * 
+	 * @throws IOException
+	 */
 	public void printUser() throws IOException {
 		System.out.println("\nUsername: " + username);
 		System.out.println("Email: " + email);
 		System.out.println("Password: " + password);
-		
+
 		try {
-			InputStream binaryStream = profimg.getBinaryStream(1, profimg.length());
-			
+			InputStream binaryStream = profimg.getBinaryStream(1,
+					profimg.length());
+
 			Image image = ImageIO.read(binaryStream);
-			
+
 			JFrame frame = new JFrame();
-		    JLabel label = new JLabel(new ImageIcon(image));
-		    frame.getContentPane().add(label, BorderLayout.CENTER);
-		    frame.pack();
-		    frame.setVisible(true);
-			
+			JLabel label = new JLabel(new ImageIcon(image));
+			frame.getContentPane().add(label, BorderLayout.CENTER);
+			frame.pack();
+			frame.setVisible(true);
+
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

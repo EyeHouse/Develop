@@ -3,6 +3,12 @@ package database;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Holds information for a house review
+ * 
+ * @version 1.48 (15.03.15)
+ * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
+ */
 public class HouseReview {
 	private final static int HRID = 1;
 	private final static int HID = 2;
@@ -22,12 +28,12 @@ public class HouseReview {
 	public int like;
 	public int dislike;
 
-	// Manually create a view off of new input
+	// HouseReview Contructor
 	public HouseReview(int hrTG) {
 		this.hid = hrTG;
 	}
 
-	// Get a reviews details after searching/ selecting it
+	// Create HouseReview from a result set
 	public HouseReview(ResultSet reviewDetails) {
 		try {
 			this.hrid = reviewDetails.getInt(HRID);
@@ -43,6 +49,7 @@ public class HouseReview {
 		}
 	}
 
+	// Set details
 	public void uid(int urRV) {
 		this.uid = urRV;
 	}

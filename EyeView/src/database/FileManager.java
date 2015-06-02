@@ -1,18 +1,12 @@
 package database;
 
-import java.awt.BorderLayout;
-import java.awt.image.BufferedImage;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.vfs2.FileContent;
@@ -23,6 +17,14 @@ import org.apache.commons.vfs2.Selectors;
 import org.apache.commons.vfs2.impl.StandardFileSystemManager;
 import org.apache.commons.vfs2.provider.sftp.SftpFileSystemConfigBuilder;
 
+/**
+ * File manager uses JSch in order to implement methods of uploading,
+ * downloading and deleting files from our server via sftp.
+ * 
+ * @version 1.48 (15.03.15)
+ * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
+ * 
+ */
 public class FileManager {
 
 	public static Properties props;
@@ -32,20 +34,30 @@ public class FileManager {
 	private static String PASSWORD = "Jigsaw12!";
 	public static String puttY = "127.0.0.1";
 
+	/**
+	 * Downloads a file from the database.
+	 * 
+	 * @param propertiesFilename
+	 * @param fileToDownload
+	 * @return true on success
+	 */
 	public boolean downloadFTP(String propertiesFilename, String fileToDownload) {
 
+		// Setup properties
 		props = new Properties();
+
+		// Initialise file manager
 		StandardFileSystemManager manager = new StandardFileSystemManager();
 
 		try {
-
+			// Sets up details for local file
 			props.load(new FileInputStream(propertiesFilename));
 			String serverAddress = props.getProperty("serverAddress").trim();
 			String remoteDirectory = props.getProperty("remoteDirectory")
 					.trim();
 			String localDirectory = props.getProperty("localDirectory").trim();
 
-			// Initializes the file manager
+			// Start the file manager
 			manager.init();
 
 			// Setup our SFTP configuration
@@ -56,15 +68,17 @@ public class FileManager {
 					true);
 			SftpFileSystemConfigBuilder.getInstance().setTimeout(opts, 10000);
 
-			// Create the SFTP URI using the host name, userid, password, remote
-			// path and file name
-			
+			/*
+			 * Create the SFTP URI using the host name, userid, password, remote
+			 * path and file name.
+			 */
 			String port = "";
 
+			// Appends URI depending on connection method
 			if (Database.url.equals(puttY)) {
 				port = ":8022/";
 			}
-			
+
 			String sftpUri = "sftp://" + USERNAME + ":" + PASSWORD + "@"
 					+ serverAddress + port + "/" + remoteDirectory
 					+ fileToDownload;
@@ -90,14 +104,26 @@ public class FileManager {
 		return true;
 	}
 
+	/**
+	 * Reads a file from the server and returns it in type File
+	 * 
+	 * @param filepath
+	 * @return File
+	 * @throws IOException
+	 */
 	public static File readFile(String filepath) throws IOException {
+
+		// Initialise file manager
 		StandardFileSystemManager manager = new StandardFileSystemManager();
+
 		// Create remote file object
 		FileObject remoteFile;
 		File media = null;
 		try {
-			// Initializes the file manager
+
+			// Start the file manager
 			manager.init();
+
 			// Setup our SFTP configuration
 			FileSystemOptions opts = new FileSystemOptions();
 			SftpFileSystemConfigBuilder.getInstance().setStrictHostKeyChecking(
@@ -106,11 +132,13 @@ public class FileManager {
 					true);
 			SftpFileSystemConfigBuilder.getInstance().setTimeout(opts, 10000);
 
-			// Create the SFTP URI using the host name, userid, password, remote
-			// path and file name
-
+			/*
+			 * Create the SFTP URI using the host name, userid, password, remote
+			 * path and file name.
+			 */
 			String port = "";
 
+			// Appends URI depending on connection method
 			if (Database.url.equals(puttY)) {
 				port = ":8022/";
 			}
@@ -119,12 +147,18 @@ public class FileManager {
 					+ Database.url + port + "/group/eyeHouse.net/" + filepath;
 
 			System.out.println(sftpUri);
+
+			// Put the file into a type FileContent variable
 			remoteFile = manager.resolveFile(sftpUri, opts);
 			FileContent temp = remoteFile.getContent();
+
+			// Get the input stream of the type FileContent
 			InputStream is = temp.getInputStream();
+
+			// Create a type File from the input stream
 			media = stream2file(is);
+
 		} catch (FileSystemException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			remoteFile = null;
 			System.out.println("File Read: Failed\n remoteFile is null");
@@ -132,17 +166,28 @@ public class FileManager {
 		return media;
 	}
 
+	/**
+	 * Reads an input stream
+	 * 
+	 * @param filepath
+	 * @return
+	 * @throws IOException
+	 */
 	public static InputStream readInputStream(String filepath)
 			throws IOException {
 
+		// Initialise file manager
 		StandardFileSystemManager manager = new StandardFileSystemManager();
+
 		// Create remote file object
 		FileObject remoteFile;
 		InputStream is;
 
 		try {
-			// Initializes the file manager
+
+			// Starts the file manager
 			manager.init();
+
 			// Setup our SFTP configuration
 			FileSystemOptions opts = new FileSystemOptions();
 			SftpFileSystemConfigBuilder.getInstance().setStrictHostKeyChecking(
@@ -151,24 +196,29 @@ public class FileManager {
 					true);
 			SftpFileSystemConfigBuilder.getInstance().setTimeout(opts, 10000);
 
-			// Create the SFTP URI using the host name, userid, password, remote
-			// path and file name
-
+			/*
+			 * Create the SFTP URI using the host name, userid, password, remote
+			 * path and file name.
+			 */
 			String port = "";
 
+			// Appends URI depending on connection method
 			if (Database.url.equals(puttY)) {
 				port = ":8022/";
 			}
 
 			String sftpUri = "sftp://" + USERNAME + ":" + PASSWORD + "@"
-					+ Database.url + port + "/group/eyeHouse.net/"
-					+ filepath;
+					+ Database.url + port + "/group/eyeHouse.net/" + filepath;
 
+			// Resolve path
 			remoteFile = manager.resolveFile(sftpUri, opts);
+			// Get content
 			FileContent temp = remoteFile.getContent();
+
+			// Convert to input stream
 			is = temp.getInputStream();
+
 		} catch (FileSystemException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			is = null;
 			System.out.println("File Read: Failed\nFileSystem Exception");
@@ -176,15 +226,32 @@ public class FileManager {
 		return is;
 	}
 
+	/**
+	 * Takes an input stream and converts it into type File
+	 * 
+	 * @param InputStream
+	 * @return File
+	 * @throws IOException
+	 */
 	public static File stream2file(InputStream in) throws IOException {
+		// Create temporary file
 		final File tempFile = File.createTempFile(PREFIX, SUFFIX);
 		tempFile.deleteOnExit();
+
+		// Convert File
 		try (FileOutputStream out = new FileOutputStream(tempFile)) {
 			IOUtils.copy(in, out);
 		}
 		return tempFile;
 	}
 
+	/**
+	 * Read a video from the server.
+	 * 
+	 * @param userDetails
+	 * @param videoDetails
+	 * @return File
+	 */
 	public static File readVideo(User userDetails, HouseVideo videoDetails) {
 
 		String filepath = videoDetails.videoLocation;
@@ -192,6 +259,7 @@ public class FileManager {
 		InputStream is;
 		File file = null;
 
+		// Read the video into an input stream
 		try {
 			is = readInputStream(filepath);
 		} catch (IOException e) {
@@ -200,6 +268,7 @@ public class FileManager {
 			e.printStackTrace();
 		}
 
+		// Convert the input stream to a file
 		if (is != null) {
 			try {
 				file = stream2file(is);
@@ -212,6 +281,15 @@ public class FileManager {
 		return file;
 	}
 
+	/**
+	 * Upload a file to the server.
+	 * 
+	 * @param userDetails
+	 * @param houseDetails
+	 * @param localDirectory
+	 * @param filename
+	 * @return true on success
+	 */
 	public boolean uploadVideo(User userDetails, House houseDetails,
 			String localDirectory, String filename) {
 
@@ -219,10 +297,11 @@ public class FileManager {
 		int hid = Database.getID(userDetails, houseDetails, 2);
 		String filepath;
 
+		// Initialise manager
 		StandardFileSystemManager manager = new StandardFileSystemManager();
 
 		try {
-			// check if the file exists
+			// Handle wrong slashes
 			if (localDirectory.endsWith("/") || localDirectory.endsWith("\\")) {
 				filepath = localDirectory + filename;
 			} else {
@@ -231,12 +310,14 @@ public class FileManager {
 
 			System.out.println("\nLocalfilepath is: " + filepath);
 
+			// New file
 			File file = new File(filepath);
 
+			// Check file exists
 			if (!file.exists())
 				throw new RuntimeException("Error. Local file not found");
 
-			// Initializes the file manager
+			// Starts the file manager
 			manager.init();
 
 			// Setup our SFTP configuration
@@ -247,28 +328,23 @@ public class FileManager {
 					true);
 			SftpFileSystemConfigBuilder.getInstance().setTimeout(opts, 10000);
 
-			// Create the SFTP URI using the host name, userid, password, remote
-			// path and file name
-
+			/*
+			 * Create the SFTP URI using the host name, userid, password, remote
+			 * path and file name.
+			 */
 			String port = "";
 
+			// Appends URI depending on connection method
 			if (Database.url.equals(puttY)) {
 				port = ":8022/";
 			}
 
 			String sftpUri = "sftp://" + USERNAME + ":" + PASSWORD + "@"
-					+ Database.url + port
-					+ "/group/eyeHouse.net/eyehouse/" + userDetails.username
-					+ "/" + hid + "/" + filename;
-
-			// upload a default image
-
-			// String sftpUri = "sftp://" + USERNAME + ":" + PASSWORD + "@"
-			// + Database.url + ":8080//"
-			// + "home/ehfile1004/group/eyeHouse.net/eyehouse/defaults/" +
-			// filename;
+					+ Database.url + port + "/group/eyeHouse.net/eyehouse/"
+					+ userDetails.username + "/" + hid + "/" + filename;
 
 			System.out.println(sftpUri);
+
 			// Create local file object
 			FileObject localFile = manager.resolveFile(file.getAbsolutePath());
 
@@ -288,12 +364,19 @@ public class FileManager {
 		return true;
 	}
 
+	/**
+	 * Deletes a video file from the database.
+	 * 
+	 * @param videoDetails
+	 * @return true on success
+	 */
 	public static boolean deleteVideo(HouseVideo videoDetails) {
 
+		// Initialise file manager
 		StandardFileSystemManager manager = new StandardFileSystemManager();
 
 		try {
-			// Initializes the file manager
+			// Starts the file manager
 			manager.init();
 
 			// Setup our SFTP configuration
@@ -304,21 +387,20 @@ public class FileManager {
 					true);
 			SftpFileSystemConfigBuilder.getInstance().setTimeout(opts, 10000);
 
-			// Create the SFTP URI using the host name, userid, password, remote
-			// path and file name
-
+			/*
+			 * Create the SFTP URI using the host name, userid, password, remote
+			 * path and file name.
+			 */
 			String port = "";
 
+			// Appends URI depending on connection method
 			if (Database.url.equals(puttY)) {
 				port = ":8022/";
 			}
 
-			String sftpUri = "sftp://" + USERNAME + ":" + PASSWORD + "@" + Database.url
-					+ port + "/group/eyeHouse.net/"
+			String sftpUri = "sftp://" + USERNAME + ":" + PASSWORD + "@"
+					+ Database.url + port + "/group/eyeHouse.net/"
 					+ videoDetails.videoLocation;
-
-			// String sftpUri = "sftp://tb77931004:72dw42WRq!2345@" + url +
-			// "/" + videoDetails.videoLocation;
 
 			// Create remote file object
 			FileObject remoteFile = manager.resolveFile(sftpUri, opts);
@@ -339,56 +421,5 @@ public class FileManager {
 		}
 
 		return true;
-	}
-
-	public static void main(String[] args) throws Exception {
-
-		int mode = 1;
-		String propertiesFile = "D://EE course/SWEng/Java/Server Tool/properties.txt";
-		String filename = "default_profpic.jpg";
-		String localDirectory = "D:/EE course/SWEng/Java/";
-
-		Database.dbConnect();
-
-		User tempu68 = Database.getUser("MVPTom");
-		House temph68 = Database.getHouse(8);
-
-		switch (mode) {
-		case 1:
-			FileManager update = new FileManager();
-			update.uploadVideo(tempu68, temph68, localDirectory, filename);
-			break;
-		case 2:
-			FileManager download = new FileManager();
-			String downloadFile = "Disco1.jpg";
-			download.downloadFTP(propertiesFile, downloadFile);
-			break;
-		// delete
-		case 3:
-			// FileManager delete = new FileManager();
-			// String deleteFile = "Disco1.jpg";
-			// delete.deleteVideo(propertiesFile, deleteFile);
-			break;
-		case 4:
-			File picture = null;
-			picture = readFile("eyehouse/defaults/default_profpic.jpg");
-			BufferedImage image = null;
-			System.out.println(picture);
-			try {
-				image = ImageIO.read(picture);
-			} catch (Exception e) {
-				e.printStackTrace();
-				System.exit(1);
-			}
-			JFrame frame = new JFrame();
-			JLabel label = new JLabel(new ImageIcon(image));
-			frame.getContentPane().add(label, BorderLayout.CENTER);
-			frame.pack();
-			frame.setVisible(true);
-			break;
-		default:
-			break;
-
-		}
 	}
 }

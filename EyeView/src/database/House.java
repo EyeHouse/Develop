@@ -6,6 +6,13 @@ import java.sql.SQLException;
 
 import com.mysql.jdbc.Blob;
 
+/**
+ * A class that will hold information for houses.
+ * 
+ * @version 1.48 (15.03.15)
+ * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
+ * 
+ */
 public class House {
 
 	private final static int UID = 1;
@@ -23,6 +30,7 @@ public class House {
 	private final static int DESCRIPTION = 13;
 	private final static int ENERGYRATING = 14;
 
+	// House information initialised
 	public int hid;
 	public int uid;
 	public String title;
@@ -39,42 +47,42 @@ public class House {
 	public Blob energyRating;
 	public InputStream energyRatingIS;
 
-	// user contructor method
+	// House constructor method
 	public House(String title) {
 		this.title = title;
 	}
 
+	// File details from a result set
 	public House(ResultSet houseDetails) {
-			// fill details
-			try {
-				this.uid = houseDetails.getInt(UID);
-				this.hid = houseDetails.getInt(HID);
-				this.title = houseDetails.getString(TITLE);
-				this.postcode = houseDetails.getString(POSTCODE);
-				this.address = houseDetails.getString(ADDRESS);
-				this.price = houseDetails.getInt(PRICE);
-				this.deposit = houseDetails.getInt(DEPOSIT); 
-				this.rooms = houseDetails.getInt(ROOMS); 
-				this.bathrooms = houseDetails.getInt(BATHROOMS);
-				this.dateAvailable = houseDetails.getString(DATEAVAILABLE);
-				this.furnished = houseDetails.getBoolean(FURNISHED);
-				this.brochure = (Blob) houseDetails.getBlob(BROCHURE);
-				this.description = houseDetails.getString(DESCRIPTION);
-				this.energyRating = (Blob) houseDetails.getBlob(ENERGYRATING);
-				if(energyRating == null){
-					this.energyRatingIS = null;
-				}
-				else{
-					this.energyRatingIS = energyRating.getBinaryStream(1, energyRating.length()); 
-				}
-				
-			} catch (SQLException e) {
-				e.printStackTrace();
-				e.getMessage();
+		try {
+			this.uid = houseDetails.getInt(UID);
+			this.hid = houseDetails.getInt(HID);
+			this.title = houseDetails.getString(TITLE);
+			this.postcode = houseDetails.getString(POSTCODE);
+			this.address = houseDetails.getString(ADDRESS);
+			this.price = houseDetails.getInt(PRICE);
+			this.deposit = houseDetails.getInt(DEPOSIT);
+			this.rooms = houseDetails.getInt(ROOMS);
+			this.bathrooms = houseDetails.getInt(BATHROOMS);
+			this.dateAvailable = houseDetails.getString(DATEAVAILABLE);
+			this.furnished = houseDetails.getBoolean(FURNISHED);
+			this.brochure = (Blob) houseDetails.getBlob(BROCHURE);
+			this.description = houseDetails.getString(DESCRIPTION);
+			this.energyRating = (Blob) houseDetails.getBlob(ENERGYRATING);
+			if (energyRating == null) {
+				this.energyRatingIS = null;
+			} else {
+				this.energyRatingIS = energyRating.getBinaryStream(1,
+						energyRating.length());
 			}
-		}
 
-	// fill house details
+		} catch (SQLException e) {
+			e.printStackTrace();
+			e.getMessage();
+		}
+	}
+
+	// Create a house from java
 	public void uid(int userId) {
 		uid = userId;
 	}
@@ -118,11 +126,11 @@ public class House {
 	public void description(String dsc) {
 		description = dsc;
 	}
-	
+
 	public void energyRating(Blob enrt) {
 		energyRating = enrt;
 	}
-	
+
 	public void printHouse() {
 		System.out.println("\ntitle " + title);
 	}
