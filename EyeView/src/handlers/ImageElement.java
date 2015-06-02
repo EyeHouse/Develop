@@ -3,12 +3,10 @@ package handlers;
 /**
  * This class contains all a the data values required to place an image on the
  * screen at a specified x and y position, with a specified scale, and displays
- * it at a specified time and for a specified duration
+ * it at a specified time and for a specified duration.
  * 
- * @version 1.2 05.03.15
- * @author EyeHouse
- * 
- * Copyright 2015 EyeHouse
+ * @version 1.2 (05.03.15)
+ * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
  */
 public class ImageElement {
 
@@ -24,7 +22,7 @@ public class ImageElement {
 	/**
 	 * A container containing the data values required to place an image on the
 	 * screen at a specified x and y position, with a specified scale, and at a
-	 * specified time
+	 * specified time.
 	 * 
 	 * @param sourcefile
 	 *            the filename of the image

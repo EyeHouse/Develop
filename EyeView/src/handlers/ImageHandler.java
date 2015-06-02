@@ -14,10 +14,8 @@ import javafx.util.Duration;
 /**
  * This class implements an image element function with values passed in.
  * 
- * @version 2.5 12.03.15
- * @author EyeHouse
- * 
- *         Copyright 2015 EyeHouse
+ * @version 1.5 (12.03.15)
+ * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
  */
 
 public class ImageHandler extends Window {
@@ -44,7 +42,9 @@ public class ImageHandler extends Window {
 	 *            the ImageElement object to be displayed on the current Scene
 	 */
 	public void createImage(ImageElement imageData) {
+		
 		this.imageData = imageData;
+		
 		/*
 		 * Convert relative screen position of image to a pixel value using the
 		 * native resolution of the user's display
@@ -81,11 +81,11 @@ public class ImageHandler extends Window {
 		root.getChildren().add(imageObject);
 
 		// Initialise timer to add image
-		SetupImageTimer();
+		setupImageTimer();
 	}
 
 	/**
-	 * Returns the width of the image
+	 * Returns the width of the image.
 	 * 
 	 * @param widthImage
 	 *            ImageElement object containing the source file in question
@@ -93,7 +93,7 @@ public class ImageHandler extends Window {
 	 * @return the original width of the image file before any processing by the
 	 *         handler
 	 */
-	public float GetImageWidth(ImageElement widthImage) {
+	public float getImageWidth(ImageElement widthImage) {
 
 		// Load Image from source file
 		Image image = new Image(widthImage.sourcefile);
@@ -104,9 +104,9 @@ public class ImageHandler extends Window {
 	}
 
 	/**
-	 * Setup start and duration timers to show and remove images
+	 * Sets up start and duration timers to show and remove images.
 	 */
-	private void SetupImageTimer() {
+	private void setupImageTimer() {
 
 		// Store index
 		final int currentImageIndex = imageIndex;
