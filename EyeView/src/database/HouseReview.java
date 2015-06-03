@@ -10,6 +10,7 @@ import java.sql.SQLException;
  * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
  */
 public class HouseReview {
+	
 	private final static int HRID = 1;
 	private final static int HID = 2;
 	private final static int UID = 3;
@@ -35,6 +36,7 @@ public class HouseReview {
 
 	// Create HouseReview from a result set
 	public HouseReview(ResultSet reviewDetails) {
+		
 		try {
 			this.hrid = reviewDetails.getInt(HRID);
 			this.hid = reviewDetails.getInt(HID);

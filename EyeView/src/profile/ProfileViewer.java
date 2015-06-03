@@ -1,13 +1,5 @@
 package profile;
 
-/**
- * ProfileViewer Contains all information displayed on the Profile page
- * 
- * Version: 2.5
- * 
- * Copyright Eyehouse
- */
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -42,21 +34,27 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.Polygon;
-import javafx.scene.shape.Polyline;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.stage.FileChooser;
 import language.BadWordCheck;
 import language.Translator;
 
+/**
+ * This class creates the profile viewer within the EyeView software. The page
+ * displays the profile details for a specific user including email, skype name,
+ * reviews, ratings, and biography.
+ * 
+ * The ProfileViewer page is constructed differently if the user being viewed is
+ * the same as the user currently logged in.
+ * 
+ * @version 2.5
+ * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
+ */
 public class ProfileViewer extends Window {
 
-	// Profile Static Variables
-	private static final int gridCellWidth = 40;
-	private static final int gridCellHeight = 10;
+	private final int gridCellWidth = 40;
+	private final int gridCellHeight = 10;
 
-	// Profile Global Variables
 	private GridPane profileGrid = new GridPane();
 	private Font fontTitle = new Font(24);
 	private Font fontMain = new Font(18);
@@ -64,44 +62,38 @@ public class ProfileViewer extends Window {
 	private Image profilePicture;
 	private ImageView profilePictureView;
 	private int newRating;
-	ListView<HBox> reviewList;
-	ObservableList<HBox> items = FXCollections.observableArrayList();
+	private ListView<HBox> reviewList;
+	private ObservableList<HBox> items = FXCollections.observableArrayList();
 
 	private Button[] buttonStar;
 	private Image reviewStarFull;
 	private Image reviewStarOutline;
-	static Label labelEmail = new Label("");
-	// static Label labelEmail = new
-	// Label(Translate.translateText(languageIndex, "Hello"));
-
-	// Arrays of stars to allow multiple stars to be added to grid
-	Polygon[] star = new Polygon[5];
-	Polyline[] starOutline = new Polyline[5];
-
-	// Profile Methods
+	private Label labelEmail = new Label("");
 
 	/**
-	 * Open profile of user input
+	 * Constructor method
+	 * 
+	 * @param profileUsername
+	 *            Username of the profile page to be displayed
 	 */
 	public ProfileViewer(String profileUsername) {
 
 		profileUser = Database.getUser(profileUsername);
-		SetupGrid();
-		SetupUserInfo();
-		AddStars();
-		SetupProfileReview();
+		setupGrid();
+		setupUserInfo();
+		addStars();
+		setupProfileReview();
 		SlideContent.setupBackButton();
 	}
 
 	/**
-	 * Setup grid layout object to contain user information
+	 * Sets up grid layout object to contain user information.
 	 */
-	private void SetupGrid() {
+	private void setupGrid() {
 
 		profileGrid.setPrefWidth(600);
 
-		// Set column widths of grid.
-
+		// Set column widths of grid
 		ColumnConstraints col1 = new ColumnConstraints();
 		ColumnConstraints col2 = new ColumnConstraints();
 		ColumnConstraints col3 = new ColumnConstraints();
@@ -110,7 +102,7 @@ public class ProfileViewer extends Window {
 		col3.setMinWidth(100);
 		profileGrid.getColumnConstraints().addAll(col1, col2, col3);
 
-		// Set grid size and spacing in group.
+		// Set grid size and spacing in group
 		profileGrid.setHgap(gridCellWidth);
 		profileGrid.setVgap(gridCellHeight);
 		profileGrid.relocate(220, 110);
@@ -119,18 +111,15 @@ public class ProfileViewer extends Window {
 	}
 
 	/**
-	 * Add basic user information to grid
+	 * Adds the basic user information to grid.
 	 */
-	private void SetupUserInfo() {
+	private void setupUserInfo() {
 
 		Label labelType;
-		// System.out.println(languageIndex + "gibbersish");
-		// Instantiates a VBox to contain the user information
 		VBox vBoxUserText = new VBox(20);
 		VBox vBoxUserPicture = new VBox(20);
 
-		// Silhouette placeholder for profile picture
-		// Load image and add to imageview
+		// Load image and add to ImageView
 		try {
 			InputStream binaryStream = profileUser.profimg.getBinaryStream(1,
 					profileUser.profimg.length());
@@ -199,14 +188,14 @@ public class ProfileViewer extends Window {
 	}
 
 	/**
-	 * Set up upload picture label when mouse hovers on profile picture
+	 * Sets up upload picture label when mouse hovers on profile picture.
 	 * 
 	 * @param profilePictureView
-	 *            Image View containing Profile Picture
+	 *            ImageView object containing profile picture
 	 */
 	private void setupProfilePictureHover(ImageView profilePictureView) {
 
-		final Label updateProfilePictureLabel;
+		Label updateProfilePictureLabel;
 		final VBox vBoxUpdateProfilePictureLabel;
 
 		// Create update profile picture label
@@ -240,10 +229,10 @@ public class ProfileViewer extends Window {
 	}
 
 	/**
-	 * Set up upload picture when profile picture is clicked
+	 * Sets up upload picture when profile picture is clicked.
 	 * 
 	 * @param profilePictureView
-	 *            Image View containing Profile Picture
+	 *            ImageView object containing profile picture
 	 */
 	private void setupProfilePictureClick(final ImageView profilePictureView) {
 
@@ -266,7 +255,6 @@ public class ProfileViewer extends Window {
 					profilePicture = new Image(newProfilePictureFile.toURI()
 							.toString());
 					try {
-
 						// Upload new profile picture to database
 						Database.updateImage("users",
 								newProfilePictureFile.getAbsolutePath(),
@@ -290,7 +278,7 @@ public class ProfileViewer extends Window {
 	}
 
 	/**
-	 * Configures file chooser to select only images of type JPG or PNG
+	 * Configures file chooser to select only images of type JPG or PNG.
 	 * 
 	 * @param fileChooser
 	 *            File Chooser to choose new profile picture
@@ -302,16 +290,16 @@ public class ProfileViewer extends Window {
 		// Set directory that the file chooser will initially open into
 		profilePictureChooser.setInitialDirectory(new File(System
 				.getProperty("user.home")));
-		// Set file types displayed in the file chooser as png and jpg
+		// Set file types displayed in the file chooser as *png and *jpg
 		profilePictureChooser.getExtensionFilters().addAll(
 				new FileChooser.ExtensionFilter("JPG, PNG", "*.jpg", "*.png"),
 				new FileChooser.ExtensionFilter("PNG", "*.png"));
 	}
 
 	/**
-	 * Add review stars to profile based on average review from database
+	 * Add review stars to profile based on average review from database.
 	 */
-	private void AddStars() {
+	private void addStars() {
 
 		// HBox to contain the stars
 		HBox hBoxStars = new HBox(5);
@@ -333,9 +321,9 @@ public class ProfileViewer extends Window {
 	}
 
 	/**
-	 * Setup profile and appendable review text areas
+	 * Setup profile and appendable review text areas.
 	 */
-	private void SetupProfileReview() {
+	private void setupProfileReview() {
 
 		Label textProfile, labelProfile, labelReview, labelNewReview, labelNewRating;
 		reviewList = new ListView<HBox>();
@@ -457,13 +445,13 @@ public class ProfileViewer extends Window {
 			for (int i = 0; i < 5; i++) {
 				hBoxNewStars.getChildren().add(buttonStar[i]);
 			}
-			// Add star label and HBox to grid
 
+			// Add star label and HBox to grid
 			profileGrid.add(vBoxNewReview, 1, 4);
 			profileGrid.add(buttonReview, 2, 4);
 			profileGrid.add(labelNewRating, 1, 5);
 			profileGrid.add(hBoxNewStars, 2, 5);
-			// Align Add Review fields
+			// Align review adding fields
 			GridPane.setConstraints(buttonReview, 2, 4, 1, 1, HPos.CENTER,
 					VPos.BOTTOM);
 
@@ -538,6 +526,17 @@ public class ProfileViewer extends Window {
 		profileGrid.addRow(3, vBoxProfile, vBoxReview);
 	}
 
+	/**
+	 * Creates an HBox with 5 star images to display the user's rating.
+	 * 
+	 * @param spacing
+	 *            width between each star image (in pixels)
+	 * @param size
+	 *            width/height of the star image (in pixels)
+	 * @param rating
+	 *            user rating to be displayed (0 to 5)
+	 * @return HBox containing the start image row with specific rating
+	 */
 	public static HBox createStarHBox(int spacing, int size, int rating) {
 
 		HBox stars = new HBox(spacing);
@@ -559,18 +558,31 @@ public class ProfileViewer extends Window {
 		return stars;
 	}
 
+	/**
+	 * This class handles changing the images for the star rating.
+	 * 
+	 * @version 2.5
+	 * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
+	 */
 	public class starButtonHandler implements EventHandler<ActionEvent> {
 
 		private int buttonNumber;
 
+		/**
+		 * Constructor method
+		 * 
+		 * @param number
+		 *           New rating number
+		 */
 		public starButtonHandler(int number) {
+
 			this.buttonNumber = number;
 		}
 
 		@Override
 		public void handle(ActionEvent event) {
-			newRating = buttonNumber + 1;
 
+			newRating = buttonNumber + 1;
 			for (int i = 0; i < 5; i++) {
 				if (i <= newRating - 1) {
 					buttonStar[i].setGraphic(new ImageView(reviewStarFull));
@@ -581,38 +593,69 @@ public class ProfileViewer extends Window {
 		}
 	}
 
+	/**
+	 * This class handles updating a likes of a review.
+	 * 
+	 * @version 2.5
+	 * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
+	 */
 	public class likeHandler implements EventHandler<MouseEvent> {
 
 		private UserReview review;
 
+		/**
+		 * Constructor method
+		 * 
+		 * @param review
+		 *            The selected review to update like for
+		 */
 		public likeHandler(UserReview review) {
+
 			this.review = review;
 		}
 
 		@Override
 		public void handle(MouseEvent event) {
+
 			Database.likeReview(Database.getUser(currentUsername), null,
 					review, 1);
 			reloadProfile();
 		}
 	}
 
+	/**
+	 * This class handles updating a dislike of a review.
+	 * 
+	 * @version 2.5
+	 * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
+	 */
 	public class dislikeHandler implements EventHandler<MouseEvent> {
 
 		private UserReview review;
 
+		/**
+		 * Constructor method
+		 * 
+		 * @param review
+		 *            The selected review to update dislike for
+		 */
 		public dislikeHandler(UserReview review) {
+
 			this.review = review;
 		}
 
 		@Override
 		public void handle(MouseEvent event) {
+
 			Database.dislikeReview(Database.getUser(currentUsername), null,
 					review, 1);
 			reloadProfile();
 		}
 	}
 
+	/**
+	 * Reloads the profile page after updating any information.
+	 */
 	private void reloadProfile() {
 
 		loadSlide(PROFILE);

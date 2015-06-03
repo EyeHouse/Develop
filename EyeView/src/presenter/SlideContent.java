@@ -47,6 +47,12 @@ import database.House;
 import database.Search;
 import database.User;
 
+/**
+ * This class contain all the code for creating new slides in the presentation.
+ * 
+ * @version 3.2 (27.05.15)
+ * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
+ */
 public class SlideContent extends Window {
 
 	public ImageView profilePictureView;

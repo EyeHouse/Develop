@@ -59,6 +59,7 @@ public class User {
 
 	// Creates User from result set
 	public User(ResultSet userDetails) {
+		
 		try {
 			this.uid = userDetails.getInt(UID);
 			this.username = userDetails.getString(USER);
@@ -126,7 +127,7 @@ public class User {
 	}
 
 	/**
-	 * Gets the saved properties for a user
+	 * Gets the saved properties for a user.
 	 * 
 	 * @param username
 	 *            Username of user to retrieve
