@@ -16,27 +16,31 @@ import java.util.ArrayList;
 
 import presenter.Window;
 
+/**
+ * This class implements a graphic element function with values passed in.
+ * 
+ * @version 1.5 (12.03.15)
+ * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
+ */
 public class GraphicHandler extends Window {
 
-	/* Graphic Instance Variables */
+	// GraphicHandler instance variables
 	private int shapeIndex;
 	private ArrayList<GraphicElement> graphicArray = new ArrayList<GraphicElement>();
 	private ArrayList<Boolean> shapeVisibilityArray = new ArrayList<Boolean>();
 	private GraphicsContext gc;
 	private String backgroundColor;
 
-	/* Graphic Handler Constructor */
+	/**
+	 * Constructor method
+	 */
 	public GraphicHandler() {
 
 		buildGraphicsCanvas();
 	}
 
-	/** Graphic Methods
-	 * 
-	 */
-
-	/** Populate stage with canvas of XML graphics 
-	 * 
+	/**
+	 * Populates the stage with canvas of XML graphics.
 	 */
 	private void buildGraphicsCanvas() {
 
@@ -46,6 +50,12 @@ public class GraphicHandler extends Window {
 		root.getChildren().add(canvas);
 	}
 
+	/**
+	 * Adds a new shape to the graphic canvas.
+	 * 
+	 * @param newShape
+	 *            GraphicElement object to be added
+	 */
 	public void addShapeToCanvas(GraphicElement newShape) {
 
 		// Add shape to array lists and draw to screen.
@@ -54,8 +64,8 @@ public class GraphicHandler extends Window {
 		redraw();
 	}
 
-	/** Draw all XML graphics
-	 * 
+	/**
+	 * Updates the graphics canvas to display all added graphics.
 	 */
 	private void redraw() {
 
@@ -78,9 +88,11 @@ public class GraphicHandler extends Window {
 		}
 	}
 
-	/** Draw XML graphic
+	/**
+	 * Creates a new graphic based on the information in the GraphicElement
 	 * 
 	 * @param shape
+	 *            GraphicElement to be drawn as a shape
 	 */
 	private void drawShape(GraphicElement shape) {
 
@@ -95,19 +107,16 @@ public class GraphicHandler extends Window {
 
 		switch (shape.type) {
 		case "rectangle":
-
 			// Draw rectangle with calculated parameters.
 			drawRectangle(xcoordinate, ycoordinate, width, height,
 					shape.duration, shape.solid);
 			break;
 		case "oval":
-
 			// Draw oval with calculated parameters.
 			drawOval(xcoordinate, ycoordinate, width, height, shape.duration,
 					shape.solid);
 			break;
 		case "line":
-
 			// Draw line with calculated parameters.
 			drawLine(xcoordinate, ycoordinate, width, height, shape.duration,
 					shape.solid);
@@ -115,7 +124,8 @@ public class GraphicHandler extends Window {
 		}
 	}
 
-	/** Set colours of XML graphic
+	/**
+	 * Sets the colour of the shape inlcuding radial gradient if specified.
 	 * 
 	 * @param shape
 	 * @param xcoordinate
@@ -166,20 +176,19 @@ public class GraphicHandler extends Window {
 			// Instantiate colour.
 			Color color = Color.web(graphicColor, graphicAlpha);
 
-			// Set fill to instantiated colour if shape is solid and
-			// not a line.
+			// Set fill to instantiated colour if shape is solid and not a line.
 			if (shape.solid && (!shape.type.equals("line"))) {
 				gc.setFill(color);
 			}
-			// Set stroke to instantiated colour if shape is not solid
-			// or is a line.
+			// Set stroke to given colour if shape is not solid or is a line.
 			else {
 				gc.setStroke(color);
 			}
 		}
 	}
 
-	/** Add rectangle to canvas
+	/**
+	 * Adds a new rectangle object to the canvas.
 	 * 
 	 * @param xcoordinate
 	 * @param ycoordinate
@@ -192,16 +201,15 @@ public class GraphicHandler extends Window {
 			double width, double height, double duration, boolean solid) {
 
 		if (solid)
-
 			// Add solid rectangle to canvas.
 			gc.fillRect(xcoordinate, ycoordinate, width, height);
 		else
-
 			// Add rectangle outline to canvas.
 			gc.strokeRect(xcoordinate, ycoordinate, width, height);
 	}
 
-	/** Add oval to canvas
+	/**
+	 * Adds a new oval object to the canvas.
 	 * 
 	 * @param xcoordinate
 	 * @param ycoordinate
@@ -214,16 +222,15 @@ public class GraphicHandler extends Window {
 			double height, double duration, boolean solid) {
 
 		if (solid)
-
 			// Add solid oval to canvas.
 			gc.fillOval(xcoordinate, ycoordinate, width, height);
 		else
-
 			// Add oval outline to canvas.
 			gc.strokeOval(xcoordinate, ycoordinate, width, height);
 	}
 
-	/** Add line to canvas
+	/**
+	 * Adds a new line object to the canvas.
 	 * 
 	 * @param xcoordinate
 	 * @param ycoordinate
@@ -240,9 +247,11 @@ public class GraphicHandler extends Window {
 				(ycoordinate + height));
 	}
 
-	/** Add removal timer to XML graphic
+	/**
+	 * Adds duration removal timer to the graphic element.
 	 * 
 	 * @param shape
+	 *            GraphicElement object to create the timer for
 	 */
 	private void setGraphicDurationTimer(final GraphicElement shape) {
 

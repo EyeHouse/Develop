@@ -19,6 +19,7 @@ import static java.nio.file.Paths.get;
  *
  */
 public class TextHandler {
+	
 	private ArrayList<TextElement> textElements;
 	private Color defaultColor;
 	private Font defaultFont;
@@ -28,6 +29,7 @@ public class TextHandler {
 	 * family times new roman.
 	 */
 	public TextHandler() {
+		
 		// Set up default font
 		defaultFont = new Font("times new roman", 10);
 
@@ -47,6 +49,7 @@ public class TextHandler {
 	 *            Default font for text
 	 */
 	public TextHandler(Color defaultColor, Font defaultFont) {
+		
 		// Set up default font
 		this.defaultFont = defaultFont;
 
@@ -64,6 +67,7 @@ public class TextHandler {
 	 * @param defaultColor
 	 */
 	public void setDefaultColor(Color defaultColor) {
+		
 		this.defaultColor = defaultColor;
 	}
 
@@ -74,6 +78,7 @@ public class TextHandler {
 	 * @param defaultFont
 	 */
 	public void setDefaultFont(Font defaultFont) {
+		
 		this.defaultFont = defaultFont;
 	}
 
@@ -158,6 +163,7 @@ public class TextHandler {
 	 */
 	public void addTextElement(String text, double xpos, double ypos,
 			double wrappingWidth) {
+		
 		addTextElement(text, xpos, ypos, wrappingWidth, defaultColor,
 				defaultFont, 0);
 	}
@@ -193,6 +199,7 @@ public class TextHandler {
 	 * @param element
 	 */
 	public void addTextElement(TextElement element) {
+		
 		textElements.add(element);
 	}
 
@@ -204,6 +211,7 @@ public class TextHandler {
 	 *            StackPane to display objects on.
 	 */
 	public void display(StackPane pane) {
+		
 		// Iterate through text elements, displaying them
 		for (TextElement element : textElements) {
 			element.display(pane);

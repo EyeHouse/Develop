@@ -20,24 +20,18 @@ public class ImageElement {
 	public float specifiedWidth;
 
 	/**
-	 * A container containing the data values required to place an image on the
-	 * screen at a specified x and y position, with a specified scale, and at a
-	 * specified time.
+	 * Constructor method for ImageElement object.
 	 * 
 	 * @param sourcefile
 	 *            the filename of the image
 	 * @param xstart
-	 *            the horizontal position of the top-left pixel of the image as
-	 *            it is displayed on the screen, relative to the resolution of
-	 *            the screen
+	 *            the horizontal position of the top-left of the image, relative
+	 *            to the resolution of the screen
 	 * @param ystart
-	 *            the vertical position of the top-left pixel of the image as it
-	 *            is displayed on the screen, relative to the resolution of the
-	 *            screen
+	 *            the vertical position of the top-left of the image, relative
+	 *            to the resolution of the screen
 	 * @param scale
-	 *            a multiplication factor which scales the image i.e. 1 is the
-	 *            original image size, 2 doubles the size of the image, 0.5
-	 *            halves the size of the image
+	 *            scalar factor which scales the image size (default 1)
 	 * @param duration
 	 *            the length of time that the image should be displayed on the
 	 *            screen

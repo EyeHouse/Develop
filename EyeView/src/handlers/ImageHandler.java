@@ -17,7 +17,6 @@ import javafx.util.Duration;
  * @version 1.5 (12.03.15)
  * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
  */
-
 public class ImageHandler extends Window {
 
 	private float xPosition; // Horizontal position of image to be displayed
@@ -39,7 +38,7 @@ public class ImageHandler extends Window {
 	 * with specified parameters
 	 * 
 	 * @param imageData
-	 *            the ImageElement object to be displayed on the current Scene
+	 *            The ImageElement object to be displayed on the current Scene
 	 */
 	public void createImage(ImageElement imageData) {
 		
@@ -90,7 +89,7 @@ public class ImageHandler extends Window {
 	 * @param widthImage
 	 *            ImageElement object containing the source file in question
 	 * 
-	 * @return the original width of the image file before any processing by the
+	 * @return The original width of the image file before any processing by the
 	 *         handler
 	 */
 	public float getImageWidth(ImageElement widthImage) {
