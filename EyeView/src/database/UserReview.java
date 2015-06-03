@@ -29,12 +29,20 @@ public class UserReview {
 	public int like;
 	public int dislike;
 
-	// UserReview Contructor method
+	/**
+	 * Constructor method
+	 * 
+	 * @param urTG
+	 */
 	public UserReview(int urTG) {
 		this.uid_target = urTG;
 	}
 
-	// Create a new UserReview from a result set
+	/**
+	 * Constructor method
+	 * 
+	 * @param reviewDetails
+	 */
 	public UserReview(ResultSet reviewDetails) {
 		
 		try {
@@ -71,5 +79,4 @@ public class UserReview {
 	public void dislike(int dslk) {
 		this.dislike = dslk;
 	}
-
 }

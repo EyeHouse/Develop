@@ -19,12 +19,20 @@ public class HouseVideo {
 	private final static int HID = 2;
 	private final static int VIDEO = 3;
 
-	// HouseVideo constructor
+	/**
+	 * Constructor method
+	 * 
+	 * @param imageID
+	 */
 	public HouseVideo(int imageID) {
 		this.vid = imageID;
 	}
 
-	// Create HouseVideo from result set
+	/**
+	 * Constructor method
+	 * 
+	 * @param videoDetails
+	 */
 	public HouseVideo(ResultSet videoDetails) {
 		try {
 			this.vid = videoDetails.getInt(VID);
@@ -46,12 +54,5 @@ public class HouseVideo {
 
 	public void videoLocation(String vidLoc) {
 		this.videoLocation = vidLoc;
-	}
-
-	public void printHouseInfo() {
-		System.out.println("\nVideo id: " + this.vid);
-		System.out.println("\nHouse id: " + this.hid);
-		System.out.println("\nVideo Location: " + this.videoLocation);
-
 	}
 }

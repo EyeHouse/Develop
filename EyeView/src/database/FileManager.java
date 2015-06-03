@@ -104,7 +104,7 @@ public class FileManager {
 	}
 
 	/**
-	 * Reads a file from the server and returns it in type File
+	 * Reads a file from the server and returns it in type File.
 	 * 
 	 * @param filepath
 	 * @return File
@@ -166,10 +166,10 @@ public class FileManager {
 	}
 
 	/**
-	 * Reads an input stream
+	 * Reads an input stream.
 	 * 
 	 * @param filepath
-	 * @return
+	 * @return InputStream
 	 * @throws IOException
 	 */
 	public static InputStream readInputStream(String filepath)
@@ -226,7 +226,7 @@ public class FileManager {
 	}
 
 	/**
-	 * Takes an input stream and converts it into type File
+	 * Takes an input stream and converts it into type File.
 	 * 
 	 * @param InputStream
 	 * @return File
@@ -245,7 +245,7 @@ public class FileManager {
 	}
 
 	/**
-	 * Read a video from the server.
+	 * Reads a video from the server.
 	 * 
 	 * @param userDetails
 	 * @param videoDetails
@@ -287,7 +287,7 @@ public class FileManager {
 	 * @param houseDetails
 	 * @param localDirectory
 	 * @param filename
-	 * @return true on success
+	 * @return True on success
 	 */
 	public boolean uploadVideo(User userDetails, House houseDetails,
 			String localDirectory, String filename) {
@@ -367,7 +367,7 @@ public class FileManager {
 	 * Deletes a video file from the database.
 	 * 
 	 * @param videoDetails
-	 * @return true on success
+	 * @return True on success
 	 */
 	public static boolean deleteVideo(HouseVideo videoDetails) {
 

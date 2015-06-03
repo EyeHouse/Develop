@@ -1,17 +1,8 @@
 package database;
 
-import java.awt.BorderLayout;
-import java.awt.Image;
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 
 import com.mysql.jdbc.Blob;
 
@@ -52,12 +43,20 @@ public class User {
 	public String skype;
 	public String bio;
 
-	// User constructor method
+	/**
+	 * Constructor method
+	 * 
+	 * @param username
+	 */
 	public User(String username) {
 		this.username = username;
 	}
 
-	// Creates User from result set
+	/**
+	 * Constructor method
+	 * 
+	 * @param userDetails
+	 */
 	public User(ResultSet userDetails) {
 		
 		try {
@@ -185,7 +184,7 @@ public class User {
 	}
 
 	/**
-	 * Update saved properties.
+	 * Updates saved properties.
 	 * 
 	 * @param username
 	 *            Username of user to update
@@ -236,33 +235,6 @@ public class User {
 			 */
 			Database.userUpdate(currentUser, "properties", null,
 					savedProperties);
-		}
-	}
-
-	/**
-	 * Option to print details for developer tests.
-	 * 
-	 * @throws IOException
-	 */
-	public void printUser() throws IOException {
-		System.out.println("\nUsername: " + username);
-		System.out.println("Email: " + email);
-		System.out.println("Password: " + password);
-
-		try {
-			InputStream binaryStream = profimg.getBinaryStream(1,
-					profimg.length());
-
-			Image image = ImageIO.read(binaryStream);
-
-			JFrame frame = new JFrame();
-			JLabel label = new JLabel(new ImageIcon(image));
-			frame.getContentPane().add(label, BorderLayout.CENTER);
-			frame.pack();
-			frame.setVisible(true);
-
-		} catch (SQLException e) {
-			e.printStackTrace();
 		}
 	}
 }

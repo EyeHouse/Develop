@@ -24,6 +24,7 @@ public class Database {
 
 	// Connection initialised
 	public static Connection con = null;
+	
 	/*
 	 * Define the column numbers of the db table as integer variables 'id' auto
 	 * increments due to the table set up, enter any integer when required
@@ -114,7 +115,7 @@ public class Database {
 	 * the database you're connected to.
 	 * 
 	 * @param userDetails
-	 * @return true on success
+	 * @return True on success
 	 */
 	public static boolean userInsert(User userDetails) {
 		// query
@@ -178,7 +179,7 @@ public class Database {
 	}
 
 	/**
-	 * Gets the id of a user or of a house/
+	 * Gets the id of a user or of a house.
 	 * 
 	 * @param userDetails
 	 * @param houseDetails
@@ -275,7 +276,6 @@ public class Database {
 				return false;
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.out.println("\nSQL error in house check");
 			return false;
@@ -286,12 +286,13 @@ public class Database {
 	}
 
 	/**
+	 * Inserts a house into the database.
 	 * 
 	 * @param houseDetails
 	 * @param brochurefp
 	 * @param energyratingfp
 	 * @param userDetails
-	 * @return true on success
+	 * @return True on success
 	 * @throws IOException
 	 */
 	public static boolean houseInsert(House houseDetails, String brochurefp,
@@ -373,6 +374,7 @@ public class Database {
 	}
 
 	/**
+	 * Updates a house in the database.
 	 * 
 	 * @param userDetails
 	 * @param houseDetails
@@ -382,7 +384,7 @@ public class Database {
 	 * @param value3
 	 * @param value4
 	 * @param varType
-	 * @return true on success
+	 * @return True on success
 	 */
 	public static boolean updateHouse(User userDetails, House houseDetails,
 			String field, String value1, Boolean value2, Blob value3,
@@ -427,7 +429,6 @@ public class Database {
 			updateHouse.close();
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.out.println("\nError updateHouse: " + e.getMessage());
 
@@ -442,9 +443,10 @@ public class Database {
 	 * 
 	 * @param houseDetails
 	 * @param userDetails
-	 * @return true on success
+	 * @return True on success
 	 */
 	public static boolean houseDelete(House houseDetails, User userDetails) {
+		
 		int uid;
 		int hid;
 		int i;
@@ -466,7 +468,7 @@ public class Database {
 				// Get video markers
 				deleteMarkers = getVideoMarkers(houseDetails.hid);
 
-				// remove the ArrayList from memory and delete from database
+				// Remove the ArrayList from memory and delete from database
 				// Delete markers
 				for (i = 0; i < deleteMarkers.size(); i++) {
 					// Delete from database
@@ -529,7 +531,7 @@ public class Database {
 	 * @param fieldSelect
 	 * @param priv
 	 * @param newField
-	 * @return true on success
+	 * @return True on success
 	 */
 	public static boolean userUpdate(User user, String fieldSelect,
 			Boolean priv, String newValue) {
@@ -575,7 +577,7 @@ public class Database {
 	 * This method is currently superfluous (while loginCheck does the same
 	 * thing)
 	 * 
-	 * @return the users details in an instance of User
+	 * @return The users details in an instance of User
 	 */
 	public static User getUser(String username) {
 		// Takes a unique field (username) and returns the user
@@ -696,10 +698,10 @@ public class Database {
 	}
 
 	/**
-	 * Get the houses owned by a user.
+	 * Gets the houses owned by a user.
 	 * 
 	 * @param uid
-	 * @return ArrayList<House>
+	 * @return ArrayList of House
 	 */
 	public static ArrayList<House> getLandlordProperties(int uid) {
 
@@ -735,7 +737,7 @@ public class Database {
 	}
 
 	/**
-	 * Empties the instance of user entered
+	 * Empties the instance of user entered.
 	 * 
 	 * @param user
 	 */
@@ -748,7 +750,7 @@ public class Database {
 	 * account information and information belonging to them.
 	 * 
 	 * @param username
-	 * @return true on success
+	 * @return True on success
 	 */
 	public static boolean userDelete(String username) {
 		try {
@@ -816,13 +818,13 @@ public class Database {
 	 * Lets you check for a user that has a X of Y AND a Z of W where X and Z
 	 * can be any field you want eg(username, password or DOB, email) and Y and
 	 * W are the specific data you are checking exists eg for username, password
-	 * you might put (Eyehouse1,Password1)
+	 * you might put (Eyehouse1,Password1).
 	 * 
 	 * @param Field1
 	 * @param Data1
 	 * @param Field2
 	 * @param Data2
-	 * @return true on success
+	 * @return True on success
 	 */
 	public static boolean twoFieldCheck(String Field1, String Data1,
 			String Field2, String Data2) {
@@ -860,9 +862,10 @@ public class Database {
 	 * Uses entered details to log a user in.
 	 * @param username
 	 * @param password
-	 * @return true on success
+	 * @return True on success
 	 */
 	public static boolean login(String username, String password) {
+		
 		ResultSet result = null;
 
 		try {
@@ -894,13 +897,13 @@ public class Database {
 	}
 
 	/**
-	 * Checks the database for a single piece of data existing
+	 * Checks the database for a single piece of data existing.
 	 * 
 	 * @param Field1
 	 *            eg(username)
 	 * @param Data1
 	 *            eg(Eyehouse1)
-	 * @return true on success
+	 * @return True on success
 	 */
 	public static boolean oneFieldCheck(String Field1, String Data1) {
 
@@ -935,7 +938,7 @@ public class Database {
 	 * already exist and enters them into the database.
 	 * 
 	 * @param newUser
-	 * @return true on success
+	 * @return True on success
 	 */
 	public static boolean userRegister(User newUser) {
 
@@ -960,12 +963,13 @@ public class Database {
 	}
 
 	/**
+	 * Updates an image in the database.
 	 * 
 	 * @param tablename
 	 * @param filepath
 	 * @param fieldSelect
 	 * @param id
-	 * @return true on success
+	 * @return True on success
 	 * @throws FileNotFoundException
 	 */
 	public static boolean updateImage(String tablename, String filepath,
@@ -1003,12 +1007,12 @@ public class Database {
 	}
 
 	/**
-	 * Inserts an image into the house_images table
+	 * Inserts an image into the house_images table.
 	 * 
 	 * @param localFilepath
 	 * @param houseDetails
 	 * @param userDetails
-	 * @return true on success
+	 * @return True on success
 	 * @throws SQLException
 	 */
 	public static boolean insertHouseImage(String localFilepath,
@@ -1053,9 +1057,10 @@ public class Database {
 	 * information in an ArrayList.
 	 * 
 	 * @param hid
-	 * @return ArrayList<HouseImage>
+	 * @return ArrayList of HouseImage
 	 */
 	public static ArrayList<HouseImage> getHouseImageSet(int hid) {
+		
 		ResultSet images;
 		ArrayList<HouseImage> list = new ArrayList<HouseImage>();
 
@@ -1083,11 +1088,11 @@ public class Database {
 	}
 
 	/**
-	 * Check a video exists for a house.
+	 * Checks if a video exists for a house.
 	 * 
 	 * @param userDetails
 	 * @param videoDetails
-	 * @return true if exists
+	 * @return True if exists
 	 */
 	public static boolean checkHouseVideoExists(User userDetails,
 			HouseVideo videoDetails) {
@@ -1120,7 +1125,6 @@ public class Database {
 			return true;
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.out.println("\nSQL error in house check");
 			return false;
@@ -1164,11 +1168,10 @@ public class Database {
 	}
 
 	/**
-	 * Deletes the database entry of an image when passed its HouseImage type
+	 * Deletes the database entry of an image when passed its HouseImage type.
 	 * 
 	 * @param image
-	 * @return true on success
-	 * @return false on failure
+	 * @return True on success
 	 */
 	public static boolean deleteHouseImage(HouseImage image) {
 		try {
@@ -1232,9 +1235,7 @@ public class Database {
 	 * @param houseDetails
 	 * @param filename
 	 * @param localDirectory
-	 * @return true on success
-	 * @return false on failure
-	 * 
+	 * @return True on success
 	 */
 	public static boolean insertHouseVideo(User userDetails,
 			House houseDetails, String filename, String localDirectory) {
@@ -1307,7 +1308,7 @@ public class Database {
 	}
 
 	/**
-	 * Get video info from the database.
+	 * Gets video info from the database.
 	 * 
 	 * @param userDetails
 	 * @param houseDetails
@@ -1346,11 +1347,11 @@ public class Database {
 	}
 
 	/**
-	 * Delete a video.
+	 * Deletes a video.
 	 * 
 	 * @param userDetails
 	 * @param videoDetails
-	 * @return true on success
+	 * @return True on success
 	 */
 	public static boolean deleteVideo(User userDetails, HouseVideo videoDetails) {
 
@@ -1415,12 +1416,13 @@ public class Database {
 	}
 
 	/**
-	 * Check review exists in the database.
+	 * Checks review exists in the database.
 	 * 
 	 * @param reviewDetails
-	 * @return true on success
+	 * @return True on success
 	 */
 	public static boolean checkReviewExists(UserReview reviewDetails) {
+		
 		ResultSet userReviewSet;
 		int review;
 
@@ -1464,10 +1466,10 @@ public class Database {
 	}
 
 	/**
-	 * Insert review for a user.
+	 * Inserts review for a user.
 	 * 
 	 * @param reviewDetails
-	 * @return true on success
+	 * @return True on success
 	 */
 	public static boolean insertUserReview(UserReview reviewDetails) {
 
@@ -1509,10 +1511,10 @@ public class Database {
 	}
 
 	/**
-	 * Get a user review and associated data.
+	 * Gets a user review and associated data.
 	 * 
 	 * @param urid
-	 * @return
+	 * @return UserReview
 	 */
 	public static UserReview getUserReview(int urid) {
 
@@ -1552,11 +1554,11 @@ public class Database {
 	}
 
 	/**
-	 * Get all user reviews that are targeted at a user (target) and return them
+	 * Gets all user reviews that are targeted at a user (target) and return them
 	 * in an ArrayList.
 	 * 
 	 * @param target
-	 * @return ArrayList<UserReview>
+	 * @return ArrayList of UserReview
 	 */
 	public static ArrayList<UserReview> getUserReviewList(int target) {
 
@@ -1591,10 +1593,10 @@ public class Database {
 	}
 
 	/**
-	 * Delete user review.
+	 * Deletes user review.
 	 * 
 	 * @param reviewDetails
-	 * @return true on success
+	 * @return True on success
 	 */
 	public static boolean deleteUserReview(UserReview reviewDetails) {
 
@@ -1634,7 +1636,7 @@ public class Database {
 	 * Inserts a house review into the database.
 	 * 
 	 * @param reviewDetails
-	 * @return true on success
+	 * @return True on success
 	 */
 	public static boolean insertHouseReview(HouseReview reviewDetails) {
 
@@ -1676,10 +1678,10 @@ public class Database {
 	}
 
 	/**
-	 * Get house reviews.
+	 * Gets house reviews.
 	 * 
 	 * @param hid
-	 * @return ArrayList<HouseReview>
+	 * @return ArrayList of HouseReview
 	 */
 	public static ArrayList<HouseReview> getHouseReviews(int hid) {
 
@@ -1713,10 +1715,10 @@ public class Database {
 	}
 
 	/**
-	 * Check a house review exists.
+	 * Checks if a house review exists.
 	 * 
 	 * @param reviewDetails
-	 * @return true if exists
+	 * @return True if exists
 	 */
 	public static boolean checkHouseReviewExists(HouseReview reviewDetails) {
 		ResultSet houseReviewSet;
@@ -1761,10 +1763,10 @@ public class Database {
 	}
 
 	/**
-	 * Delete house review.
+	 * Deletes house review.
 	 * 
 	 * @param reviewDetails
-	 * @return true on success
+	 * @return True on success
 	 */
 	public static boolean deleteHouseReview(HouseReview reviewDetails) {
 
@@ -1801,7 +1803,7 @@ public class Database {
 	}
 
 	/**
-	 * Like a review. If the user has already liked the review delete the like
+	 * Like review. If the user has already liked the review delete the like
 	 * record and switch status to no like or dislike. If the user has disliked
 	 * the review switch the record to like. If the user has not liked or
 	 * disliked the review insert a like record.
@@ -1810,13 +1812,13 @@ public class Database {
 	 * @param houseReview
 	 * @param userReview
 	 * @param type
-	 * @return true on success
+	 * @return True on success
 	 */
 	public static boolean likeReview(User userDetails, HouseReview houseReview,
 			UserReview userReview, int type) {
 
-		// type 1 = User review
-		// type 2 = House review
+		// type == 1 for User review
+		// type == 2 for House review
 		ResultSet likeCheck;
 
 		try {
@@ -2055,7 +2057,7 @@ public class Database {
 	 * @param houseReview
 	 * @param userReview
 	 * @param type
-	 * @return true on success
+	 * @return True on success
 	 */
 	public static boolean dislikeReview(User userDetails,
 			HouseReview houseReview, UserReview userReview, int type) {
@@ -2063,6 +2065,7 @@ public class Database {
 		// type == 1 for User review
 		// type == 2 for House review
 		ResultSet likeCheck;
+		
 		// Check User-Review like record exists
 		try {
 			// Prepare query
@@ -2302,12 +2305,12 @@ public class Database {
 	}
 
 	/**
-	 * Insert video marker.
+	 * Inserts video marker.
 	 * 
 	 * @param vid
 	 * @param room
 	 * @param time
-	 * @return true on success
+	 * @return True on success
 	 */
 	public static boolean insertVideoMarker(int vid, String room, double time) {
 
@@ -2377,7 +2380,7 @@ public class Database {
 	 * Delete video marker.
 	 * 
 	 * @param videoMarker
-	 * @return
+	 * @return True if success
 	 */
 	public static boolean deleteVideoMarker(Marker videoMarker) {
 
@@ -2406,10 +2409,10 @@ public class Database {
 
 	/**
 	 * Gets all video markers associated with vid and returns them in an
-	 * ArrayList of type Marker
+	 * ArrayList of type Marker.
 	 * 
 	 * @param vid
-	 * @return ArrayList<Marker>
+	 * @return ArrayList of Marker
 	 */
 	public static ArrayList<Marker> getVideoMarkers(int vid) {
 
@@ -2448,7 +2451,7 @@ public class Database {
 	/**
 	 * Selects all houses.
 	 * 
-	 * @return ArrayList<Integer>
+	 * @return ArrayList of Integer
 	 */
 	public static ArrayList<Integer> selectAllHouses() {
 

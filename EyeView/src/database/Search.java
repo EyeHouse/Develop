@@ -52,7 +52,7 @@ public class Search {
 	}
 
 	/**
-	 * Sourced from Stack Overflow
+	 * Sourced from Stack Overflow.
 	 * 
 	 * @param response
 	 * @return
@@ -76,12 +76,13 @@ public class Search {
 	}
 
 	/**
-	 * Sourced from StackOverflow
+	 * Sourced from Stack Overflow.
 	 * 
 	 * @param s
 	 * @return
 	 */
 	private static String getOrdinate(String s) {
+		
 		String[] split = s.trim().split(" ");
 
 		if (split.length < 1) {
@@ -101,7 +102,7 @@ public class Search {
 	}
 
 	/**
-	 * Sourced form Stack Overflow
+	 * Sourced from Stack Overflow.
 	 * 
 	 * @param code
 	 * @return
@@ -119,7 +120,7 @@ public class Search {
 	}
 
 	/**
-	 * Sourced from stack overflow
+	 * Sourced from Stack Overflow.
 	 * 
 	 * @param code
 	 * @return
@@ -165,7 +166,8 @@ public class Search {
 	 */
 	public static double haversine(double lat1, double lon1, double lat2,
 			double lon2) {
-		// Conver Lat Long to radians and calculate differences
+		
+		// Convert Lat Long to radians and calculate differences
 		double dLat = Math.toRadians(lat2 - lat1);
 		double dLon = Math.toRadians(lon2 - lon1);
 
@@ -214,7 +216,6 @@ public class Search {
 
 				// Close query
 				roomQuery.close();
-
 			}
 			// < entered rooms
 			if (!filterType) {
@@ -245,7 +246,7 @@ public class Search {
 	}
 
 	/**
-	 * Filter houses by price.
+	 * Filters houses by price.
 	 * 
 	 * @param price
 	 * @param filterType
@@ -305,7 +306,7 @@ public class Search {
 	}
 
 	/**
-	 * Get all post codes in the database.
+	 * Gets all post codes in the database.
 	 * 
 	 * @return ResultSet
 	 */
@@ -338,11 +339,11 @@ public class Search {
 	}
 
 	/**
-	 * Search String. The houses table runs on MyISAM engine and some columns
+	 * The houses table runs on MyISAM engine and some columns
 	 * have full text indexing allowing for quick string searching.
 	 * 
 	 * @param userinput
-	 * @return ArrayList<Integer>
+	 * @return ArrayList of Integers
 	 */
 	public static ArrayList<Integer> searchString(String userinput) {
 
@@ -350,7 +351,6 @@ public class Search {
 		ResultSet houses = null;
 
 		try {
-
 			// Prepare query
 			PreparedStatement selectPostcodes = Database.con
 					.prepareStatement("SELECT * FROM houses WHERE MATCH(`postcode`,`address`,`title`) AGAINST (?)");
@@ -379,7 +379,7 @@ public class Search {
 	/**
 	 * Searches proximity in km entered by users (kilometers) between a
 	 * reference post code (postcode) entered by the user and all postcodes in
-	 * the database
+	 * the database.
 	 * 
 	 * @param postcode
 	 * @param kilometers
@@ -446,115 +446,5 @@ public class Search {
 		System.out.println("\nValid Houses :" + validHouseID);
 
 		return validHouseID;
-	}
-
-	/**
-	 * Example cases of the methods
-	 * 
-	 * @param args
-	 * @throws Exception
-	 */
-	public static void main(String[] args) throws Exception {
-
-		Database.dbConnect();
-
-		switch ("string") {
-		// Search string example
-		case "string":
-			ArrayList<Integer> validHouses = new ArrayList<Integer>();
-
-			// Search string
-			validHouses = searchString("link");
-
-			System.out.println("Contains : " + validHouses);
-			break;
-		// This case is the prototype of the searchProximity method
-		case "fullhousexy":
-
-			ResultSet postcodes = null;
-			ArrayList<Integer> validHouseID = new ArrayList<Integer>();
-			String tempPC;
-			String userinputPC = "Y010 5DD";
-			double distanceCheck;
-			double userinputKM = 2.5;
-
-			// For checking method
-			int loopCounter = 0;
-
-			// Get all post codes and house ids
-			postcodes = getPostcodes();
-
-			do {
-				// Gets the post code
-				tempPC = postcodes.getString("postcode");
-
-				// Get the long lat of both post codes
-				ArrayList<Double> longLat1 = new ArrayList<Double>();
-				ArrayList<Double> longLat2 = new ArrayList<Double>();
-
-				// The post code being checked
-				longLat1 = getLongLat(tempPC);
-
-				// The user input post code
-				longLat2 = getLongLat(userinputPC);
-
-				// Find distance between two post codes
-				distanceCheck = haversine(longLat1.get(0), longLat1.get(1),
-						longLat2.get(0), longLat2.get(1));
-
-				System.out
-						.println("\nDistance between reference postcode and house :"
-								+ distanceCheck);
-
-				/*
-				 * If distance is within distance specified add the id to an
-				 * ArrayList
-				 */
-				if (distanceCheck <= userinputKM) {
-					// Add valid houses to the list
-					validHouseID.add(postcodes.getInt("hid"));
-
-					System.out.println("\nindex " + loopCounter);
-
-					System.out.println("\nValid House :" + validHouseID);
-
-					loopCounter++;
-				}
-
-				// If distance check is negative, error
-				if (distanceCheck < 0) {
-					System.out.println("\nError : negative distance");
-				}
-
-			} while (postcodes.next());
-
-			System.out.println("\nValid House :" + validHouseID);
-			break;
-		case "longlat":
-			String address = "YO23 1JZ";
-
-			ArrayList<Double> longLat = new ArrayList<Double>();
-
-			longLat = getLongLat(address);
-
-			System.out.println("Latitude: " + longLat.get(0));
-			System.out.println("Longitude: " + longLat.get(1));
-			break;
-		case "roomsandprice":
-
-			ArrayList<House> list = new ArrayList<House>();
-
-			list = rooms(4, false);
-
-			int i;
-			for (i = 0; i < list.size(); i++) {
-				House temp = list.get(i);
-				temp.printHouse();
-			}
-			break;
-		default:
-			break;
-
-		}
 	}
 }

@@ -21,12 +21,20 @@ public class Marker {
 	public String room;
 	public double markerTime;
 
-	// Marker constructor method
+	/**
+	 * Constructor method
+	 * 
+	 * @param rm
+	 */
 	public Marker(String rm) {
 		this.room = rm;
 	}
 
-	// Create Marker from result set
+	/**
+	 * Constructor method
+	 * 
+	 * @param markerDetails
+	 */
 	public Marker(ResultSet markerDetails) {
 		try {
 			this.mid = markerDetails.getInt(MID);

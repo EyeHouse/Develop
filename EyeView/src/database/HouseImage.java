@@ -23,12 +23,20 @@ public class HouseImage {
 	private final static int HID = 2;
 	private final static int IMAGE = 3;
 
-	// HouseImage constructor
+	/**
+	 * Constructor method
+	 * 
+	 * @param imageID
+	 */
 	public HouseImage(int imageID) {
 		this.iid = imageID;
 	}
 
-	// Creates a HouseImage from a result set
+	/**
+	 * Creates a HouseImage from a result set
+	 * 
+	 * @param imageDetails
+	 */
 	public HouseImage(ResultSet imageDetails) {
 		try {
 			this.iid = imageDetails.getInt(IID);
@@ -39,7 +47,7 @@ public class HouseImage {
 			e.printStackTrace();
 		}
 	}
-	
+
 	// Sets info
 	public void iid(int imageID) {
 		this.iid = imageID;

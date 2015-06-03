@@ -16,9 +16,9 @@ public class SQLFilter {
 	 * the database.
 	 * 
 	 * @param str
-	 *            The input string.
+	 *            The input string
 	 * 
-	 * @return A boolean. True means a SQL word is present.
+	 * @return True if an SQL word is present
 	 */
 	public static boolean SQLWordCheck(String str) {
 
@@ -43,12 +43,4 @@ public class SQLFilter {
 		}
 		return SQLWordPresent;
 	}
-
-	// Checking method's functionality:
-	/*
-	 * static String sampleWord = "*";
-	 * 
-	 * public static void main(String[] args) { SQLWordCheck(sampleWord); }
-	 */
-
 }

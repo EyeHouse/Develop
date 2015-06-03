@@ -46,7 +46,11 @@ public class House {
 	public Blob energyRating;
 	public InputStream energyRatingIS;
 
-	// House constructor method
+	/**
+	 * Constructor method
+	 * 
+	 * @param title
+	 */
 	public House(String title) {
 		this.title = title;
 	}

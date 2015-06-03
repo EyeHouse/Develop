@@ -22,7 +22,7 @@ public class DataHandler {
 	 * 
 	 * @param email
 	 *            The entered E-mail string.
-	 * @return A boolean. True implies that the E-mail address is valid.
+	 * @return True implies that the E-mail address is valid.
 	 */
 	public static boolean isValidEmailAddress(String email) {
 		boolean result;
@@ -45,7 +45,7 @@ public class DataHandler {
 	 *            Password string from the user.
 	 * @param retypePassword
 	 *            Re-entered password string from the user.
-	 * @return A boolean. True implies the passwords is strong and meets the
+	 * @return True implies the passwords is strong and meets the
 	 *         criteria and the re-entered password is correct.
 	 */
 	public static boolean passwordChecker(String password, String retypePassword) {
@@ -110,5 +110,4 @@ public class DataHandler {
 		}
 		return hexString.toString();
 	}
-
 }

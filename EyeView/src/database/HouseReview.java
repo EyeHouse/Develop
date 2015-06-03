@@ -4,7 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * Holds information for a house review
+ * Holds information for a house review.
  * 
  * @version 1.48 (15.03.15)
  * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
@@ -29,12 +29,20 @@ public class HouseReview {
 	public int like;
 	public int dislike;
 
-	// HouseReview Contructor
+	/**
+	 * Constructor method
+	 * 
+	 * @param hrTG
+	 */
 	public HouseReview(int hrTG) {
 		this.hid = hrTG;
 	}
 
-	// Create HouseReview from a result set
+	/**
+	 * Constructor method
+	 * 
+	 * @param reviewDetails
+	 */
 	public HouseReview(ResultSet reviewDetails) {
 		
 		try {
