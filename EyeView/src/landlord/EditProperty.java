@@ -53,12 +53,11 @@ import database.Marker;
 import database.User;
 
 /**
- * This class creates the edit property page
+ * This class creates the edit property page. This consists of 3 pages:
+ * Information upload, Pictures upload, and Video upload.
  * 
- * @version 3.10 01.06.15
- * @author EyeHouse
- * 
- *         Copyright 2015 EyeHouse
+ * @version 3.10 (01.06.15)
+ * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
  */
 public class EditProperty extends Window {
 
@@ -117,7 +116,7 @@ public class EditProperty extends Window {
 	private Button fileChooserButton;
 
 	/**
-	 * Create property editing page
+	 * Create property editing page.
 	 * 
 	 * @param page
 	 *            Page index of property editor
@@ -147,7 +146,7 @@ public class EditProperty extends Window {
 	}
 
 	/**
-	 * Populate the edit property page
+	 * Populates the edit property page.
 	 */
 	public void createEditPage() {
 
@@ -175,7 +174,7 @@ public class EditProperty extends Window {
 	}
 
 	/**
-	 * Setup grid layout object
+	 * Sets up grid layout object.
 	 */
 	private void setupGrid() {
 
@@ -196,7 +195,7 @@ public class EditProperty extends Window {
 	}
 
 	/**
-	 * Setup page labels based on current page
+	 * Sets up page labels based on current page.
 	 * 
 	 * @param page
 	 *            Editor page index
@@ -268,7 +267,7 @@ public class EditProperty extends Window {
 	}
 
 	/**
-	 * Setup page navigation buttons
+	 * Sets up page navigation buttons
 	 */
 	private void setupButtons() {
 
@@ -371,7 +370,7 @@ public class EditProperty extends Window {
 	}
 
 	/**
-	 * Create house information editing/creation page
+	 * Creates the house information editing/creation page.
 	 */
 	private void setupHouseInfo() {
 
@@ -502,7 +501,7 @@ public class EditProperty extends Window {
 	}
 
 	/**
-	 * Create house images editing/creation page
+	 * Creates the house images editing/creation page.
 	 */
 	public void setupHousePictures() {
 
@@ -628,7 +627,6 @@ public class EditProperty extends Window {
 				imageTiles.getChildren().add(tile);
 			}
 		}
-
 		// Otherwise if creating a new house
 		else {
 
@@ -683,7 +681,7 @@ public class EditProperty extends Window {
 	}
 
 	/**
-	 * Create house images editing/creation page
+	 * Creates the house video editing/creation page.
 	 */
 	private void setupHouseVideo() {
 
@@ -787,20 +785,20 @@ public class EditProperty extends Window {
 		if (videoPath != null) {
 
 			// Create the video player
-			SetupVideoPlayer(videoPath);
+			setupVideoPlayer(videoPath);
 
 			// Create the video marker editor
-			SetupRoomMarkers();
+			setupRoomMarkers();
 		}
 	}
 
 	/**
-	 * Create a video player
+	 * Creates a new video player.
 	 * 
 	 * @param newVideoFileString
 	 *            File path of video to be played
 	 */
-	private void SetupVideoPlayer(String newVideoFileString) {
+	private void setupVideoPlayer(String newVideoFileString) {
 
 		// Create a stackpane to contain the vidoe
 		StackPane videoPane = new StackPane();
@@ -822,9 +820,9 @@ public class EditProperty extends Window {
 	}
 
 	/**
-	 * Setup the video marker editor
+	 * Sets up the video marker editor.
 	 */
-	private void SetupRoomMarkers() {
+	private void setupRoomMarkers() {
 
 		// If editing a current house
 		if (hid != 0) {
@@ -996,21 +994,16 @@ public class EditProperty extends Window {
 	}
 
 	/**
-	 * This event handler handles updates to current property house information
+	 * This event handler handles updates to current property house information.
 	 * 
-	 * @author EyeHouse
-	 * 
-	 *         Copyright 2015 EyeHouse
+	 * @version 3.10 (01.06.15)
+	 * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
 	 */
 	public class ApplyChanges implements EventHandler<ActionEvent> {
 
-		/**
-		 * Event handler
-		 */
 		public void handle(ActionEvent arg0) {
 
-			// Check the applicable fields for bad language and highlight if
-			// found
+			// Check applicable fields for bad language and highlight if found
 			BadWordCheck bwd = new BadWordCheck();
 			if (bwd.containsBlackListedWords(description.getText())) {
 				description.setText(bwd.highlightBlackListedWords(description
@@ -1068,17 +1061,13 @@ public class EditProperty extends Window {
 	}
 
 	/**
-	 * This event handler handles creation of new houses
+	 * This event handler handles creation of new houses.
 	 * 
-	 * @author EyeHouse
-	 * 
-	 *         Copyright 2015 EyeHouse
+	 * @version 3.10 (01.06.15)
+	 * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
 	 */
 	public class CreateHouse implements EventHandler<ActionEvent> {
 
-		/**
-		 * Event handler
-		 */
 		public void handle(ActionEvent arg0) {
 
 			// Parse the date comboboxes into a database compatible date string
@@ -1195,17 +1184,13 @@ public class EditProperty extends Window {
 	}
 
 	/**
-	 * This event handler handles the cancelling of a house edit/creation
+	 * This event handler handles the cancelling of a house edit/creation.
 	 * 
-	 * @author EyeHouse
-	 * 
-	 *         Copyright 2015 EyeHouse
+	 * @version 3.10 (01.06.15)
+	 * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
 	 */
 	public class Cancel implements EventHandler<ActionEvent> {
 
-		/**
-		 * Event handler
-		 */
 		public void handle(ActionEvent arg0) {
 
 			// Free the memory associated with the video file
@@ -1218,9 +1203,9 @@ public class EditProperty extends Window {
 	}
 
 	/**
-	 * Check the house information fields contain valid information
+	 * Checks the house information fields contain valid information.
 	 * 
-	 * @return boolean true if all information fields contain valid information
+	 * @return True if all information fields contain valid information
 	 */
 	public boolean checkInfoPage() {
 
@@ -1253,24 +1238,22 @@ public class EditProperty extends Window {
 		if (check == 8) {
 			return true;
 		}
-
 		// Otherwise return false
 		else
 			return false;
 	}
 
 	/**
-	 * Check that a string only contains numbers
+	 * Checks that a string only contains numbers.
 	 * 
 	 * @param input
 	 *            String to be checked
 	 * 
-	 * @return boolean True if the string only contains numbers
+	 * @return True if the string only contains numbers
 	 */
 	public boolean checkNumber(String input) {
 
 		try {
-
 			// Attempt to parse an integer from the string
 			int check = Integer.parseInt(input.trim());
 
@@ -1279,17 +1262,15 @@ public class EditProperty extends Window {
 				return false;
 			}
 		} catch (Exception e) {
-
 			// Return a false if the parse was unsuccessful
 			return false;
 		}
-
 		// Return true if the parse and size check was successful
 		return true;
 	}
 
 	/**
-	 * Update the tab label status icons
+	 * Updates the tab label status icons.
 	 */
 	public void updateTabLabels() {
 
@@ -1330,17 +1311,13 @@ public class EditProperty extends Window {
 	}
 
 	/**
-	 * Text change listener
+	 * This event handler handles text changes.
 	 * 
-	 * @author EyeHouse
-	 * 
-	 *         Copyright 2015 EyeHouse
+	 * @version 3.10 (01.06.15)
+	 * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
 	 */
 	public class TextChanged implements ChangeListener<String> {
 
-		/**
-		 * Event handler
-		 */
 		public void changed(ObservableValue<? extends String> arg0,
 				String arg1, String arg2) {
 			// If a text field has been changed, update the tab labels
@@ -1361,7 +1338,7 @@ public class EditProperty extends Window {
 		final int direction;
 
 		/**
-		 * Event constructor
+		 * Constructor method
 		 * 
 		 * @param dir
 		 *            1 = increment page, -1 = decrement page
@@ -1370,9 +1347,6 @@ public class EditProperty extends Window {
 			direction = dir;
 		}
 
-		/**
-		 * Event handler
-		 */
 		@Override
 		public void handle(MouseEvent arg0) {
 
@@ -1391,17 +1365,13 @@ public class EditProperty extends Window {
 	}
 
 	/**
-	 * This button event hander handles the file browse event
+	 * This button event hander handles the file browse event.
 	 * 
-	 * @author EyeHouse
-	 * 
-	 *         Copyright 2015 EyeHouse
+	 * @version 3.10 (01.06.15)
+	 * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
 	 */
 	public class Browse implements EventHandler<ActionEvent> {
 
-		/**
-		 * Event handler
-		 */
 		public void handle(ActionEvent arg0) {
 
 			File newFile;
@@ -1470,7 +1440,7 @@ public class EditProperty extends Window {
 		}
 
 		/**
-		 * Configure the file chooser based on the current page
+		 * Configures the file chooser based on the current page.
 		 * 
 		 * @param uploadChooser
 		 *            Input the file chooser to be edited
@@ -1508,11 +1478,10 @@ public class EditProperty extends Window {
 	}
 
 	/**
-	 * This button event hander handles the upload event
+	 * This button event hander handles the upload event.
 	 * 
-	 * @author EyeHouse
-	 * 
-	 *         Copyright 2015 EyeHouse
+	 * @version 3.10 (01.06.15)
+	 * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
 	 */
 	public class Upload implements EventHandler<ActionEvent> {
 
@@ -1558,10 +1527,10 @@ public class EditProperty extends Window {
 					fileChooserButton.setDisable(true);
 
 					// Setup the video player with the new video
-					SetupVideoPlayer(videoPath);
+					setupVideoPlayer(videoPath);
 
 					// Setup the room marker editor
-					SetupRoomMarkers();
+					setupRoomMarkers();
 					break;
 				}
 				// Jump out of handler
@@ -1597,10 +1566,10 @@ public class EditProperty extends Window {
 					fileChooserButton.setDisable(true);
 
 					// Setup the video player with the new video
-					SetupVideoPlayer(videoPath);
+					setupVideoPlayer(videoPath);
 
 					// Setup the room marker editor
-					SetupRoomMarkers();
+					setupRoomMarkers();
 				}
 
 				// If upload was successful
@@ -1617,17 +1586,13 @@ public class EditProperty extends Window {
 	}
 
 	/**
-	 * This event handler handles the remove video event
+	 * This event handler handles the remove video event.
 	 * 
-	 * @author EyeHouse
-	 * 
-	 *         Copyright 2015 EyeHouse
+	 * @version 3.10 (01.06.15)
+	 * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
 	 */
 	public class RemoveVideo implements EventHandler<ActionEvent> {
 
-		/**
-		 * Event handler
-		 */
 		public void handle(ActionEvent arg0) {
 
 			// If editing a current house
@@ -1657,17 +1622,13 @@ public class EditProperty extends Window {
 	}
 
 	/**
-	 * This event handler handles the delete image event
+	 * This event handler handles the delete image event.
 	 * 
-	 * @author EyeHouse
-	 * 
-	 *         Copyright 2015 EyeHouse
+	 * @version 3.10 (01.06.15)
+	 * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
 	 */
 	public class DeleteImage implements EventHandler<ActionEvent> {
 
-		/**
-		 * Event handler
-		 */
 		public void handle(ActionEvent arg0) {
 
 			// if creating a new house
@@ -1693,14 +1654,12 @@ public class EditProperty extends Window {
 						// Restart the sweep
 						i = 0;
 					}
-
 					// Otherwise continue through the arraylist
 					else {
 						i++;
 					}
 				}
 			}
-
 			// Otherwise if editing a current house
 			else {
 				/*
@@ -1745,11 +1704,10 @@ public class EditProperty extends Window {
 	}
 
 	/**
-	 * This event handler handles the new marker event
+	 * This event handler handles creation of new houses.
 	 * 
-	 * @author EyeHouse
-	 * 
-	 *         Copyright 2015 EyeHouse
+	 * @version 3.10 (01.06.15)
+	 * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
 	 */
 	public class AddMarker implements EventHandler<ActionEvent> {
 
@@ -1813,17 +1771,13 @@ public class EditProperty extends Window {
 	}
 
 	/**
-	 * This event handler handles the delete marker event
+	 * This event handler handles the delete marker event.
 	 * 
-	 * @author EyeHouse
-	 * 
-	 *         Copyright 2015 EyeHouse
+	 * @version 3.2 (27.05.15)
+	 * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
 	 */
 	public class DeleteMarker implements EventHandler<ActionEvent> {
 
-		/**
-		 * Event handler
-		 */
 		@Override
 		public void handle(ActionEvent event) {
 			// If a marker is selected in the listview
@@ -1856,11 +1810,11 @@ public class EditProperty extends Window {
 	}
 
 	/**
-	 * Create an arraylist of comboboxes formated for date input
+	 * Creates an ArrayList of ComboBox formated for date input.
 	 * 
 	 * @param initialDate
-	 *            Initial date value of comboboxes
-	 * @return Arraylist of date comboboxes, index 0 = days, 1 = months etc.
+	 *            Initial date value of ComboBox
+	 * @return ArrayList of date ComboBox, index 0 = days, 1 = months etc.
 	 */
 	public static ArrayList<ComboBox<String>> setupDate(String initialDate) {
 
@@ -1909,7 +1863,6 @@ public class EditProperty extends Window {
 						case "04":
 						case "06":
 						case "11":
-
 							// Populate days combobox with 30 days
 							for (int j = 1; j < 31; j++) {
 								comboAvailableDay.getItems().add(
@@ -1917,7 +1870,6 @@ public class EditProperty extends Window {
 							}
 							break;
 						case "02":
-
 							// Populate days combobox with 29 days
 							for (int j = 1; j < 29; j++) {
 								comboAvailableDay.getItems().add(
@@ -1925,7 +1877,6 @@ public class EditProperty extends Window {
 							}
 							break;
 						default:
-
 							// Populate days combobox with 31 days
 							for (int j = 1; j < 32; j++) {
 								comboAvailableDay.getItems().add(

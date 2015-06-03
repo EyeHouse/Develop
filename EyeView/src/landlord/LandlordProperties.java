@@ -31,24 +31,23 @@ import database.HouseImage;
 import database.User;
 
 /**
- * This class creates the landlord properties page
+ * This class creates the landlord properties page for viewing a list of all the
+ * properties created and managed by the current landlord logged in.
  * 
- * @version 3.8 01.06.15
- * @author EyeHouse
- * 
- *         Copyright 2015 EyeHouse
+ * @version 3.8 (01.06.15)
+ * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
  */
 public class LandlordProperties extends Window {
 
 	// Landlord Properties instance variables
-	GridPane grid = new GridPane();
-	ArrayList<House> properties = new ArrayList<House>();
-	ListView<HBox> propertyList = new ListView<HBox>();
-	ObservableList<HBox> items = FXCollections.observableArrayList();
-	User viewedUser;
+	private GridPane grid = new GridPane();
+	private ArrayList<House> properties = new ArrayList<House>();
+	private ListView<HBox> propertyList = new ListView<HBox>();
+	private ObservableList<HBox> items = FXCollections.observableArrayList();
+	private User viewedUser;
 
 	/**
-	 * Retrieve and display landlord properties bassed on username input.
+	 * Retrieves and displays landlord properties based on username input.
 	 * 
 	 * @param pageUsername
 	 *            The username of the landlord properties to display.
@@ -78,7 +77,7 @@ public class LandlordProperties extends Window {
 	}
 
 	/**
-	 * Setup grid layout object 
+	 * Sets up grid layout object.
 	 */
 	private void setupGrid() {
 
@@ -96,7 +95,7 @@ public class LandlordProperties extends Window {
 	}
 
 	/**
-	 * Setup title text
+	 * Sets up title text.
 	 */
 	private void setupTitle() {
 
@@ -115,8 +114,8 @@ public class LandlordProperties extends Window {
 		root.getChildren().add(labelTitle);
 	}
 
-	/** 
-	 * Setup control buttons
+	/**
+	 * Sets up control buttons.
 	 */
 	private void setupLandlordButtons() {
 
@@ -147,14 +146,14 @@ public class LandlordProperties extends Window {
 		// Set button handler for "Edit" button
 		buttonEdit.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
-				
+
 				// Check a property has been selected
 				if (propertyList.getSelectionModel().getSelectedIndex() >= 0) {
-					
+
 					// Check which property is selected
 					int index = propertyList.getSelectionModel()
 							.getSelectedIndex();
-					
+
 					// Set the current property ID to the selected house
 					currentPropertyID = properties.get(index).hid;
 
@@ -164,13 +163,13 @@ public class LandlordProperties extends Window {
 			}
 		});
 
-		/* Set button handler for "Delete" button */
+		// Set button handler for "Delete" button
 		buttonDelete.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
-				
+
 				// Check a property has been selected
 				if (propertyList.getSelectionModel().getSelectedIndex() >= 0) {
-					
+
 					// Check which property is selected
 					int index = propertyList.getSelectionModel()
 							.getSelectedIndex();
@@ -185,7 +184,7 @@ public class LandlordProperties extends Window {
 
 					// Remove the selected house from the database
 					Database.houseDelete(properties.get(index), viewedUser);
-					
+
 					// Remove the selected house from local list of houses
 					properties.remove(index);
 
@@ -193,20 +192,20 @@ public class LandlordProperties extends Window {
 			}
 		});
 
-		/* Set button handler for "View" button */
+		// Set button handler for "View" button
 		buttonView.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 
 				// Check a property has been selected
 				if (propertyList.getSelectionModel().getSelectedIndex() >= 0) {
-					
+
 					// Check which property is selected
 					int index = propertyList.getSelectionModel()
 							.getSelectedIndex();
-					
+
 					// Set the current property ID to the selected house
 					currentPropertyID = properties.get(index).hid;
-					
+
 					// Open the single property view page
 					loadSlide(HOUSE);
 				}
@@ -231,11 +230,11 @@ public class LandlordProperties extends Window {
 	}
 
 	/**
-	 * Populate property list view with owned properties from the database.
+	 * Populates property list view with owned properties from the database.
 	 */
 	private void setupPropertyList() {
 
-		// Set listview object height
+		// Set ListView object height
 		propertyList.setPrefHeight(550);
 
 		// Retrieve owned properties from database
@@ -251,27 +250,27 @@ public class LandlordProperties extends Window {
 			// Retrieve current property images
 			ArrayList<HouseImage> houseImages = new ArrayList<HouseImage>();
 			houseImages = Database.getHouseImageSet(properties.get(i).hid);
-			
+
 			// Setup thumbnail of first property image
 			HouseImage input = houseImages.get(0);
 			ImageView thumbnail = new ImageView(new Image(input.imageIS));
-			
+
 			// Resize thumbnail
 			thumbnail.setFitHeight(100);
 			thumbnail.setFitWidth(100);
 
 			// Get current property from list of landlord properties
 			House house = properties.get(i);
-			
+
 			// Create label with address of current property
 			Label propertyAddress = new Label(house.address);
-			
-			//Setup address label text wrapping, width and make bold
+
+			// Setup address label text wrapping, width and make bold
 			propertyAddress.setWrapText(true);
 			propertyAddress.setMaxWidth(300);
 			propertyAddress.setFont(Font.font(null, FontWeight.BOLD, 20));
-			
-			// Create label with price and number of bedrooms, translating field names
+
+			// Create label with price and number of bedrooms
 			Label propertyDetails = new Label(Translator.translateText(
 					languageIndex, "Bedrooms: ")
 					+ house.rooms
@@ -282,15 +281,15 @@ public class LandlordProperties extends Window {
 
 			// Add the address and house info labels to a VBox
 			propertyInfo.getChildren().addAll(propertyAddress, propertyDetails);
-			
-			// Add the thumbnail and property information to the current list item
+
+			// Add thumbnail and property information to the current list item
 			listItem.getChildren().addAll(thumbnail, propertyInfo);
 
 			// Add the current list item to list
 			items.add(listItem);
 		}
-		
-		// Add the list to the listview object
+
+		// Add the list to the ListView object
 		propertyList.setItems(items);
 
 		// Add the list view to the grid pane
@@ -298,7 +297,7 @@ public class LandlordProperties extends Window {
 	}
 
 	/**
-	 * Free allocated memory from objects in the landlord properties page.
+	 * Frees allocated memory from objects in the landlord properties page.
 	 */
 	public void dispose() {
 
