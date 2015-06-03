@@ -31,21 +31,24 @@ public class AudioHandler {
 	 */
 	public void setupAudioElement(String filepath, float delay) {
 
-		/* Create audio file URI string */
-		String uriString = new File(filepath).toURI().toString();
+		// Create media object
+		Media audio;
 
-		/* Create media object */
-		Media audio = new Media(uriString);
+		if (filepath.matches("^(http|https|ftp|sftp)://.*$")) {
+			audio = new Media(filepath);
+		} else {
+			audio = new Media(new File(filepath).toURI().toString());
+		}
 
-		/* Create media player object */
+		// Create media player object
 		mediaPlayer = new MediaPlayer(audio);
 
-		/* Play audio immediately if delay set to zero */
+		// Play audio immediately if delay set to zero
 		if (delay <= 0) {
 			mediaPlayer.play();
 		}
 
-		/* Otherwise play audio after defined delay */
+		// Otherwise play audio after defined delay
 		else {
 			new Timeline(new KeyFrame(Duration.millis(delay * 1000),
 					new EventHandler<ActionEvent>() {

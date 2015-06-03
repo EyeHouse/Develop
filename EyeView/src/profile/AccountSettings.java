@@ -29,13 +29,20 @@ import database.Database;
 import database.SQLFilter;
 import database.User;
 
+/**
+ * This class creates the page within the user profile for editing account
+ * details.
+ * 
+ * @version 2.5
+ * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
+ */
 public class AccountSettings extends Window {
 
-	/* Account Settings Static Variables */
+	// Account Settings Static Variables
 	private final int gridCellWidth = 50;
 	private final int gridCellHeight = 25;
 
-	/* Account Settings Global Variables */
+	// Account Settings Global Variables
 	private GridPane grid = new GridPane();
 	private TextField fieldFName, fieldLName, fieldUsername, fieldEmail,
 			fieldSkypeUsername;
@@ -49,9 +56,9 @@ public class AccountSettings extends Window {
 	private User currentUser;
 	private ArrayList<ComboBox<String>> dateComboArray;
 
-	/* Account Settings Methods */
-
-	/* Open account settings of user input */
+	/**
+	 * Constructor method
+	 */
 	public AccountSettings() {
 
 		currentUser = Database.getUser(currentUsername);
@@ -65,7 +72,9 @@ public class AccountSettings extends Window {
 		root.getChildren().add(grid);
 	}
 
-	/* Setup grid layout object to contain user information */
+	/**
+	 * Sets up grid layout object to contain user information.
+	 */
 	private void setupGrid() {
 
 		// Set grid size and spacing in group.
@@ -80,7 +89,9 @@ public class AccountSettings extends Window {
 		grid.getColumnConstraints().addAll(col1, col2);
 	}
 
-	/* Add existing account information to grid */
+	/**
+	 * Adds existing account information to grid.
+	 */
 	private void setupInfo() {
 
 		// Setup row labels
@@ -120,7 +131,9 @@ public class AccountSettings extends Window {
 		grid.add(labelUsernameError, 2, 2);
 	}
 
-	/* Add password labels and text areas to grid */
+	/**
+	 * Add password labels and text areas to grid.
+	 */
 	private void setupPassword() {
 
 		// Setup Password labels
@@ -154,7 +167,9 @@ public class AccountSettings extends Window {
 		GridPane.setHalignment(labelPasswordMismatch, HPos.LEFT);
 	}
 
-	/* Add profile label and text area to grid */
+	/**
+	 * Adds profile label and text area to grid.
+	 */
 	private void setupProfileText() {
 
 		Label labelProfileText = new Label(Translator.translateText(
@@ -175,7 +190,9 @@ public class AccountSettings extends Window {
 		grid.addRow(9, labelProfileText, profileText, labelBadLanguage);
 	}
 
-	/* Add apply and cancel buttons to grid */
+	/**
+	 * Adds apply and cancel buttons to grid.
+	 */
 	private void setupButtons() {
 
 		ButtonType button1 = new ButtonType("166,208,255", null,
@@ -247,7 +264,9 @@ public class AccountSettings extends Window {
 		SlideContent.setupBackButton();
 	}
 
-	/* Send account changes to database(WHEN IMPLEMENTED FULLY) */
+	/**
+	 * Sends account changes to the database.
+	 */
 	private void applyChanges() {
 
 		String doB = dateComboArray.get(2).getValue() + "-"
@@ -279,6 +298,9 @@ public class AccountSettings extends Window {
 		fieldConfNewPassword.setText("");
 	}
 
+	/**
+	 * Checks the biography filed for any blacklisted words.
+	 */
 	private void checkBio() {
 
 		BadWordCheck bwc = new BadWordCheck();
@@ -292,7 +314,9 @@ public class AccountSettings extends Window {
 		}
 	}
 
-	/* Check whether new username is available */
+	/**
+	 * Checks whether new username is available or already taken.
+	 */
 	private void checkUsername() {
 
 		// Skip check if username unchanged
@@ -302,11 +326,12 @@ public class AccountSettings extends Window {
 			BadWordCheck bwc = new BadWordCheck();
 
 			if (bwc.containsBlackListedWords(fieldUsername.getText())) {
-				labelUsernameError.setText(Translator.translateText(languageIndex, "Contains Bad Language"));
+				labelUsernameError.setText(Translator.translateText(
+						languageIndex, "Contains Bad Language"));
 				labelUsernameError.setVisible(true);
-			}
-			else if (SQLFilter.SQLWordCheck(fieldUsername.getText())) {
-				labelUsernameError.setText(Translator.translateText(languageIndex, "Contains Invalid Characters"));
+			} else if (SQLFilter.SQLWordCheck(fieldUsername.getText())) {
+				labelUsernameError.setText(Translator.translateText(
+						languageIndex, "Contains Invalid Characters"));
 				labelUsernameError.setVisible(true);
 			}
 			// If username is unavailable
@@ -319,7 +344,8 @@ public class AccountSettings extends Window {
 				labelUsernameError.setVisible(false);
 			} else {
 				// Show error message if username is unavailable
-				labelUsernameError.setText(Translator.translateText(languageIndex, "Username Already Exists"));
+				labelUsernameError.setText(Translator.translateText(
+						languageIndex, "Username Already Exists"));
 				labelUsernameError.setVisible(true);
 			}
 		} else {
@@ -328,7 +354,9 @@ public class AccountSettings extends Window {
 		}
 	}
 
-	/* Check current password is correct and new password is valid */
+	/**
+	 * Checks current password is correct and new password is valid.
+	 */
 	private void checkPassword() {
 
 		// Return to profile if password is not entered and there is

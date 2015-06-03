@@ -7,38 +7,91 @@
 		<groupid>0</groupid>
 	</documentinfo>
 	<defaultsettings>
-		<backgroundcolor>#ff00ff00</backgroundcolor>
+		<backgroundcolor>#00000000</backgroundcolor>
 		<font>Calibri</font>
 		<fontsize>12</fontsize>
 		<fontcolor>#ff0000ff</fontcolor>
 	</defaultsettings>
 	<slide duration="5">
-		<text sourcefile="" xstart="0.1" ystart="0.1" font="impact" fontsize="40" fontcolor="#ff0000ff" duration="0">
-			slide ONE
+		<text sourcefile="" xstart="0.4" ystart="0.05" font="impact" fontsize="40" fontcolor="#ff0000ff" duration="0">
+			First Slide
 		</text>
-		<text sourcefile="" xstart="0.1" ystart="0.2">
-			slide ONE in default setting
+		<text sourcefile="" xstart="0.35" ystart="0.1" font="impact" fontsize="20" fontcolor="#ff0000ff" duration="0">
+			This slide demonstrates video
 		</text>
-		<text sourcefile="resources\info.txt" xstart="0.1" ystart="0.3">
-			it shouldnt display this. in default settings
+		<text sourcefile="" xstart="0.3" ystart="0.15" font="impact" fontsize="20" fontcolor="#ff0000ff" duration="0">
+			Use arrow keys to scroll through the slides.
 		</text>
-		<text sourcefile="resources\info.txt" xstart="0.1" ystart="0.4" font="impact" fontsize="40" fontcolor="#ff0000ff" duration="2">
-			it shouldnt display this. 
+		<video sourcefile="http://download.oracle.com/otndocs/javafx/JavaRap_ProRes_H264_768kbit_Widescreen.mp4" xstart="0.25"  ystart="0.3"/>
+	</slide>
+	<slide duration="0">
+		<text sourcefile="" xstart="0.38" ystart="0.05" font="impact" fontsize="40" fontcolor="#ff0000ff" duration="0">
+			Second Slide
 		</text>
-		<image sourcefile="file:./resources/images/profile.png" xstart="0.2" ystart="0.1" scale="0.5" duration="2" starttime="2"/>
-		<image sourcefile="file:./resources/images/Skype.png" xstart="0.5" ystart="0.5" scale="1.0" duration="2" starttime="2"/>
-		<audio sourcefile="resources\Audios\Tail_Toddle.mp3" starttime="0" />
-		<graphic type="rectangle" xstart="0.5" ystart="0.2" xend="0.7" yend="0.7" solid="true" graphiccolor="#ff223344" duration="1.5" />
-		<graphic type="oval" xstart="0.5" ystart="0.5" xend="0.7" yend="0.7" solid="true" graphiccolor="#ff0000ff" duration="3.5">
+		<text sourcefile="" xstart="0.35" ystart="0.1" font="impact" fontsize="20" fontcolor="#ff0000ff" duration="0">
+			This slide demonstrates images
+		</text>
+		<image sourcefile="http://2.bp.blogspot.com/-wXSkXwW06FI/UGCr1wbLWSI/AAAAAAAAAsU/RVSgLdrL-QI/s1600/Ensemble.png" xstart="0.25" ystart="0.5" scale="0.5" duration="1" starttime="0"/>
+		<image sourcefile="http://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Wave.svg/170px-Wave.svg.png" xstart="0.25" ystart="0.5" scale="1.0" duration="2" starttime="1"/>
+		<image sourcefile="http://www.javaguru.co/wp-content/uploads/2015/02/java.jpg" xstart="0.25" ystart="0.5" scale="1.0" duration="3" starttime="2"/>
+		<image sourcefile="http://sp.sony-europe.com/da/1007/300221.jpeg" xstart="0.25" ystart="0.5" scale="1.0" duration="4" starttime="3"/>
+		<image sourcefile="http://www.javaguru.co/wp-content/uploads/2015/02/java.jpg" xstart="0.25" ystart="0.5" scale="1.0" duration="5" starttime="4"/>
+	</slide>
+	<slide duration="0">
+		<text sourcefile="" xstart="0.4" ystart="0.05" font="impact" fontsize="40" fontcolor="#ff0000ff" duration="0">
+			Third Slide
+		</text>
+		<text sourcefile="" xstart="0.31" ystart="0.1" font="impact" fontsize="20" fontcolor="#ff0000ff" duration="0">
+			This slide demonstrates graphics and audio
+		</text>
+		<graphic type="rectangle" xstart="0.5" ystart="0.2" xend="0.7" yend="0.7" solid="true" graphiccolor="#ff223344" duration="3" />
+		<graphic type="rectangle" xstart="0.6" ystart="0.3" xend="0.7" yend="0.8" solid="true" graphiccolor="#ff111344" duration="4" />
+		<graphic type="line" xstart="0.1" ystart="0.5" xend="0.5" yend="0.9" solid="true" graphiccolor="#fffe3344" duration="5" />
+		<graphic type="oval" xstart="0.5" ystart="0.5" xend="0.7" yend="0.7" solid="true" graphiccolor="#ff0000ff" duration="2">
 			<cyclicshading shadingcolor="#88776655" />
 		</graphic>
+		<audio sourcefile="http://playthegame.co.nf/audio/bottle.wav" starttime="0" />
+	</slide>
+	<slide duration="0">
+		<text sourcefile="" xstart="0.39" ystart="0.05" font="impact" fontsize="40" fontcolor="#ff0000ff" duration="0">
+			Fourth Slide
+		</text>
+		<text sourcefile="" xstart="0.37" ystart="0.1" font="calibri" fontsize="20" fontcolor="#ff0000ff" duration="0">
+			This slide demonstrates text
+		</text>
+		<text sourcefile="" xstart="0.1" ystart="0.4" font="times new roman" fontsize="40" fontcolor="#f12300ff" duration="5"> 
+			Example Text
+		</text>
+		<text sourcefile="" xstart="0.1" ystart="0.5" font="arial" fontsize="30" fontcolor="#ff00ffff" duration="4">
+			Example Text 
+		</text>
+		<text sourcefile="" xstart="0.1" ystart="0.6" font="impact" fontsize="20" fontcolor="#ffe100ff" duration="3">
+			Example Text 
+		</text>
+		<text sourcefile="" xstart="0.1" ystart="0.7" font="impact" fontsize="10" fontcolor="#feeee0ff" duration="2">
+			Example Text 
+		</text>
+		<text sourcefile="" xstart="0.1" ystart="0.8" font="impact" fontsize="5" fontcolor="#ff00aaaf" duration="1"> 
+			Example Text
+		</text>
+		<text sourcefile="" xstart="0.1" ystart="0.9" font="impact" fontsize="1" fontcolor="#ffbbb0ff" duration="1"> 
+			Example Text
+		</text>
 	</slide>
 	<slide duration="3">
-		<text sourcefile="" xstart="0.1" ystart="0.1" font="impact" fontsize="40" fontcolor="#ff0000ff" duration="0">
-			slide TWO
+		<text sourcefile="" xstart="0.41" ystart="0.05" font="impact" fontsize="40" fontcolor="#ff0000ff" duration="0">
+			Fifth Slide
 		</text>
-		<graphic type="rectangle" xstart="0.5" ystart="0.5" xend="0.7" yend="0.7" solid="true" graphiccolor="#ff223344" duration="1.5" />
-		<video sourcefile="resources/videos/avengers-featurehp.mp4" xstart="0.4"  ystart="0.0"/>
-		<video sourcefile="resources/videos/avengers-featurehp.mp4" xstart="0.4"  ystart="0.5"/>
+		<text sourcefile="" xstart="0.3" ystart="0.1" font="impact" fontsize="20" fontcolor="#ff0000ff" duration="0">
+			This slide will automatically go to the next slide
+		</text>
+	</slide>
+	<slide duration="0">
+		<text sourcefile="" xstart="0.32" ystart="0.05" font="impact" fontsize="40" fontcolor="#ff0000ff" duration="0">
+			Sixth and Final Slide
+		</text>
+		<text sourcefile="" xstart="0.42" ystart="0.1" font="impact" fontsize="20" fontcolor="#ff0000ff" duration="0">
+			Thats all folks!
+		</text>
 	</slide>
 </slideshow>

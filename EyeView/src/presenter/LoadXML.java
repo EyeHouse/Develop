@@ -21,13 +21,19 @@ import parser.ImageData;
 import parser.TextData;
 import parser.VideoData;
 
+/**
+ * This class is used to load all the objects from an XML file.
+ * 
+ * @version 3.8 (02.06.15)
+ * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
+ */
 public class LoadXML extends Window {
 
-	static ArrayList<VideoElement> slideVideos = new ArrayList<VideoElement>();
-	static ArrayList<AudioHandler> slideAudio = new ArrayList<AudioHandler>();
-	
+	private static ArrayList<VideoElement> slideVideos = new ArrayList<VideoElement>();
+	private static ArrayList<AudioHandler> slideAudio = new ArrayList<AudioHandler>();
+
 	public LoadXML() throws IOException {
-		
+
 		loadXMLBackGround();
 		loadXMLText();
 		loadXMLGraphics();
@@ -39,6 +45,8 @@ public class LoadXML extends Window {
 	/**
 	 * Loads the text for the slide onto the screen. Refers to defaults if
 	 * settings have not been set.
+	 * 
+	 * @throws IOException
 	 */
 	public void loadXMLText() throws IOException {
 
@@ -78,7 +86,7 @@ public class LoadXML extends Window {
 	 * Loads the background colour from the XML.
 	 */
 	public void loadXMLBackGround() {
-		
+
 		GraphicHandler gh = new GraphicHandler();
 		GraphicElement graphic = new GraphicElement("rectangle", 0, 0,
 				(float) xResolution, (float) yResolution, 0, true, slideshow
@@ -128,13 +136,12 @@ public class LoadXML extends Window {
 	public void loadXMLVideos() {
 
 		List<VideoData> videoList = slideData.getVideoList();
-		int i  = 0;
+		int i = 0;
 		for (VideoData currentVideo : videoList) {
 			StackPane videoPane = new StackPane();
 			videoPane.relocate(0, 0);
 			videoPane.resize(xResolution, yResolution);
-			slideVideos.add(new VideoElement(currentVideo.getSource(),
-					false));
+			slideVideos.add(new VideoElement(currentVideo.getSource(), false));
 			slideVideos.get(i).setWidth(500);
 			slideVideos.get(i).setAutoplay(true);
 			slideVideos.get(i).setXpos(currentVideo.getXstart());
@@ -152,7 +159,7 @@ public class LoadXML extends Window {
 	public void loadXMLAudio() {
 
 		List<AudioData> audioList = slideData.getAudioList();
-		int i  = 0;
+		int i = 0;
 		for (AudioData currentAudio : audioList) {
 			slideAudio.add(new AudioHandler());
 			slideAudio.get(i).setupAudioElement(currentAudio.getSource(),
@@ -160,14 +167,20 @@ public class LoadXML extends Window {
 			i++;
 		}
 	}
-	
-	public static void stopMedia(){
-		for(int i  = 0 ; i < slideVideos.size() ; i ++){
+
+	/**
+	 * Stops any video and audio currently playing when the slide is changed.
+	 */
+	public static void stopMedia() {
+
+		for (int i = 0; i < slideVideos.size(); i++) {
 			slideVideos.get(i).stopVideo();
 		}
-		for(int i  = 0 ; i < slideAudio.size() ; i ++){
+		for (int i = 0; i < slideAudio.size(); i++) {
 			slideAudio.get(i).stopAudio();
 		}
+		slideVideos.clear();
+		slideAudio.clear();
 	}
 
 }

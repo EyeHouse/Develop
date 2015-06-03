@@ -15,9 +15,14 @@ import profile.SavedProperties;
 import database.Database;
 import database.House;
 
+/**
+ * 
+ * @author pb714
+ *
+ */
 public class MoreInfo extends Window {
 
-	// MoreInfo Global Variables
+	// Global Variables
 	private Label furnishedField = new Label("");
 	private Label description = new Label("");
 	private House house = Database.getHouse(currentPropertyID);
@@ -45,6 +50,9 @@ public class MoreInfo extends Window {
 
 	private GridPane grid = new GridPane();
 
+	/**
+	 * Constructor method
+	 */
 	public MoreInfo() {
 
 		setupGrid();

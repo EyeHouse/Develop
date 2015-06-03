@@ -1,5 +1,6 @@
 package handlers;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import presenter.Window;
@@ -28,10 +29,10 @@ public class ImageHandler extends Window {
 	// ArrayList of ImageViews to contain images added to group.
 	private ArrayList<ImageView> imageObjectArray = new ArrayList<ImageView>();
 
-	// ImageElement to contain information of current image.
+	// ImageElement to contain information of current image
 	private ImageElement imageData;
 
-	private int imageIndex; // Index of current image.
+	private int imageIndex; // Index of current image
 
 	/**
 	 * Passes in a specific ImageElement object and displays it on the screen
@@ -41,9 +42,9 @@ public class ImageHandler extends Window {
 	 *            The ImageElement object to be displayed on the current Scene
 	 */
 	public void createImage(ImageElement imageData) {
-		
+
 		this.imageData = imageData;
-		
+
 		/*
 		 * Convert relative screen position of image to a pixel value using the
 		 * native resolution of the user's display
@@ -52,10 +53,16 @@ public class ImageHandler extends Window {
 		yPosition = (float) (yResolution * imageData.ystart);
 
 		// Load Image from source file
-		Image image = new Image(imageData.sourcefile);
+		Image image;
+
+		if (imageData.sourcefile.matches("^(http|https|ftp|sftp)://.*$")) {
+			image = new Image(imageData.sourcefile);
+		} else {
+			image = new Image(new File(imageData.sourcefile).toURI().toString());
+		}
 		ImageView imageObject = new ImageView(image);
 
-		// Get the width of the image file in pixels.
+		// Get the width of the image file in pixels
 		width = (float) imageObject.getImage().getWidth();
 
 		// Calculations for scaling the image by width if a width is specified
@@ -98,7 +105,7 @@ public class ImageHandler extends Window {
 		Image image = new Image(widthImage.sourcefile);
 		ImageView imageObject = new ImageView(image);
 
-		// Return the width of the image file in pixels.
+		// Return the width of the image file in pixels
 		return (float) imageObject.getImage().getWidth();
 	}
 
@@ -111,10 +118,10 @@ public class ImageHandler extends Window {
 		final int currentImageIndex = imageIndex;
 		imageIndex++;
 
-		// Add Timeline if starttime is greater than zero.
+		// Add Timeline if starttime is greater than zero
 		if (imageData.starttime > 0) {
 
-			// Instantiate timeline to show image after start time.
+			// Instantiate timeline to show image after start time
 			new Timeline(new KeyFrame(
 					Duration.millis(imageData.starttime * 1000),
 					new EventHandler<ActionEvent>() {
@@ -125,14 +132,14 @@ public class ImageHandler extends Window {
 					})).play();
 		} else {
 
-			// Show image if start time is 0.
+			// Show image if start time is 0
 			imageObjectArray.get(currentImageIndex).setVisible(true);
 		}
 
-		// Add timeline if duration is greater than zero.
+		// Add timeline if duration is greater than zero
 		if (imageData.duration > 0) {
 
-			// Instantiate Timeline to remove image after total image time.
+			// Instantiate Timeline to remove image after total image time
 			new Timeline(
 					new KeyFrame(
 							Duration.millis((imageData.starttime + imageData.duration) * 1000),

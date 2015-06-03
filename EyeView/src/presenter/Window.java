@@ -17,6 +17,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBoxBuilder;
 import javafx.scene.text.Font;
@@ -73,9 +75,11 @@ public class Window extends Application {
 	public static ArrayList<House> searchResults = new ArrayList<House>();
 
 	public static Stage dialogStage;
+	public static Scene scene;
 	public static Group root;
 	private static SlideContent sc;
 	public static Timeline advertTimer;
+	public static Timeline genericTimer;
 
 	public void init(Stage primaryStage) {
 
@@ -86,7 +90,8 @@ public class Window extends Application {
 		primaryStage.setTitle("EyeHouse");
 
 		root = new Group();
-		primaryStage.setScene(new Scene(root));
+		scene = new Scene(root);
+		primaryStage.setScene(scene);
 		dialogStage = new Stage();
 		createXMLOptions(primaryStage);
 	}
@@ -105,17 +110,19 @@ public class Window extends Application {
 
 			// Add timeline if duration is greater than zero.
 			if (slideData.getDuration() > 0) {
-				slideID++;
-				new Timeline(new KeyFrame(Duration.millis(slideData
+				final int nextSlide = slideID + 1;
+				genericTimer = new Timeline(new KeyFrame(Duration.millis(slideData
 						.getDuration() * 1000),
 						new EventHandler<ActionEvent>() {
 							public void handle(ActionEvent ae) {
-								loadSlide(slideID);
+								loadSlide(nextSlide);
 							}
-						})).play();
+						}));
+				genericTimer.play();
 			}
 		} else {
 			System.out.println("Slideshow Finished!");
+			slideID = slideList.size() - 1;
 		}
 
 	}
@@ -162,9 +169,13 @@ public class Window extends Application {
 
 		primaryStage.setTitle(slideshow.getTitle());
 
-		if (groupID.matches("5"))
+		if (groupID.matches("5")){
 			primaryStage.getIcons().add(
 					new Image("file:./resources/icons/xxxhdpi.png"));
+		}
+		else{
+			scene.setOnKeyPressed(new arrowKeyEvent());
+		}
 
 		sc = new SlideContent();
 		loadSlide(STARTPAGE);
@@ -251,6 +262,36 @@ public class Window extends Application {
 		dialogStage.setScene(new Scene(VBoxBuilder.create()
 				.children(hbox, okButton).alignment(Pos.CENTER).spacing(5)
 				.build()));
+	}
+	
+	private static class arrowKeyEvent implements EventHandler<KeyEvent>{
+
+		@Override
+		public void handle(KeyEvent input) {
+			System.out.println("Press");
+			if(input.getCode() == KeyCode.RIGHT){
+				int newSlide = slideID + 1;
+				
+				if(slideData.getDuration() > 0){
+					genericTimer.stop();
+				}
+				
+				loadSlide(newSlide);
+			}
+			else if(input.getCode() == KeyCode.LEFT){
+				int newSlide = slideID - 1;
+				
+				if(slideData.getDuration() > 0){
+					genericTimer.stop();
+				}
+				if(slideID == 0){
+					loadSlide(0);
+				} else{
+					loadSlide(newSlide);
+				}
+			}
+		}
+		
 	}
 
 	@Override

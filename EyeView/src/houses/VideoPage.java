@@ -42,7 +42,7 @@ import database.User;
  * the database and displayed in a pane containing buttons which, when clicked,
  * skip to the designated time in that particular video tour.
  * 
- * @version 1.0
+ * @version 3.1
  * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
  */
 public class VideoPage extends Window {
