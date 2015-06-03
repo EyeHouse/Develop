@@ -11,7 +11,6 @@ import com.mysql.jdbc.Blob;
  * 
  * @version 1.48 (15.03.15)
  * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
- * 
  */
 public class House {
 

@@ -4,7 +4,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * 
  * Holds a video and associated data.
  * 
  * @version 1.48 (15.03.15)

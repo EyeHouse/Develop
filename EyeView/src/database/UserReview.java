@@ -2,6 +2,7 @@ package database;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 /**
  * Holds user review information.
  * 
@@ -35,6 +36,7 @@ public class UserReview {
 
 	// Create a new UserReview from a result set
 	public UserReview(ResultSet reviewDetails) {
+		
 		try {
 			this.urid = reviewDetails.getInt(URID);
 			this.uid_target = reviewDetails.getInt(UID_TARGET);
