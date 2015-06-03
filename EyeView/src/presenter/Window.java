@@ -121,7 +121,6 @@ public class Window extends Application {
 				genericTimer.play();
 			}
 		} else {
-			System.out.println("Slideshow Finished!");
 			slideID = slideList.size() - 1;
 		}
 
@@ -268,7 +267,6 @@ public class Window extends Application {
 
 		@Override
 		public void handle(KeyEvent input) {
-			System.out.println("Press");
 			if(input.getCode() == KeyCode.RIGHT){
 				int newSlide = slideID + 1;
 				

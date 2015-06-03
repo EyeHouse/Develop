@@ -319,7 +319,6 @@ public class HouseReviews extends Window {
 			for (int i = 0; i < 5; i++) {
 				if (i <= newRating - 1) {
 					buttonStar[i].setGraphic(new ImageView(reviewStarFull));
-					// System.out.println(reviewStarFull.toString());
 				} else {
 					buttonStar[i].setGraphic(new ImageView(reviewStarOutline));
 				}

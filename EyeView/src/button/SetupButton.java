@@ -86,7 +86,6 @@ public class SetupButton {
 
 		// Add the image and text to the button
 		ImageView buttonImage = new ImageView(image);
-		System.out.println(imageButton.getMaxHeight());
 		buttonImage.setFitHeight(imageButton.getMaxHeight());
 		buttonImage.setFitWidth(imageButton.getMaxWidth());
 

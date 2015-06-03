@@ -122,7 +122,7 @@ public class ImageGallery extends Window {
 
 	/**
 	 * This class defines the functionality of the image gallery.
-	 *
+	 * 
 	 * @version 1.4 (15.03.15)
 	 * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
 	 */
