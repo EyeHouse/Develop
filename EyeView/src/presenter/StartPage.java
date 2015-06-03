@@ -89,7 +89,7 @@ public class StartPage extends Window {
 				35);
 
 		// Create start button
-		buttonStart = new SetupButton().CreateButton(button1);
+		buttonStart = new SetupButton().createButton(button1);
 		buttonStart.setFont(Font.font(null, FontWeight.BLACK, 16));
 		buttonStart.setCursor(Cursor.HAND);
 

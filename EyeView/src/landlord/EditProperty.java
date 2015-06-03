@@ -314,7 +314,7 @@ public class EditProperty extends Window {
 			// Create "Finish" button in chosen language
 			ButtonType button3 = new ButtonType("166,208,255", null,
 					Translator.translateText(languageIndex, "Finish"), 110, 30);
-			Button buttonFinish = new SetupButton().CreateButton(button3);
+			Button buttonFinish = new SetupButton().createButton(button3);
 
 			// Set cursor image on hover
 			buttonFinish.setCursor(Cursor.HAND);
@@ -325,7 +325,7 @@ public class EditProperty extends Window {
 			// Create a "Cancel" button in chosen language
 			ButtonType button4 = new ButtonType("166,208,255", null,
 					Translator.translateText(languageIndex, "Cancel"), 110, 30);
-			Button buttonCancel = new SetupButton().CreateButton(button4);
+			Button buttonCancel = new SetupButton().createButton(button4);
 
 			// Set cursor image on hover
 			buttonCancel.setCursor(Cursor.HAND);
@@ -341,7 +341,7 @@ public class EditProperty extends Window {
 			// Otherwise create a "Back" button in chosen language
 			ButtonType button4 = new ButtonType("166,208,255", null,
 					Translator.translateText(languageIndex, "Back"), 110, 30);
-			Button buttonBack = new SetupButton().CreateButton(button4);
+			Button buttonBack = new SetupButton().createButton(button4);
 
 			// Set cursor image on hover
 			buttonBack.setCursor(Cursor.HAND);
@@ -463,7 +463,7 @@ public class EditProperty extends Window {
 		// Create a "Save" button in chosen language
 		ButtonType button1 = new ButtonType("166,208,255", null,
 				Translator.translateText(languageIndex, "Save"), 150, 30);
-		buttonSave = new SetupButton().CreateButton(button1);
+		buttonSave = new SetupButton().createButton(button1);
 
 		// Set cursor image on hover
 		buttonSave.setCursor(Cursor.HAND);
@@ -543,7 +543,7 @@ public class EditProperty extends Window {
 		// Create "Browse" button in chosen language
 		ButtonType button1 = new ButtonType("166,208,255", null,
 				Translator.translateText(languageIndex, "Browse"), 70, 30);
-		fileChooserButton = new SetupButton().CreateButton(button1);
+		fileChooserButton = new SetupButton().createButton(button1);
 
 		// Set cursor image on hover
 		fileChooserButton.setCursor(Cursor.HAND);
@@ -554,7 +554,7 @@ public class EditProperty extends Window {
 		// Create "Upload" button in chosen language
 		ButtonType button2 = new ButtonType("166,208,255", null,
 				Translator.translateText(languageIndex, "Upload"), 70, 30);
-		uploadImageButton = new SetupButton().CreateButton(button2);
+		uploadImageButton = new SetupButton().createButton(button2);
 
 		// Disable the "Upload" button
 		uploadImageButton.setDisable(true);
@@ -565,7 +565,7 @@ public class EditProperty extends Window {
 		// Create "Delete" button in chosen language
 		ButtonType button3 = new ButtonType("166,208,255", null,
 				Translator.translateText(languageIndex, "Delete"), 70, 30);
-		Button buttonDelete = new SetupButton().CreateButton(button3);
+		Button buttonDelete = new SetupButton().createButton(button3);
 
 		// Set button handler to the image deletion method
 		buttonDelete.setOnAction(new DeleteImage());
@@ -721,7 +721,7 @@ public class EditProperty extends Window {
 		// Create a "Browse" button in the chosen language
 		ButtonType button1 = new ButtonType("166,208,255", null,
 				Translator.translateText(languageIndex, "Browse"), 100, 30);
-		fileChooserButton = new SetupButton().CreateButton(button1);
+		fileChooserButton = new SetupButton().createButton(button1);
 
 		// If a video already exists
 		if (videoPath != null) {
@@ -735,7 +735,7 @@ public class EditProperty extends Window {
 		// Create an "Upload" button in the chosen language
 		ButtonType button2 = new ButtonType("166,208,255", null,
 				Translator.translateText(languageIndex, "Upload"), 100, 30);
-		uploadVideoButton = new SetupButton().CreateButton(button2);
+		uploadVideoButton = new SetupButton().createButton(button2);
 
 		// Disable the "Upload" button
 		uploadVideoButton.setDisable(true);
@@ -897,7 +897,7 @@ public class EditProperty extends Window {
 		// Create a "Set Marker" button in the chosen language
 		ButtonType button1 = new ButtonType("166,208,255", null,
 				Translator.translateText(languageIndex, "Set Marker"), 100, 30);
-		setMarkerButton = new SetupButton().CreateButton(button1);
+		setMarkerButton = new SetupButton().createButton(button1);
 
 		// Disable the "Set Marker" button
 		setMarkerButton.setDisable(true);
@@ -909,7 +909,7 @@ public class EditProperty extends Window {
 		ButtonType button3 = new ButtonType("166,208,255", null,
 				Translator.translateText(languageIndex, "Remove Video"), 120,
 				30);
-		Button videoRemove = new SetupButton().CreateButton(button3);
+		Button videoRemove = new SetupButton().createButton(button3);
 
 		// Set the button handler to the remove video method
 		videoRemove.setOnAction(new RemoveVideo());
@@ -942,7 +942,7 @@ public class EditProperty extends Window {
 		// Create a "Delete" marker button in the chosen language
 		ButtonType button2 = new ButtonType("166,208,255", null,
 				Translator.translateText(languageIndex, "Delete"), 100, 30);
-		deleteMarker = new SetupButton().CreateButton(button2);
+		deleteMarker = new SetupButton().createButton(button2);
 
 		// Disable the "Delete" marker button
 		deleteMarker.setDisable(true);

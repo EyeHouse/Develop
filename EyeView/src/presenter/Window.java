@@ -134,13 +134,13 @@ public class Window extends Application {
 
 		ButtonType button1 = new ButtonType("166,208,255", null, "Import XML",
 				110, 30);
-		Button buttonImport = new SetupButton().CreateButton(button1);
+		Button buttonImport = new SetupButton().createButton(button1);
 		buttonImport.setCursor(Cursor.HAND);
 		buttonImport.setOnAction(new importHandler());
 
 		ButtonType button2 = new ButtonType("166,208,255", null,
 				"Open EyeView", 110, 30);
-		Button buttonEyeView = new SetupButton().CreateButton(button2);
+		Button buttonEyeView = new SetupButton().createButton(button2);
 		buttonEyeView.setCursor(Cursor.HAND);
 		buttonEyeView.setOnAction(new openEyeViewHandler());
 

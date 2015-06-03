@@ -450,7 +450,7 @@ public class SlideContent extends Window {
 
 		ButtonType button1 = new ButtonType(null, null,
 				Translator.translateText(languageIndex, "Video Tour"), 150, 50);
-		videoButton = new SetupButton().CreateButton(button1);
+		videoButton = new SetupButton().createButton(button1);
 		videoButton.setFocusTraversable(false);
 		videoButton.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent ae) {
@@ -460,7 +460,7 @@ public class SlideContent extends Window {
 
 		ButtonType button2 = new ButtonType(null, null,
 				Translator.translateText(languageIndex, "Map"), 150, 50);
-		mapButton = new SetupButton().CreateButton(button2);
+		mapButton = new SetupButton().createButton(button2);
 		mapButton.setFocusTraversable(false);
 		mapButton.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent ae) {
@@ -470,7 +470,7 @@ public class SlideContent extends Window {
 
 		ButtonType button3 = new ButtonType(null, null,
 				Translator.translateText(languageIndex, "Information"), 150, 50);
-		infoButton = new SetupButton().CreateButton(button3);
+		infoButton = new SetupButton().createButton(button3);
 		infoButton.setFocusTraversable(false);
 		infoButton.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent ae) {
@@ -480,7 +480,7 @@ public class SlideContent extends Window {
 
 		ButtonType button4 = new ButtonType(null, null,
 				Translator.translateText(languageIndex, "Reviews"), 150, 50);
-		reviewsButton = new SetupButton().CreateButton(button4);
+		reviewsButton = new SetupButton().createButton(button4);
 		reviewsButton.setFocusTraversable(false);
 		reviewsButton.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent ae) {
@@ -749,7 +749,7 @@ public class SlideContent extends Window {
 		// Button setup
 		ButtonType button1 = new ButtonType("166,208,255", null,
 				Translator.translateText(languageIndex, "Search"), 90, 25);
-		searchButton = new SetupButton().CreateButton(button1);
+		searchButton = new SetupButton().createButton(button1);
 		searchButton.setOnAction(new searchHandler());
 
 		// Combobox for

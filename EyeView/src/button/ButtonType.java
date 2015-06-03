@@ -1,6 +1,14 @@
 package button;
 
+/**
+ * This class contains the necessary information to instantiate a new JavaFX
+ * Button object.
+ * 
+ * @version 1.3 (12.03.15)
+ * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
+ */
 public class ButtonType {
+
 	public String colourRGB;
 	public String borderColourRGB;
 	public String text;
@@ -8,7 +16,7 @@ public class ButtonType {
 	public double ySize;
 
 	/**
-	 * Button variable container
+	 * Constructor method for new ButtonType class.
 	 * 
 	 * @param colourRGB
 	 *            Button fill colour (RR,GG,BB).
@@ -23,6 +31,7 @@ public class ButtonType {
 	 */
 	public ButtonType(String colourRGB, String borderColourRGB, String text,
 			double xSize, double ySize) {
+
 		this.colourRGB = colourRGB;
 		this.borderColourRGB = borderColourRGB;
 		this.text = text;
