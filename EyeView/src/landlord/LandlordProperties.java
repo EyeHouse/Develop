@@ -133,10 +133,10 @@ public class LandlordProperties extends Window {
 		ButtonType button4 = new ButtonType("166,208,255", null,
 				Translator.translateText(languageIndex, "View"), 100, 30);
 
-		Button buttonEdit = new SetupButton().CreateButton(button1);
-		Button buttonDelete = new SetupButton().CreateButton(button2);
-		Button buttonNew = new SetupButton().CreateButton(button3);
-		Button buttonView = new SetupButton().CreateButton(button4);
+		Button buttonEdit = new SetupButton().createButton(button1);
+		Button buttonDelete = new SetupButton().createButton(button2);
+		Button buttonNew = new SetupButton().createButton(button3);
+		Button buttonView = new SetupButton().createButton(button4);
 
 		// Set cursor image on hover
 		buttonEdit.setCursor(Cursor.HAND);

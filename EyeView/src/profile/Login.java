@@ -231,7 +231,7 @@ public class Login extends Window {
 		// Add buttons
 		ButtonType button1 = new ButtonType("166,208,255", null,
 				(Translator.translateText(languageIndex, "Login")), 140, 35);
-		Button loginButton = new SetupButton().CreateButton(button1);
+		Button loginButton = new SetupButton().createButton(button1);
 		loginButton.relocate(500, 420);
 		loginButton.setFont(Font.font(null, FontWeight.BOLD, 14));
 		loginButton.setCursor(Cursor.HAND);

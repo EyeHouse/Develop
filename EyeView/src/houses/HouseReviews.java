@@ -216,7 +216,7 @@ public class HouseReviews extends Window {
 
 		// Create array of outline star buttons
 		for (int i = 0; i < 5; i++) {
-			buttonStar[i] = new SetupButton().CreateButton(button1);
+			buttonStar[i] = new SetupButton().createButton(button1);
 			buttonStar[i] = new SetupButton().setButtonImage(buttonStar[i],
 					reviewStarOutline);
 			buttonStar[i].setStyle("-fx-background-color: transparent;");
@@ -251,7 +251,7 @@ public class HouseReviews extends Window {
 
 		ButtonType button2 = new ButtonType("166,208,255", null, "Submit", 70,
 				30);
-		buttonSubmit = new SetupButton().CreateButton(button2);
+		buttonSubmit = new SetupButton().createButton(button2);
 		buttonSubmit.relocate(785, 720);
 		buttonSubmit.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent ae) {

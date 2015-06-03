@@ -123,8 +123,8 @@ public class SavedProperties extends Window {
 		ButtonType button2 = new ButtonType("166,208,255", null,
 				Translator.translateText(languageIndex, "Remove"), 100, 30);
 
-		Button buttonView = new SetupButton().CreateButton(button1);
-		Button buttonRemove = new SetupButton().CreateButton(button2);
+		Button buttonView = new SetupButton().createButton(button1);
+		Button buttonRemove = new SetupButton().createButton(button2);
 
 		// Set cursor image on hover
 		buttonView.setCursor(Cursor.HAND);

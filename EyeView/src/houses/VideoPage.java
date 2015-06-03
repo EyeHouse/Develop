@@ -141,7 +141,7 @@ public class VideoPage extends Window {
 				ButtonType button = new ButtonType("166,208,255", null,
 						Translator.translateText(languageIndex, marker.room),
 						125, 30);
-				Button buttonTime = new SetupButton().CreateButton(button);
+				Button buttonTime = new SetupButton().createButton(button);
 				buttonTime.setCursor(Cursor.HAND);
 				buttonTime.setOnAction(new VideoTime(i));
 
@@ -181,7 +181,7 @@ public class VideoPage extends Window {
 			ButtonType button = new ButtonType("166,208,255", null,
 					Translator.translateText(languageIndex, marker.room), 125,
 					30);
-			Button buttonTime = new SetupButton().CreateButton(button);
+			Button buttonTime = new SetupButton().createButton(button);
 			buttonTime.setWrapText(true);
 			buttonTime.setCursor(Cursor.HAND);
 			buttonTime.setOnAction(new VideoTime(i));

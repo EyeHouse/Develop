@@ -305,7 +305,7 @@ public class Register extends Window {
 				Translator.translateText(languageIndex,
 						Translator.translateText(languageIndex, "Register")),
 				100, 30);
-		Button registerButton = new SetupButton().CreateButton(button1);
+		Button registerButton = new SetupButton().createButton(button1);
 		registerGrid.add(registerButton, 0, 10);
 		GridPane.setConstraints(registerButton, 0, 10, 2, 1, HPos.CENTER,
 				VPos.CENTER);

@@ -181,16 +181,16 @@ public class AccountSettings extends Window {
 		ButtonType button1 = new ButtonType("166,208,255", null,
 				Translator.translateText(languageIndex, "Apply Changes"), 150,
 				30);
-		Button buttonApply = new SetupButton().CreateButton(button1);
+		Button buttonApply = new SetupButton().createButton(button1);
 
 		ButtonType button2 = new ButtonType("166,208,255", null,
 				Translator.translateText(languageIndex, "Cancel"), 100, 30);
-		Button buttonCancel = new SetupButton().CreateButton(button2);
+		Button buttonCancel = new SetupButton().createButton(button2);
 
 		ButtonType button3 = new ButtonType("166,208,255", null,
 				Translator.translateText(languageIndex, "Delete Account"), 150,
 				30);
-		Button buttonDelete = new SetupButton().CreateButton(button3);
+		Button buttonDelete = new SetupButton().createButton(button3);
 
 		HBox hBoxButtons = new HBox(40);
 

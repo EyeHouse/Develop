@@ -346,7 +346,7 @@ public class ProfileViewer extends Window {
 			ButtonType button1 = new ButtonType("166,208,255", null,
 					Translator.translateText(languageIndex, "Edit Profile"),
 					120, 30);
-			Button buttonEditProfile = new SetupButton().CreateButton(button1);
+			Button buttonEditProfile = new SetupButton().createButton(button1);
 
 			// Setup edit profile button event
 			buttonEditProfile.setOnAction(new EventHandler<ActionEvent>() {
@@ -367,7 +367,7 @@ public class ProfileViewer extends Window {
 			// Create "Submit" Review button
 			ButtonType button2 = new ButtonType("166,208,255", null,
 					Translator.translateText(languageIndex, "Submit"), 100, 30);
-			final Button buttonReview = new SetupButton().CreateButton(button2);
+			final Button buttonReview = new SetupButton().createButton(button2);
 			buttonReview.setDisable(true);
 
 			// VBox to contain Add Review label and text area
@@ -445,7 +445,7 @@ public class ProfileViewer extends Window {
 
 			// Create array of outline star buttons
 			for (int i = 0; i < 5; i++) {
-				buttonStar[i] = new SetupButton().CreateButton(button3);
+				buttonStar[i] = new SetupButton().createButton(button3);
 				buttonStar[i] = new SetupButton().setButtonImage(buttonStar[i],
 						reviewStarOutline);
 				buttonStar[i].setStyle("-fx-focus-color: transparent;");
