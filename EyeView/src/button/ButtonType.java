@@ -19,15 +19,15 @@ public class ButtonType {
 	 * Constructor method for new ButtonType class.
 	 * 
 	 * @param colourRGB
-	 *            Button fill colour (RR,GG,BB).
+	 *            Button fill colour (RR,GG,BB)
 	 * @param borderColourRGB
-	 *            Button border colour (RR,GG,BB).
+	 *            Button border colour (RR,GG,BB)
 	 * @param text
-	 *            Button text.
+	 *            Button text
 	 * @param xSize
-	 *            Button width (Pixels).
+	 *            Button width (Pixels)
 	 * @param ySize
-	 *            Button height (Pixels).
+	 *            Button height (Pixels)
 	 */
 	public ButtonType(String colourRGB, String borderColourRGB, String text,
 			double xSize, double ySize) {
