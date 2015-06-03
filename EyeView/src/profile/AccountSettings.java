@@ -359,8 +359,10 @@ public class AccountSettings extends Window {
 	 */
 	private void checkPassword() {
 
-		// Return to profile if password is not entered and there is
-		// no username error
+		/*
+		 * Return to the profile if password not entered and there is no
+		 * username error
+		 */
 		boolean passwordCorrect = false;
 		if (!fieldPassword.getText().equals("")) {
 			String hashPass = DataHandler.crypt((String) fieldPassword
@@ -376,8 +378,10 @@ public class AccountSettings extends Window {
 				loadSlide(PROFILE);
 			}
 
-			// Show password incorrect error if current password does not match
-			// stored user password.
+			/*
+			 * Show password incorrect error if current password does not match
+			 * stored user password
+			 */
 		} else if (!passwordCorrect) {
 			labelPasswordIncorrect.setVisible(true);
 
@@ -386,8 +390,10 @@ public class AccountSettings extends Window {
 
 			labelPasswordIncorrect.setVisible(false);
 
-			// If new password is not empty and matches the confirm password
-			// field, store new password in database
+			/*
+			 * If new password is not empty and matches the confirm password
+			 * field, store new password in database
+			 */
 			if ((!fieldNewPassword.getText().equals(""))
 					&& (fieldNewPassword.getText().equals(fieldConfNewPassword
 							.getText()))) {
@@ -401,8 +407,7 @@ public class AccountSettings extends Window {
 					loadSlide(PROFILE);
 				}
 
-				// Show new password invalid error if new password fields do not
-				// match
+				// Show password invalid error if password fields do not match
 			} else {
 				labelNewPasswordInvalid.setVisible(true);
 			}

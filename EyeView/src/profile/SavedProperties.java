@@ -32,12 +32,11 @@ import presenter.SlideContent;
 import presenter.Window;
 
 /**
- * This class creates the saved properties page
+ * This class creates the saved properties page which displays all the
+ * properties that have been saved by the user to view at a later date.
  * 
- * @version 2.4 01.06.15
- * @author EyeHouse
- * 
- *         Copyright 2015 EyeHouse
+ * @version 2.4 (01.06.15)
+ * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
  */
 public class SavedProperties extends Window {
 
@@ -48,7 +47,7 @@ public class SavedProperties extends Window {
 	ObservableList<HBox> items = FXCollections.observableArrayList();
 
 	/**
-	 * Retrieve and display users saved properties.
+	 * Constructor method
 	 */
 	public SavedProperties() {
 
@@ -72,7 +71,7 @@ public class SavedProperties extends Window {
 	}
 
 	/**
-	 * Setup grid layout object
+	 * Sets up grid layout object.
 	 */
 	private void setupGrid() {
 
@@ -90,7 +89,7 @@ public class SavedProperties extends Window {
 	}
 
 	/**
-	 * Setup title text
+	 * Sets up title text.
 	 */
 	private void setupTitle() {
 
@@ -110,7 +109,7 @@ public class SavedProperties extends Window {
 	}
 
 	/**
-	 * Setup control buttons
+	 * Sets up control buttons.
 	 */
 	private void setupButtons() {
 
@@ -149,8 +148,7 @@ public class SavedProperties extends Window {
 					// Remove last item which is now a duplicate
 					items.remove(items.size() - 1);
 
-					// Remove the selected house ID from local list of saved
-					// house IDs
+					// Remove selected house ID from list of saved house IDs
 					properties.remove(index);
 
 					// Update profile saved properties on the database
@@ -190,7 +188,7 @@ public class SavedProperties extends Window {
 	 */
 	private void setupPropertyList() {
 
-		// Set listview object height
+		// Set ListView object height
 		propertyList.setPrefHeight(550);
 
 		// Retrieve saved property IDs from database
@@ -228,8 +226,7 @@ public class SavedProperties extends Window {
 			propertyAddress.setMaxWidth(300);
 			propertyAddress.setFont(Font.font(null, FontWeight.BOLD, 20));
 
-			// Create label with price and number of bedrooms, translating field
-			// names
+			// Create label with price and number of bedrooms
 			Label propertyDetails = new Label(Translator.translateText(
 					languageIndex, "Bedrooms: ")
 					+ house.rooms
@@ -241,8 +238,7 @@ public class SavedProperties extends Window {
 			// Add the address and house info labels to a VBox
 			propertyInfo.getChildren().addAll(propertyAddress, propertyDetails);
 
-			// Add the thumbnail and property information to the current list
-			// item
+			// Add the thumbnail and property information to the list item
 			listItem.getChildren().addAll(thumbnail, propertyInfo);
 
 			// Free memory space by removing temporary image files
@@ -254,7 +250,7 @@ public class SavedProperties extends Window {
 			items.add(listItem);
 		}
 
-		// Add the list to the listview object
+		// Add the list to the ListView object
 		propertyList.setItems(items);
 
 		// Add the list view to the grid pane
@@ -263,11 +259,11 @@ public class SavedProperties extends Window {
 
 	/**
 	 * Create a back button from the property page based on the origin of the
-	 * page
+	 * page.
 	 */
 	public static void setupPropertyBackButton() {
 
-		// Create imageview of the back arrow
+		// Create ImageView of the back arrow
 		ImageView buttonBack = new ImageView(new Image(
 				"file:resources/advert_icons/back.png"));
 
@@ -285,48 +281,38 @@ public class SavedProperties extends Window {
 		buttonBack.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent ae) {
 
-				// If the house viewed was opened from the saved properties page
-				if (originSavedProperties)
+				// If the house is viewed via the saved properties page
+				if (originSavedProperties) {
 					switch (slideID) {
 					case VIDEO:
 					case REVIEWS:
 					case MAP:
 					case MOREINFO:
-
-						// Return to the house overview if clicked from sub
-						// pages
+						// Return to the house overview page
 						loadSlide(HOUSE);
 						break;
 					default:
-
-						// Return to the saved properties page if clicked from
-						// house overview
+						// Return to the saved properties page
 						loadSlide(SAVEDPROPERTIES);
 						break;
 					}
-
-				// If the house viewed was opened from the landlord properties
-				// page
+				}
+				// If the house is viewed via the landlord properties page
 				else if (originManageProperties) {
 					switch (slideID) {
 					case VIDEO:
 					case REVIEWS:
 					case MAP:
 					case MOREINFO:
-
-						// Return to the house overview if clicked from sub
-						// pages
+						// Return to the house overview page
 						loadSlide(HOUSE);
 						break;
 					default:
-
-						// Return to the landlord properties page if clicked
-						// from house overview
+						// Return to the landlord properties page.
 						loadSlide(LANDLORDPROPERTIES);
 						break;
 					}
 				} else {
-
 					/*
 					 * Return to the main house overview section if house pages
 					 * did not originate from saved or landlord properties

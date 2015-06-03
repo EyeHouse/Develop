@@ -37,24 +37,21 @@ import database.Database;
 import database.User;
 
 /**
- * This class implements the EyeView Register Page
+ * This class implements the registration page. New users register their details
+ * and create a new user account for the EyeView software.
  * 
- * @version 2.2 20.04.15
- * @author EyeHouse
- * 
- * Copyright 2015 EyeHouse
+ * @version 2.2 (20.04.15)
+ * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
  */
 public class Register extends Window {
 
 	private String encryptedPassword, dateOfBirth;
 	private User user = null;
-
 	private TextField username, firstname, lastname, email, skypeID;
 	private PasswordField password;
 	private PasswordField repeatPassword;
 	private GridPane registerGrid = new GridPane();
 	private Label topTitle;
-
 	private RadioButton buttonStudent = new RadioButton(
 			Translator.translateText(languageIndex, "Student"));
 	private RadioButton buttonLandlord = new RadioButton(
@@ -63,8 +60,7 @@ public class Register extends Window {
 	private ArrayList<ComboBox<String>> dateOfBirthCombo = new ArrayList<ComboBox<String>>();
 
 	/**
-	 * This method creates the register slide and calls the methods that will
-	 * create it's elements
+	 * Constructor method
 	 */
 	public Register() {
 
@@ -103,10 +99,9 @@ public class Register extends Window {
 	}
 
 	/**
-	 * This method sets up the spacing between the elements in rows and in
-	 * columns
+	 * Sets up the spacing between the elements in rows and in columns.
 	 */
-	public void setupGrid() {
+	private void setupGrid() {
 
 		registerGrid.setVgap(30);
 		registerGrid.setHgap(30);
@@ -116,9 +111,9 @@ public class Register extends Window {
 	}
 
 	/**
-	 * This method creates and places the title of the page
+	 * Creates and places the title of the page.
 	 */
-	public void setupTitle() {
+	private void setupTitle() {
 
 		topTitle = new Label(
 				Translator.translateText(languageIndex, "Register"));
@@ -128,14 +123,15 @@ public class Register extends Window {
 	}
 
 	/**
-	 * This method sets up the text fields, the boxes for the date of birth and
-	 * the buttons for account type
+	 * Sets up the text fields, the boxes for the date of birth and the buttons
+	 * for account type.
 	 */
-	public void setupTextFields(GridPane grid) {
+	private void setupTextFields(GridPane grid) {
+
 		HBox hBoxAccountType = new HBox(10);
 		ToggleGroup group = new ToggleGroup();
 
-		// username field
+		// Username field
 		username = new TextField();
 		username.setPromptText(Translator.translateText(languageIndex,
 				"Username"));
@@ -194,7 +190,7 @@ public class Register extends Window {
 		GridPane.setHalignment(emailLabel, HPos.RIGHT);
 		registerGrid.addRow(8, emailLabel, email);
 
-		// Skype field
+		// Skype username field
 		skypeID = new TextField();
 		skypeID.setPromptText("jBloggs1");
 		skypeID.setPrefColumnCount(10);
@@ -266,10 +262,10 @@ public class Register extends Window {
 	}
 
 	/**
-	 * This method sets up the password field and the confirm you password field
-	 * for the user to fill
+	 * Sets up the password field and the confirm you password field for the
+	 * user to fill.
 	 */
-	public void setupPasswordFields(GridPane grid) {
+	private void setupPasswordFields(GridPane grid) {
 
 		// Password field
 		password = new PasswordField();
@@ -282,10 +278,10 @@ public class Register extends Window {
 		password.setPrefColumnCount(10);
 		registerGrid.add(password, 1, 4);
 
-		// Repeat Password field
+		// Password confirmation field
 		repeatPassword = new PasswordField();
-		Label confirmPasswordLabel = new Label("*" + Translator.translateText(
-				languageIndex, "Confirm Password:"));
+		Label confirmPasswordLabel = new Label("*"
+				+ Translator.translateText(languageIndex, "Confirm Password:"));
 		GridPane.setHalignment(confirmPasswordLabel, HPos.RIGHT);
 		registerGrid.add(confirmPasswordLabel, 0, 5);
 		repeatPassword.setPromptText(Translator.translateText(languageIndex,
@@ -295,10 +291,10 @@ public class Register extends Window {
 	}
 
 	/**
-	 * This method sets up the buttons on the side menu and the save button,
-	 * which calls the function to login the user
+	 * Sets up the buttons on the side menu and the save button, which calls the
+	 * function to login the user.
 	 */
-	public void setupButtons() {
+	private void setupButtons() {
 
 		// Add button to grid
 		ButtonType button1 = new ButtonType("166,208,255", null,
@@ -318,11 +314,14 @@ public class Register extends Window {
 	}
 
 	/**
-	 * This method saves the changes and checks if the information entered in
-	 * each field is valid. If they all are the user is registered and their
-	 * profile page is displayed
+	 * Saves the changes and checks if the information entered in each field is
+	 * valid. If they all are the user is registered and their profile page is
+	 * displayed.
+	 * 
+	 * @version 2.2 (20.04.15)
+	 * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
 	 */
-	public class saveChanges implements EventHandler<ActionEvent> {
+	private class saveChanges implements EventHandler<ActionEvent> {
 
 		public void handle(ActionEvent arg0) {
 
@@ -342,8 +341,11 @@ public class Register extends Window {
 				createWarningPopup("Username is already registered");
 				dialogStage.show();
 			}
-			// If there are no rude words in the text field it checks all the
-			// information is correct
+
+			/*
+			 * If there are no rude words in the text field it checks all the
+			 * information is correct.
+			 */
 			else {
 				user = new User(username.getText());
 				// Get date of birth

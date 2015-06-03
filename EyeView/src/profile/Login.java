@@ -30,12 +30,10 @@ import database.Database;
 import database.User;
 
 /**
- * This class implements the EyeView Login Page
+ * This class implements the EyeView Login page.
  * 
- * @version 2.2 20.04.15
- * @author EyeHouse
- * 
- * Copyright 2015 EyeHouse
+ * @version 2.2 (20.04.15)
+ * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
  */
 public class Login extends Window {
 
@@ -47,11 +45,10 @@ public class Login extends Window {
 	private Label labelLogin, labelPassword;
 
 	/**
-	 * This method creates the login slide and calls the methods that will
-	 * create the slide's elements
+	 * Constructor method
 	 */
 	public Login() {
-		
+
 		setLayout();
 		setupGrid();
 		setupTextFields();
@@ -63,10 +60,10 @@ public class Login extends Window {
 	}
 
 	/**
-	 * This method creates the background of the login page
+	 * Creates the background of the login page.
 	 */
 	private void setLayout() {
-		
+
 		setBackground(true);
 		setWhiteBox(xBox, yBox, true);
 		Image icon = new Image("file:./resources/icons/xxhdpi.png");
@@ -76,8 +73,7 @@ public class Login extends Window {
 	}
 
 	/**
-	 * This method creates a white box of a specified size with a border and
-	 * rounded edges
+	 * Creates a white box of a specified size with a border and rounded edges.
 	 * 
 	 * @param boxWidth
 	 *            desired width of the white box containing the data
@@ -116,8 +112,8 @@ public class Login extends Window {
 	}
 
 	/**
-	 * This method creates the two rectangles for the background and gives them
-	 * the appropriate size
+	 * Creates the two rectangles for the background and gives them the
+	 * appropriate size.
 	 */
 	public static void setBackground(boolean sidebar) {
 
@@ -147,8 +143,7 @@ public class Login extends Window {
 	}
 
 	/**
-	 * This method sets up the spacing between the elements in rows and in
-	 * columns
+	 * Sets up the spacing between the elements in rows and in columns.
 	 */
 	private void setupGrid() {
 
@@ -156,13 +151,13 @@ public class Login extends Window {
 		loginGrid.setHgap(20);
 		loginGrid.setMaxWidth(320);
 		loginGrid.setMinWidth(320);
-		
+
 		// Set position of the grid
 		loginGrid.relocate(375, 290);
 	}
 
 	/**
-	 * This method sets up the username field for the user to fill in
+	 * Sets up the username field for the user to fill in.
 	 */
 	private void setupTextFields() {
 
@@ -187,20 +182,20 @@ public class Login extends Window {
 		});
 		loginGrid.getChildren().add(username);
 		GridPane.setConstraints(username, 1, 1);
-		
+
 		username.setPickOnBounds(true);
 	}
 
 	/**
-	 * This method sets up the password field for the user to fill in and used
-	 * an event handler to login when enter is pressed
+	 * Sets up the password field for the user to fill in and used an event
+	 * handler to login when enter is pressed.
 	 */
 	private void setupPasswordFields() {
 
 		// Password field
 		password = new PasswordField();
 		labelPassword = new Label(Translator.translateText(languageIndex,
-				"Password")+ ": ");
+				"Password") + ": ");
 		labelPassword.setFont(new Font(14));
 		GridPane.setHgrow(labelLogin, Priority.ALWAYS);
 		GridPane.setHalignment(labelPassword, HPos.RIGHT);
@@ -223,8 +218,8 @@ public class Login extends Window {
 	}
 
 	/**
-	 * This method sets up the buttons on the side menu and the save button,
-	 * which calls the function to login the user
+	 * Sets up the buttons on the side menu and the save button, which calls the
+	 * function to login the user.
 	 */
 	private void setupButtons() {
 
@@ -245,11 +240,12 @@ public class Login extends Window {
 	}
 
 	/**
-	 * This method creates and places the title of the page
+	 * Creates and places the title of the page.
 	 */
 	private void setupTitle() {
 
-		Label topTitle = new Label(Translator.translateText(languageIndex, "Login"));
+		Label topTitle = new Label(Translator.translateText(languageIndex,
+				"Login"));
 		topTitle.setTextFill(Color.web("#162252"));
 		topTitle.setFont(new Font(35));
 		topTitle.relocate(370, 210);
@@ -259,24 +255,23 @@ public class Login extends Window {
 	}
 
 	/**
-	 * This method checks if the provided details correspond to an existing
-	 * user. If they do the user is logged in, otherwise it displays a warning
-	 * message.
+	 * Checks if the provided details correspond to an existing user. If they do
+	 * the user is logged in, otherwise it displays a warning message.
 	 */
 	private boolean login() {
 
 		boolean userExists = false;
-		
+
 		if (password.getText().isEmpty()) {
 			dialogStage.show();
 		} else {
 			// check the user exits
 			String hashpass = DataHandler.crypt((String) password.getText());
-	
+
 			userExists = Database.login((String) username.getText(), hashpass);
 			// if exists create user object
-			//System.out.println("User:" + (String) username.getText());
-			
+			// System.out.println("User:" + (String) username.getText());
+
 			if (userExists == true) {
 				User loggedIn = Database.getUser(username.getText());
 				currentUsername = loggedIn.username;
@@ -287,5 +282,4 @@ public class Login extends Window {
 		}
 		return userExists;
 	}
-
 }
