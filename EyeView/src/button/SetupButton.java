@@ -18,11 +18,11 @@ public class SetupButton {
 	Button button = new Button();
 
 	/**
-	 * Create button with input data values
+	 * Create button with input data values.
 	 * 
 	 * @param buttonData
-	 *            ButtonType containing button variables.
-	 * @return Button instance of JavaFX Button with values input.
+	 *            ButtonType containing button variables
+	 * @return Button instance of JavaFX Button with values input
 	 */
 	public Button createButton(ButtonType buttonData) {
 
@@ -36,7 +36,7 @@ public class SetupButton {
 	}
 
 	/**
-	 * Set the fill and border colours of the created button
+	 * Set the fill and border colours of the created button.
 	 */
 	private void setButtonRGB() {
 
@@ -54,7 +54,7 @@ public class SetupButton {
 	}
 
 	/**
-	 * Set the text of the created button
+	 * Set the text of the created button.
 	 */
 	private void setButtonText() {
 
@@ -63,7 +63,7 @@ public class SetupButton {
 	}
 
 	/**
-	 * Set the size of the created button
+	 * Set the size of the created button.
 	 */
 	private void setButtonSize() {
 
@@ -73,14 +73,14 @@ public class SetupButton {
 	}
 
 	/**
-	 * Add image to a button
+	 * Add image to a button.
 	 * 
 	 * @param imageButton
-	 *            The button to be modified.
+	 *            The button to be modified
 	 * 
 	 * @param image
-	 *            The image to be added to the button.
-	 * @return Button Instance of JavaFX Button with image set.
+	 *            The image to be added to the button
+	 * @return Button instance of JavaFX Button with image set
 	 */
 	public Button setButtonImage(Button imageButton, Image image) {
 
