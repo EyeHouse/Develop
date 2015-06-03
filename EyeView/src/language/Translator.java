@@ -12,12 +12,30 @@ import javafx.util.Callback;
 import com.memetix.mst.language.Language;
 import com.memetix.mst.translate.Translate;
 
+/**
+ * This class contains the necessary information to instantiate a new JavaFX
+ * Button object.
+ * 
+ * @version 3.10 (28.05.15)
+ * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
+ */
 public class Translator extends Window {
 
+	/**
+	 * Translates a string from English to the output language given by the
+	 * selected language index.
+	 * 
+	 * @param newLanguageIndex
+	 *            Language index passed in from the language ComboBox
+	 * @param inText
+	 *            String to be translated
+	 * @return Translated string out
+	 */
 	public static String translateText(int newLanguageIndex, String inText) {
-	    
+
 		Language outLanguage = Language.ENGLISH;
 
+		// Select output language from newLanguageIndex
 		switch (newLanguageIndex) {
 		case 0:
 			outLanguage = Language.ENGLISH;
@@ -46,7 +64,7 @@ public class Translator extends Window {
 		}
 
 		String outText = null;
-		
+
 		try {
 			outText = Translate.execute(inText, Language.ENGLISH, outLanguage);
 		} catch (Exception e) {
@@ -56,8 +74,12 @@ public class Translator extends Window {
 		return outText;
 	}
 
+	/**
+	 * Creates the translation ComboBox on the current scene.
+	 */
 	public static void translateBox() {
 
+		// Create ImageView for each of the flag images
 		ImageView englishImage = new ImageView(
 				"file:./resources/Flag/English.png");
 		ImageView spanishImage = new ImageView(
@@ -72,6 +94,7 @@ public class Translator extends Window {
 				"file:./resources/Flag/portuguese.jpg");
 		ImageView dutchImage = new ImageView("file:./resources/Flag/dutch.jpg");
 
+		// Keep aspect ratio
 		englishImage.setPreserveRatio(true);
 		spanishImage.setPreserveRatio(true);
 		frenchImage.setPreserveRatio(true);
@@ -80,13 +103,7 @@ public class Translator extends Window {
 		portugueseImage.setPreserveRatio(true);
 		dutchImage.setPreserveRatio(true);
 
-		/*
-		 * englishImage.setFitHeight(40); spanishImage.setFitHeight(40);
-		 * frenchImage.setFitHeight(40); italianImage.setFitHeight(35);
-		 * germanImage.setFitHeight(35); portugueseImage.setFitHeight(40);
-		 * dutchImage.setFitHeight(35);
-		 */
-
+		// Set properties for language drop-down box
 		SlideContent.languageComboBox.setVisibleRowCount(5);
 		SlideContent.languageComboBox.getItems().clear();
 		SlideContent.languageComboBox.getItems().addAll(englishImage,
@@ -97,6 +114,7 @@ public class Translator extends Window {
 		SlideContent.languageComboBox.setPrefSize(90, 40);
 		SlideContent.languageComboBox.setMaxSize(90, 40);
 
+		// Populate ComboBox with flag images and set action on selection
 		SlideContent.languageComboBox
 				.setCellFactory(new Callback<ListView<ImageView>, ListCell<ImageView>>() {
 					public ListCell<ImageView> call(ListView<ImageView> p) {
@@ -122,12 +140,5 @@ public class Translator extends Window {
 						};
 					}
 				});
-		/*englishImage = null;
-		spanishImage = null;
-		frenchImage = null;
-		italianImage = null;
-		germanImage = null;
-		portugueseImage = null;
-		dutchImage = null;*/
 	}
 }

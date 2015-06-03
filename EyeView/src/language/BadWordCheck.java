@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
  * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
  */
 public class BadWordCheck {
+	
 	Scanner x;
 	String fileName = "src/language/blackListedWords.txt";
 	String badWord;

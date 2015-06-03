@@ -123,7 +123,7 @@ public class GoogleMapsPage extends Window {
 				URL urlGoogleMaps = file.toURI().toURL();
 				webEngine.load(urlGoogleMaps.toExternalForm());
 			} catch (MalformedURLException e) {
-				e.printStackTrace();
+				System.out.println("Property map data not found.");
 			}
 
 			// Adding the browser to the grid.
@@ -163,12 +163,11 @@ public class GoogleMapsPage extends Window {
 						inputLine = "	var destinationA = '" + address + ", "
 								+ postcode + "';";
 					}
-					output.println(inputLine);
 				}
 				in.close();
 				output.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				System.out.println("Failed to connect to HTML document");
 			}
 		}
 
