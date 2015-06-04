@@ -87,7 +87,7 @@ public class SkypeCall extends Window {
 	 * @version 3.3 (01.06.15)
 	 * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
 	 */
-	private class callHandler implements EventHandler<MouseEvent> {
+	public class callHandler implements EventHandler<MouseEvent> {
 
 		final String skypeID;
 

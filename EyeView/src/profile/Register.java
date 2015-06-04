@@ -101,7 +101,7 @@ public class Register extends Window {
 	/**
 	 * Sets up the spacing between the elements in rows and in columns.
 	 */
-	private void setupGrid() {
+	public void setupGrid() {
 
 		registerGrid.setVgap(30);
 		registerGrid.setHgap(30);
@@ -113,7 +113,7 @@ public class Register extends Window {
 	/**
 	 * Creates and places the title of the page.
 	 */
-	private void setupTitle() {
+	public void setupTitle() {
 
 		topTitle = new Label(
 				Translator.translateText(languageIndex, "Register"));
@@ -126,7 +126,7 @@ public class Register extends Window {
 	 * Sets up the text fields, the boxes for the date of birth and the buttons
 	 * for account type.
 	 */
-	private void setupTextFields(GridPane grid) {
+	public void setupTextFields(GridPane grid) {
 
 		HBox hBoxAccountType = new HBox(10);
 		ToggleGroup group = new ToggleGroup();
@@ -265,7 +265,7 @@ public class Register extends Window {
 	 * Sets up the password field and the confirm you password field for the
 	 * user to fill.
 	 */
-	private void setupPasswordFields(GridPane grid) {
+	public void setupPasswordFields(GridPane grid) {
 
 		// Password field
 		password = new PasswordField();
@@ -294,7 +294,7 @@ public class Register extends Window {
 	 * Sets up the buttons on the side menu and the save button, which calls the
 	 * function to login the user.
 	 */
-	private void setupButtons() {
+	public void setupButtons() {
 
 		// Add button to grid
 		ButtonType button1 = new ButtonType("166,208,255", null,
@@ -321,7 +321,7 @@ public class Register extends Window {
 	 * @version 2.2 (20.04.15)
 	 * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
 	 */
-	private class saveChanges implements EventHandler<ActionEvent> {
+	public class saveChanges implements EventHandler<ActionEvent> {
 
 		public void handle(ActionEvent arg0) {
 

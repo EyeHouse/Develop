@@ -89,7 +89,7 @@ public class ProfileViewer extends Window {
 	/**
 	 * Sets up grid layout object to contain user information.
 	 */
-	private void setupGrid() {
+	public void setupGrid() {
 
 		profileGrid.setPrefWidth(600);
 
@@ -113,7 +113,7 @@ public class ProfileViewer extends Window {
 	/**
 	 * Adds the basic user information to grid.
 	 */
-	private void setupUserInfo() {
+	public void setupUserInfo() {
 
 		Label labelType;
 		VBox vBoxUserText = new VBox(20);
@@ -193,7 +193,7 @@ public class ProfileViewer extends Window {
 	 * @param profilePictureView
 	 *            ImageView object containing profile picture
 	 */
-	private void setupProfilePictureHover(ImageView profilePictureView) {
+	public void setupProfilePictureHover(ImageView profilePictureView) {
 
 		Label updateProfilePictureLabel;
 		final VBox vBoxUpdateProfilePictureLabel;
@@ -234,7 +234,7 @@ public class ProfileViewer extends Window {
 	 * @param profilePictureView
 	 *            ImageView object containing profile picture
 	 */
-	private void setupProfilePictureClick(final ImageView profilePictureView) {
+	public void setupProfilePictureClick(final ImageView profilePictureView) {
 
 		profilePictureView.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent arg0) {
@@ -283,7 +283,7 @@ public class ProfileViewer extends Window {
 	 * @param fileChooser
 	 *            File Chooser to choose new profile picture
 	 */
-	private void configureFileChooser(FileChooser profilePictureChooser) {
+	public void configureFileChooser(FileChooser profilePictureChooser) {
 
 		// Set title of file chooser
 		profilePictureChooser.setTitle("Choose Profile Picture to Upload");
@@ -299,7 +299,7 @@ public class ProfileViewer extends Window {
 	/**
 	 * Add review stars to profile based on average review from database.
 	 */
-	private void addStars() {
+	public void addStars() {
 
 		// HBox to contain the stars
 		HBox hBoxStars = new HBox(5);
@@ -323,7 +323,7 @@ public class ProfileViewer extends Window {
 	/**
 	 * Setup profile and appendable review text areas.
 	 */
-	private void setupProfileReview() {
+	public void setupProfileReview() {
 
 		Label textProfile, labelProfile, labelReview, labelNewReview, labelNewRating;
 		reviewList = new ListView<HBox>();
@@ -656,7 +656,7 @@ public class ProfileViewer extends Window {
 	/**
 	 * Reloads the profile page after updating any information.
 	 */
-	private void reloadProfile() {
+	public void reloadProfile() {
 
 		loadSlide(PROFILE);
 	}

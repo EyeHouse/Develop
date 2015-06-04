@@ -75,7 +75,7 @@ public class AccountSettings extends Window {
 	/**
 	 * Sets up grid layout object to contain user information.
 	 */
-	private void setupGrid() {
+	public void setupGrid() {
 
 		// Set grid size and spacing in group.
 		grid.setHgap(gridCellWidth);
@@ -92,7 +92,7 @@ public class AccountSettings extends Window {
 	/**
 	 * Adds existing account information to grid.
 	 */
-	private void setupInfo() {
+	public void setupInfo() {
 
 		// Setup row labels
 		Label labelFName = new Label(Translator.translateText(languageIndex,
@@ -134,7 +134,7 @@ public class AccountSettings extends Window {
 	/**
 	 * Add password labels and text areas to grid.
 	 */
-	private void setupPassword() {
+	public void setupPassword() {
 
 		// Setup Password labels
 		Label labelCurrentPassword = new Label(Translator.translateText(
@@ -170,7 +170,7 @@ public class AccountSettings extends Window {
 	/**
 	 * Adds profile label and text area to grid.
 	 */
-	private void setupProfileText() {
+	public void setupProfileText() {
 
 		Label labelProfileText = new Label(Translator.translateText(
 				languageIndex, "Profile"));
@@ -193,7 +193,7 @@ public class AccountSettings extends Window {
 	/**
 	 * Adds apply and cancel buttons to grid.
 	 */
-	private void setupButtons() {
+	public void setupButtons() {
 
 		ButtonType button1 = new ButtonType("166,208,255", null,
 				Translator.translateText(languageIndex, "Apply Changes"), 150,
@@ -267,7 +267,7 @@ public class AccountSettings extends Window {
 	/**
 	 * Sends account changes to the database.
 	 */
-	private void applyChanges() {
+	public void applyChanges() {
 
 		String doB = dateComboArray.get(2).getValue() + "-"
 				+ dateComboArray.get(1).getValue() + "-"
@@ -301,7 +301,7 @@ public class AccountSettings extends Window {
 	/**
 	 * Checks the biography filed for any blacklisted words.
 	 */
-	private void checkBio() {
+	public void checkBio() {
 
 		BadWordCheck bwc = new BadWordCheck();
 		if (bwc.containsBlackListedWords(profileText.getText())) {
@@ -317,7 +317,7 @@ public class AccountSettings extends Window {
 	/**
 	 * Checks whether new username is available or already taken.
 	 */
-	private void checkUsername() {
+	public void checkUsername() {
 
 		// Skip check if username unchanged
 		if (!fieldUsername.getText().equals(currentUser.username)
@@ -357,7 +357,7 @@ public class AccountSettings extends Window {
 	/**
 	 * Checks current password is correct and new password is valid.
 	 */
-	private void checkPassword() {
+	public void checkPassword() {
 
 		/*
 		 * Return to the profile if password not entered and there is no

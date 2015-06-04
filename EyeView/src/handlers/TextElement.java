@@ -17,6 +17,7 @@ import javafx.scene.layout.*;
  *
  */
 public class TextElement {
+	
 	Label label;
 	double xpos;
 	double ypos;
@@ -45,6 +46,7 @@ public class TextElement {
 	 */
 	public TextElement(String text, double xpos, double ypos,
 			double wrappingWidth, Color color, Font font, double timeout) {
+		
 		this.label = new Label(text);
 		this.xpos = xpos;
 		this.ypos = ypos;
@@ -62,6 +64,7 @@ public class TextElement {
 	 *            String to put on javafx pane
 	 */
 	public TextElement(String text) {
+		
 		this.label = new Label(text);
 		this.xpos = 0;
 		this.ypos = 0;
@@ -76,6 +79,7 @@ public class TextElement {
 	 *            Pane to display the text on
 	 */
 	public void display(StackPane pane) {
+		
 		// Set wrapping width as a proportion of overall width
 		if (wrappingWidth != 0) {
 			label.setWrapText(true);
@@ -101,7 +105,6 @@ public class TextElement {
 				}
 			}, (long) (timeout * 1000));
 		}
-
 	}
 
 	/**

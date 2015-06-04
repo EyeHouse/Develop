@@ -138,7 +138,7 @@ public class MoreInfo extends Window {
 	/**
 	 * Sets up properties for the grid layout.
 	 */
-	private void setupGrid() {
+	public void setupGrid() {
 
 		// Set grid size and spacing in group.
 		grid.setHgap(40);

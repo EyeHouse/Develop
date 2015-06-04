@@ -112,7 +112,7 @@ public class ImageHandler extends Window {
 	/**
 	 * Sets up start and duration timers to show and remove images.
 	 */
-	private void setupImageTimer() {
+	public void setupImageTimer() {
 
 		// Store index
 		final int currentImageIndex = imageIndex;

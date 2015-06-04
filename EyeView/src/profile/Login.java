@@ -62,7 +62,7 @@ public class Login extends Window {
 	/**
 	 * Creates the background of the login page.
 	 */
-	private void setLayout() {
+	public void setLayout() {
 
 		setBackground(true);
 		setWhiteBox(xBox, yBox, true);
@@ -145,7 +145,7 @@ public class Login extends Window {
 	/**
 	 * Sets up the spacing between the elements in rows and in columns.
 	 */
-	private void setupGrid() {
+	public void setupGrid() {
 
 		loginGrid.setVgap(30);
 		loginGrid.setHgap(20);
@@ -159,7 +159,7 @@ public class Login extends Window {
 	/**
 	 * Sets up the username field for the user to fill in.
 	 */
-	private void setupTextFields() {
+	public void setupTextFields() {
 
 		// Username field
 		username = new TextField();
@@ -190,7 +190,7 @@ public class Login extends Window {
 	 * Sets up the password field for the user to fill in and used an event
 	 * handler to login when enter is pressed.
 	 */
-	private void setupPasswordFields() {
+	public void setupPasswordFields() {
 
 		// Password field
 		password = new PasswordField();
@@ -221,7 +221,7 @@ public class Login extends Window {
 	 * Sets up the buttons on the side menu and the save button, which calls the
 	 * function to login the user.
 	 */
-	private void setupButtons() {
+	public void setupButtons() {
 
 		// Add buttons
 		ButtonType button1 = new ButtonType("166,208,255", null,
@@ -242,7 +242,7 @@ public class Login extends Window {
 	/**
 	 * Creates and places the title of the page.
 	 */
-	private void setupTitle() {
+	public void setupTitle() {
 
 		Label topTitle = new Label(Translator.translateText(languageIndex,
 				"Login"));
@@ -258,7 +258,7 @@ public class Login extends Window {
 	 * Checks if the provided details correspond to an existing user. If they do
 	 * the user is logged in, otherwise it displays a warning message.
 	 */
-	private boolean login() {
+	public boolean login() {
 
 		boolean userExists = false;
 

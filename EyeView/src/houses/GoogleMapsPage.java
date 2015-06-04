@@ -100,7 +100,7 @@ public class GoogleMapsPage extends Window {
 	 * HTML content. And it contains WebView, which encapsulates a WebEngine
 	 * object and incorporates HTML content into an application's scene.
 	 */
-	class MyBrowser extends Region {
+	public class MyBrowser extends Region {
 
 		WebView webView;
 		WebEngine webEngine;
@@ -143,7 +143,7 @@ public class GoogleMapsPage extends Window {
 		 * @param postcode
 		 *            The postcode of the house from the database
 		 */
-		private void changeDestination(String address, String postcode) {
+		public void changeDestination(String address, String postcode) {
 
 			URL urlGoogleMaps = getClass().getResource("GoogleMaps.html");
 			try {

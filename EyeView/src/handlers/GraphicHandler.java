@@ -42,7 +42,7 @@ public class GraphicHandler extends Window {
 	/**
 	 * Populates the stage with canvas of XML graphics.
 	 */
-	private void buildGraphicsCanvas() {
+	public void buildGraphicsCanvas() {
 
 		// Instantiate group and canvas then retrieve graphics context.
 		Canvas canvas = new Canvas(xResolution, yResolution);
@@ -67,7 +67,7 @@ public class GraphicHandler extends Window {
 	/**
 	 * Updates the graphics canvas to display all added graphics.
 	 */
-	private void redraw() {
+	public void redraw() {
 
 		// Clear canvas.
 		gc.clearRect(0, 0, xResolution, yResolution);
@@ -94,7 +94,7 @@ public class GraphicHandler extends Window {
 	 * @param shape
 	 *            GraphicElement to be drawn as a shape
 	 */
-	private void drawShape(GraphicElement shape) {
+	public void drawShape(GraphicElement shape) {
 
 		// Calculate graphic coordinates and size.
 		double xcoordinate = xResolution * shape.xstart;
@@ -133,7 +133,7 @@ public class GraphicHandler extends Window {
 	 * @param width
 	 * @param height
 	 */
-	private void setShapeColor(GraphicElement shape, double xcoordinate,
+	public void setShapeColor(GraphicElement shape, double xcoordinate,
 			double ycoordinate, double width, double height) {
 
 		// Determine graphic colour and transparency from XML data.
@@ -197,7 +197,7 @@ public class GraphicHandler extends Window {
 	 * @param duration
 	 * @param solid
 	 */
-	private void drawRectangle(double xcoordinate, double ycoordinate,
+	public void drawRectangle(double xcoordinate, double ycoordinate,
 			double width, double height, double duration, boolean solid) {
 
 		if (solid)
@@ -218,7 +218,7 @@ public class GraphicHandler extends Window {
 	 * @param duration
 	 * @param solid
 	 */
-	private void drawOval(double xcoordinate, double ycoordinate, double width,
+	public void drawOval(double xcoordinate, double ycoordinate, double width,
 			double height, double duration, boolean solid) {
 
 		if (solid)
@@ -239,7 +239,7 @@ public class GraphicHandler extends Window {
 	 * @param duration
 	 * @param solid
 	 */
-	private void drawLine(double xcoordinate, double ycoordinate, double width,
+	public void drawLine(double xcoordinate, double ycoordinate, double width,
 			double height, double duration, boolean solid) {
 
 		// Add line to canvas.
@@ -253,7 +253,7 @@ public class GraphicHandler extends Window {
 	 * @param shape
 	 *            GraphicElement object to create the timer for
 	 */
-	private void setGraphicDurationTimer(final GraphicElement shape) {
+	public void setGraphicDurationTimer(final GraphicElement shape) {
 
 		// Add timeline if duration is greater than zero.
 		if (shape.duration > 0) {

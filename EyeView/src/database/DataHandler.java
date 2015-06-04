@@ -25,6 +25,7 @@ public class DataHandler {
 	 * @return True implies that the E-mail address is valid.
 	 */
 	public static boolean isValidEmailAddress(String email) {
+		
 		boolean result;
 		if (email.indexOf("@") != -1 && email.indexOf(".") != -1) {
 			result = true;
@@ -93,6 +94,7 @@ public class DataHandler {
 	 *         passwordChecker method, it returns a null string.
 	 */
 	public static String crypt(String password) {
+		
 		if (password == null || password.length() == 0) {
 			throw new IllegalArgumentException("Please enter a password!");
 		}

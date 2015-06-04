@@ -99,7 +99,7 @@ public class HouseReviews extends Window {
 	/**
 	 * Creates the page title.
 	 */
-	private void setupTitle() {
+	public void setupTitle() {
 
 		pageTitle = new Label(
 				Translator.translateText(languageIndex, "Reviews"));

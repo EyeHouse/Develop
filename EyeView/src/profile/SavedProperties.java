@@ -73,7 +73,7 @@ public class SavedProperties extends Window {
 	/**
 	 * Sets up grid layout object.
 	 */
-	private void setupGrid() {
+	public void setupGrid() {
 
 		// Setup column sizes
 		ColumnConstraints col1 = new ColumnConstraints();
@@ -91,7 +91,7 @@ public class SavedProperties extends Window {
 	/**
 	 * Sets up title text.
 	 */
-	private void setupTitle() {
+	public void setupTitle() {
 
 		// Create label in chosen language
 		Label labelTitle = new Label(Translator.translateText(languageIndex,
@@ -111,7 +111,7 @@ public class SavedProperties extends Window {
 	/**
 	 * Sets up control buttons.
 	 */
-	private void setupButtons() {
+	public void setupButtons() {
 
 		// Create box to contain buttons
 		VBox buttons = new VBox(30);
@@ -186,7 +186,7 @@ public class SavedProperties extends Window {
 	/**
 	 * Populate property list view with saved properties from the database.
 	 */
-	private void setupPropertyList() {
+	public void setupPropertyList() {
 
 		// Set ListView object height
 		propertyList.setPrefHeight(550);

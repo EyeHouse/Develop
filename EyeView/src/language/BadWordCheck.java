@@ -16,10 +16,10 @@ import java.util.regex.Pattern;
  */
 public class BadWordCheck {
 	
-	Scanner x;
-	String fileName = "src/language/blackListedWords.txt";
-	String badWord;
-	Pattern punctuation;
+	private Scanner x;
+	private String fileName = "src/language/blackListedWords.txt";
+	private String badWord;
+	private Pattern punctuation;
 
 	public BadWordCheck() {
 		punctuation = Pattern.compile("[A-Za-z]{1,40}");
@@ -28,7 +28,7 @@ public class BadWordCheck {
 	/**
 	 * This method opens the black listed words file.
 	 */
-	private void openFile() {
+	public void openFile() {
 		try {
 			File file = new File(fileName);
 			x = new Scanner(file);
@@ -40,7 +40,7 @@ public class BadWordCheck {
 	/**
 	 * This method closes the black listed words file.
 	 */
-	private void closeFile() {
+	public void closeFile() {
 		x.close();
 	}
 
@@ -56,7 +56,7 @@ public class BadWordCheck {
 	 *         file. True if it does, false if it matches no word in the black
 	 *         listed words file.
 	 */
-	private boolean checkforBlackListedWords(String inputText) {
+	public boolean checkforBlackListedWords(String inputText) {
 
 		boolean badWordDectected = false;
 

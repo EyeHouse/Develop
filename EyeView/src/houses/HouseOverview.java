@@ -102,7 +102,7 @@ public class HouseOverview extends Window {
 	 * Creates an array list containing array lists of all the images for all
 	 * the houses retrieved from the database.
 	 */
-	private void createGalleryLists() {
+	public void createGalleryLists() {
 
 		// Get all the matching house image collections from the database
 		for (int i = 0; i < houses.size(); i++) {
@@ -147,7 +147,7 @@ public class HouseOverview extends Window {
 	 *            Index of the house to be displayed
 	 * @return Pane containing the constructed house page
 	 */
-	protected Pane createHousePage(Integer pageIndex) {
+	public Pane createHousePage(Integer pageIndex) {
 
 		// Create new pane to contain house advert objects
 		Pane galleryPane = new Pane();
@@ -218,7 +218,7 @@ public class HouseOverview extends Window {
 		return galleryPane;
 	}
 
-	private class loadLandlord implements EventHandler<MouseEvent> {
+	public class loadLandlord implements EventHandler<MouseEvent> {
 
 		String username = null;
 
@@ -241,7 +241,7 @@ public class HouseOverview extends Window {
 	 * @param galleryPane
 	 *            The current pane that the save button is added to
 	 */
-	private void setupSaveButton(final Pane galleryPane) {
+	public void setupSaveButton(final Pane galleryPane) {
 
 		// Hidden label appears next to button when enabled and hovered over
 		saveLabel = new Label(Translator.translateText(languageIndex,
@@ -292,7 +292,7 @@ public class HouseOverview extends Window {
 	/**
 	 * Creates the pagination object for containing all the house pages.
 	 */
-	private void setupPagination() {
+	public void setupPagination() {
 
 		pagination = new Pagination(houses.size(), 0);
 
@@ -314,7 +314,7 @@ public class HouseOverview extends Window {
 	/**
 	 * Sets up the play/pause button for controlling the house advert slideshow.
 	 */
-	private void setupTimerControl() {
+	public void setupTimerControl() {
 
 		pause = new Image("file:resources/advert_icons/pause.png");
 
@@ -341,7 +341,7 @@ public class HouseOverview extends Window {
 	 * Method that handles the timeline event for playing through the pagination
 	 * and sets the timeline to start playing by default.
 	 */
-	private void setupAdvertTimer() {
+	public void setupAdvertTimer() {
 
 		advertTimer = new Timeline(new KeyFrame(Duration.millis(5 * 1000),
 				new EventHandler<ActionEvent>() {

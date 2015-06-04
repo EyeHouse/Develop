@@ -99,7 +99,7 @@ public class Window extends Application {
 	 * @param primaryStage
 	 *            The main stage window
 	 */
-	private void init(Stage primaryStage) {
+	public void init(Stage primaryStage) {
 
 		// Initialises primary stage
 		primaryStage.setWidth(xResolution);
@@ -158,7 +158,7 @@ public class Window extends Application {
 	 * @param primaryStage
 	 *            The main stage window
 	 */
-	private void createXMLOptions(Stage primaryStage) {
+	public void createXMLOptions(Stage primaryStage) {
 
 		Login.setBackground(false);
 		Image companyLogo = new Image(
@@ -198,7 +198,7 @@ public class Window extends Application {
 	 * @param xmlPath
 	 *            File path of the XML file to import
 	 */
-	private static void openXML(Stage primaryStage, String xmlPath) {
+	public static void openXML(Stage primaryStage, String xmlPath) {
 
 		// Run the XML parser
 		XMLParser parser = new XMLParser();
@@ -226,7 +226,7 @@ public class Window extends Application {
 	 * @version 1.4 (15.03.15)
 	 * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
 	 */
-	private class importHandler implements EventHandler<ActionEvent> {
+	public class importHandler implements EventHandler<ActionEvent> {
 
 		public void handle(ActionEvent arg0) {
 
@@ -261,7 +261,7 @@ public class Window extends Application {
 	 * @version 1.4 (15.03.15)
 	 * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
 	 */
-	private class openEyeViewHandler implements EventHandler<ActionEvent> {
+	public class openEyeViewHandler implements EventHandler<ActionEvent> {
 
 		@Override
 		public void handle(ActionEvent arg0) {
@@ -330,7 +330,7 @@ public class Window extends Application {
 	 * @version 1.4 (15.03.15)
 	 * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
 	 */
-	private static class arrowKeyEvent implements EventHandler<KeyEvent> {
+	public static class arrowKeyEvent implements EventHandler<KeyEvent> {
 
 		@Override
 		public void handle(KeyEvent input) {

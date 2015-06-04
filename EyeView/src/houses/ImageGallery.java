@@ -126,7 +126,7 @@ public class ImageGallery extends Window {
 	 * @version 1.4 (15.03.15)
 	 * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
 	 */
-	private static class GalleryPictures extends Region {
+	public static class GalleryPictures extends Region {
 
 		// Time for thumbnails to move to position with the scrollbar
 		private static final Duration DURATION = Duration.millis(250);
@@ -161,7 +161,7 @@ public class ImageGallery extends Window {
 		 * @param mainImage
 		 *            the main image of the image gallery
 		 */
-		private GalleryPictures(final ArrayList<Image> galleryImages,
+		public GalleryPictures(final ArrayList<Image> galleryImages,
 				final Image mainImage) {
 
 			// Set the appearance of the scroll bar
@@ -289,7 +289,7 @@ public class ImageGallery extends Window {
 		 * Refreshes the image gallery after a thumbnail image is clicked or the
 		 * scroll bar is moved.
 		 */
-		private void update() {
+		public void update() {
 
 			// Move thumbnails to new homes in groups
 			left.getChildren().clear();
@@ -347,7 +347,7 @@ public class ImageGallery extends Window {
 		 * @param item
 		 *            the selected thumbnail image
 		 */
-		private void shiftToCenter(Thumbnail item) {
+		public void shiftToCenter(Thumbnail item) {
 
 			for (int i = 0; i < left.getChildren().size(); i++) {
 				if (left.getChildren().get(i) == item) {
@@ -376,7 +376,7 @@ public class ImageGallery extends Window {
 		 * @param shiftAmount
 		 *            the number of positions to shift the image row across by
 		 */
-		private void shift(int shiftAmount) {
+		public void shift(int shiftAmount) {
 
 			if (centerIndex <= 0 && shiftAmount > 0)
 				return;

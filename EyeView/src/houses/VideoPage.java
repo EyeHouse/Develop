@@ -81,7 +81,7 @@ public class VideoPage extends Window {
 	/**
 	 * Creates the video container with CSS style and displays it on the scene.
 	 */
-	private void setupVideoPlayer() {
+	public void setupVideoPlayer() {
 
 		StackPane videoPane = new StackPane();
 
@@ -199,10 +199,10 @@ public class VideoPage extends Window {
 	}
 
 	/**
-	 * This private class implements the action for changing the position in the
+	 * This class implements the action for changing the position in the
 	 * video after a video marker button has been clicked.
 	 */
-	private class VideoTime implements EventHandler<ActionEvent> {
+	public class VideoTime implements EventHandler<ActionEvent> {
 
 		private int index;
 

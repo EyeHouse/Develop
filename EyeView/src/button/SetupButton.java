@@ -38,7 +38,7 @@ public class SetupButton {
 	/**
 	 * Set the fill and border colours of the created button.
 	 */
-	private void setButtonRGB() {
+	public void setButtonRGB() {
 
 		// Set fill and border colour using CSS commands
 		if (buttonData.borderColourRGB != null && buttonData.colourRGB != null) {
@@ -56,7 +56,7 @@ public class SetupButton {
 	/**
 	 * Set the text of the created button.
 	 */
-	private void setButtonText() {
+	public void setButtonText() {
 
 		// Set text of button to input button data
 		button.setText(buttonData.text);
@@ -65,7 +65,7 @@ public class SetupButton {
 	/**
 	 * Set the size of the created button.
 	 */
-	private void setButtonSize() {
+	public void setButtonSize() {
 
 		// Set size of button from buttonData object.
 		button.setMinSize(buttonData.xSize, buttonData.ySize);

@@ -76,7 +76,7 @@ public class EditProperty extends Window {
 	private VBox backButtons;
 	private Button buttonSave = new Button();
 	private ImageView infoStatus, picStatus;
-	Image tick, cross;
+	private Image tick, cross;
 
 	// House Information variables
 	private TextField address = new TextField();
@@ -176,7 +176,7 @@ public class EditProperty extends Window {
 	/**
 	 * Sets up grid layout object.
 	 */
-	private void setupGrid() {
+	public void setupGrid() {
 
 		// Set grid size and spacing in group based on current page
 		grid.setHgap(50);
@@ -200,7 +200,7 @@ public class EditProperty extends Window {
 	 * @param page
 	 *            Editor page index
 	 */
-	private void setupTabLabels(int page) {
+	public void setupTabLabels(int page) {
 
 		// Create containers for labels and status icons
 		HBox info = new HBox(5);
@@ -269,7 +269,7 @@ public class EditProperty extends Window {
 	/**
 	 * Sets up page navigation buttons
 	 */
-	private void setupButtons() {
+	public void setupButtons() {
 
 		// Remove any previous buttons from page
 		root.getChildren().removeAll(backButtons);
@@ -372,7 +372,7 @@ public class EditProperty extends Window {
 	/**
 	 * Creates the house information editing/creation page.
 	 */
-	private void setupHouseInfo() {
+	public void setupHouseInfo() {
 
 		// Create a container for the descrtion label and field
 		VBox vBoxDesc = new VBox(10);
@@ -683,7 +683,7 @@ public class EditProperty extends Window {
 	/**
 	 * Creates the house video editing/creation page.
 	 */
-	private void setupHouseVideo() {
+	public void setupHouseVideo() {
 
 		// If effing a current house
 		if (hid != 0) {
@@ -798,7 +798,7 @@ public class EditProperty extends Window {
 	 * @param newVideoFileString
 	 *            File path of video to be played
 	 */
-	private void setupVideoPlayer(String newVideoFileString) {
+	public void setupVideoPlayer(String newVideoFileString) {
 
 		// Create a stackpane to contain the vidoe
 		StackPane videoPane = new StackPane();
@@ -822,7 +822,7 @@ public class EditProperty extends Window {
 	/**
 	 * Sets up the video marker editor.
 	 */
-	private void setupRoomMarkers() {
+	public void setupRoomMarkers() {
 
 		// If editing a current house
 		if (hid != 0) {
@@ -1445,7 +1445,7 @@ public class EditProperty extends Window {
 		 * @param uploadChooser
 		 *            Input the file chooser to be edited
 		 */
-		private void configureFileChooser(FileChooser uploadChooser) {
+		public void configureFileChooser(FileChooser uploadChooser) {
 
 			// Set directory that the file chooser will initially open
 			uploadChooser.setInitialDirectory(new File(System

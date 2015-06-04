@@ -79,7 +79,7 @@ public class LandlordProperties extends Window {
 	/**
 	 * Sets up grid layout object.
 	 */
-	private void setupGrid() {
+	public void setupGrid() {
 
 		// Setup column sizes
 		ColumnConstraints col1 = new ColumnConstraints();
@@ -97,7 +97,7 @@ public class LandlordProperties extends Window {
 	/**
 	 * Sets up title text.
 	 */
-	private void setupTitle() {
+	public void setupTitle() {
 
 		// Create label in chosen language
 		Label labelTitle = new Label(Translator.translateText(languageIndex,
@@ -117,7 +117,7 @@ public class LandlordProperties extends Window {
 	/**
 	 * Sets up control buttons.
 	 */
-	private void setupLandlordButtons() {
+	public void setupLandlordButtons() {
 
 		// Create box to contain buttons
 		VBox buttons = new VBox(30);
@@ -232,7 +232,7 @@ public class LandlordProperties extends Window {
 	/**
 	 * Populates property list view with owned properties from the database.
 	 */
-	private void setupPropertyList() {
+	public void setupPropertyList() {
 
 		// Set ListView object height
 		propertyList.setPrefHeight(550);

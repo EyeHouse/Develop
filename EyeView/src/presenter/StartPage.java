@@ -62,7 +62,7 @@ public class StartPage extends Window {
 	/**
 	 * Creates all the elements of the start page.
 	 */
-	private void createPageElements() {
+	public void createPageElements() {
 
 		// VBox to group the welcome message labels and the start button
 		VBox elementBox = new VBox(10);

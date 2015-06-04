@@ -168,7 +168,7 @@ public class SlideContent extends Window {
 	/**
 	 * Creates the StartPage slide.
 	 */
-	private void createStartSlide() {
+	public void createStartSlide() {
 		originSavedProperties = false;
 		originManageProperties = false;
 		startPage = new StartPage();
@@ -177,7 +177,7 @@ public class SlideContent extends Window {
 	/**
 	 * Creates the logged-out instance of the HouseOverview slide.
 	 */
-	private void createLoggedOutSlide() {
+	public void createLoggedOutSlide() {
 
 		originSavedProperties = false;
 		originManageProperties = false;
@@ -197,7 +197,7 @@ public class SlideContent extends Window {
 	/**
 	 * Creates the logged-in instance of the HouseOverview slide.
 	 */
-	private void createHomeSlide() {
+	public void createHomeSlide() {
 
 		originSavedProperties = false;
 		originManageProperties = false;
@@ -216,7 +216,7 @@ public class SlideContent extends Window {
 	/**
 	 * Creates the Login slide.
 	 */
-	private void createLoginSlide() {
+	public void createLoginSlide() {
 
 		originSavedProperties = false;
 		originManageProperties = false;
@@ -227,7 +227,7 @@ public class SlideContent extends Window {
 	/**
 	 * Creates the Register slide.
 	 */
-	private void createRegisterSlide() {
+	public void createRegisterSlide() {
 
 		originSavedProperties = false;
 		originManageProperties = false;
@@ -238,7 +238,7 @@ public class SlideContent extends Window {
 	/**
 	 * Creates the ProfileViewer slide.
 	 */
-	private void createProfileSlide() {
+	public void createProfileSlide() {
 
 		originSavedProperties = false;
 		originManageProperties = false;
@@ -249,7 +249,7 @@ public class SlideContent extends Window {
 	/**
 	 * Creates the AccountSettings slide.
 	 */
-	private void createAccountSettingsSlide() {
+	public void createAccountSettingsSlide() {
 
 		originSavedProperties = false;
 		originManageProperties = false;
@@ -260,7 +260,7 @@ public class SlideContent extends Window {
 	/**
 	 * Creates the SavedProperties slide.
 	 */
-	private void createSavedPropertySlide() {
+	public void createSavedPropertySlide() {
 
 		originSavedProperties = true;
 		originManageProperties = false;
@@ -271,7 +271,7 @@ public class SlideContent extends Window {
 	/**
 	 * Creates the single-view instance of the HouseOverview slide.
 	 */
-	private void createPropertySlide() {
+	public void createPropertySlide() {
 
 		House house = Database.getHouse(currentPropertyID);
 		ArrayList<House> houseArray = new ArrayList<House>();
@@ -285,7 +285,7 @@ public class SlideContent extends Window {
 	/**
 	 * Creates the MoreInfo slide.
 	 */
-	private void createMoreInfoSlide() {
+	public void createMoreInfoSlide() {
 
 		createMenuBar();
 		moreInfo = new MoreInfo();
@@ -296,7 +296,7 @@ public class SlideContent extends Window {
 	/**
 	 * Creates the HouseReviews slide.
 	 */
-	private void createReviewsSlide() {
+	public void createReviewsSlide() {
 
 		createMenuBar();
 		houseReviews = new HouseReviews();
@@ -306,7 +306,7 @@ public class SlideContent extends Window {
 	/**
 	 * Creates the GoogleMapsPage slide.
 	 */
-	private void createMapSlide() {
+	public void createMapSlide() {
 
 		createMenuBar();
 		mapPage = new GoogleMapsPage();
@@ -316,7 +316,7 @@ public class SlideContent extends Window {
 	/**
 	 * Creates the VideoPage slide.
 	 */
-	private void createVideoSlide() {
+	public void createVideoSlide() {
 
 		createMenuBar();
 		videoPage = new VideoPage();
@@ -326,7 +326,7 @@ public class SlideContent extends Window {
 	/**
 	 * Creates the LandlordProperties slide.
 	 */
-	private void createLandlordPropertiesSlide() {
+	public void createLandlordPropertiesSlide() {
 
 		originSavedProperties = false;
 		originManageProperties = true;
@@ -337,7 +337,7 @@ public class SlideContent extends Window {
 	/**
 	 * Creates the EditProperty slide.
 	 */
-	private void createEditPropertySlide() {
+	public void createEditPropertySlide() {
 		originSavedProperties = false;
 		originManageProperties = true;
 		editProperty = new EditProperty(0, currentPropertyID);
@@ -347,7 +347,7 @@ public class SlideContent extends Window {
 	/**
 	 * Creates the HouseOverview slide from the search results.
 	 */
-	private void createResultsSlide() {
+	public void createResultsSlide() {
 
 		originSavedProperties = false;
 		originManageProperties = false;
@@ -359,7 +359,7 @@ public class SlideContent extends Window {
 	/**
 	 * Creates the sidebar profile picture and selectable labels.
 	 */
-	private void createSidebar() {
+	public void createSidebar() {
 
 		VBox sidebar = new VBox(18);
 
@@ -507,7 +507,7 @@ public class SlideContent extends Window {
 	/**
 	 * Creates the menu bar across the top of the screen.
 	 */
-	private void createMenuBar() {
+	public void createMenuBar() {
 
 		HBox buttonRow = new HBox(5);
 
@@ -588,7 +588,7 @@ public class SlideContent extends Window {
 	 * @param input
 	 *            Label to add hover text effects to
 	 */
-	private void setupLabelHover(final Label input) {
+	public void setupLabelHover(final Label input) {
 
 		final boolean selected;
 
@@ -644,7 +644,7 @@ public class SlideContent extends Window {
 	/**
 	 * Creates the translator ComboBox and adds the action listener.
 	 */
-	private void setupTranslate() {
+	public void setupTranslate() {
 
 		languageComboBox = new ComboBox<ImageView>();
 		Translator.translateBox();
@@ -660,7 +660,7 @@ public class SlideContent extends Window {
 	 * @version 3.2 (27.05.15)
 	 * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
 	 */
-	private class LanguageChange implements ChangeListener<ImageView> {
+	public class LanguageChange implements ChangeListener<ImageView> {
 
 		@Override
 		public void changed(ObservableValue<? extends ImageView> arg0,
@@ -735,7 +735,7 @@ public class SlideContent extends Window {
 	/**
 	 * Changes the language for the logged-out sidebar.
 	 */
-	private void updateLoginRegisterLanguage() {
+	public void updateLoginRegisterLanguage() {
 
 		labelLogin.setText(Translator.translateText(languageIndex, "Login"));
 		labelRegister.setText(Translator.translateText(languageIndex,
@@ -745,7 +745,7 @@ public class SlideContent extends Window {
 	/**
 	 * Changes the language for the top menu bar.
 	 */
-	private void updateMenuBarLanguage() {
+	public void updateMenuBarLanguage() {
 
 		videoButton.setText(Translator.translateText(languageIndex,
 				"Video Tour"));
@@ -759,7 +759,7 @@ public class SlideContent extends Window {
 	/**
 	 * Changes the language for the logged-in sidebar.
 	 */
-	private void updateSidebarLanguage() {
+	public void updateSidebarLanguage() {
 
 		User currentUser = Database.getUser(currentUsername);
 
@@ -778,7 +778,7 @@ public class SlideContent extends Window {
 	/**
 	 * Changes the language for the search filter box.
 	 */
-	private void updateSearchBarLanguage() {
+	public void updateSearchBarLanguage() {
 
 		labelFilter.setText(Translator.translateText(languageIndex,
 				"Filter results:"));
@@ -798,7 +798,7 @@ public class SlideContent extends Window {
 	 *            List of house IDs to be displayed
 	 * @return ArrayList of Houses
 	 */
-	private ArrayList<House> getDisplayHouses(ArrayList<Integer> houseIDs) {
+	public ArrayList<House> getDisplayHouses(ArrayList<Integer> houseIDs) {
 
 		ArrayList<House> houses = new ArrayList<House>();
 
@@ -818,7 +818,7 @@ public class SlideContent extends Window {
 	/**
 	 * Creates the search box items in the sidebar.
 	 */
-	private void createSearchBar() {
+	public void createSearchBar() {
 
 		VBox searchFields = new VBox(0);
 		VBox minBedsColumn = new VBox(5);
@@ -951,7 +951,7 @@ public class SlideContent extends Window {
 	 * @version 3.2 (27.05.15)
 	 * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
 	 */
-	private class searchHandler implements EventHandler<ActionEvent> {
+	public class searchHandler implements EventHandler<ActionEvent> {
 
 		@Override
 		public void handle(ActionEvent arg0) {
@@ -1051,7 +1051,7 @@ public class SlideContent extends Window {
 	 * Nullifies and removes slide objects and calls the System garbage
 	 * collector to free memory space.
 	 */
-	private void clearSlideData() {
+	public void clearSlideData() {
 
 		switch (prevSlideID) {
 		case STARTPAGE:

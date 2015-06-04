@@ -332,7 +332,6 @@ public class Search {
 
 			return postcodes;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return postcodes;
 		}

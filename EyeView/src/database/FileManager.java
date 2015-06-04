@@ -233,6 +233,7 @@ public class FileManager {
 	 * @throws IOException
 	 */
 	public static File stream2file(InputStream in) throws IOException {
+		
 		// Create temporary file
 		final File tempFile = File.createTempFile(PREFIX, SUFFIX);
 		tempFile.deleteOnExit();
