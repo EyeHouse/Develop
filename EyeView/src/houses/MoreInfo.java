@@ -16,9 +16,10 @@ import database.Database;
 import database.House;
 
 /**
+ * This class creates the information page for a specific house advert.
  * 
- * @author pb714
- *
+ * @version 2.5
+ * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
  */
 public class MoreInfo extends Window {
 
@@ -56,6 +57,7 @@ public class MoreInfo extends Window {
 	public MoreInfo() {
 
 		setupGrid();
+		
 		VBox vBoxDesc = new VBox(10);
 		// Set up back button
 		SavedProperties.setupPropertyBackButton();
@@ -116,7 +118,6 @@ public class MoreInfo extends Window {
 
 		vBoxDesc.getChildren().addAll(labelDesc, description);
 
-		// grid.addRow(0, labelTitle);
 		grid.addRow(1, labelAddress, address);
 		grid.addRow(2, labelPostcode, postcode);
 		grid.addRow(3, labelPrice, price);
@@ -134,6 +135,9 @@ public class MoreInfo extends Window {
 		root.getChildren().addAll(labelTitle, grid);
 	}
 
+	/**
+	 * Sets up properties for the grid layout.
+	 */
 	private void setupGrid() {
 
 		// Set grid size and spacing in group.
@@ -145,8 +149,8 @@ public class MoreInfo extends Window {
 		grid.setMinWidth(650);
 	}
 
-	/** Updates labels with translation based on selected language
-	 * 
+	/**
+	 * Updates labels with translation based on selected language.
 	 */
 	public void updateLanguage() {
 

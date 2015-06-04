@@ -36,26 +36,32 @@ import presenter.Window;
 import profile.ProfileViewer;
 import profile.SavedProperties;
 
+/**
+ * This class creates the reviews page for a specific house advert. Users can
+ * view and add reviews for a house and like/dislike other people's reviews.
+ * 
+ * @version 2.6
+ * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
+ */
 public class HouseReviews extends Window {
 
 	private Label pageTitle, ratingLabel, newReviewLabel, giveRatingLabel;
-
 	private ListView<HBox> reviewsView;
 	private ObservableList<HBox> reviews = FXCollections.observableArrayList();
-
 	private Button[] buttonStar;
 	private Image reviewStarFull = new Image(
 			"file:resources/images/stars/starFull_28.png");
 	private Image reviewStarOutline = new Image(
 			"file:resources/images/stars/starOutline_28.png");
 	private int newRating;
-
-	GridPane pane;
-	TextArea newReviewText;
-	HBox hBoxOverallRating = new HBox(5);
-
+	private GridPane pane;
+	private TextArea newReviewText;
+	private HBox hBoxOverallRating = new HBox(5);
 	private Button buttonSubmit;
 
+	/**
+	 * Constructor method
+	 */
 	public HouseReviews() {
 
 		pane = new GridPane();
@@ -68,17 +74,19 @@ public class HouseReviews extends Window {
 		setupReviewsTextField();
 		displayReviews();
 		setupAddStarRating();
+
 		root.getChildren().add(pane);
 	}
 
+	/**
+	 * Sets up the grid pane and column constraints for the page.
+	 */
 	public void setupGrid() {
 
 		pane.setVgap(20);
 		pane.setHgap(30);
 		pane.relocate(315, 130);
 		pane.setPrefWidth(450);
-
-		// pane.setGridLinesVisible(true);
 
 		// Set column widths of grid.
 		ColumnConstraints col1 = new ColumnConstraints();
@@ -88,6 +96,9 @@ public class HouseReviews extends Window {
 		pane.getColumnConstraints().addAll(col1, col2, col2);
 	}
 
+	/**
+	 * Creates the page title.
+	 */
 	private void setupTitle() {
 
 		pageTitle = new Label(
@@ -99,12 +110,11 @@ public class HouseReviews extends Window {
 		pageTitle.relocate(275, 80);
 
 		root.getChildren().add(pageTitle);
-		/*
-		 * pane.add(pageTitle, 0, 0); GridPane.setConstraints(pageTitle, 0, 0,
-		 * 3, 1, HPos.CENTER, VPos.CENTER);
-		 */
 	}
 
+	/**
+	 * Sets up the label for the rating text field.
+	 */
 	public void setupRatingLabel() {
 
 		ratingLabel = new Label(Translator.translateText(languageIndex,
@@ -114,7 +124,7 @@ public class HouseReviews extends Window {
 	}
 
 	/**
-	 * Create stars to display average house rating from database
+	 * Creates stars to display average house rating.
 	 */
 	public void setupAveRating() {
 
@@ -135,6 +145,9 @@ public class HouseReviews extends Window {
 				VPos.CENTER);
 	}
 
+	/**
+	 * Displays all the reviews in a ListView.
+	 */
 	public void displayReviews() {
 
 		newReviewLabel = new Label(Translator.translateText(languageIndex,
@@ -191,6 +204,9 @@ public class HouseReviews extends Window {
 				VPos.CENTER);
 	}
 
+	/**
+	 * Sets up a text field for entering a review.
+	 */
 	public void setupReviewsTextField() {
 
 		newReviewText = new TextArea();
@@ -203,6 +219,9 @@ public class HouseReviews extends Window {
 				VPos.CENTER);
 	}
 
+	/**
+	 * Adds the star rating buttons to the display.
+	 */
 	public void setupAddStarRating() {
 
 		giveRatingLabel = new Label(Translator.translateText(languageIndex,
@@ -229,7 +248,7 @@ public class HouseReviews extends Window {
 			hBoxNewStars.getChildren().add(buttonStar[i]);
 		}
 
-		// Add review star buttons to gridpane
+		// Add review star buttons to GridPane
 		pane.add(giveRatingLabel, 0, 6);
 		GridPane.setHgrow(giveRatingLabel, Priority.ALWAYS);
 		GridPane.setConstraints(giveRatingLabel, 0, 6, 1, 1, HPos.RIGHT,
@@ -245,6 +264,9 @@ public class HouseReviews extends Window {
 		}
 	}
 
+	/**
+	 * Sets up the back button and submit review button.
+	 */
 	public void setupButtons() {
 
 		SavedProperties.setupPropertyBackButton();
@@ -290,6 +312,9 @@ public class HouseReviews extends Window {
 				VPos.CENTER);
 	}
 
+	/**
+	 * Updates the text for the house review page.
+	 */
 	public void updateLanguage() {
 
 		pageTitle.setText(Translator.translateText(languageIndex, "Reviews"));
@@ -304,11 +329,24 @@ public class HouseReviews extends Window {
 		buttonSubmit.setText(Translator.translateText(languageIndex, "Submit"));
 	}
 
+	/**
+	 * This class handles changing the buttons for the star rating.
+	 * 
+	 * @version 2.6
+	 * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
+	 */
 	public class starButtonHandler implements EventHandler<ActionEvent> {
 
 		private int buttonNumber;
 
+		/**
+		 * Constructor method
+		 * 
+		 * @param number
+		 *            New rating number
+		 */
 		public starButtonHandler(int number) {
+			
 			this.buttonNumber = number;
 		}
 
@@ -326,32 +364,62 @@ public class HouseReviews extends Window {
 		}
 	}
 
+	/**
+	 * This class handles updating a like of a review.
+	 * 
+	 * @version 2.6
+	 * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
+	 */
 	public class likeHandler implements EventHandler<MouseEvent> {
 
 		private HouseReview review;
 
+		/**
+		 * Constructor method
+		 * 
+		 * @param review
+		 *            The selected review to update like for
+		 */
 		public likeHandler(HouseReview review) {
+
 			this.review = review;
 		}
 
 		@Override
 		public void handle(MouseEvent event) {
-			Database.likeReview(Database.getUser(currentUsername), review, null, 2);
+
+			Database.likeReview(Database.getUser(currentUsername), review,
+					null, 2);
 			loadSlide(REVIEWS);
 		}
 	}
 
+	/**
+	 * This class handles updating a dislike of a review.
+	 * 
+	 * @version 2.6
+	 * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
+	 */
 	public class dislikeHandler implements EventHandler<MouseEvent> {
 
 		private HouseReview review;
 
+		/**
+		 * Constructor method
+		 * 
+		 * @param review
+		 *            The selected review to update dislike for
+		 */
 		public dislikeHandler(HouseReview review) {
+
 			this.review = review;
 		}
 
 		@Override
 		public void handle(MouseEvent event) {
-			Database.dislikeReview(Database.getUser(currentUsername), review, null, 2);
+
+			Database.dislikeReview(Database.getUser(currentUsername), review,
+					null, 2);
 			loadSlide(REVIEWS);
 		}
 	}

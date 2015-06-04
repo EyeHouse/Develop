@@ -42,7 +42,7 @@ import database.User;
  * the database and displayed in a pane containing buttons which, when clicked,
  * skip to the designated time in that particular video tour.
  * 
- * @version 3.1
+ * @version 2.1
  * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
  */
 public class VideoPage extends Window {
@@ -85,7 +85,7 @@ public class VideoPage extends Window {
 
 		StackPane videoPane = new StackPane();
 
-		// Retrieve the video tour from the databse for the current property
+		// Retrieve the video tour from the database for the current property
 		House house = Database.getHouse(currentPropertyID);
 		User owner = Database.getUser(Database.getUsername(house.uid));
 		HouseVideo videoInfo = Database.checkHouseVideo(owner, house.hid);
@@ -157,7 +157,7 @@ public class VideoPage extends Window {
 	 */
 	public void setupMarkerButtons() {
 
-		// Retrieve the video markers from the databse for the current property
+		// Retrieve the video markers from the database for the current property
 		House house = Database.getHouse(currentPropertyID);
 		User owner = Database.getUser(Database.getUsername(house.uid));
 		HouseVideo videoInfo = Database.checkHouseVideo(owner, house.hid);
@@ -220,8 +220,7 @@ public class VideoPage extends Window {
 	}
 
 	/**
-	 * Removes and nullifies the video and video marker objects after the user
-	 * leaves this page.
+	 * Removes and nullifies the video and video marker objects.
 	 */
 	public void dispose() {
 

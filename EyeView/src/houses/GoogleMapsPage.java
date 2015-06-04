@@ -135,13 +135,13 @@ public class GoogleMapsPage extends Window {
 
 		/**
 		 * Sends in a scanner into the HTML file, finds the line which set the
-		 * destination location and changes it to the house location retrived
+		 * destination location and changes it to the house location retrieved
 		 * from the database.
 		 * 
 		 * @param address
-		 *            The street address of the house from the database.
+		 *            The street address of the house from the database
 		 * @param postcode
-		 *            The postcode of the house from the database.
+		 *            The postcode of the house from the database
 		 */
 		private void changeDestination(String address, String postcode) {
 
@@ -172,5 +172,4 @@ public class GoogleMapsPage extends Window {
 		}
 
 	}
-
 }
