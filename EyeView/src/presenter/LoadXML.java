@@ -32,6 +32,11 @@ public class LoadXML extends Window {
 	private static ArrayList<VideoElement> slideVideos = new ArrayList<VideoElement>();
 	private static ArrayList<AudioHandler> slideAudio = new ArrayList<AudioHandler>();
 
+	/**
+	 * Constructor method
+	 * 
+	 * @throws IOException
+	 */
 	public LoadXML() throws IOException {
 
 		loadXMLBackGround();
@@ -141,7 +146,7 @@ public class LoadXML extends Window {
 			StackPane videoPane = new StackPane();
 			videoPane.relocate(0, 0);
 			videoPane.resize(xResolution, yResolution);
-			slideVideos.add(new VideoElement(currentVideo.getSource(), false));
+			slideVideos.add(new VideoElement(currentVideo.getSource(), true));
 			slideVideos.get(i).setWidth(500);
 			slideVideos.get(i).setAutoplay(true);
 			slideVideos.get(i).setXpos(currentVideo.getXstart());

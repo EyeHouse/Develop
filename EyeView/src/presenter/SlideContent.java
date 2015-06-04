@@ -55,6 +55,7 @@ import database.User;
  */
 public class SlideContent extends Window {
 
+	// SlideContent variables
 	public ImageView profilePictureView;
 	private static ImageView buttonslideBack;
 	public static ComboBox<ImageView> languageComboBox;
@@ -84,6 +85,10 @@ public class SlideContent extends Window {
 	public final ComboBox<Integer> maxPrice = new ComboBox<Integer>();
 	public final ComboBox<Integer> distance = new ComboBox<Integer>();
 
+	/**
+	 * Creates a new slide, loading any XML data first then checking the group
+	 * ID before creating the rest of the page.
+	 */
 	public void createSlide() {
 
 		// Load all objects from XML file first
@@ -96,14 +101,15 @@ public class SlideContent extends Window {
 			System.out.println("Error loading XML data.");
 		}
 
-		// Checks if the XML belongs to group 5 (EyeHouse)
+		// Check if the XML belongs to group 5 (EyeHouse)
 		if (groupID.matches("5")) {
 
 			// Cancel Advert timer if it is running
 			if (advertTimer != null)
 				advertTimer.stop();
 			clearSlideData();
-			// Loads objects not within the XML for a given slide
+
+			// Load objects not within the XML for a given slide
 			switch (slideID) {
 			case STARTPAGE:
 				createStartSlide();
@@ -159,12 +165,18 @@ public class SlideContent extends Window {
 		}
 	}
 
+	/**
+	 * Creates the StartPage slide.
+	 */
 	private void createStartSlide() {
 		originSavedProperties = false;
 		originManageProperties = false;
 		startPage = new StartPage();
 	}
 
+	/**
+	 * Creates the logged-out instance of the HouseOverview slide.
+	 */
 	private void createLoggedOutSlide() {
 
 		originSavedProperties = false;
@@ -182,6 +194,9 @@ public class SlideContent extends Window {
 		houses = null;
 	}
 
+	/**
+	 * Creates the logged-in instance of the HouseOverview slide.
+	 */
 	private void createHomeSlide() {
 
 		originSavedProperties = false;
@@ -198,6 +213,9 @@ public class SlideContent extends Window {
 		houseIDs = null;
 	}
 
+	/**
+	 * Creates the Login slide.
+	 */
 	private void createLoginSlide() {
 
 		originSavedProperties = false;
@@ -206,6 +224,9 @@ public class SlideContent extends Window {
 		createSidebar();
 	}
 
+	/**
+	 * Creates the Register slide.
+	 */
 	private void createRegisterSlide() {
 
 		originSavedProperties = false;
@@ -214,6 +235,9 @@ public class SlideContent extends Window {
 		createSidebar();
 	}
 
+	/**
+	 * Creates the ProfileViewer slide.
+	 */
 	private void createProfileSlide() {
 
 		originSavedProperties = false;
@@ -222,6 +246,9 @@ public class SlideContent extends Window {
 		createSidebar();
 	}
 
+	/**
+	 * Creates the AccountSettings slide.
+	 */
 	private void createAccountSettingsSlide() {
 
 		originSavedProperties = false;
@@ -230,6 +257,9 @@ public class SlideContent extends Window {
 		createSidebar();
 	}
 
+	/**
+	 * Creates the SavedProperties slide.
+	 */
 	private void createSavedPropertySlide() {
 
 		originSavedProperties = true;
@@ -238,6 +268,9 @@ public class SlideContent extends Window {
 		createSidebar();
 	}
 
+	/**
+	 * Creates the single-view instance of the HouseOverview slide.
+	 */
 	private void createPropertySlide() {
 
 		House house = Database.getHouse(currentPropertyID);
@@ -249,6 +282,9 @@ public class SlideContent extends Window {
 		createSidebar();
 	}
 
+	/**
+	 * Creates the MoreInfo slide.
+	 */
 	private void createMoreInfoSlide() {
 
 		createMenuBar();
@@ -257,6 +293,9 @@ public class SlideContent extends Window {
 
 	}
 
+	/**
+	 * Creates the HouseReviews slide.
+	 */
 	private void createReviewsSlide() {
 
 		createMenuBar();
@@ -264,6 +303,9 @@ public class SlideContent extends Window {
 		createSidebar();
 	}
 
+	/**
+	 * Creates the GoogleMapsPage slide.
+	 */
 	private void createMapSlide() {
 
 		createMenuBar();
@@ -271,6 +313,9 @@ public class SlideContent extends Window {
 		createSidebar();
 	}
 
+	/**
+	 * Creates the VideoPage slide.
+	 */
 	private void createVideoSlide() {
 
 		createMenuBar();
@@ -278,6 +323,9 @@ public class SlideContent extends Window {
 		createSidebar();
 	}
 
+	/**
+	 * Creates the LandlordProperties slide.
+	 */
 	private void createLandlordPropertiesSlide() {
 
 		originSavedProperties = false;
@@ -286,6 +334,9 @@ public class SlideContent extends Window {
 		createSidebar();
 	}
 
+	/**
+	 * Creates the EditProperty slide.
+	 */
 	private void createEditPropertySlide() {
 		originSavedProperties = false;
 		originManageProperties = true;
@@ -293,6 +344,9 @@ public class SlideContent extends Window {
 		createSidebar();
 	}
 
+	/**
+	 * Creates the HouseOverview slide from the search results.
+	 */
 	private void createResultsSlide() {
 
 		originSavedProperties = false;
@@ -302,6 +356,9 @@ public class SlideContent extends Window {
 		createSidebar();
 	}
 
+	/**
+	 * Creates the sidebar profile picture and selectable labels.
+	 */
 	private void createSidebar() {
 
 		VBox sidebar = new VBox(18);
@@ -310,9 +367,6 @@ public class SlideContent extends Window {
 
 			User currentUser = Database.getUser(currentUsername);
 			try {
-				// InputStream binaryStream =
-				// currentUser.profimg.getBinaryStream(
-				// 1, currentUser.profimg.length());
 				Image profilePicture = new Image(
 						currentUser.profimg.getBinaryStream());
 
@@ -450,6 +504,9 @@ public class SlideContent extends Window {
 		root.getChildren().add(sidebar);
 	}
 
+	/**
+	 * Creates the menu bar across the top of the screen.
+	 */
 	private void createMenuBar() {
 
 		HBox buttonRow = new HBox(5);
@@ -524,6 +581,13 @@ public class SlideContent extends Window {
 		root.getChildren().add(buttonRow);
 	}
 
+	/**
+	 * Sets up text effects for a given label when it is hovered over by the
+	 * mouse.
+	 * 
+	 * @param input
+	 *            Label to add hover text effects to
+	 */
 	private void setupLabelHover(final Label input) {
 
 		final boolean selected;
@@ -553,6 +617,9 @@ public class SlideContent extends Window {
 		});
 	}
 
+	/**
+	 * Adds the back button to the top-left corner of the stage.
+	 */
 	public static void setupBackButton() {
 
 		buttonslideBack = new ImageView(new Image(
@@ -574,6 +641,9 @@ public class SlideContent extends Window {
 		root.getChildren().add(buttonslideBack);
 	}
 
+	/**
+	 * Creates the translator ComboBox and adds the action listener.
+	 */
 	private void setupTranslate() {
 
 		languageComboBox = new ComboBox<ImageView>();
@@ -583,6 +653,13 @@ public class SlideContent extends Window {
 				new File("resources/languageStyle.css").toURI().toString());
 	}
 
+	/**
+	 * This class handles the event changes if a new language is selected from
+	 * the translator drop-down box.
+	 * 
+	 * @version 3.2 (27.05.15)
+	 * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
+	 */
 	private class LanguageChange implements ChangeListener<ImageView> {
 
 		@Override
@@ -655,6 +732,9 @@ public class SlideContent extends Window {
 		}
 	}
 
+	/**
+	 * Changes the language for the logged-out sidebar.
+	 */
 	private void updateLoginRegisterLanguage() {
 
 		labelLogin.setText(Translator.translateText(languageIndex, "Login"));
@@ -662,6 +742,9 @@ public class SlideContent extends Window {
 				"Register"));
 	}
 
+	/**
+	 * Changes the language for the top menu bar.
+	 */
 	private void updateMenuBarLanguage() {
 
 		videoButton.setText(Translator.translateText(languageIndex,
@@ -673,6 +756,9 @@ public class SlideContent extends Window {
 				.translateText(languageIndex, "Reviews"));
 	}
 
+	/**
+	 * Changes the language for the logged-in sidebar.
+	 */
 	private void updateSidebarLanguage() {
 
 		User currentUser = Database.getUser(currentUsername);
@@ -689,6 +775,9 @@ public class SlideContent extends Window {
 		currentUser = null;
 	}
 
+	/**
+	 * Changes the language for the search filter box.
+	 */
 	private void updateSearchBarLanguage() {
 
 		labelFilter.setText(Translator.translateText(languageIndex,
@@ -702,6 +791,13 @@ public class SlideContent extends Window {
 		searchButton.setText(Translator.translateText(languageIndex, "Search"));
 	}
 
+	/**
+	 * Retrieves the houses from the database to display on the stage.
+	 * 
+	 * @param houseIDs
+	 *            List of house IDs to be displayed
+	 * @return ArrayList of Houses
+	 */
 	private ArrayList<House> getDisplayHouses(ArrayList<Integer> houseIDs) {
 
 		ArrayList<House> houses = new ArrayList<House>();
@@ -719,6 +815,9 @@ public class SlideContent extends Window {
 		return houses;
 	}
 
+	/**
+	 * Creates the search box items in the sidebar.
+	 */
 	private void createSearchBar() {
 
 		VBox searchFields = new VBox(0);
@@ -729,6 +828,7 @@ public class SlideContent extends Window {
 		HBox bedsRow = new HBox(10);
 		HBox priceRow = new HBox(10);
 
+		// Search box labels
 		labelFilter = new Label(Translator.translateText(languageIndex,
 				"Filter results:"));
 		labelFilter.setFont(Font.font(null, FontWeight.BOLD, 14));
@@ -758,7 +858,7 @@ public class SlideContent extends Window {
 		searchButton = new SetupButton().createButton(button1);
 		searchButton.setOnAction(new searchHandler());
 
-		// Combobox for
+		// ComboBox for search filter properties
 		minBeds.getItems().addAll(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 		maxBeds.getItems().addAll(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 		minBeds.getSelectionModel().select(0);
@@ -845,6 +945,12 @@ public class SlideContent extends Window {
 		root.getChildren().addAll(centreBox, searchFields);
 	}
 
+	/**
+	 * This class handles the action event for a new house filter search.
+	 * 
+	 * @version 3.2 (27.05.15)
+	 * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
+	 */
 	private class searchHandler implements EventHandler<ActionEvent> {
 
 		@Override
@@ -861,6 +967,7 @@ public class SlideContent extends Window {
 			ArrayList<House> outputPriceBed = new ArrayList<House>();
 			ArrayList<House> output = new ArrayList<House>();
 
+			// Filter the house list through multiple conditions
 			result1 = Search.rooms(minBeds.getSelectionModel()
 					.getSelectedItem(), true);
 			result2 = Search.rooms(maxBeds.getSelectionModel()
@@ -904,6 +1011,7 @@ public class SlideContent extends Window {
 				}
 			}
 
+			// Clear and remove all ArrayLists
 			result1.clear();
 			result2.clear();
 			result3.clear();
@@ -928,7 +1036,8 @@ public class SlideContent extends Window {
 			outputPriceBed = null;
 
 			searchResults = output;
-			
+
+			// Load search results on new house page
 			if (output.size() > 0) {
 				loadSlide(RESULTS);
 			} else {
@@ -938,6 +1047,10 @@ public class SlideContent extends Window {
 		}
 	}
 
+	/**
+	 * Nullifies and removes slide objects and calls the System garbage
+	 * collector to free memory space.
+	 */
 	private void clearSlideData() {
 
 		switch (prevSlideID) {

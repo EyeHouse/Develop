@@ -31,12 +31,11 @@ import javafx.scene.text.FontWeight;
 import javafx.util.Duration;
 
 /**
- * This class implements the EyeView Start Page
+ * This class implements the EyeView Start Page. It implements a scrolling image
+ * view of exemplar houses from within the program.
  * 
- * @version 2.2 20.04.15
- * @author EyeHouse
- * 
- * Copyright 2015 EyeHouse
+ * @version 2.2 (20.04.15)
+ * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
  */
 public class StartPage extends Window {
 
@@ -53,7 +52,7 @@ public class StartPage extends Window {
 	private Color c = Color.rgb(104, 158, 239, 0.3); // Colour of background
 
 	/**
-	 * Constructor calls the method to instantiate all the page elements
+	 * Constructor method
 	 */
 	public StartPage() {
 
@@ -61,7 +60,7 @@ public class StartPage extends Window {
 	}
 
 	/**
-	 * Method to instantiate elements of Start Page
+	 * Creates all the elements of the start page.
 	 */
 	private void createPageElements() {
 
@@ -125,8 +124,8 @@ public class StartPage extends Window {
 		// Create an arraylist of pictures for the pictures banner
 		ArrayList<Image> gallery = new ArrayList<Image>();
 		for (int i = 1; i < 11; i++) {
-			File file = new File("resources/start_page_images/House"
-					+ i + ".JPG");
+			File file = new File("resources/start_page_images/House" + i
+					+ ".JPG");
 			Image image = null;
 			try {
 				image = new Image(file.toURI().toURL().toString());
@@ -152,7 +151,10 @@ public class StartPage extends Window {
 	}
 
 	/**
-	 * This class defines the working of the picture banner
+	 * This class defines the working of the picture banner.
+	 * 
+	 * @version 2.2 (20.04.15)
+	 * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
 	 */
 	public static class PicturesBanner extends Region {
 
@@ -179,10 +181,10 @@ public class StartPage extends Window {
 		private static final double SPACING = 320;
 
 		/**
-		 * Constructor calls the method to instantiate all the page elements
+		 * Constructor method
 		 * 
 		 * @param galleryImages
-		 *            An ArrayList of images of the picture banner
+		 *            an ArrayList of images for the picture banner
 		 */
 		public PicturesBanner(ArrayList<Image> galleryImages) {
 
@@ -234,9 +236,6 @@ public class StartPage extends Window {
 			update();
 		}
 
-		/**
-		 * Override method to set the position of the picture banner
-		 */
 		@Override
 		protected void layoutChildren() {
 
@@ -247,7 +246,7 @@ public class StartPage extends Window {
 
 		/**
 		 * Update method sets the positions of the KeyFrames in the TimeLine,
-		 * stops any old TimeLine and starts a new TimeLine animation
+		 * stops any old TimeLine and starts a new TimeLine animation.
 		 */
 		private void update() {
 
@@ -303,7 +302,10 @@ public class StartPage extends Window {
 		}
 
 		/**
-		 * Method to shift an item to the centre
+		 * Shifts an item to the centre.
+		 * 
+		 * @param item
+		 *            BannerPicture to be displayed in the centre
 		 */
 		private void shiftToCentre(BannerPictures item) {
 
@@ -332,7 +334,10 @@ public class StartPage extends Window {
 		}
 
 		/**
-		 * Method to set the amount to shift an item
+		 * Sets the amount to shift an item.
+		 * 
+		 * @param shiftAmount
+		 *            Integer number to shift by
 		 */
 		public void shift(int shiftAmount) {
 			if (centreIndex <= 0 && shiftAmount > 0)
@@ -345,13 +350,15 @@ public class StartPage extends Window {
 	}
 
 	/**
-	 * This class sets the ImageView holders for the picture banner images
+	 * This class sets the ImageView holders for the picture banner images.
+	 * 
+	 * @version 2.2 (20.04.15)
+	 * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
 	 */
 	public static class BannerPictures extends Parent {
 
 		/**
-		 * Constructor instantiates a holder for an image and populates it with
-		 * an image
+		 * Constructor method
 		 * 
 		 * @param image
 		 *            An image to be added to the picture banner
@@ -367,9 +374,12 @@ public class StartPage extends Window {
 			image = null;
 		}
 	}
-	
+
+	/**
+	 * Disposes of any objects contained within the start page.
+	 */
 	public void dispose() {
-		
+
 		logo = null;
 		PicturesBanner.items.clear();
 		PicturesBanner.items.trimToSize();
@@ -382,5 +392,4 @@ public class StartPage extends Window {
 		scrollTimer.stop();
 		scrollTimer = null;
 	}
-
 }

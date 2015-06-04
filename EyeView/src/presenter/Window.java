@@ -37,8 +37,19 @@ import com.memetix.mst.translate.Translate;
 import database.Database;
 import database.House;
 
+/**
+ * This class is the top-level class that contains the methods for running the
+ * MultiMedia Presentation Environment, and run the EyeView software.
+ * 
+ * It contains methods to create the EyeHouse portal page, allowing the user to
+ * either select an XML file to import, or to run the EyeView software.
+ * 
+ * @version 1.4 (15.03.15)
+ * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
+ */
 public class Window extends Application {
 
+	// Static final global constants
 	public static final double xResolution = 960;
 	public static final double yResolution = 800;
 	public static final int STARTPAGE = 0;
@@ -58,6 +69,7 @@ public class Window extends Application {
 	public static final int EDITPROPERTY = 14;
 	public static final int RESULTS = 15;
 
+	// Static global variables
 	public static SlideshowData slideshow;
 	public static List<SlideData> slideList;
 	public static SlideData slideData;
@@ -66,22 +78,28 @@ public class Window extends Application {
 	public static int prevSlideID = -1;
 	public static boolean originSavedProperties = false;
 	public static boolean originManageProperties = false;
-
 	public static String currentUsername = null;
 	public static String viewedUsername = null;
 	public static int currentPropertyID = 0;
 	public static boolean firstLogin = false;
 	public static int languageIndex = 0;
 	public static ArrayList<House> searchResults = new ArrayList<House>();
-
-	public static Stage dialogStage;
-	public static Scene scene;
-	public static Group root;
-	private static SlideContent sc;
 	public static Timeline advertTimer;
-	public static Timeline genericTimer;
+	public static Stage dialogStage;
+	public static Group root;
 
-	public void init(Stage primaryStage) {
+	// Private static variables
+	private static SlideContent sc;
+	private static Scene scene;
+	private static Timeline genericTimer;
+
+	/**
+	 * Initialises the primary stage and sets the window size.
+	 * 
+	 * @param primaryStage
+	 *            The main stage window
+	 */
+	private void init(Stage primaryStage) {
 
 		// Initialises primary stage
 		primaryStage.setWidth(xResolution);
@@ -96,6 +114,13 @@ public class Window extends Application {
 		createXMLOptions(primaryStage);
 	}
 
+	/**
+	 * Loads a new slide by clearing the display and creating the content for
+	 * the new slide.
+	 * 
+	 * @param id
+	 *            slideID for the slide to display
+	 */
 	public static void loadSlide(int id) {
 
 		prevSlideID = slideID;
@@ -111,8 +136,8 @@ public class Window extends Application {
 			// Add timeline if duration is greater than zero.
 			if (slideData.getDuration() > 0) {
 				final int nextSlide = slideID + 1;
-				genericTimer = new Timeline(new KeyFrame(Duration.millis(slideData
-						.getDuration() * 1000),
+				genericTimer = new Timeline(new KeyFrame(
+						Duration.millis(slideData.getDuration() * 1000),
 						new EventHandler<ActionEvent>() {
 							public void handle(ActionEvent ae) {
 								loadSlide(nextSlide);
@@ -126,7 +151,14 @@ public class Window extends Application {
 
 	}
 
-	public void createXMLOptions(Stage primaryStage) {
+	/**
+	 * Creates buttons on the screen to select either importing an XML or
+	 * opening the EyeView software.
+	 * 
+	 * @param primaryStage
+	 *            The main stage window
+	 */
+	private void createXMLOptions(Stage primaryStage) {
 
 		Login.setBackground(false);
 		Image companyLogo = new Image(
@@ -158,7 +190,15 @@ public class Window extends Application {
 		root.getChildren().addAll(buttons, logo);
 	}
 
-	public static void openXML(Stage primaryStage, String xmlPath) {
+	/**
+	 * Imports and opens the XML file chosen in the FileChooser.
+	 * 
+	 * @param primaryStage
+	 *            The main stage window
+	 * @param xmlPath
+	 *            File path of the XML file to import
+	 */
+	private static void openXML(Stage primaryStage, String xmlPath) {
 
 		// Run the XML parser
 		XMLParser parser = new XMLParser();
@@ -168,11 +208,10 @@ public class Window extends Application {
 
 		primaryStage.setTitle(slideshow.getTitle());
 
-		if (groupID.matches("5")){
+		if (groupID.matches("5")) {
 			primaryStage.getIcons().add(
 					new Image("file:./resources/icons/xxxhdpi.png"));
-		}
-		else{
+		} else {
 			scene.setOnKeyPressed(new arrowKeyEvent());
 		}
 
@@ -180,7 +219,14 @@ public class Window extends Application {
 		loadSlide(STARTPAGE);
 	}
 
-	public class importHandler implements EventHandler<ActionEvent> {
+	/**
+	 * This class handles opening of an external XML slideshow from the EyeHouse
+	 * portal screen.
+	 * 
+	 * @version 1.4 (15.03.15)
+	 * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
+	 */
+	private class importHandler implements EventHandler<ActionEvent> {
 
 		public void handle(ActionEvent arg0) {
 
@@ -208,7 +254,14 @@ public class Window extends Application {
 		}
 	}
 
-	public class openEyeViewHandler implements EventHandler<ActionEvent> {
+	/**
+	 * This class handles opening of the EyeView software from the EyeHouse
+	 * portal screen.
+	 * 
+	 * @version 1.4 (15.03.15)
+	 * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
+	 */
+	private class openEyeViewHandler implements EventHandler<ActionEvent> {
 
 		@Override
 		public void handle(ActionEvent arg0) {
@@ -227,6 +280,13 @@ public class Window extends Application {
 		}
 	}
 
+	/**
+	 * Creates a new warning stage that appears on top of the main window,
+	 * containing a given warning message.
+	 * 
+	 * @param message
+	 *            Warning message string to be displayed
+	 */
 	public static void createWarningPopup(String message) {
 
 		Label dialogText = new Label(message);
@@ -262,34 +322,40 @@ public class Window extends Application {
 				.children(hbox, okButton).alignment(Pos.CENTER).spacing(5)
 				.build()));
 	}
-	
-	private static class arrowKeyEvent implements EventHandler<KeyEvent>{
+
+	/**
+	 * This class implements the event handler for switching between XML slides
+	 * with the left and right arrow keys.
+	 * 
+	 * @version 1.4 (15.03.15)
+	 * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
+	 */
+	private static class arrowKeyEvent implements EventHandler<KeyEvent> {
 
 		@Override
 		public void handle(KeyEvent input) {
-			if(input.getCode() == KeyCode.RIGHT){
+			if (input.getCode() == KeyCode.RIGHT) {
 				int newSlide = slideID + 1;
-				
-				if(slideData.getDuration() > 0){
+
+				if (slideData.getDuration() > 0) {
 					genericTimer.stop();
 				}
-				
+
 				loadSlide(newSlide);
-			}
-			else if(input.getCode() == KeyCode.LEFT){
+			} else if (input.getCode() == KeyCode.LEFT) {
 				int newSlide = slideID - 1;
-				
-				if(slideData.getDuration() > 0){
+
+				if (slideData.getDuration() > 0) {
 					genericTimer.stop();
 				}
-				if(slideID == 0){
+				if (slideID == 0) {
 					loadSlide(0);
-				} else{
+				} else {
 					loadSlide(newSlide);
 				}
 			}
 		}
-		
+
 	}
 
 	@Override
@@ -299,6 +365,11 @@ public class Window extends Application {
 		primaryStage.show();
 	}
 
+	/**
+	 * Main executable method which launches Application.
+	 * 
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		launch(args);
 	}

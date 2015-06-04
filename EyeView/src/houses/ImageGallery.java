@@ -25,7 +25,7 @@ import presenter.Window;
 
 /**
  * This class groups together the image gallery with rectangles to cover
- * thumbnails that are out of bounds, and set the background of the thumbnails
+ * thumbnails that are out of bounds, and set the background of the thumbnails.
  * 
  * @version 1.4 (15.03.15)
  * @author Copyright (c) 2015 EyeHouse Ltd. All rights reserved.
@@ -44,7 +44,7 @@ public class ImageGallery extends Window {
 
 	/**
 	 * Constructor instantiates the image gallery and relocates it to a position
-	 * on the screen
+	 * on the screen.
 	 * 
 	 * @param galleryList
 	 *            an array list of images for the image gallery
